@@ -1,12 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.scss';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider as ReduxProvider } from 'react-redux';
+import { store } from './redux';
 import App from './App';
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+
+import './index.scss';
+
+const container = document.getElementById('root')!;
+const root = createRoot(container);
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <StrictMode>
+    <ReduxProvider store={store}>
+      <BrowserRouter basename='/hilde'>
+        <App />
+      </BrowserRouter>
+    </ReduxProvider>
+  </StrictMode>
 );
