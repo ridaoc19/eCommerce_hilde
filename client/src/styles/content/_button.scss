@@ -5,6 +5,7 @@
   user-select  : none;
   height       : 2.5rem;
   border-radius: 12px;
+  outline      : none;
 
   @if $type==button_dark {
     background-color: var(--brand-6);
@@ -28,7 +29,7 @@
       color           : var(--font-light);
       transform       : scale(0.97);
     }
-  
+
   }
 }
 
