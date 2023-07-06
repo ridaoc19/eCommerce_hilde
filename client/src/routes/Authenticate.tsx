@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
-import Login from "../pages/authenticate/login";
 import Registre from "../pages/authenticate/registre";
+import Login from "../pages/authenticate/login";
+import Reset from "../pages/authenticate/reset";
 
 type Props = {
   isAllowed?: boolean;
@@ -20,6 +21,10 @@ const Authenticate = {
     {
       path: "/registre",
       element: <Registre />,
+    },
+    {
+      path: "/reset",
+      element: <Reset />,
     },
   ],
 };
