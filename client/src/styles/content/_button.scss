@@ -1,0 +1,53 @@
+@mixin button_repeat($type) {
+  width        : 100%;
+  white-space  : nowrap;
+  cursor       : pointer;
+  user-select  : none;
+  height       : 2.5rem;
+  border-radius: 12px;
+
+  @if $type==button_dark {
+    background-color: var(--brand-6);
+    color           : var(--font-light);
+    border          : 1px solid transparent;
+
+    &:active {
+      background-color: var(--brand-9);
+      color           : var(--font-light);
+      transform       : scale(0.97);
+    }
+  }
+
+  @else if $type==button_light {
+    background-color: var(--font-light);
+    color           : var(--brand-6);
+    border          : 1px solid var(--brand-6);
+
+    &:active {
+      background-color: var(--brand-6);
+      color           : var(--font-light);
+      transform       : scale(0.97);
+    }
+  
+  }
+}
+
+.button_dark {
+  @include button_repeat(button_dark);
+}
+
+.button_light {
+  @include button_repeat(button_light);
+}
+
+.button_link {
+  background-color: transparent;
+  color           : #1677ff;
+  border          : 1px solid transparent;
+  text-decoration : underline;
+  white-space     : nowrap;
+  cursor          : pointer;
+  user-select     : none;
+  touch-action    : manipulation;
+  padding         : 0;
+}
