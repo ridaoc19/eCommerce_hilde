@@ -28,14 +28,15 @@ function Login() {
 
         <main>
           <div className="form__input--content">
-            <Input svg={{ type: "email" }} styleClass="login_email" errorMessage={email.message}>
-              <input type="email" placeholder="Correo electrónico" value={email.change} onChange={(event) => handleOnChange('email', event)} name="email" />
-            </Input>
+            <Input svg={{ type: "email" }} styleClass="login_email" errorMessage={email.message}
+              input={{ type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange, name: "email" }}
+            />
 
             <Input
-              svg={{ type: "padlock" }} svgTwo={{ type: "openEye" }} styleClass="login--password" errorMessage={password.message}>
-              <input type="password" placeholder="Contraseña" value={password.change} onChange={(event) => handleOnChange("password", event)} name="password" />
-            </Input>
+              svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="login--password" errorMessage={password.message}
+              input={{ type: "password", placeholder: "Contraseña", value: password.change, handleOnChange, name: "password" }}
+            />
+
           </div>
 
           <div className="form__button--content">
@@ -45,10 +46,12 @@ function Login() {
               </Link>
             </div>
             <input type="submit" className="button_dark" value="Iniciar Sesión" />
-            <input type="submit" className="button_dark" value="Volver" />
-            <hr />
             <Link to={'/registre'}>
-              <button className="button_light">Crear cuenta</button>
+              <input type="submit" className="button_dark" value="Crear cuenta" />
+            </Link>
+            <hr />
+            <Link to={'/'}>
+              <input type="submit" className="button_light" value="Volver" />
             </Link>
           </div>
         </main>

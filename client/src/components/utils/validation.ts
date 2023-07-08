@@ -28,6 +28,9 @@ export default function validation({ name, value }: { name: string, value: strin
       }
       break;
 
+    case "name":
+      if (value.length > 5) return error = ({ ...error, message: "debe de terner mas", stop: false })
+      break
 
     default: return error;
   }
