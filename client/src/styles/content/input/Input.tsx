@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState, MouseEvent } from 'react';
 import Svg from '../../../components/assets/Svg';
 
 interface Props {
-  children: ReactNode,
-  svg: {
+  // children: ReactNode,
+  svg?: {
     type: string,
     height?: number,
     width?: number,
@@ -16,10 +16,23 @@ interface Props {
     color?: string
   }
   styleClass: string,
-  errorMessage: string
+  errorMessage: string,
+  input: {
+    type?: string,
+    placeholder: string,
+    value: string,
+    handleOnChange: (fieldName: string, event: React.ChangeEvent<HTMLInputElement>) => void;
+    name: string
+  }
 }
 
-function Input({ children, svg, svgTwo, styleClass, errorMessage }: Props) {
+function Input({ svg, svgTwo, styleClass, errorMessage, input }: Props) {
+  const [toggle, setToggle] = useState(false)
+
+  const handleOnClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setToggle(data => data ? false : true)
+  }
 
   return (
     <div className={`input input__container--${styleClass}`}>
@@ -27,11 +40,12 @@ function Input({ children, svg, svgTwo, styleClass, errorMessage }: Props) {
       <div className={`${errorMessage ? "input_error" : "input_brand"} input__content--${styleClass}`}>
         <span>
           <span className={`input__svg--${styleClass}`}>
-            {Svg({ type: svg.type, height: svg.height || 16, width: svg.width || 16, color: errorMessage ? "#DB2424" : svg.color ? svg.color : "#848FAC" })}
+            {svg && Svg({ type: svg.type, height: svg.height || 16, width: svg.width || 16, color: errorMessage ? "#DB2424" : svg.color ? svg.color : "#848FAC" })}
           </span>
-          {children}
-          <span className={`input__svgTwo--${styleClass}`}>
-            {svgTwo && Svg({ type: svgTwo.type, height: svgTwo.height || 16, width: svgTwo.width || 16, color: errorMessage ? "#DB2424" : svg.color ? svg.color : "#848FAC" })}
+          <input type={input.type !== "password" ? input.type : toggle ? "text" : input.type} placeholder={input.placeholder} value={input.value}
+            onChange={(event) => input.handleOnChange(input.name, event)} name={input.name} />
+          <span className={`input__svgTwo--${styleClass}`} onClick={handleOnClick} >
+            {svgTwo && Svg({ type: svgTwo.type !== "eye" ? svgTwo.type : toggle ? "openEye" : "closedEye", height: svgTwo.height || 16, width: svgTwo.width || 16, color: errorMessage ? "#DB2424" : svgTwo.color ? svgTwo.color : "#848FAC" })}
           </span>
         </span>
       </div>
