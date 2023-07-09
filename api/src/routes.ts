@@ -5,9 +5,9 @@ import { join } from "path";
 const router = Router();
 
 readdirSync(join(__dirname, "/modules")).map((fileName) => {
-  import(`./modules/${fileName}/controller`).then((moudleRouter) => {
-    router.use(`/${fileName}`, moudleRouter.router);
+  import(`./modules/${fileName}/controller`).then((moduleRouter) => {
+    router.use(`/${fileName}`, moduleRouter.router);
   });
 });
 
-export { router };
+export default router;
