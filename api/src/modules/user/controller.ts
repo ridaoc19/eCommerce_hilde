@@ -1,10 +1,9 @@
 import { Router, Request, Response } from "express";
+import { postUser } from "./services";
 
 const router = Router();
 
-router.get('/', (req: Request , res: Response) =>{
- res.status(200).json({nombre: 'si'})
-})
+router.get('/', postUser)
 
 
 export {router}
