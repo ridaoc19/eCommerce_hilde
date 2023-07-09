@@ -9,10 +9,25 @@ function useOnChange(initialState: FormState) {
 
   const handleOnChange = (fieldName: keyof FormState, { target }: ChangeEvent<HTMLInputElement>,) => {
     const { name, value } = target
-    const { message, stop } = validation({ name, value })
-console.log(message, stop);
+    const { message, stop } = validation({ name, value, change })
 
-  setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value, message: message } }));
+    // if (!stop) setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value, message: message } }));
+
+
+    setChange(prevState => {
+      if (!stop) {
+        return ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value, message: message } })
+      } else {
+        return ({ ...prevState, [fieldName]: { ...prevState[fieldName], message: message } })
+      }
+    })
+
+    // setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value } }));
+    // setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], message: message } }));
+    // setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value, message: message } }));
+
+
+
   };
 
   return { change, handleOnChange };
