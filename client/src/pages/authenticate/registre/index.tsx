@@ -9,10 +9,11 @@ const initialState = {
   email: { change: "", message: "" },
   password: { change: "", message: "" },
   confirmPassword: { change: "", message: "" },
+  lastName: { change: "", message: "" },
 }
 
 function Registre() {
-  const { change: { name, email, password, confirmPassword }, handleOnChange } = useOnChange(initialState)
+  const { change: { name, email, password, confirmPassword, lastName }, handleOnChange } = useOnChange(initialState)
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,10 +30,14 @@ function Registre() {
 
         <main>
           <div className="form__input--content">
+
             <Input svg={{ type: "user" }} styleClass="registre_name" errorMessage={name.message}
-              input={{ name: "name", type: "text", placeholder: "Nombre", value: name.change, handleOnChange }}
+              input={{ name: "name", type: "text", placeholder: "Nombres", value: name.change, handleOnChange }}
             />
 
+            <Input svg={{ type: "user" }} styleClass="registre_lastName" errorMessage={lastName.message}
+              input={{ name: "lastName", type: "text", placeholder: "Apellidos", value: lastName.change, handleOnChange }}
+            />
 
             <Input svg={{ type: "email" }} styleClass="registre_email" errorMessage={email.message}
               input={{ name: "email", type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange }}
