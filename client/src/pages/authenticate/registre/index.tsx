@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
-import Svg from "../../../components/assets/Svg";
 import useOnChange from "../../../components/hooks/useOnChange";
 import Input from "../../../styles/content/input/Input";
-// import Ejemplo from "./Pes";
 
 const initialState = {
   name: { change: "", message: "" },
