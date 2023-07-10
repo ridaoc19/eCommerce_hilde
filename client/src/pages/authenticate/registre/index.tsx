@@ -1,20 +1,28 @@
 import { Link } from "react-router-dom";
 import useOnChange from "../../../components/hooks/useOnChange";
 import Input from "../../../styles/content/input/Input";
+// import { useAppDispatch } from "../../../redux/hooks";
+import { fetchPosts } from "../../../redux/reducers/user";
+import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../redux/hooks";
+
 
 const initialState = {
   name: { change: "", message: "" },
+  lastName: { change: "", message: "" },
   email: { change: "", message: "" },
   password: { change: "", message: "" },
   confirmPassword: { change: "", message: "" },
-  lastName: { change: "", message: "" },
 }
 
 function Registre() {
-  const { change: { name, email, password, confirmPassword, lastName }, handleOnChange } = useOnChange(initialState)
+  const { change: { name, lastName, email, password, confirmPassword }, handleOnChange } = useOnChange(initialState)
+  const dispatch = useAppDispatch();
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const data = { name: name.change, lastName: lastName.change, email: email.change, password: password.change }
+    dispatch(fetchPosts(data))
   };
 
   return (

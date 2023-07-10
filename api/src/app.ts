@@ -12,7 +12,5 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 app.use(cors())
 app.use("/", routes)
-ri
-
 
 export default app 
