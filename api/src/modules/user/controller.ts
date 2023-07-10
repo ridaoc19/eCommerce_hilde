@@ -3,7 +3,7 @@ import { postUser } from "./services";
 
 const router = Router();
 
-router.get('/', postUser)
+router.post('/', postUser)
 
 
 export {router}
