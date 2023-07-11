@@ -21,7 +21,7 @@ export const fetchPosts = createAsyncThunk<Post[], Argument>(
   async (dataPost: any, { rejectWithValue }) => {
 
 
-    return await axios.post('http://localhost:3001/user', dataPost)
+    return await axios.post(`${process.env.REACT_APP_URL_API}/user`, dataPost)
       .then(response => {
         return response.data
       })
