@@ -34,6 +34,7 @@ function Registre() {
 
   useEffect(() => {
     if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
+    // eslint-disable-next-line
   }, [errorBack])
 
   const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange: any }) => {
@@ -45,7 +46,6 @@ function Registre() {
       dispatch(fetchPosts(dataPost));
     }
   }
-
 
   return (
     <div className="registre__form--container">
@@ -71,12 +71,10 @@ function Registre() {
               input={{ name: "email", type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange }}
             />
 
-
             <Input
               svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="registre--password" errorMessage={password.message}
               input={{ name: "password", type: "password", placeholder: "Contraseña", value: password.change, handleOnChange }}
             />
-
 
             <Input
               svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="registre--confirmPassword" errorMessage={confirmPassword.message}
