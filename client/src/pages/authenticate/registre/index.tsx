@@ -14,7 +14,7 @@ interface InitialState {
   confirmPassword: { change: string, message: string },
 }
 
-interface FormState {
+interface FormState extends InitialState {
   [key: string]: { change: string; message: string };
 }
 

@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useAppSelector } from '../../redux/hooks';
-import { selectUserError } from '../../redux/reducers/user';
+import { useState } from 'react';
 import { validationChange } from '../utils/validation';
 
 interface FormState {
   [key: string]: { change: string; message: string };
 }
-
 
 function useOnChange<T extends FormState>(initialState: T) {
   const [change, setChange] = useState<FormState>(initialState)
