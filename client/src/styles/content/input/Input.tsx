@@ -21,10 +21,7 @@ interface Props {
     type?: string;
     placeholder: string;
     value: string;
-    handleOnChange: (
-      fieldName: string,
-      event: React.ChangeEvent<HTMLInputElement>
-    ) => void;
+    handleOnChange: any
     name: string;
   };
 }
@@ -54,7 +51,7 @@ function Input({ svg, svgTwo, styleClass, errorMessage, input }: Props) {
             type={input.type !== "password" ? input.type : toggle ? "text" : input.type}
             placeholder={input.placeholder}
             value={input.value}
-            onChange={(event) => input.handleOnChange(input.name, event)}
+            onChange={(event) => input.handleOnChange({ name: input.name, value: event.target.value })}
             name={input.name}
           />
           <span

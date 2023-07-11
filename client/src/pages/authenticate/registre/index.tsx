@@ -1,10 +1,11 @@
+import { useEffect } from 'react';
 import { Link } from "react-router-dom";
 import useOnChange from "../../../components/hooks/useOnChange";
+import useOnClick from "../../../components/hooks/useOnClick";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserError } from "../../../redux/reducers/user";
 import Input from "../../../styles/content/input/Input";
-// import { useAppDispatch } from "../../../redux/hooks";
-import { fetchPosts } from "../../../redux/reducers/user";
-import { useDispatch } from "react-redux";
-import { useAppDispatch } from "../../../redux/hooks";
+
 
 
 const initialState = {
@@ -16,18 +17,20 @@ const initialState = {
 }
 
 function Registre() {
-  const { change: { name, lastName, email, password, confirmPassword }, handleOnChange } = useOnChange(initialState)
-  const dispatch = useAppDispatch();
+  const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
+  const { handleOnClick } = useOnClick()
+  const { name, lastName, email, password, confirmPassword } = change;
+  const errorBack = useAppSelector(selectUserError)
 
-  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = { name: name.change, lastName: lastName.change, email: email.change, password: password.change }
-    dispatch(fetchPosts(data))
-  };
+  useEffect(() => {
+    if (errorBack instanceof Object) {
+      handleErrorOnBack({ errorBack })
+    }
+  }, [errorBack])
 
   return (
     <div className="registre__form--container">
-      <form onSubmit={handleOnSubmit} className="registre__form--content">
+      <form onSubmit={(event) => handleOnClick({ event, change, handleOnChange })} className="registre__form--content">
 
         <header className="form__header--content">
           <h2>Regístrate</h2>
@@ -61,6 +64,10 @@ function Registre() {
               input={{ name: "confirmPassword", type: "password", placeholder: "Confirmar contraseña", value: confirmPassword.change, handleOnChange }}
             />
 
+          </div>
+
+          <div className="form__error-back--content">
+            <span>{typeof errorBack === "string" && errorBack}</span>
           </div>
 
           <div className="form__button--content">

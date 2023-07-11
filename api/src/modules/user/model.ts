@@ -31,18 +31,4 @@ const userSchema = new Schema<IUser>(
     versionKey: false,
   })
 
-// userSchema.plugin((schema: Schema<IUser>) => {
-//   schema.post('save', function(error: any, doc: any, next: any) {
-//     if (error.name === 'MongoError' && error.code === 11000) {
-//       console.log("entro aca", error);
-      
-//       next(new Error('El correo electrónico ya está registrado'));
-//     } else {
-//       next(error);
-//     }
-//   });
-// });
-// console.log(userSchema.requiredPaths());
-
-
 export const User = model<IUser>('User', userSchema);

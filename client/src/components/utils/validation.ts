@@ -15,7 +15,7 @@ interface FormState {
 }
 
 
-export default function validation({ name, value, change }: { name: string, value: string, change: FormState }): InitialState {
+export function validationChange({ name, value, change }: { name: string, value: string, change: FormState }): InitialState {
 
   let error: InitialState = { ...initialState }
   const updateError = ({ message, stop = false }: InitialState) => { return { ...error, message, stop } }
@@ -74,6 +74,20 @@ export default function validation({ name, value, change }: { name: string, valu
 const repeatedMessages = {
   blankSpaces: "No debe contener espacios en blanco entre palabras.",
   requiredField: "Campo requerido",
-  minimumCharacters: (value: number, total: number): string => `Tienes ${value} caracteres y debe tener mínimo ${total} caracteres`,
-  maximumCharacters: (value: number, total: number): string => `Tienes ${value} caracteres y debe tener máximo ${total} caracteres`
+  minimumCharacters: (value: number, total: number): string => `Tienes ${value} caracteres y debe tener mínimo ${total}`,
+  maximumCharacters: (value: number, total: number): string => `Tienes ${value} caracteres y debe tener máximo ${total}`
+}
+
+
+
+export const validationClick = ({ change, handleOnChange }: { change: any, handleOnChange: any }) => {
+
+  const validationClick = Object.entries(change).map(([name, value]: [name: string, value: any]) => {
+    handleOnChange({ name, value: value.change });
+    const { message } = validationChange({ name, value: value.change, change })
+    return message
+  })
+
+  return validationClick.filter(e => e).length !== 0
+
 }
