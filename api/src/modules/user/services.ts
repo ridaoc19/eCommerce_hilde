@@ -12,12 +12,12 @@ function fetchCount(info: any) {
 
 export async function postUser(req: Request, res: Response) {
   try {
+    const { name, lastName, email, password } = req.body;
 
+    const userDB = await User.create({ name, lastName, email, password })
+    const user = await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
 
-    const { _id, name, lastName, email } = await User.create(req.body)
-    const user = await fetchCount({ _id, name, lastName, email })
-
-    await sendEmail({name, email})
+    await sendEmail({ name: userDB.name, email: userDB.email })
 
     res.status(200).json(user.data)
 
