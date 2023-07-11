@@ -81,13 +81,13 @@ const repeatedMessages = {
 
 
 export const validationClick = ({ change, handleOnChange }: { change: any, handleOnChange: any }) => {
+  const dataPost: Record<string, any> = {};
 
-  const validationClick = Object.entries(change).map(([name, value]: [name: string, value: any]) => {
+  const filterError = Object.entries(change).map(([name, value]: [name: string, value: any]) => {
     handleOnChange({ name, value: value.change });
     const { message } = validationChange({ name, value: value.change, change })
+    dataPost[name] = value.change
     return message
   })
-
-  return validationClick.filter(e => e).length !== 0
-
+  return { dataPost, authorize: filterError.filter(e => e).length === 0 }
 }

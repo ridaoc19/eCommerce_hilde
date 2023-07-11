@@ -8,7 +8,7 @@ interface FormState {
 }
 
 
-function useOnChange(initialState: FormState) {
+function useOnChange<T extends FormState>(initialState: T) {
   const [change, setChange] = useState<FormState>(initialState)
 
 
@@ -19,7 +19,7 @@ function useOnChange(initialState: FormState) {
   };
 
 
-  const handleOnChange = ({ name, value }: { name: keyof FormState, value: any }) => {
+  const handleOnChange = ({ name, value }: { name: keyof FormState, value: string }) => {
     const { message, stop } = validationChange({ name: name.toString(), value, change })
     setChange(prevState => {
       if (!stop) {
