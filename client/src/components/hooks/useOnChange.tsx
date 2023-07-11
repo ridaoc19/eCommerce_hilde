@@ -1,36 +1,36 @@
-import { ChangeEvent, useState } from 'react';
-import validation from '../utils/validation';
+import { useState, useEffect } from 'react';
+import { useAppSelector } from '../../redux/hooks';
+import { selectUserError } from '../../redux/reducers/user';
+import { validationChange } from '../utils/validation';
 
 interface FormState {
   [key: string]: { change: string; message: string };
 }
+
+
 function useOnChange(initialState: FormState) {
   const [change, setChange] = useState<FormState>(initialState)
 
-  const handleOnChange = (fieldName: keyof FormState, { target }: ChangeEvent<HTMLInputElement>,) => {
-    const { name, value } = target
-    const { message, stop } = validation({ name, value, change })
 
-    // if (!stop) setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value, message: message } }));
-
-
-    setChange(prevState => {
-      if (!stop) {
-        return ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value, message: message } })
-      } else {
-        return ({ ...prevState, [fieldName]: { ...prevState[fieldName], message: message } })
-      }
+  const handleErrorOnBack = ({ errorBack }: { errorBack: any }) => {
+    Object.entries(errorBack).forEach(([nameBack, valueBack]: [nameBack: string, valueBack: any]) => {
+      setChange(prevState => { return ({ ...prevState, [nameBack]: { ...prevState[nameBack], message: valueBack } }) })
     })
-
-    // setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value } }));
-    // setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], message: message } }));
-    // setChange(prevState => ({ ...prevState, [fieldName]: { ...prevState[fieldName], change: value, message: message } }));
-
-
-
   };
 
-  return { change, handleOnChange };
+
+  const handleOnChange = ({ name, value }: { name: keyof FormState, value: any }) => {
+    const { message, stop } = validationChange({ name: name.toString(), value, change })
+    setChange(prevState => {
+      if (!stop) {
+        return ({ ...prevState, [name]: { ...prevState[name], change: value, message: message } })
+      } else {
+        return ({ ...prevState, [name]: { ...prevState[name], message: message } })
+      }
+    })
+  };
+
+  return { change, handleOnChange, handleErrorOnBack };
 }
 
 export default useOnChange;
