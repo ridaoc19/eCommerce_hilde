@@ -10,13 +10,14 @@ export interface Post {
 }
 
 interface Argument {
-  name: string;
-  lastName: string;
-  email: string;
-  password: string;
+  name?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
 }
 
-export const fetchPosts = createAsyncThunk<Post[], Argument>(
+export const fetchPosts = createAsyncThunk<Post[], Argument | null>(
   'posts/fetchPosts',
   async (dataPost: any, { rejectWithValue }) => {
 
