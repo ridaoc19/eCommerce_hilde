@@ -21,7 +21,7 @@ interface Props {
     type?: string;
     placeholder: string;
     value: string;
-    handleOnChange: any;
+    handleOnChange: (data: { name: string; value: string; }) => void;
     name: string;
   };
 }
@@ -51,7 +51,7 @@ function Input({ svg, svgTwo, styleClass, errorMessage, input }: Props) {
             type={input.type !== "password" ? input.type : toggle ? "text" : input.type}
             placeholder={input.placeholder}
             value={input.value}
-            onChange={(event) => input.handleOnChange({ fieldName: input.name, name: input.name, value: event.target.value })}
+            onChange={(event) => input.handleOnChange({ name: input.name, value: event.target.value })}
             name={input.name}
           />
           <span

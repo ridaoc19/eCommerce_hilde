@@ -5,5 +5,6 @@ import Main from "./Main";
 // ==============================|| ROUTING RENDER ||============================== //
 
 export default function ThemeRoutes() {
-  return useRoutes([Main, Authenticate])
+  return useRoutes([...Main, Authenticate])
+  // return useRoutes(Main.concat(Authenticate))
 }

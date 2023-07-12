@@ -20,7 +20,7 @@ const userSchema = new Schema<IUser>(
     email: {
       type: String,
       required: [true, 'El correo electrónico es obligatorio.<^'],
-      unique: true,
+      // unique: true,
     },
     password: {
       type: String,

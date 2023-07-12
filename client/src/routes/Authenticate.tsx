@@ -1,7 +1,7 @@
+import { lazy } from 'react';
 import { Navigate, Outlet } from "react-router-dom";
-import Registre from "../pages/authenticate/registre";
-import Login from "../pages/authenticate/login";
-import Reset from "../pages/authenticate/reset";
+import Loadable from '../components/utils/Loadable';
+
 
 type Props = {
   isAllowed?: boolean;
@@ -9,6 +9,12 @@ type Props = {
 
 const ProtectedRoute = ({ isAllowed }: Props) =>
   isAllowed ? <Navigate to={"/"} /> : <Outlet />;
+
+
+const Registre = Loadable(lazy(() => import("../pages/authenticate/registre")))
+const Login = Loadable(lazy(() => import("../pages/authenticate/login")))
+const Reset = Loadable(lazy(() => import("../pages/authenticate/reset")))
+
 
 const Authenticate = {
   path: "/",
