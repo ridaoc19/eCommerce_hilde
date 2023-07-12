@@ -1,8 +1,7 @@
 import React from 'react';
-import Svg from '../../../components/assets/Svg';
-import Input from '../../../styles/content/input/Input';
 import { Link } from 'react-router-dom';
 import useOnChange from '../../../components/hooks/useOnChange';
+import Input from '../../../styles/content/input/Input';
 
 const initialState = {
   email: { change: "", message: "" },

@@ -1,3 +1,4 @@
+import { PropsUseChange } from "../hooks/useOnChange";
 
 
 interface InitialState {
@@ -80,10 +81,10 @@ const repeatedMessages = {
 
 
 
-export const validationClick = ({ change, handleOnChange }: { change: any, handleOnChange: any }) => {
+export const validationClick = ({ change, handleOnChange }: { change: PropsUseChange, handleOnChange: (data: { name: string; value: string; }) => void; }) => {
   const dataPost: Record<string, string | number> = {};
 
-  const filterError = Object.entries(change).map(([name, value]: [name: string, value: any]) => {
+  const filterError = Object.entries(change).map(([name, value]: [string, any]) => {
     handleOnChange({ name, value: value.change });
     const { message } = validationChange({ name, value: value.change, change })
     dataPost[name] = value.change
