@@ -7,7 +7,7 @@ interface Props {
 }
 
 
-const Svg: React.FC<Props> = ({ type, width = 24, height = 24, color = "#292D32" }): any => {
+const Svg: React.FC<Props> = ({ type, width = 24, height = 24, color = "#292D32" })=> {
   switch (type) {
 
     case "user":
@@ -144,7 +144,7 @@ const Svg: React.FC<Props> = ({ type, width = 24, height = 24, color = "#292D32"
 
 
     default:
-      break;
+      return null;
   }
 };
 

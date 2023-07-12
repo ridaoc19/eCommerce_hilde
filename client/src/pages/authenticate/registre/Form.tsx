@@ -5,11 +5,13 @@ import { validationClick } from '../../../components/utils/validation';
 import { useAppDispatch } from '../../../redux/hooks';
 import { fetchPosts } from '../../../redux/reducers/user/actions';
 import Input from '../../../styles/content/input/Input';
+import { ReduxUser } from '../../../redux/reducers/user/interface'
+
 
 interface Props {
   handleOnChange: (data: { name: string; value: string; }) => void;
   change: PropsUseChange
-  errorBack: string | null | {}
+  errorBack: Pick<ReduxUser.PostState, 'error'>
 }
 
 
@@ -17,7 +19,7 @@ function Form({ handleOnChange, change, errorBack }: Props) {
   const dispatch = useAppDispatch();
   const { name, lastName, email, password, confirmPassword } = change;
 
-  const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange: any }) => {
+  const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange:  (data: { name: string; value: string; }) => void; }) => {
     event.preventDefault();
     const { dataPost, authorize } = validationClick({ change, handleOnChange })
 

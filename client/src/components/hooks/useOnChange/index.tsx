@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { validationChange } from '../../utils/validation';
+import { ReduxUser } from '../../../redux/reducers/user/interface';
 
 
 function useOnChange(initialState: PropsUseChange) {
   const [change, setChange] = useState<PropsUseChange>(initialState)
 
 
-  const handleErrorOnBack = ({ errorBack }: { errorBack: any }) => {
-    Object.entries(errorBack).forEach(([nameBack, valueBack]: [nameBack: string, valueBack: any]) => {
+  const handleErrorOnBack = ({ errorBack }: { errorBack: Pick<ReduxUser.PostState, 'error'>}) => {
+    Object.entries(errorBack).forEach(([nameBack, valueBack]: [string, any]) => {
       setChange(prevState => { return ({ ...prevState, [nameBack]: { ...prevState[nameBack], message: valueBack } }) })
     })
   };
