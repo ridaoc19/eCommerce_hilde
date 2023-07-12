@@ -1,12 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { Post, fetchPosts } from "./actions";
-
-interface PostState {
-  data: Post[] | null;
-  loading: boolean;
-  error: string | null | {};
-}
+import { fetchPosts } from "./actions";
 
 const initialState: PostState = {
   data: null,
@@ -39,3 +33,5 @@ const userSlice = createSlice({
 export default userSlice.reducer;
 
 export const selectUserError = (state: RootState) => state.user.error;
+export const selectUserLoading = (state: RootState) => state.user.loading;
+export const selectUserData = (state: RootState) => state.user.data;

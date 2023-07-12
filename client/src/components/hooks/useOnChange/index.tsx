@@ -1,12 +1,9 @@
 import { useState } from 'react';
-import { validationChange } from '../utils/validation';
+import { validationChange } from '../../utils/validation';
 
-interface FormState {
-  [key: string]: { change: string; message: string };
-}
 
-function useOnChange<T extends FormState>(initialState: T) {
-  const [change, setChange] = useState<FormState>(initialState)
+function useOnChange(initialState: PropsUseChange) {
+  const [change, setChange] = useState<PropsUseChange>(initialState)
 
 
   const handleErrorOnBack = ({ errorBack }: { errorBack: any }) => {
@@ -15,8 +12,7 @@ function useOnChange<T extends FormState>(initialState: T) {
     })
   };
 
-
-  const handleOnChange = ({ name, value }: { name: keyof FormState, value: string }) => {
+  const handleOnChange = ({ name, value }: PropsOnChange) => {
     const { message, stop } = validationChange({ name: name.toString(), value, change })
     setChange(prevState => {
       if (!stop) {
@@ -33,11 +29,13 @@ function useOnChange<T extends FormState>(initialState: T) {
 export default useOnChange;
 
 
-// ABC
-// Una letra mayúscula
-// abc
-// Una letra minúscula
-// 123
-// Un número
-// ***
-// Mínimo 8 caracteres
+// ==============================|| INTERFACE ||============================== //
+
+  export interface PropsUseChange {
+    [key: string]: { change: string; message: string };
+  }
+  
+  export interface PropsOnChange {
+    name: keyof PropsUseChange
+    value: string
+  }

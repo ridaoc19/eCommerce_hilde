@@ -1,24 +1,13 @@
-import { FormEvent, useEffect } from 'react';
-import { Link } from "react-router-dom";
-import useOnChange from "../../../components/hooks/useOnChange";
-import { validationClick } from '../../../components/utils/validation';
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { selectUserError } from "../../../redux/reducers/user";
-import { fetchPosts } from '../../../redux/reducers/user/actions';
-import Input from "../../../styles/content/input/Input";
-interface InitialState {
-  name: { change: string, message: string },
-  lastName: { change: string, message: string },
-  email: { change: string, message: string },
-  password: { change: string, message: string },
-  confirmPassword: { change: string, message: string },
-}
+import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import useOnChange, { PropsUseChange } from '../../../components/hooks/useOnChange';
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
+import Form from './Form';
+import Loading from './Loading';
+import Success from './Success';
 
-interface FormState extends InitialState {
-  [key: string]: { change: string; message: string };
-}
-
-const initialState: FormState = {
+const initialState: PropsUseChange = {
   name: { change: "", message: "" },
   lastName: { change: "", message: "" },
   email: { change: "", message: "" },
@@ -27,77 +16,35 @@ const initialState: FormState = {
 }
 
 function Registre() {
-  const dispatch = useAppDispatch()
-  const { change, handleOnChange, handleErrorOnBack } = useOnChange<FormState>(initialState)
-  const { name, lastName, email, password, confirmPassword } = change;
+  const navigate = useNavigate();
+  const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
   const errorBack = useAppSelector(selectUserError)
+  const loadingUser = useAppSelector(selectUserLoading)
+  const dataUser = useAppSelector(selectUserData)
+  const [status, setStatus] = useState<"form" | "loading" | "success">("form");
 
   useEffect(() => {
+    if (loadingUser) return setStatus("loading")
     if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
-    // eslint-disable-next-line
-  }, [errorBack])
+    if (errorBack) return setStatus("form")
 
-  const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange: any }) => {
-    event.preventDefault();
-    const { dataPost, authorize } = validationClick({ change, handleOnChange })
-
-    // console.log(Object.values(dataPost).every(value => value !== ''));
-    if (authorize) {
-      dispatch(fetchPosts(dataPost));
+    if (dataUser instanceof Object && !loadingUser && !errorBack) {
+      setTimeout(() => { navigate("/login"); }, 4000);
+      return setStatus("success")
     }
+    // eslint-disable-next-line
+  }, [loadingUser, dataUser, errorBack])
+
+
+  switch (status) {
+    case "loading":
+      return <Loading />
+    case "success":
+      return <Success name={dataUser?.name} />
+    default:
+      return <Form change={change} errorBack={errorBack} handleOnChange={handleOnChange} />
   }
 
-  return (
-    <div className="registre__form--container">
-      <form onSubmit={(event) => handleOnSubmit({ event, handleOnChange })} className="registre__form--content">
-
-        <header className="form__header--content">
-          <h2>Regístrate</h2>
-          <p>Ingresa tus datos personales para crear tu cuenta</p>
-        </header>
-
-        <main>
-          <div className="form__input--content">
-
-            <Input svg={{ type: "user" }} styleClass="registre_name" errorMessage={name.message}
-              input={{ name: "name", type: "text", placeholder: "Nombres", value: name.change, handleOnChange }}
-            />
-
-            <Input svg={{ type: "user" }} styleClass="registre_lastName" errorMessage={lastName.message}
-              input={{ name: "lastName", type: "text", placeholder: "Apellidos", value: lastName.change, handleOnChange }}
-            />
-
-            <Input svg={{ type: "email" }} styleClass="registre_email" errorMessage={email.message}
-              input={{ name: "email", type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange }}
-            />
-
-            <Input
-              svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="registre--password" errorMessage={password.message}
-              input={{ name: "password", type: "password", placeholder: "Contraseña", value: password.change, handleOnChange }}
-            />
-
-            <Input
-              svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="registre--confirmPassword" errorMessage={confirmPassword.message}
-              input={{ name: "confirmPassword", type: "password", placeholder: "Confirmar contraseña", value: confirmPassword.change, handleOnChange }}
-            />
-
-          </div>
-
-          <div className="form__error-back--content">
-            <span>{typeof errorBack === "string" && errorBack}</span>
-          </div>
-
-          <div className="form__button--content">
-            <input type="submit" className="button_dark" value="Guardar" />
-            <hr />
-            <Link to={'/login'}>
-              <input type="submit" className="button_light" value="Iniciar Sesión" />
-            </Link>
-          </div>
-        </main>
-      </form>
-    </div>
-  );
 }
 
 export default Registre;

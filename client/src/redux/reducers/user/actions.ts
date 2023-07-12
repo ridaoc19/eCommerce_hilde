@@ -1,26 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export interface Post {
-  _id: string;
-  name: string;
-  lastName: string;
-  email: string,
-  password: string
-}
-
-interface Argument {
-  name?: string;
-  lastName?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-}
-
-export const fetchPosts = createAsyncThunk<Post[], Argument | null>(
+export const fetchPosts = createAsyncThunk<ResultDataUser, UserProps | {}>(
   'posts/fetchPosts',
-  async (dataPost: any, { rejectWithValue }) => {
-
+  async (dataPost, { rejectWithValue }) => {
 
     return await axios.post(`${process.env.REACT_APP_URL_API}/user`, dataPost)
       .then(response => {
