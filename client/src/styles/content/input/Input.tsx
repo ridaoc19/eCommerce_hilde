@@ -1,4 +1,4 @@
-import { ReactNode, useState, MouseEvent } from "react";
+import { MouseEvent, useState } from "react";
 import Svg from "../../../components/assets/Svg";
 
 interface Props {
