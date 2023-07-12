@@ -17,9 +17,9 @@ export async function postUser(req: Request, res: Response) {
     const userDB = await User.create({ name, lastName, email, password })
     const user = await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
 
-    await sendEmail({ name: userDB.name, email: userDB.email })
+    // await sendEmail({ name: userDB.name, email: userDB.email })
 
-    res.status(200).json(user.data)
+    res.status(200).json({ _id: userDB._id, name: userDB.name })
 
   } catch (error: unknown) {
     if (error instanceof Error) {
