@@ -7,23 +7,21 @@ import { fetchPosts } from '../../../redux/reducers/user/actions';
 import Input from '../../../styles/content/input/Input';
 import { ReduxUser } from '../../../redux/reducers/user/interface'
 
-
 interface Props {
   handleOnChange: (data: { name: string; value: string; }) => void;
   change: PropsUseChange
   errorBack: Pick<ReduxUser.PostState, 'error'>
 }
 
-
 function Form({ handleOnChange, change, errorBack }: Props) {
   const dispatch = useAppDispatch();
   const { name, lastName, email, password, confirmPassword } = change;
 
-  const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange:  (data: { name: string; value: string; }) => void; }) => {
+  const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange: (data: { name: string; value: string; }) => void; }) => {
     event.preventDefault();
     const { dataPost, authorize } = validationClick({ change, handleOnChange })
 
-    // console.log(Object.values(dataPost).every(value => value !== ''));
+    // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
     if (authorize) {
       dispatch(fetchPosts(dataPost));
     }
@@ -53,7 +51,7 @@ function Form({ handleOnChange, change, errorBack }: Props) {
               input={{ name: "email", type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange }}
             />
 
-            <Input
+            {/* <Input
               svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="registre--password" errorMessage={password.message}
               input={{ name: "password", type: "password", placeholder: "Contraseña", value: password.change, handleOnChange }}
             />
@@ -61,12 +59,13 @@ function Form({ handleOnChange, change, errorBack }: Props) {
             <Input
               svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="registre--confirmPassword" errorMessage={confirmPassword.message}
               input={{ name: "confirmPassword", type: "password", placeholder: "Confirmar contraseña", value: confirmPassword.change, handleOnChange }}
-            />
+            /> */}
 
           </div>
 
           <div className="form__error-back--content">
-            <span>{typeof errorBack === "string" && errorBack}</span>
+            {/* <span>{typeof errorBack === "string" && errorBack}</span> */}
+            {typeof errorBack === "string" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
           </div>
 
           <div className="form__button--content">

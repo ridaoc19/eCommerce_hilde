@@ -2,6 +2,7 @@ export namespace ReduxUser {
   export interface ResultDataUser {
     _id: string;
     name: string;
+    email: string;
   }
   
   interface error<T> {
@@ -19,8 +20,8 @@ export namespace ReduxUser {
     name: string;
     lastName: string;
     email: string;
-    password: string;
-    confirmPassword: string;
+    // password: string;
+    // confirmPassword: string;
   }
 
 }

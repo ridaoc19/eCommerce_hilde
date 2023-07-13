@@ -13,8 +13,10 @@ export const splitString = (error: ErrorResponse): {} => {
 
   } else {
     const segments = message.split(":").slice(1).join(":").trim().split("<^");
-    const object: { [clave: string]: string } = {};
 
+    if (message.split(":")[0] === "errorEmail") return segments[0]
+
+    const object: { [clave: string]: string } = {};
     segments.forEach((segment: string) => {
       const [clave, valor] = segment.replace(",", "").split(":");
       if (clave.trim().length > 0) {
