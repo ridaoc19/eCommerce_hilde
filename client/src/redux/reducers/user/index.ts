@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { fetchPosts } from "./actions";
+import { ReduxUser } from "./interface";
 
-const initialState: PostState = {
+const initialState: ReduxUser.PostState = {
   data: null,
   loading: false,
   error: null,

@@ -1,15 +1,21 @@
 export namespace ReduxUser {
-  interface ResultDataUser {
+  export interface ResultDataUser {
     _id: string;
     name: string;
   }
+  
+  interface error<T> {
+    [key: string]: T
+  }
+
   export interface PostState {
     data: ResultDataUser | null;
     loading: boolean;
-    error: string | null | {};
+    error: error ;
   }
 
-  interface UserProps {
+
+  export interface UserProps {
     name: string;
     lastName: string;
     email: string;
