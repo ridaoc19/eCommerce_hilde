@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { User } from "./model";
 import { splitString } from "../../core/utils/splitString";
 import { sendEmail } from "../../core/utils/email";
+import { generateHashPassword } from "../../core/auth/bcryptUtils";
 
 
 function fetchCount(info: any) {
@@ -12,12 +13,15 @@ function fetchCount(info: any) {
 
 export async function postUser(req: Request, res: Response) {
   try {
-    const { name, lastName, email, password } = req.body;
+    const { name, lastName, email, password: passFront } = req.body;
+
+
+    const password = await generateHashPassword(passFront)
 
     const userDB = await User.create({ name, lastName, email, password })
     const user = await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
 
-    // await sendEmail({ name: userDB.name, email: userDB.email })
+    await sendEmail({ name: userDB.name, email: userDB.email })
 
     res.status(200).json({ _id: userDB._id, name: userDB.name })
 

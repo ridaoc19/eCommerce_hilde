@@ -1,7 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { ReduxUser } from "./interface";
 
-export const fetchPosts = createAsyncThunk<ResultDataUser, UserProps | {}>(
+export const fetchPosts = createAsyncThunk<ReduxUser.ResultDataUser,ReduxUser.UserProps | {}>(
   'posts/fetchPosts',
   async (dataPost, { rejectWithValue }) => {
 
