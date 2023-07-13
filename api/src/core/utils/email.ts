@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { templateRegistre } from './email/template';
 
 export async function sendEmail({name, email}: {name: string, email: string}) {
 
@@ -55,7 +56,7 @@ export async function sendEmail({name, email}: {name: string, email: string}) {
     to: email,
     subject: 'Su cuenta',
     // text: 'This is a test email from Nodemailer.',
-    html: emailContent
+    html: templateRegistre({name})
   };
 
   try {

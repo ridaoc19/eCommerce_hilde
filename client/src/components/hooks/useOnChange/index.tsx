@@ -6,9 +6,10 @@ import { ReduxUser } from '../../../redux/reducers/user/interface';
 function useOnChange(initialState: PropsUseChange) {
   const [change, setChange] = useState<PropsUseChange>(initialState)
 
+  // type MyObject = Record<string, string | number>;
 
   const handleErrorOnBack = ({ errorBack }: { errorBack: Pick<ReduxUser.PostState, 'error'>}) => {
-    Object.entries(errorBack).forEach(([nameBack, valueBack]: [string, any]) => {
+    Object.entries(errorBack).forEach(([nameBack, valueBack]: [string, string]) => {
       setChange(prevState => { return ({ ...prevState, [nameBack]: { ...prevState[nameBack], message: valueBack } }) })
     })
   };
@@ -34,6 +35,10 @@ export default useOnChange;
 
   export interface PropsUseChange {
     [key: string]: { change: string; message: string };
+  }
+
+  interface value<T>{
+    [key: string]: T
   }
   
   export interface PropsOnChange {
