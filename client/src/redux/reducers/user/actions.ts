@@ -17,7 +17,9 @@ export const fetchPosts = createAsyncThunk<ReduxUser.ResultDataUser,ReduxUser.Us
           return rejectWithValue(error.response.data.error)
         } else if (error.request) {
           // La solicitud se hizo pero no se recibió una respuesta
-          return rejectWithValue('No se recibió respuesta del servidor')
+          return rejectWithValue(`<p>No se pudo completar la creación de tu cuenta</p>
+          <p>Lamentablemente, hemos encontrado un problema al procesar tu solicitud de registro en este momento.</p>
+          <p>Si tienes alguna pregunta o necesitas asistencia, por favor, contáctanos a través de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a> y estaremos encantados de ayudarte.</p>`)
 
         } else {
           // Ocurrió un error antes de enviar la solicitud

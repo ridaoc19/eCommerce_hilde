@@ -12,7 +12,13 @@ const initialState: ReduxUser.PostState = {
 const userSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {},
+  reducers: {
+    clearUser: (state) => {
+      state.data = null;
+      state.loading = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchPosts.pending, (state) => {
@@ -32,6 +38,8 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
+export const { clearUser } = userSlice.actions;
+
 
 export const selectUserError = (state: RootState) => state.user.error;
 export const selectUserLoading = (state: RootState) => state.user.loading;
