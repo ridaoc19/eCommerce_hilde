@@ -16,3 +16,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+hr {
+  height: 0.1px;
+  border-color: var(--neutral-2); /* Color rojo como ejemplo */
+  border-width: 0;
+  background-color: var(--neutral-2); /* Si deseas un color de fondo */
+  width: 100%;
+}

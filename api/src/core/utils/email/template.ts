@@ -1,6 +1,7 @@
+import { User } from "../../../modules/user/interface";
 
-export const templateRegistre = ({name}:{name: string}) => 
-  `<html>
+export const templateRegistre = ({ name, password }: Pick<User, 'name' | 'password'>) =>
+    `<html>
     <head>
         <style>
             body {
@@ -67,18 +68,14 @@ export const templateRegistre = ({name}:{name: string}) =>
                 <div class="main">
                     <h1>Verificar la dirección de correo electrónico</h1>
                     <p>${name} gracias por iniciar el proceso de creación de la nueva cuenta. Queremos asegurarnos de
-                        que es
-                        realmente usted. Ingrese el siguiente código de verificación cuando se lo solicite. Si no desea
-                        crear
-                        una cuenta, puede omitir este mensaje.</p>
-                    <h3>Código de verificación</h3>
-                    <h2>123456</h2>
-                    <h6>(Este código es válido durante 10 minutos)</h6>
+                        que es realmente usted. Inicie sesión con la contraseña temporal. Si no desea
+                        crear una cuenta, puede omitir este mensaje.</p>
+                    <h3>Contraseña temporal</h3>
+                    <h2>${password}</h2>
+                    <h6>(Esta contraseña es válida durante 10 minutos)</h6>
                     <hr>
-                    <p>Nunca se enviará un correo electrónico o se solicitará que revele o verifique su contraseña,
-                        tarjeta
-                        de crédito
-                        o número de cuenta bancaria.</p>
+                    <p>Nunca se enviará un correo electrónico o se solicitará que revele o verifique su contraseña
+                        personal, tarjeta de crédito o número de cuenta bancaria.</p>
                 </div>
             </div>
             <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
