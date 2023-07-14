@@ -1,7 +1,11 @@
-import { Link } from "react-router-dom";
-import Svg from "../../../components/assets/Svg";
+import { useEffect, useState } from "react";
+import Form from "./Form";
+import Loading from "./Loading";
+import Success from "./Success";
 import useOnChange from "../../../components/hooks/useOnChange";
-import Input from "../../../styles/content/input/Input";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { clearUser, selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
+import PasswordChange from "./PasswordChange";
 
 const initialState = {
   email: { change: "", message: "" },
@@ -9,54 +13,32 @@ const initialState = {
 }
 
 function Login() {
-  const { change: { email, password }, handleOnChange } = useOnChange(initialState)
+  const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
+  const dispatch = useAppDispatch()
+  const errorBack = useAppSelector(selectUserError)
+  const loadingUser = useAppSelector(selectUserLoading)
+  const dataUser = useAppSelector(selectUserData)
+  const [status, setStatus] = useState<"form" | "loading" | "success" | "change">("form");
 
-  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  };
+  useEffect(() => {
+    if (loadingUser) return setStatus("loading")
+    if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
+    if (errorBack) return setStatus("form")
+    if (dataUser instanceof Object && !loadingUser && !errorBack) return setStatus("success")
+    // eslint-disable-next-line
+  }, [loadingUser, dataUser, errorBack])
 
-  return (
-    <div className="login__form--container">
-      <form onSubmit={handleOnSubmit} className="login__form--content">
 
-        <header className="form__header--content">
-          {Svg({ type: "logo", height: 80, width: 80 })}
-          <h2>¡Bienvenido!</h2>
-          <p>Ingresa tus datos para iniciar sesión en</p>
-        </header>
-
-        <main>
-          <div className="form__input--content">
-            <Input svg={{ type: "email" }} styleClass="login_email" errorMessage={email.message}
-              input={{ type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange, name: "email" }}
-            />
-
-            <Input
-              svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="login--password" errorMessage={password.message}
-              input={{ type: "password", placeholder: "Contraseña", value: password.change, handleOnChange, name: "password" }}
-            />
-
-          </div>
-
-          <div className="form__button--content">
-            <div className="button__reset--content">
-              <Link to={'/reset'}>
-                <input type="submit" className="button_link" value="¿Olvidaste tu contraseña?" />
-              </Link>
-            </div>
-            <input type="submit" className="button_dark" value="Iniciar Sesión" />
-            <Link to={'/registre'}>
-              <input type="submit" className="button_dark" value="Crear cuenta" />
-            </Link>
-            <hr />
-            <Link to={'/'}>
-              <input type="submit" className="button_light" value="Volver" />
-            </Link>
-          </div>
-        </main>
-      </form>
-    </div>
-  );
+  switch (status) {
+    case "loading":
+      return <Loading />
+    case "success":
+      return <Success />
+    case "change":
+      return <PasswordChange />
+    default:
+      return <Form change={change} handleOnChange={handleOnChange} />
+  }
 }
 
 export default Login;
