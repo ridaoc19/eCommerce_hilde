@@ -26,5 +26,11 @@
       font-weight: bold;
       color      : var(--brand-7);
     }
+
+    .success--button{
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
   }
 }

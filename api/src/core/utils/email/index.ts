@@ -1,24 +1,24 @@
 import nodemailer from 'nodemailer';
-import { templateRegistre } from './template';
 import { User } from '../../../modules/user/interface';
+import { templateRegistre } from './template';
 
-export async function sendEmail({name, email, password}: Pick<User, 'name' | 'email' | 'password'> ) {
+export async function sendEmail({ name, email, password }: Pick<User, 'name' | 'email' | 'password'>) {
 
   const transporter = nodemailer.createTransport({
-    host: 'smtp.office365.com',
-    port: 587,
+    host: process.env.EMAIL_HOST,
+    port: +process.env.EMAIL_PORT!,
     secure: false,
     auth: {
-      user: 'hilde.ecommerce@outlook.com',
-      pass: 'Ecommerce2023',
+      user: process.env.EMAIL_AUTH_USER,
+      pass: process.env.EMAIL_AUTH_PASS,
     },
   });
 
   const mailOptions = {
-    from: 'hilde.ecommerce@outlook.com',
+    from: process.env.EMAIL_SEND_FROM,
     to: email,
     subject: 'Su cuenta',
-    html: templateRegistre({name, password})
+    html: templateRegistre({ name, password })
   };
 
   try {
