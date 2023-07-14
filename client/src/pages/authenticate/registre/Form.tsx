@@ -1,35 +1,55 @@
-import { FormEvent } from 'react';
+import { MouseEventHandler } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { PropsUseChange } from "../../../components/hooks/useOnChange";
-import { Link } from 'react-router-dom';
 import { validationClick } from '../../../components/utils/validation';
 import { useAppDispatch } from '../../../redux/hooks';
+import { clearUser } from '../../../redux/reducers/user';
 import { fetchPosts } from '../../../redux/reducers/user/actions';
+import { ReduxUser } from '../../../redux/reducers/user/interface';
 import Input from '../../../styles/content/input/Input';
-import { ReduxUser } from '../../../redux/reducers/user/interface'
 
-interface Props {
-  handleOnChange: (data: { name: string; value: string; }) => void;
-  change: PropsUseChange
-  errorBack: Pick<ReduxUser.PostState, 'error'>
-}
+
 
 function Form({ handleOnChange, change, errorBack }: Props) {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { name, lastName, email, password, confirmPassword } = change;
 
-  const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange: (data: { name: string; value: string; }) => void; }) => {
-    event.preventDefault();
-    const { dataPost, authorize } = validationClick({ change, handleOnChange })
+  // const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange: (data: { name: string; value: string; }) => void; }) => {
+  //   dispatch(clearUser());
+  //   event.preventDefault();
+  //   const { dataPost, authorize } = validationClick({ change, handleOnChange })
 
-    // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
-    if (authorize) {
-      dispatch(fetchPosts(dataPost));
+  //   // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
+  //   if (authorize) {
+  //     dispatch(fetchPosts(dataPost));
+  //   }
+  // }
+
+  const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+    const id = (event.target as HTMLFormElement).id.split("--")[1];
+    event.preventDefault();
+
+    switch (id) {
+      case "save":
+        const { dataPost, authorize } = validationClick({ change, handleOnChange })
+        // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
+        if (authorize) {
+          dispatch(fetchPosts(dataPost));
+        }
+        return;
+      case "back":
+        navigate('/login');
+        break;
+      default:
+        break;;
     }
-  }
+    dispatch(clearUser());
+  };
 
   return (
     <div className="registre__form--container">
-      <form onSubmit={(event) => handleOnSubmit({ event, handleOnChange })} className="registre__form--content">
+      <div className="registre__form--content">
 
         <header className="form__header--content">
           <h2>Regístrate</h2>
@@ -69,16 +89,23 @@ function Form({ handleOnChange, change, errorBack }: Props) {
           </div>
 
           <div className="form__button--content">
-            <input type="submit" className="button_dark" value="Guardar" />
+            <button id='button__registre--save' onClick={handleOnClick} className="button_dark" >Guardar</button>
             <hr />
             <Link to={'/login'}>
-              <input type="submit" className="button_light" value="Iniciar Sesión" />
+              <button id='button__registre--back' onClick={handleOnClick} className="button_light" >Iniciar Sesión</button>
             </Link>
           </div>
         </main>
-      </form>
+      </div>
     </div>
   );
 }
 
 export default Form;
+
+
+interface Props {
+  handleOnChange: (data: { name: string; value: string; }) => void;
+  change: PropsUseChange
+  errorBack: Pick<ReduxUser.PostState, 'error'>
+}
