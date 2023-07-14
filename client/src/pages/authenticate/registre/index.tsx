@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import useOnChange, { PropsUseChange } from '../../../components/hooks/useOnChange';
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { clearUser, selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from './Form';
 import Loading from './Loading';
 import Success from './Success';
@@ -16,8 +15,6 @@ const initialState: PropsUseChange = {
 }
 
 function Registre() {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch()
   const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
@@ -28,14 +25,7 @@ function Registre() {
     if (loadingUser) return setStatus("loading")
     if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
     if (errorBack) return setStatus("form")
-
-    if (dataUser instanceof Object && !loadingUser && !errorBack) {
-      setTimeout(() => {
-        navigate("/login");
-        dispatch(clearUser());
-      }, 6000);
-      return setStatus("success")
-    }
+    if (dataUser instanceof Object && !loadingUser && !errorBack) return setStatus("success")
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
@@ -44,7 +34,7 @@ function Registre() {
     case "loading":
       return <Loading />
     case "success":
-      return <Success name={dataUser?.name} email={dataUser?.email} />
+      return <Success />
     default:
       return <Form change={change} errorBack={errorBack} handleOnChange={handleOnChange} />
   }
