@@ -1,38 +1,34 @@
 import { useEffect, useState } from "react";
+import useOnChange from "../../../components/hooks/useOnChange";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
 import Loading from "./Loading";
 import Success from "./Success";
-import useOnChange from "../../../components/hooks/useOnChange";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { clearUser, selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import { useNavigate } from "react-router-dom";
 // import PasswordChange from "./PasswordChange";
 
 const initialState = {
-  email: { change: "", message: "" },
   password: { change: "", message: "" },
+  confirmPassword: { change: "", message: "" },
 }
 
-function Login() {
+function PasswordChange() {
+  const navigate = useNavigate();
   const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
-  const navigate = useNavigate()
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const dataUser = useAppSelector(selectUserData)
   const [status, setStatus] = useState<"form" | "loading" | "success">("form");
 
   useEffect(() => {
+    if (!dataUser && !loadingUser) return navigate('/login')
     if (loadingUser) return setStatus("loading")
     if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
     if (errorBack) return setStatus("form")
-    if (dataUser instanceof Object && !loadingUser && !errorBack) {
-      console.log(dataUser.token)
-      if (dataUser?.state) {
-        localStorage.token = dataUser.token;
-        return navigate('/')
-      }
-      return navigate('/change');
-    }
+    if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.state) return setStatus("success")
+    setStatus("form")
+    // if (dataUser instanceof Object && !loadingUser && !errorBack) return setStatus("success")
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
@@ -47,5 +43,5 @@ function Login() {
   }
 }
 
-export default Login;
+export default PasswordChange;
 

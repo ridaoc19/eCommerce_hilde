@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 // Clave secreta para firmar los tokens (puedes cambiarla por tu propia clave)
 const secretKey = process.env.SECRET_KEY_JWT!;
 
-export function generateToken(payload: string): string {
+export function generateToken(payload: { _id: string, email: string, name: string }): string {
   // Generar el token con el payload y la clave secreta
-  return jwt.sign(payload, secretKey, { expiresIn: '1h' });
+  return jwt.sign(payload, secretKey, { expiresIn: '10h' });
 }
 
 export function verifyToken(token: string): any {
@@ -14,6 +14,7 @@ export function verifyToken(token: string): any {
     const decoded = jwt.verify(token, secretKey);
     return decoded;
   } catch (error) {
-    throw new Error('Token inválido');
+    return {token: true}
+    // throw new Error('Token inválido');
   }
 }
