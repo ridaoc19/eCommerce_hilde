@@ -14,7 +14,7 @@ export const splitString = (error: ErrorResponse): {} => {
   } else {
     const segments = message.split(":").slice(1).join(":").trim().split("<^");
 
-    if (message.split(":")[0] === "errorEmail") return segments[0]
+    if (message.split(":")[0] === "errorString") return segments[0]
 
     const object: { [clave: string]: string } = {};
     segments.forEach((segment: string) => {
