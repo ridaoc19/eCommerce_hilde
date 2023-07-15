@@ -24,7 +24,51 @@ export const fetchPosts = createAsyncThunk<ReduxUser.ResultDataUser, ReduxUser.U
 export const loginPosts = createAsyncThunk<ReduxUser.ResultDataUser, ReduxUser.UserProps | {}>(
   'posts/fetchPosts',
   async (dataPost, { rejectWithValue }) => {
-    return await axios.post(`${process.env.REACT_APP_URL_API}/user`, dataPost)
+    return await axios.post(`${process.env.REACT_APP_URL_API}/user/login`, dataPost)
+      .then(response => response.data)
+      .catch(error => { // Lógica para manejar el error
+        if (error.response) { // El servidor respondió con un código de estado diferente de 2xx
+          return rejectWithValue(error.response.data.error)
+        } else if (error.request) { // La solicitud se hizo pero no se recibió una respuesta
+          return rejectWithValue(`
+          <p>No se pudo iniciar sesión en este momento</p>
+          <p>Lo sentimos, estamos experimentando problemas técnicos en nuestros servidores y no podemos procesar tu solicitud de inicio de sesión.</p>
+          <p>Por favor, intenta iniciar sesión nuevamente más tarde. Si el problema persiste, por favor, contáctanos a través 
+          de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a></p>
+          `)
+        } else { // Ocurrió un error antes de enviar la solicitud
+          return rejectWithValue(error.message)
+        }
+      });
+  }
+);
+
+export const changePosts = createAsyncThunk<ReduxUser.ResultDataUser, ReduxUser.UserProps | {}>(
+  'posts/fetchPosts',
+  async (dataPost, { rejectWithValue }) => {
+    return await axios.post(`${process.env.REACT_APP_URL_API}/user/change`, dataPost)
+      .then(response => response.data)
+      .catch(error => { // Lógica para manejar el error
+        if (error.response) { // El servidor respondió con un código de estado diferente de 2xx
+          return rejectWithValue(error.response.data.error)
+        } else if (error.request) { // La solicitud se hizo pero no se recibió una respuesta
+          return rejectWithValue(`
+          <p>No se pudo restablecer la contraseña en este momento</p>
+          <p>Lo sentimos, estamos experimentando problemas técnicos en nuestros servidores y no podemos procesar tu cambio de contraseña.</p>
+          <p>Por favor, intenta cambiarla nuevamente. Si el problema persiste, por favor, contáctanos a través 
+          de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a></p>
+          `)
+        } else { // Ocurrió un error antes de enviar la solicitud
+          return rejectWithValue(error.message)
+        }
+      });
+  }
+);
+
+export const loginTokenPosts = createAsyncThunk<ReduxUser.ResultDataUser, {}>(
+  'posts/fetchPosts',
+  async (dataPost, { rejectWithValue }) => {
+    return await axios.post(`${process.env.REACT_APP_URL_API}/user/login/token`, dataPost)
       .then(response => response.data)
       .catch(error => { // Lógica para manejar el error
         if (error.response) { // El servidor respondió con un código de estado diferente de 2xx
