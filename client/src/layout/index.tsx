@@ -13,25 +13,25 @@ type Props = {
 }
 
 function Layout({ children }: Props) {
-  const dispatch = useAppDispatch();
-  const error = useAppSelector(selectUserError)
-  const user = useAppSelector(selectUserData)
-  const token: string | undefined = localStorage?.token
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  // const dispatch = useAppDispatch();
+  // const error = useAppSelector(selectUserError)
+  // const user = useAppSelector(selectUserData)
+  // const token: string | undefined = localStorage?.token
+  // const [isFetching, setIsFetching] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (token && !user && !isFetching) {
-      setIsFetching(true)
-      dispatch(loginTokenPosts({ token }))
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (token && !user && !isFetching) {
+  //     setIsFetching(true)
+  //     dispatch(loginTokenPosts({ token }))
+  //   }
+  // }, [])
 
-  useEffect(() => {
-    if (error === "Invalid token") {
-      localStorage.removeItem("token")
-      dispatch(clearUser());
-    }
-  }, [error])
+  // useEffect(() => {
+  //   if (error === "Invalid token") {
+  //     localStorage.removeItem("token")
+  //     dispatch(clearUser());
+  //   }
+  // }, [error])
 
   return (
     <div>
