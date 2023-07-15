@@ -25,8 +25,8 @@ function Login() {
     if (loadingUser) return setStatus("loading")
     if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
     if (errorBack) return setStatus("form")
+    console.log(dataUser)
     if (dataUser instanceof Object && !loadingUser && !errorBack) {
-      console.log(dataUser.token)
       if (dataUser?.state) {
         localStorage.token = dataUser.token;
         return navigate('/')

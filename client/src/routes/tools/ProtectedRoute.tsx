@@ -5,7 +5,8 @@ import { selectUserData } from '../../redux/reducers/user';
 function ProtectedRoute() {
   const user = useAppSelector(selectUserData);
 
-  if (user?.state) {
+  // if (false) {
+    if (user?.state) {
     return <Navigate to={"/"} />
   } else {
     return <Outlet />

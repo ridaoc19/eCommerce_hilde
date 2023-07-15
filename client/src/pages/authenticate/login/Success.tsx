@@ -10,9 +10,9 @@ function Success() {
 
   const dataUser = useAppSelector(selectUserData);
 
-  if (!dataUser) {
-    navigate("/login");
-  }
+  // if (!dataUser) {
+  //   navigate("/login");
+  // }
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
