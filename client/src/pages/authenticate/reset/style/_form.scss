@@ -1,13 +1,14 @@
 .reset__form--container {
-  height       : 100vh;
-  width        : 100vw;
+  min-height       : 100vh;
+  // width        : 100vw;
   display      : grid;
   place-content: center;
 
-  form {
+  .reset__form--content {
     display  : grid;
     gap      : 0.5rem;
     max-width: 18rem;
+    margin: 2rem 0;
 
     header {
       display    : grid;
@@ -24,15 +25,33 @@
 
     main {
       display: grid;
-      gap    : 1rem;
+      gap    : 0.5rem;
 
       .form__input--content {
         display: grid;
+        gap    : 0.5rem;
+      }
+
+      .form__error-back--content {
+        p {
+          text-align: center;
+          color     : var(--error-6);
+
+          span {
+            color      : var(--error-7);
+            font-weight: bold;
+            font-style : italic;
+          }
+        }
       }
 
       .form__button--content {
         display: grid;
         gap    : 1rem;
+
+        .button__reset--content {
+          text-align: right;
+        }
       }
     }
   }
