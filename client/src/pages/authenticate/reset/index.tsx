@@ -1,47 +1,45 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import useOnChange from '../../../components/hooks/useOnChange';
-import Input from '../../../styles/content/input/Input';
+import { useEffect, useState } from "react";
+import useOnChange from "../../../components/hooks/useOnChange";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
+import Form from "./Form";
+import Loading from "./Loading";
+import Success from "./Success";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   email: { change: "", message: "" },
 }
 
 function Reset() {
+  const navigate = useNavigate();
+  const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
+  const errorBack = useAppSelector(selectUserError)
+  const loadingUser = useAppSelector(selectUserLoading)
+  const dataUser = useAppSelector(selectUserData)
+  const [status, setStatus] = useState<"form" | "loading" | "success">("form");
 
-  const { change: { email }, handleOnChange } = useOnChange(initialState)
+  useEffect(() => {
+    // if (!dataUser && !loadingUser) return navigate('/login')
+    if (loadingUser) return setStatus("loading")
+    if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
+    if (errorBack) return setStatus("form")
+    if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.state) return setStatus("success")
+    setStatus("form")
+    // if (dataUser instanceof Object && !loadingUser && !errorBack) return setStatus("success")
+    // eslint-disable-next-line
+  }, [loadingUser, dataUser, errorBack])
 
-  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  };
 
-  return (
-    <div className="reset__form--container">
-      <form onSubmit={handleOnSubmit} className="reset__form--content">
-
-        <header className="form__header--content">
-          <h2>Recuperar contraseña</h2>
-          <p>Ingresa el correo electrónico que tienes registrado</p>
-        </header>
-
-        <main>
-          <div className="form__input--content">
-            <Input svg={{ type: "email" }} styleClass="reset_email" errorMessage={email.message}
-              input={{ type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange, name: "email" }}
-            />
-
-          </div>
-
-          <div className="form__button--content">
-            <input type="submit" className="button_dark" value="Enviar correo" />
-            <Link to={'/login'}>
-              <input type="submit" className="button_light" value={`Volver`} />
-            </Link>
-          </div>
-        </main>
-      </form>
-    </div>
-  );
+  switch (status) {
+    case "loading":
+      return <Loading />
+    case "success":
+      return <Success />
+    default:
+      return <Form change={change} handleOnChange={handleOnChange} />
+  }
 }
 
 export default Reset;
+
