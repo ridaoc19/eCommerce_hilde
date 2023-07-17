@@ -9,7 +9,7 @@ export const splitString = (error: ErrorResponse): {} => {
   const { message, code, name } = error
 
   if (name === 'MongoServerError' && code === 11000) {
-    return { email: 'El correo electrónico ya está registrado' }
+    return { email: 'Lo sentimos, el correo electrónico proporcionado ya está registrado' }
 
   } else {
     const segments = message.split(":").slice(1).join(":").trim().split("<^");

@@ -17,6 +17,13 @@
       color           : var(--font-light);
       transform       : scale(0.97);
     }
+
+    &:disabled {
+      background-color: var(--neutral-1);
+      color           : var(--neutral-4);
+      transform       : scale(0.97);
+      border          : 1px solid var(--brand-5);
+    }
   }
 
   @else if $type==button_light {
@@ -30,6 +37,12 @@
       transform       : scale(0.97);
     }
 
+    &:disabled {
+      background-color: var(--neutral-1);
+      color           : var(--neutral-4);
+      transform       : scale(0.97);
+      border          : 1px solid var(--brand-5);
+    }
   }
 }
 
@@ -51,4 +64,8 @@
   user-select     : none;
   touch-action    : manipulation;
   padding         : 0;
+
+  &:disabled {
+    color           : var(--neutral-4);
+  }
 }
