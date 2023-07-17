@@ -13,11 +13,11 @@ function App() {
   const error = useAppSelector(selectUserError)
   const user = useAppSelector(selectUserData)
   const token: string | undefined = localStorage?.token
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  // const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
-    if (token && !user && !isFetching) {
-      setIsFetching(true)
+    if (token && !user) {
+      // setIsFetching(true)
       dispatch(loginTokenPosts({ token }))
     }
   }, [])

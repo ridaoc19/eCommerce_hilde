@@ -1,24 +1,26 @@
-import React, { useEffect, MouseEventHandler } from 'react';
-import { Link } from 'react-router-dom';
+import { MouseEventHandler } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Svg from '../../../components/assets/Svg';
 import { PropsUseChange } from '../../../components/hooks/useOnChange';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { clearUser, selectUserError } from '../../../redux/reducers/user';
-import Input from '../../../styles/content/input/Input';
 import { validationClick } from '../../../components/utils/validation';
+import { useAppDispatch } from '../../../redux/hooks';
+import { clearUser } from '../../../redux/reducers/user';
 import { loginPosts } from '../../../redux/reducers/user/actions';
-import { useNavigate } from 'react-router-dom';
+import Input from '../../../styles/content/input/Input';
+import Loading from '../../../styles/content/loading';
+import Success from './Success';
 
 interface Props {
   handleOnChange: (data: { name: string; value: string; }) => void;
-  change: PropsUseChange
+  change: PropsUseChange;
+  status: string;
+  errorBack: string
 }
 
 
-function Form({ change, handleOnChange }: Props) {
+function Form({ change, handleOnChange, status, errorBack }: Props) {
   const { email, password } = change
   const navigate = useNavigate();
-  const errorBack = useAppSelector(selectUserError)
   const dispatch = useAppDispatch();
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -28,10 +30,7 @@ function Form({ change, handleOnChange }: Props) {
     switch (id) {
       case "login":
         const { dataPost, authorize } = validationClick({ change, handleOnChange })
-        // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
-        if (authorize) {
-          dispatch(loginPosts(dataPost));
-        }
+        if (authorize) dispatch(loginPosts(dataPost));
         return;
       case "reset":
         navigate('/reset');
@@ -56,6 +55,7 @@ function Form({ change, handleOnChange }: Props) {
           {Svg({ type: "logo", height: 80, width: 80 })}
           <h2>¡Bienvenido!</h2>
           <p>Ingresa tus datos para iniciar sesión en</p>
+          {status === "success" && <Success />}
         </header>
 
         <main>
@@ -72,17 +72,18 @@ function Form({ change, handleOnChange }: Props) {
           </div>
 
           <div className="form__error-back--content">
-            {typeof errorBack === "string" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
+            {/* {typeof errorBack === "string" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>} */}
+            {status === "error" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
           </div>
 
           <div className="form__button--content">
             <div className="button__reset--content">
-              <button id='button__login--reset' onClick={handleOnClick} className="button_link"  >¿Olvidaste tu contraseña?</button>
+              <button id='button__login--reset' onClick={handleOnClick} className="button_link" disabled={status === "loading" || status === "success"} >¿Olvidaste tu contraseña?</button>
             </div>
-            <button id='button__login--login' onClick={handleOnClick} className="button_dark"  >Iniciar Sesión</button>
-            <button id='button__login--registre' onClick={handleOnClick} className="button_dark"  >Crear cuenta</button>
+            <button id='button__login--login' onClick={handleOnClick} className="button_dark" disabled={status === "loading" || status === "success"} >{status === "loading" ? <Loading /> : "Iniciar Sesión"}</button>
+            <button id='button__login--registre' onClick={handleOnClick} className="button_dark" disabled={status === "loading" || status === "success"}>Crear cuenta</button>
             <hr />
-            <button id='button__login--back' onClick={handleOnClick} className="button_light"  >Volver</button>
+            <button id='button__login--back' onClick={handleOnClick} className="button_light" disabled={status === "loading" || status === "success"} >Volver</button>
           </div>
         </main>
       </div>

@@ -9,9 +9,9 @@ function Success() {
   const dispatch = useAppDispatch();
   const dataUser = useAppSelector(selectUserData);
 
-  if (!dataUser) {
-    navigate("/login");
-  }
+  // if (!dataUser) {
+  //   navigate("/login");
+  // }
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
@@ -20,7 +20,7 @@ function Success() {
   };
 
   return (
-    <div className="login__success--container">
+    <div className="reset__success--container">
       <div>
         {Svg({ type: "success", height: 164, width: 164 })}
         <h2>¡Contraseña cambiada con éxito!</h2>

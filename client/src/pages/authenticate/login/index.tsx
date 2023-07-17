@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import Form from "./Form";
-import Loading from "./Loading";
-import Success from "./Success";
-import useOnChange from "../../../components/hooks/useOnChange";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { clearUser, selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import { useNavigate } from "react-router-dom";
-// import PasswordChange from "./PasswordChange";
+import useOnChange from "../../../components/hooks/useOnChange";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
+import Form from "./Form";
 
 const initialState = {
   email: { change: "", message: "" },
@@ -19,32 +16,27 @@ function Login() {
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const dataUser = useAppSelector(selectUserData)
-  const [status, setStatus] = useState<"form" | "loading" | "success">("form");
+  const [status, setStatus] = useState<"form" | "loading" | "success" | "error">("form");
 
   useEffect(() => {
+    if (errorBack instanceof Object) return handleErrorOnBack({ errorBack })
     if (loadingUser) return setStatus("loading")
-    if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
-    if (errorBack) return setStatus("form")
-    console.log(dataUser)
-    if (dataUser instanceof Object && !loadingUser && !errorBack) {
+    if (errorBack) return setStatus("error")
+    if (dataUser instanceof Object && !loadingUser && !errorBack && !localStorage.token) {
       if (dataUser?.state) {
+        setStatus("success")
+        setTimeout(() => {
+          return navigate('/')
+        }, 10000);
         localStorage.token = dataUser.token;
-        return navigate('/')
+      } else {
+        return navigate('/change');
       }
-      return navigate('/change');
     }
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
-
-  switch (status) {
-    case "loading":
-      return <Loading />
-    case "success":
-      return <Success />
-    default:
-      return <Form change={change} handleOnChange={handleOnChange} />
-  }
+  return <Form change={change} handleOnChange={handleOnChange} status={status} errorBack={errorBack} />
 }
 
 export default Login;
