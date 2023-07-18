@@ -4,7 +4,7 @@ export namespace ReduxUser {
     name: string;
     lastName: string;
     email: string;
-    state: string;
+    verified: string;
     token: string | null;
   }
 
