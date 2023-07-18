@@ -5,7 +5,7 @@ interface IUser extends Document {
   lastName: string;
   email: string;
   password: string;
-  state: boolean;
+  verified: boolean;
 }
 
 const userSchema = new Schema<IUser>(
@@ -27,8 +27,9 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, 'La contraseña es obligatoria.<^'],
     },
-    state: {
+    verified: {
       type: Boolean,
+      default: false
     },
   },
   {

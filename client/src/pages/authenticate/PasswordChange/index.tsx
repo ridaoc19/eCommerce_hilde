@@ -26,7 +26,7 @@ function PasswordChange() {
     if (loadingUser) return setStatus("loading")
     if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
     if (errorBack) return setStatus("form")
-    if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.state) return setStatus("success")
+    if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.verified) return setStatus("success")
     setStatus("form")
     // if (dataUser instanceof Object && !loadingUser && !errorBack) return setStatus("success")
     // eslint-disable-next-line
