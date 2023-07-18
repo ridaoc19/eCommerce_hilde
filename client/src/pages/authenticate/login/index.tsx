@@ -19,11 +19,11 @@ function Login() {
   const [status, setStatus] = useState<"form" | "loading" | "success" | "error">("form");
 
   useEffect(() => {
-    if (errorBack instanceof Object) return handleErrorOnBack({ errorBack })
-    if (loadingUser) return setStatus("loading")
+    if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
     if (errorBack) return setStatus("error")
+    if (loadingUser) return setStatus("loading")
     if (dataUser instanceof Object && !loadingUser && !errorBack && !localStorage.token) {
-      if (dataUser?.state) {
+      if (dataUser?.verified) {
         setStatus("success")
         setTimeout(() => {
           return navigate('/')

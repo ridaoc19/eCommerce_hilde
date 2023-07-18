@@ -7,24 +7,20 @@ import { clearUser } from '../../../redux/reducers/user';
 import { fetchPosts } from '../../../redux/reducers/user/actions';
 import { ReduxUser } from '../../../redux/reducers/user/interface';
 import Input from '../../../styles/content/input/Input';
+import Loading from '../../../styles/content/loading';
+
+interface Props {
+  handleOnChange: (data: { name: string; value: string; }) => void;
+  change: PropsUseChange
+  errorBack: Pick<ReduxUser.PostState, 'error'>;
+  status: string;
+}
 
 
-
-function Form({ handleOnChange, change, errorBack }: Props) {
+function Form({ handleOnChange, change, errorBack, status }: Props) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { name, lastName, email, password, confirmPassword } = change;
-
-  // const handleOnSubmit = ({ event, handleOnChange }: { event: FormEvent<HTMLFormElement>, handleOnChange: (data: { name: string; value: string; }) => void; }) => {
-  //   dispatch(clearUser());
-  //   event.preventDefault();
-  //   const { dataPost, authorize } = validationClick({ change, handleOnChange })
-
-  //   // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
-  //   if (authorize) {
-  //     dispatch(fetchPosts(dataPost));
-  //   }
-  // }
+  const { name, lastName, email } = change;
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const id = (event.target as HTMLFormElement).id.split("--")[1];
@@ -71,16 +67,6 @@ function Form({ handleOnChange, change, errorBack }: Props) {
               input={{ name: "email", type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange }}
             />
 
-            {/* <Input
-              svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="registre--password" errorMessage={password.message}
-              input={{ name: "password", type: "password", placeholder: "Contraseña", value: password.change, handleOnChange }}
-            />
-
-            <Input
-              svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="registre--confirmPassword" errorMessage={confirmPassword.message}
-              input={{ name: "confirmPassword", type: "password", placeholder: "Confirmar contraseña", value: confirmPassword.change, handleOnChange }}
-            /> */}
-
           </div>
 
           <div className="form__error-back--content">
@@ -89,11 +75,18 @@ function Form({ handleOnChange, change, errorBack }: Props) {
           </div>
 
           <div className="form__button--content">
-            <button id='button__registre--save' onClick={handleOnClick} className="button_dark" >Guardar</button>
+
+            <button id='button__registre--save' onClick={handleOnClick} className="button_dark" disabled={status === "loading" || status === "success"} >{status === "loading" ? <Loading /> : "Crear Usuario"}</button>
+            <hr />
+            <button id='button__registre--back' onClick={handleOnClick} className="button_light" disabled={status === "loading" || status === "success"} >Volver</button>
+
+
+
+            {/* <button id='button__registre--save' onClick={handleOnClick} className="button_dark" >Guardar</button>
             <hr />
             <Link to={'/login'}>
               <button id='button__registre--back' onClick={handleOnClick} className="button_light" >Iniciar Sesión</button>
-            </Link>
+            </Link> */}
           </div>
         </main>
       </div>
@@ -104,8 +97,3 @@ function Form({ handleOnChange, change, errorBack }: Props) {
 export default Form;
 
 
-interface Props {
-  handleOnChange: (data: { name: string; value: string; }) => void;
-  change: PropsUseChange
-  errorBack: Pick<ReduxUser.PostState, 'error'>
-}

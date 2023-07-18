@@ -6,7 +6,7 @@ function ProtectedRoute() {
   const user = useAppSelector(selectUserData);
 
   if (localStorage?.token) {
-    // if (user?.state) {
+    // if (user?.v) {
     return <Navigate to={"/"} />
   } else {
     return <Outlet />
