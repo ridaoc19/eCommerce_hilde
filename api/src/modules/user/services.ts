@@ -10,7 +10,7 @@ import { userResetVerified } from "./tools/userResetVerified";
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
-    setTimeout(() => resolve({ data: info }), 5000)
+    setTimeout(() => resolve({ data: info }), 8000)
   );
 }
 
@@ -114,7 +114,6 @@ export async function postReset(req: Request, res: Response) {
 
     res.status(200).json({ _id, name, lastName, email, verified })
   } catch (error: unknown) {
-    console.log(error)
     if (error instanceof Error) {
       res.status(409).json({ error: splitString(error) });
     } else {

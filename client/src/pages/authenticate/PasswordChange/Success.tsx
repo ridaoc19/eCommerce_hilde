@@ -9,10 +9,6 @@ function Success() {
   const dispatch = useAppDispatch();
   const dataUser = useAppSelector(selectUserData);
 
-  // if (!dataUser) {
-  //   navigate("/login");
-  // }
-
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     dispatch(clearUser());

@@ -1,37 +1,34 @@
-import { MouseEventHandler, useEffect } from 'react';
+import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PropsUseChange } from '../../../components/hooks/useOnChange';
 import { validationClick } from '../../../components/utils/validation';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { clearUser, selectUserData, selectUserError } from '../../../redux/reducers/user';
+import { clearUser, selectUserData } from '../../../redux/reducers/user';
 import { changePosts } from '../../../redux/reducers/user/actions';
 import Input from '../../../styles/content/input/Input';
+import Loading from '../../../styles/content/loading';
 
 interface Props {
   handleOnChange: (data: { name: string; value: string; }) => void;
-  change: PropsUseChange
+  change: PropsUseChange;
+  status: string;
+  errorBack: string
 }
 
-
-function Form({ change, handleOnChange }: Props) {
+function Form({ change, handleOnChange, status, errorBack }: Props) {
   const { password, confirmPassword } = change
   const navigate = useNavigate();
-  const errorBack = useAppSelector(selectUserError)
   const dataUser = useAppSelector(selectUserData)
   const dispatch = useAppDispatch();
-
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const id = (event.target as HTMLFormElement).id.split("--")[1];
     event.preventDefault();
 
     switch (id) {
-      case "change":
+      case "save":
         const { dataPost, authorize } = validationClick({ change, handleOnChange })
-        // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
-        if (authorize) {
-          dispatch(changePosts(Object.assign(dataPost, {_id: dataUser?._id})));
-        }
+        if (authorize) dispatch(changePosts(Object.assign(dataPost, { _id: dataUser?._id })));
         return;
       case "back":
         navigate('/login');
@@ -43,12 +40,12 @@ function Form({ change, handleOnChange }: Props) {
   };
 
   return (
-    <div className="login__form--container">
-      <div className="login__form--content">
+    <div className="PasswordChange__form--container">
+      <div className="PasswordChange__form--content">
 
         <header className="form__header--content">
           <h2>Cambio de Contraseña</h2>
-          <p>Restablece tu contraseña para acceder a tu cuenta</p>
+          <p>Cambia tu contraseña para acceder a tu cuenta</p>
         </header>
 
         <main>
@@ -66,13 +63,13 @@ function Form({ change, handleOnChange }: Props) {
           </div>
 
           <div className="form__error-back--content">
-            {typeof errorBack === "string" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
+            {typeof errorBack === "string" && status === "error" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
           </div>
 
           <div className="form__button--content">
-            <button id='button__login--change' onClick={handleOnClick} className="button_dark"  >Cambiar contraseña</button>
+            <button id='button__PasswordChange--save' onClick={handleOnClick} className="button_dark" disabled={status === "loading" || status === "success"} >{status === "loading" ? <Loading /> : "Cambiar contraseña"}</button>
             <hr />
-            <button id='button__login--back' onClick={handleOnClick} className="button_light"  >Volver</button>
+            <button id='button__PasswordChange--back' onClick={handleOnClick} className="button_light" disabled={status === "loading" || status === "success"} >Volver</button>
           </div>
         </main>
       </div>
