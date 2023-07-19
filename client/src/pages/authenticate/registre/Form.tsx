@@ -1,18 +1,17 @@
 import { MouseEventHandler } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PropsUseChange } from "../../../components/hooks/useOnChange";
 import { validationClick } from '../../../components/utils/validation';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
 import { fetchPosts } from '../../../redux/reducers/user/actions';
-import { ReduxUser } from '../../../redux/reducers/user/interface';
 import Input from '../../../styles/content/input/Input';
 import Loading from '../../../styles/content/loading';
 
 interface Props {
   handleOnChange: (data: { name: string; value: string; }) => void;
   change: PropsUseChange
-  errorBack: Pick<ReduxUser.PostState, 'error'>;
+  errorBack: string;
   status: string;
 }
 
@@ -70,23 +69,13 @@ function Form({ handleOnChange, change, errorBack, status }: Props) {
           </div>
 
           <div className="form__error-back--content">
-            {/* <span>{typeof errorBack === "string" && errorBack}</span> */}
-            {typeof errorBack === "string" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
+            {typeof errorBack === "string" && status === "error" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
           </div>
 
           <div className="form__button--content">
-
             <button id='button__registre--save' onClick={handleOnClick} className="button_dark" disabled={status === "loading" || status === "success"} >{status === "loading" ? <Loading /> : "Crear Usuario"}</button>
             <hr />
             <button id='button__registre--back' onClick={handleOnClick} className="button_light" disabled={status === "loading" || status === "success"} >Volver</button>
-
-
-
-            {/* <button id='button__registre--save' onClick={handleOnClick} className="button_dark" >Guardar</button>
-            <hr />
-            <Link to={'/login'}>
-              <button id='button__registre--back' onClick={handleOnClick} className="button_light" >Iniciar Sesión</button>
-            </Link> */}
           </div>
         </main>
       </div>

@@ -24,7 +24,7 @@ export async function userCreatedVerified({ _id }: { _id: string }) {
     if (!userDBTwo.verified) {
       const responseEmailTwo: boolean = await sendEmail({ name: userDBTwo.name, email: userDBTwo?.email, type: 'secondNotificationRegistre' })
       if (!responseEmailTwo) throw new Error(`errorString: dos  correo`)
-      await User.findByIdAndDelete()
+      await User.findByIdAndDelete(_id)
     } else if (userDBOne?.verified) return
 
   } catch (error) {

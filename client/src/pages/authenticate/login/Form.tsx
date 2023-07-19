@@ -72,8 +72,7 @@ function Form({ change, handleOnChange, status, errorBack }: Props) {
           </div>
 
           <div className="form__error-back--content">
-            {/* {typeof errorBack === "string" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>} */}
-            {status === "error" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
+            {typeof errorBack === "string" && status === "error" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
           </div>
 
           <div className="form__button--content">

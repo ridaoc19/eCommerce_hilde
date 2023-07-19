@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useOnChange, { PropsUseChange } from '../../../components/hooks/useOnChange';
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { clearUser, selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from './Form';
 import Success from './Success';
 
@@ -13,7 +13,6 @@ const initialState: PropsUseChange = {
 
 function Registre() {
   const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
-  const dispatch = useAppDispatch()
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const dataUser = useAppSelector(selectUserData)
