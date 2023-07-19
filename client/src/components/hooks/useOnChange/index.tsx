@@ -18,8 +18,6 @@ function useOnChange(initialState: PropsUseChange) {
     })
   };
 
-  console.log(errorBack)
-
   const handleOnChange = ({ name, value }: PropsOnChange) => {
     if (errorBack) dispatch(clearUser());
     const { message, stop } = validationChange({ name: name.toString(), value, change })
