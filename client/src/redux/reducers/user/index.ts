@@ -30,7 +30,6 @@ const userSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
-        console.log(state, "/", action);
         state.loading = false;
         state.error = action.payload ?? "Error occurred";
       });

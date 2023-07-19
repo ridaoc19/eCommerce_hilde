@@ -13,13 +13,9 @@ function App() {
   const error = useAppSelector(selectUserError)
   const user = useAppSelector(selectUserData)
   const token: string | undefined = localStorage?.token
-  // const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
-    if (token && !user) {
-      // setIsFetching(true)
-      dispatch(loginTokenPosts({ token }))
-    }
+    if (token && !user) dispatch(loginTokenPosts({ token }))
   }, [])
 
   useEffect(() => {
@@ -39,7 +35,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-          <Routes />
+        <Routes />
       </header>
     </div>
   );

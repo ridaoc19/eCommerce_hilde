@@ -3,7 +3,7 @@ import { User } from "../model";
 
 function stopExecutionTemporarily() {
   return new Promise(resolve => {
-    setTimeout(resolve, 1 * 60 * 1000); // Esperar 10 minutos (10 * 60 segundos * 1000 milisegundos)
+    setTimeout(resolve, 5 * 60 * 1000); // Esperar 10 minutos (10 * 60 segundos * 1000 milisegundos)
   });
 }
 
