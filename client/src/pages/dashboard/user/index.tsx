@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Sedbar() {
+function User() {
   return (
     <div>
-      
+      user
     </div>
   );
 }
 
-export default Sedbar;
+export default User;
