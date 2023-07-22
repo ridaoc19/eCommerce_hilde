@@ -1,8 +1,8 @@
 import './App.scss';
 import Routes from './routes';
 
-
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { StoreContext } from './components/hooks/useContext';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { clearUser, selectUserData, selectUserError } from './redux/reducers/user';
 import { loginTokenPosts } from './redux/reducers/user/actions';
@@ -25,17 +25,12 @@ function App() {
     }
   }, [error])
 
-
-
-
-
-
-
-
   return (
     <div className="App">
       <header className="App-header">
-        <Routes />
+        <StoreContext>
+          <Routes />
+        </StoreContext>
       </header>
     </div>
   );
