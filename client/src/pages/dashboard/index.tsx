@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useContext } from 'react';
+import { CreateContext } from '../../components/hooks/useContext';
+import { IContextData } from '../../components/hooks/useContext/interfaceContext';
 import Inventory from './Inventory';
 import User from './user';
 
 function Dashboard() {
-  const [render, useRender] = useState<"user" | "inventory">("user")
-  switch (render) {
+  const { dashboard: { state: { component } } }: IContextData = useContext(CreateContext)!
+
+  switch (component) {
     case "user":
       return <User />
     case "inventory":

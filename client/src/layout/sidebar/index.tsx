@@ -1,18 +1,19 @@
 import { MouseEventHandler, useContext, useState } from 'react';
 import Svg from '../../components/assets/Svg';
 import { CreateContext } from '../../components/hooks/useContext';
-import { IContextData } from '../../components/hooks/useContext/interfaceContext';
+import { IContextData, IDashboard } from '../../components/hooks/useContext/interfaceContext';
 
 
 type Item = {
-  id: string
+  id: number;
+  value: string;
   type: string;
   svg: any
 };
 
 const item: Item[] = [
-  { id: "user", type: "Usuarios", svg: Svg({ type: "user" }) },
-  { id: "Inventory", type: "Inventario", svg: Svg({ type: "shop" }) }
+  { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }) },
+  { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }) }
 ];
 
 
@@ -24,12 +25,12 @@ function Sidebar() {
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const { name, value } = event.target as HTMLFormElement;
-    console.log(name, value)
     switch (name) {
       case "toggle":
         return setExpanded(!expanded);
       case "items":
-        return dispatch()
+        setExpanded(!expanded)
+        return dispatch({ type: "SELECT_COMPONENT", payload: value })
       default:
         break;
     }
@@ -40,22 +41,23 @@ function Sidebar() {
   return (
     <div className={`component__sidebar--container sidebar ${expanded ? 'expanded' : ''}`}>
 
-      <div className="sidebar__header--container">
-        {/* <h2>Sidebar</h2> */}
+      {/* <div className="sidebar__header--container">
+        <h2>Sidebar</h2>
         <button name='toggle' onClick={handleOnClick}>
           {expanded ? 'Cerrar' : 'Abrir'}
         </button>
-      </div>
+      </div> */}
 
       <div className='sidebar__items--container'>
         <ul className='item-logo'>
           {item.map((e, i) => <li key={i} >
-            <button name='toggle' onClick={handleOnClick} >{e.svg}</button>
+            <button name='toggle' onClick={handleOnClick} 
+            className={component === e.value? `item__select-item` :""} >{e.svg}</button>
           </li>)}
         </ul>
         <ul className='item-text'>
           {item.map((e, i) => <li key={i} >
-            <button name='items' value={e.id} onClick={handleOnClick}>{e.type}</button>
+            <button name='items' value={e.value} onClick={handleOnClick}>{e.type}</button>
           </li>)}
         </ul>
       </div>
