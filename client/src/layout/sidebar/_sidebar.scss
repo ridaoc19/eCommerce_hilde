@@ -7,15 +7,15 @@
   transition      : width 0.7s ease;
   overflow-x      : hidden;
 
-  &.expanded {
-    // position: fixed;
-    width    : 30vw;
-    // height: 100vh;
+  // &.expanded {
+  //   width: 30vw;
+  // }
 
+  &:hover {
+    width: 30vw;
   }
 
   .sidebar__header--container {
-    // display: none;
     display         : flex;
     place-content   : center;
     background-color: var(--brand-5);
@@ -33,7 +33,7 @@
     background-color     : var(--brand-4);
     display              : grid;
     grid-template-columns: 3rem 1fr;
-    gap                  : 0.3rem;
+    // gap                  : 0.3rem;
     align-items          : center;
 
     ul {
@@ -44,19 +44,18 @@
       display    : grid;
       align-items: center;
 
-
       li {
         display    : flex;
         align-items: center;
 
         >button {
+          width     : 100%;
+          height    : 100%;
           background: none;
           border    : none;
           cursor    : pointer;
         }
-
       }
-
     }
 
     .item-logo {
@@ -64,29 +63,23 @@
         justify-content: center;
 
         >button {
-          padding             : 0.5rem 0.7rem;
-          // width            : 90%;
-          // padding       : 0.5rem;
-          // white-space: nowrap;
-          // border-radius    : 0.3rem;
-          // text-align       : center;
+          padding: 0.5rem 0.7rem;
 
           &:hover {
-            background-color: var(--brand-5);
-            border: 0.1px solid var(--brand-5);
+            // background-color: var(--brand-5);
+            // border          : 0.1px solid var(--brand-5);
           }
         }
       }
     }
 
     .item-text {
-      // position: fixed;
-
-      // display: none;
       >li {
+        height: 100%;
+
         >button {
           width        : 95%;
-          border-radius: 0.3rem;
+          // border-radius: 0.3rem;
           text-align   : left;
           padding      : 0.7rem;
 
@@ -96,81 +89,23 @@
         }
       }
     }
-
   }
-
-  // ul {
-  //   list-style: none;
-  //   padding   : 0;
-  //   margin    : 0;
-
-  //   li {
-  //     display              : grid;
-  //     grid-template-columns: 2.5rem 1fr;
-  //     gap                  : 0.8rem;
-  //     border-bottom        : 1px solid #666;
-  //     align-items          : center;
-
-  //     >button {
-  //       background: none;
-  //       border    : none;
-  //       cursor    : pointer;
-  //       padding   : 0.8rem 0.5rem;
-  //     }
-
-  //     >span {
-  //       padding       : 0.5rem;
-  //       // white-space: nowrap;
-  //     }
-  // }
-  // }
 
 }
 
+.item__select-item {
+  background-color: var(--brand-5) !important;
+}
 
+//   $total-class: 10;
 
-// // Sidebar.scss
-// .sidebar {
-//   width           : 200px;
-//   height          : 100%;
-//   background-color: #333;
-//   color           : #fff;
-//   transition      : width 0.3s ease;
-
-//   &.expanded {
-//     width: 250px;
-//   }
-
-//   .sidebar-header {
-//     display         : flex;
-//     justify-content : space-between;
-//     padding         : 1rem;
-//     background-color: #444;
-
-//     h2 {
-//       margin: 0;
-//     }
-
-//     button {
-//       background: none;
-//       border    : none;
-//       color     : #fff;
-//       cursor    : pointer;
+//   // Bucle @for para generar las clases
+//   @for $i from 0 through $total-class {
+//     .clase-#{$i} {
+//       // Aquí puedes agregar estilos específicos para cada clase
+//       // Por ejemplo:
+//       width: 20px * $i; // Cada clase tendrá un ancho diferente basado en el número del bucle
 //     }
 //   }
 
-//   ul {
-//     list-style: none;
-//     padding   : 0;
-//     margin    : 0;
-
-//     li {
-//       padding      : 1rem;
-//       border-bottom: 1px solid #666;
-
-//       &:last-child {
-//         border-bottom: none;
-//       }
-//     }
-//   }
 // }
