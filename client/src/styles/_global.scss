@@ -25,3 +25,7 @@ hr {
   background-color: var(--neutral-2); /* Si deseas un color de fondo */
   width: 100%;
 }
+
+svg{
+  pointer-events: none;
+}

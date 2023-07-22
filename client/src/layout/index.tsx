@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
-import Footer from './Footer';
-import Navbar from './Navbar';
+import Navbar from './navbar';
+import Sidebar from './sidebar';
+import Footer from './footer';
 
 type Props = {
   children: ReactNode
@@ -9,10 +10,20 @@ type Props = {
 function Layout({ children }: Props) {
 
   return (
-    <div>
-      <Navbar />
-      {children}
-      <Footer />
+    <div className='main__layout--container'>
+      <div className='main__layout--navbar'>
+        <Navbar />
+      </div>
+      {window.location.pathname === "/hilde/dashboard" &&
+        <div className='main__layout--sidebar'>
+          <Sidebar />
+        </div>}
+      <div className='main__layout--children'>
+        {children}
+      </div>
+      <div className='main__layout--footer'>
+        <Footer />
+      </div>
     </div>
   );
 }
