@@ -1,12 +1,12 @@
 import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IUser } from '../../../components/utils/interface/user';
 import { validationClick } from '../../../components/utils/validation';
-import { IUser } from '../../../interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserData } from '../../../redux/reducers/user';
+import { userPosts } from '../../../redux/reducers/user/actions';
 import Input from '../../../styles/content/input/Input';
 import Loading from '../../../styles/content/loading';
-import { userPosts } from '../../../redux/reducers/user/actions';
 
 function Form({ change, handleOnChange, status, errorBack }: IUser.PropsForm) {
   const { password, confirmPassword } = change

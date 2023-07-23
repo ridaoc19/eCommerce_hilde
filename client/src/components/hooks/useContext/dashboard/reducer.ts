@@ -1,8 +1,4 @@
-import { IDashboard } from '../../../../interface';
-
-export enum ActionType {
-  SELECT_COMPONENT = "SELECT_COMPONENT",
-}
+import { IDashboard } from "../../../utils/interface/dashboard";
 
 const initialState: IDashboard.AppState = {
   component: "user",
@@ -10,7 +6,7 @@ const initialState: IDashboard.AppState = {
 
 const reducer = (state: IDashboard.AppState, action: IDashboard.AppAction): IDashboard.AppState => {
   switch (action.type) {
-    case ActionType.SELECT_COMPONENT:
+    case IDashboard.ActionType.SELECT_COMPONENT:
       return { ...state, component: action.payload };
     default:
       return state;

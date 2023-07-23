@@ -1,4 +1,4 @@
-import { IUser } from "../../../interface";
+import { IUser } from "../../../components/utils/interface/user"
 
 export function templateMessage(routes: IUser.Routes): { routes: string, message: string } {
   switch (routes) {

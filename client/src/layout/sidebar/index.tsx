@@ -1,7 +1,7 @@
 import { MouseEventHandler, useContext, useState } from 'react';
 import Svg from '../../components/assets/Svg';
 import { CreateContext } from '../../components/hooks/useContext';
-import { IContextData } from '../../interface';
+import { IContextData } from '../../components/utils/interface/context';
 // import { IContextData, IDashboard } from '../../components/hooks/useContext/interfaceContext';
 
 

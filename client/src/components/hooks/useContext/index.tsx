@@ -1,7 +1,6 @@
 import { createContext } from "react";
 import StateDashboard from "./dashboard/State";
-import { IContextData } from "../../../interface";
-// import { IContextData } from "./interfaceContext";
+import { IContextData } from "../../utils/interface/context";
 
 export const CreateContext = createContext<IContextData | null>(null);
 
