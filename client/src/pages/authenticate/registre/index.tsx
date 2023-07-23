@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import useOnChange, { PropsUseChange } from '../../../components/hooks/useOnChange';
+import useOnChange from '../../../components/hooks/useOnChange';
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from './Form';
 import Success from './Success';
+import { IOnChange } from '../../../interface';
 
-const initialState: PropsUseChange = {
+const initialState: IOnChange.PropsUseChange = {
   name: { change: "", message: "" },
   lastName: { change: "", message: "" },
   email: { change: "", message: "" },
@@ -19,7 +20,7 @@ function Registre() {
   const [status, setStatus] = useState<"form" | "loading" | "success" | "error">("form");
 
   useEffect(() => {
-    if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
+    if (errorBack instanceof Object) handleErrorOnBack()
     if (errorBack) return setStatus("error")
     if (loadingUser) return setStatus("loading")
     if (dataUser instanceof Object && !loadingUser && !errorBack && !localStorage.token) return setStatus("success")

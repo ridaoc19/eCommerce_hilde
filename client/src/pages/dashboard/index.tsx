@@ -1,8 +1,9 @@
 import { useContext } from 'react';
 import { CreateContext } from '../../components/hooks/useContext';
-import { IContextData } from '../../components/hooks/useContext/interfaceContext';
+// import { IContextData } from '../../components/hooks/useContext/interfaceContext';
 import Inventory from './Inventory';
 import User from './user';
+import { IContextData } from '../../interface';
 
 function Dashboard() {
   const { dashboard: { state: { component } } }: IContextData = useContext(CreateContext)!

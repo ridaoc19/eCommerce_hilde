@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { fetchPosts } from "./actions";
-import { ReduxUser } from "./interface";
+import { IUser } from "../../../interface";
+import { userPosts } from "./actions";
 
-const initialState: ReduxUser.PostState = {
+const initialState: IUser.PostState = {
   data: null,
   loading: false,
   error: null,
@@ -21,15 +21,15 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchPosts.pending, (state) => {
+      .addCase(userPosts.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
+      .addCase(userPosts.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
       })
-      .addCase(fetchPosts.rejected, (state, action) => {
+      .addCase(userPosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "Error occurred";
       });

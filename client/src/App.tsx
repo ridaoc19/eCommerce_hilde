@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { StoreContext } from './components/hooks/useContext';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { clearUser, selectUserData, selectUserError } from './redux/reducers/user';
-import { loginTokenPosts } from './redux/reducers/user/actions';
+import { userPosts } from './redux/reducers/user/actions';
 
 
 function App() {
@@ -15,7 +15,8 @@ function App() {
   const token: string | undefined = localStorage?.token
 
   useEffect(() => {
-    if (token && !user) dispatch(loginTokenPosts({ token }))
+    if (token && !user) dispatch(userPosts(Object.assign({ token }, { routes: 'token' })))
+    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
@@ -23,6 +24,7 @@ function App() {
       localStorage.removeItem("token")
       dispatch(clearUser());
     }
+    // eslint-disable-next-line
   }, [error])
 
   return (

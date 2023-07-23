@@ -1,22 +1,15 @@
 import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PropsUseChange } from "../../../components/hooks/useOnChange";
 import { validationClick } from '../../../components/utils/validation';
+import { IUser } from '../../../interface';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
-import { fetchPosts } from '../../../redux/reducers/user/actions';
+import { userPosts } from '../../../redux/reducers/user/actions';
 import Input from '../../../styles/content/input/Input';
 import Loading from '../../../styles/content/loading';
 
-interface Props {
-  handleOnChange: (data: { name: string; value: string; }) => void;
-  change: PropsUseChange
-  errorBack: string;
-  status: string;
-}
 
-
-function Form({ handleOnChange, change, errorBack, status }: Props) {
+function Form({ handleOnChange, change, errorBack, status }: IUser.PropsForm) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { name, lastName, email } = change;
@@ -27,11 +20,9 @@ function Form({ handleOnChange, change, errorBack, status }: Props) {
 
     switch (id) {
       case "save":
-        const { dataPost, authorize } = validationClick({ change, handleOnChange })
+        const { dataPost, authorize } = validationClick({ change, handleOnChange, routes: 'registre' })
+        if (authorize) dispatch(userPosts(dataPost));
         // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
-        if (authorize) {
-          dispatch(fetchPosts(dataPost));
-        }
         return;
       case "back":
         navigate('/login');

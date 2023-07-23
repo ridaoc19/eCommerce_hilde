@@ -1,24 +1,21 @@
 import { useState } from 'react';
 import { validationChange } from '../../utils/validation';
-import { ReduxUser } from '../../../redux/reducers/user/interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserError } from '../../../redux/reducers/user';
+import { IOnChange } from '../../../interface';
 
-
-function useOnChange(initialState: PropsUseChange) {
+function useOnChange(initialState: IOnChange.PropsUseChange) {
   const dispatch = useAppDispatch();
   const errorBack = useAppSelector(selectUserError)
-  const [change, setChange] = useState<PropsUseChange>(initialState)
+  const [change, setChange] = useState<IOnChange.PropsUseChange>(initialState)
 
-  // type MyObject = Record<string, string | number>;
-
-  const handleErrorOnBack = ({ errorBack }: { errorBack: Pick<ReduxUser.PostState, 'error'> }) => {
-    Object.entries(errorBack).forEach(([nameBack, valueBack]: [string, string]) => {
+  const handleErrorOnBack = () => {
+    if (errorBack) Object.entries(errorBack).forEach(([nameBack, valueBack]) => {
       setChange(prevState => { return ({ ...prevState, [nameBack]: { ...prevState[nameBack], message: valueBack } }) })
     })
   };
 
-  const handleOnChange = ({ name, value }: PropsOnChange) => {
+  const handleOnChange = ({ name, value }: IOnChange.PropsOnChange) => {
     if (errorBack) dispatch(clearUser());
     const { message, stop } = validationChange({ name: name.toString(), value, change })
     setChange(prevState => {
@@ -36,17 +33,4 @@ function useOnChange(initialState: PropsUseChange) {
 export default useOnChange;
 
 
-// ==============================|| INTERFACE ||============================== //
 
-export interface PropsUseChange {
-  [key: string]: { change: string; message: string };
-}
-
-interface value<T> {
-  [key: string]: T
-}
-
-export interface PropsOnChange {
-  name: keyof PropsUseChange
-  value: string
-}

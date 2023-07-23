@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useOnChange from "../../../components/hooks/useOnChange";
+import { IOnChange } from "../../../interface";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
 
-const initialState = {
+const initialState: IOnChange.PropsUseChange = {
   email: { change: "", message: "" },
   password: { change: "", message: "" },
 }
@@ -19,7 +20,7 @@ function Login() {
   const [status, setStatus] = useState<"form" | "loading" | "success" | "error">("form");
 
   useEffect(() => {
-    if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
+    if (errorBack instanceof Object) handleErrorOnBack()
     if (errorBack) return setStatus("error")
     if (loadingUser) return setStatus("loading")
     if (dataUser instanceof Object && !loadingUser && !errorBack && !localStorage.token) {
