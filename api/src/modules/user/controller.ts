@@ -3,9 +3,9 @@ import { postLogin, postPassChange, postRegistre, postLoginToken, postReset } fr
 
 const router = Router();
 
-router.post('/', postRegistre)
+router.post('/registre', postRegistre)
 router.post('/login', postLogin)
-router.post('/login/token', postLoginToken)
+router.post('/token', postLoginToken)
 router.post('/change', postPassChange)
 router.post('/reset', postReset)
 

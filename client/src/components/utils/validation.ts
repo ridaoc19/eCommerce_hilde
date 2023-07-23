@@ -1,19 +1,16 @@
-import { PropsUseChange } from "../hooks/useOnChange";
+import { IValidation } from "../../interface";
 
-interface InitialState {
-  message: string;
-  stop?: boolean;
-}
+
 
 const initialState = {
   message: "",
   stop: false,
 };
 
-export function validationChange({ name, value, change }: { name: string, value: string, change: PropsUseChange }): InitialState {
+export function validationChange({ name, value, change }: IValidation.PropsChange): IValidation.ResponseChange {
 
-  let error: InitialState = { ...initialState }
-  const updateError = ({ message, stop = false }: InitialState) => { return { ...error, message, stop } }
+  let error: IValidation.ResponseChange = { ...initialState }
+  const updateError = ({ message, stop = false }: IValidation.ResponseChange) => { return { ...error, message, stop } }
   const { blankSpaces, requiredField, maximumCharacters, minimumCharacters } = repeatedMessages;
 
   switch (name) {
@@ -74,8 +71,8 @@ const repeatedMessages = {
 }
 
 
-export const validationClick = ({ change, handleOnChange }: { change: PropsUseChange, handleOnChange: (data: { name: string; value: string; }) => void; }) => {
-  const dataPost: Record<string, string | number> = {};
+export const validationClick = ({ change, handleOnChange, routes }: IValidation.PropsClick): IValidation.ResponseClick => {
+  const dataPost: IValidation.DataPost = { routes }
 
   const filterError = Object.entries(change).map(([name, value]: [string, { change: string, message: string }]) => {
     handleOnChange({ name, value: value.change });

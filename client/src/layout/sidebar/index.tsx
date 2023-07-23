@@ -1,7 +1,8 @@
 import { MouseEventHandler, useContext, useState } from 'react';
 import Svg from '../../components/assets/Svg';
 import { CreateContext } from '../../components/hooks/useContext';
-import { IContextData, IDashboard } from '../../components/hooks/useContext/interfaceContext';
+import { IContextData } from '../../interface';
+// import { IContextData, IDashboard } from '../../components/hooks/useContext/interfaceContext';
 
 
 type Item = {
@@ -13,7 +14,8 @@ type Item = {
 
 const item: Item[] = [
   { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }) },
-  { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }) }
+  { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }) },
+  { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }) }
 ];
 
 
@@ -64,22 +66,6 @@ function Sidebar() {
 
     </div>
   )
-
-  // return (
-  // <div className={`sidebar ${expanded ? 'expanded' : ''}`}>
-  //   <div className="sidebar-header">
-  //     <h2>Sidebar</h2>
-  //     <button onClick={toggleSidebar}>
-  //       {expanded ? 'Cerrar' : 'Abrir'}
-  //     </button>
-  //   </div>
-  //   <ul>
-  //     <li>Item 1</li>
-  //     <li>Item 2</li>
-  //     <li>Item 3</li>
-  //   </ul>
-  // </div>
-  // );
 }
 
 export default Sidebar;
