@@ -1,4 +1,4 @@
-import { IValidation } from "../../interface";
+import { IValidation } from "./interface/validation";
 
 
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { validationChange } from '../../utils/validation';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserError } from '../../../redux/reducers/user';
-import { IOnChange } from '../../../interface';
+import { IOnChange } from '../../utils/interface/onChange';
 
 function useOnChange(initialState: IOnChange.PropsUseChange) {
   const dispatch = useAppDispatch();

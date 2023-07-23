@@ -1,7 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { IUser, IValidation } from "../../../interface";
 import { templateMessage } from "./tools";
+import { IUser } from "../../../components/utils/interface/user";
+import { IValidation } from "../../../components/utils/interface/validation";
 
 export const userPosts = createAsyncThunk<IUser.ResponseUser, IValidation.DataPost | IUser.UserProps, { rejectValue: string }>(
   'posts/userPosts',
