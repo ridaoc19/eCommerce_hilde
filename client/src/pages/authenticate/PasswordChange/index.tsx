@@ -5,8 +5,9 @@ import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
 import Success from "./Success";
+import { IOnChange } from "../../../interface";
 
-const initialState = {
+const initialState: IOnChange.PropsUseChange = {
   password: { change: "", message: "" },
   confirmPassword: { change: "", message: "" },
 }
@@ -21,7 +22,7 @@ function PasswordChange() {
 
   useEffect(() => {
     if (!dataUser && !loadingUser) return navigate('/login')
-    if (errorBack instanceof Object) handleErrorOnBack({ errorBack })
+    if (errorBack instanceof Object) handleErrorOnBack()
     if (errorBack) return setStatus("error")
     if (loadingUser) return setStatus("loading")
     if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.verified) return setStatus("success")

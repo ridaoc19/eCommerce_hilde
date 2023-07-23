@@ -1,18 +1,14 @@
-import React, { MouseEventHandler } from "react";
+import { MouseEventHandler } from "react";
+import { useNavigate } from "react-router-dom";
 import Svg from "../../../components/assets/Svg";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { clearUser, selectUserData } from "../../../redux/reducers/user";
-import { useNavigate } from "react-router-dom";
 
 function Success() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch()
 
   const dataUser = useAppSelector(selectUserData);
-
-  // if (!dataUser) {
-  //   navigate("/login");
-  // }
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();

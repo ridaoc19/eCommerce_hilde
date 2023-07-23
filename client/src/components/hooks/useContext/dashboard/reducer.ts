@@ -1,27 +1,8 @@
-import React from 'react';
-import { IDashboard } from '../interfaceContext';
-
-// types.ts
-export type AppState = {
-  component: string;
-};
+import { IDashboard } from '../../../../interface';
 
 export enum ActionType {
   SELECT_COMPONENT = "SELECT_COMPONENT",
-  // DECREMENT = "DECREMENT",
 }
-
-type IncrementAction = {
-  type: ActionType.SELECT_COMPONENT;
-  payload: any;
-};
-
-// type DecrementAction = {
-//   type: ActionType.DECREMENT;
-// };
-
-export type AppAction = IncrementAction;
-
 
 const initialState: IDashboard.AppState = {
   component: "user",
@@ -37,3 +18,4 @@ const reducer = (state: IDashboard.AppState, action: IDashboard.AppAction): IDas
 };
 
 export { initialState, reducer };
+
