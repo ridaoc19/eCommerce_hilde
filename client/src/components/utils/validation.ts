@@ -40,8 +40,8 @@ export function validationChange({ name, value, change }: IValidation.PropsChang
 
     case "name":
       if (value.length === 0) return updateError({ message: requiredField })
-      if (value.length <= 5) {
-        error = ({ ...error, message: minimumCharacters(value.length, 5) })
+      if (value.length <= 3) {
+        error = ({ ...error, message: minimumCharacters(value.length, 3) })
       } else if (value.length > 30) {
         error = ({ ...error, message: maximumCharacters(value.length, 30), stop: true })
       }
@@ -55,6 +55,16 @@ export function validationChange({ name, value, change }: IValidation.PropsChang
         error = ({ ...error, message: maximumCharacters(value.length, 30), stop: true })
       }
       break
+
+    case "phone":
+      if (value.length === 0) return updateError({ message: requiredField })
+      if (value.length <= 7) {
+        error = ({ ...error, message: minimumCharacters(value.length, 7) })
+      } else if (value.length >= 12) {
+        error = ({ ...error, message: maximumCharacters(value.length, 12), stop: true })
+      }
+      break
+
 
     default: return error;
   }

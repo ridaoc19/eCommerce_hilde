@@ -4,6 +4,7 @@ interface IUser extends Document {
   name: string;
   lastName: string;
   email: string;
+  phone: string;
   password: string;
   verified: boolean;
   roles: "super" | "admin" | "edit" | "visitant";
@@ -22,6 +23,11 @@ const userSchema = new Schema<IUser>(
     email: {
       type: String,
       required: [true, 'El correo electrónico es obligatorio.<^'],
+      unique: true,
+    },
+    phone: {
+      type: String,
+      required: [true, 'El teléfono es obligatorio.<^'],
       unique: true,
     },
     password: {

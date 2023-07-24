@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { validationChange } from '../../utils/validation';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { clearUser, selectUserError } from '../../../redux/reducers/user';
+import { clearUserError, selectUserError } from '../../../redux/reducers/user';
 import { IOnChange } from '../../utils/interface/onChange';
+import { validationChange } from '../../utils/validation';
 
 function useOnChange(initialState: IOnChange.PropsUseChange) {
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ function useOnChange(initialState: IOnChange.PropsUseChange) {
   };
 
   const handleOnChange = ({ name, value }: IOnChange.PropsOnChange) => {
-    if (errorBack) dispatch(clearUser());
+    if (errorBack) dispatch(clearUserError());
     const { message, stop } = validationChange({ name: name.toString(), value, change })
     setChange(prevState => {
       if (!stop) {

@@ -12,7 +12,7 @@ import Loading from '../../../styles/content/loading';
 function Form({ handleOnChange, change, errorBack, status }: IUser.PropsForm) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { name, lastName, email } = change;
+  const { name, lastName, email, phone } = change;
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const id = (event.target as HTMLFormElement).id.split("--")[1];
@@ -55,6 +55,10 @@ function Form({ handleOnChange, change, errorBack, status }: IUser.PropsForm) {
 
             <Input svg={{ type: "email" }} styleClass="registre_email" errorMessage={email.message}
               input={{ name: "email", type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange }}
+            />
+
+            <Input svg={{ type: "phone" }} styleClass="registre_phone" errorMessage={phone.message}
+              input={{ name: "phone", type: "phone", placeholder: "Teléfono", value: phone.change, handleOnChange }}
             />
 
           </div>

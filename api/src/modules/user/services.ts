@@ -18,7 +18,7 @@ export async function postRegistre(req: Request, res: Response) {
   try {
     const temporaryPassword: string = uuidv4().split("-", 1)[0];
     const password = await generateHashPassword(temporaryPassword)
-    const userDB = await User.create({ name: req.body.name, lastName: req.body.lastName, email: req.body.email, password, verified: false })
+    const userDB = await User.create({ name: req.body.name, lastName: req.body.lastName, email: req.body.email, phone: req.body.phone, password, verified: false })
     if (!userDB) throw new Error(`errorString: se presento un inconveniente al realizar el registro</p>`)
     const user = await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
     const { _id, name, email, verified } = userDB;
@@ -48,7 +48,7 @@ export async function postLogin(req: Request, res: Response) {
 
     const userDB = await User.findOne({ email: emailFront })
     if (!userDB) throw new Error(`errorString: <p>Lo sentimos, el usuario (<span>${emailFront}</span>) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.</p>`)
-    const { _id, name, lastName, email, verified, roles } = userDB;
+    const { _id, name, lastName, email, phone, verified, roles } = userDB;
     const user = await fetchCount({ _id, name })
 
 
@@ -60,7 +60,7 @@ export async function postLogin(req: Request, res: Response) {
       token = generateToken({ _id, email, name })
     }
 
-    res.status(200).json({ _id, name, lastName, email, verified, token, roles })
+    res.status(200).json({ _id, name, lastName, email, phone, verified, token, roles })
 
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -78,10 +78,10 @@ export async function postLoginToken(req: Request, res: Response) {
 
     const userDB = await User.findById({ _id: decoded._id })
     if (!userDB) throw new Error(`errorString: Invalid User`)
-    const { _id, name, lastName, email, verified, roles } = userDB;
+    const { _id, name, lastName, email, phone, verified, roles } = userDB;
     const user = await fetchCount({ _id, name })
 
-    res.status(200).json({ _id, name, lastName, email, verified, roles })
+    res.status(200).json({ _id, name, lastName, email, phone, verified, roles })
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(409).json({ error: splitString(error) });
@@ -143,4 +143,34 @@ export async function postPassChange(req: Request, res: Response) {
   }
 }
 
+export async function postAccount(req: Request, res: Response) {
+  try {
+    if (req.body.components === "information") {
+      let { _id: _idF, name: nameF, lastName: lastNameF, email: emailF, phone: phoneF, components } = req.body;
+      const userDB = await User.findByIdAndUpdate(_idF,
+        { name: nameF, lastName: lastNameF, email: emailF, phone: phoneF },
+        { new: true })
+      if (!userDB) throw new Error(`errorString: se presento un inconveniente al realizar el registro</p>`)
+      const { _id, name, lastName, email, phone, verified, roles } = userDB;
+      const user = await fetchCount({ _id, name })
+      res.status(200).json({ _id, name, lastName, email, phone, verified, roles, components })
+      
+    } else if (req.body.components === "password")  {
+      let { _id: _idF, password: temporaryPassword, components } = req.body;
+      console.log(req.body)
+      const password = await generateHashPassword(temporaryPassword)
+      const userDB = await User.findByIdAndUpdate({ _id: _idF }, { password, verified: true }, { new: true })
+      if (!userDB) throw new Error(`errorString: <p>Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a>. Disculpa las molestias.</p>`)
+      const { _id, name, lastName, email, phone, verified, roles } = userDB;
+      const user = await fetchCount({ _id, name })
+      res.status(200).json({ _id, name, lastName, email, phone, verified, roles, components})
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(409).json({ error: splitString(error) });
+    } else {
+      res.status(500).json({ error: `Error desconocido: ${error}` });
+    }
+  }
+}
 
