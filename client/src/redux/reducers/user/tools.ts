@@ -47,6 +47,15 @@ export function templateMessage(routes: IUser.Routes): { routes: string, message
         <p>Lo sentimos, estamos experimentando problemas técnicos en nuestros servidores y no podemos procesar tu solicitud.</p>
         `}
 
+    case 'account':
+      return {
+        routes,
+        message: `
+      <p>No se pudo actualizar su datos personales</p>
+      <p>Lamentablemente, hemos encontrado un problema al procesar tu solicitud de registro en este momento.</p>
+      <p>Si tienes alguna pregunta o necesitas asistencia, por favor, contáctanos a través de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a> y estaremos encantados de ayudarte.</p>
+      ` }
+
     default:
       return { routes: "", message: "" }
   }
