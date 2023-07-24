@@ -10,6 +10,7 @@ const initialState: IOnChange.PropsUseChange = {
   name: { change: "", message: "" },
   lastName: { change: "", message: "" },
   email: { change: "", message: "" },
+  phone: { change: "", message: "" },
 }
 
 function Registre() {
