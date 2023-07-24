@@ -20,12 +20,13 @@
     }
 
     @else if $fields_each==sidebar {
-      position: relative;
+      position        : relative;
       background-color: var(--neutral-1);
     }
 
     @else if $fields_each==children {
-      background-color: var(--brand-2);
+      padding         : 1% 2%;
+      background-color: var(--neutral-2);
     }
 
     @else if $fields_each==footer {

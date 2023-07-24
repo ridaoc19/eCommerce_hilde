@@ -46,9 +46,9 @@ function Form({ change, handleOnChange, status, errorBack }: IUser.PropsForm) {
       <div className="login__form--content">
 
         <header className="form__header--content">
-          {Svg({ type: "logo", height: 80, width: 80 })}
+          {Svg({ type: "logo", height: 80, width: 80, color: "#F6851F" })}
           <h2>¡Bienvenido!</h2>
-          <p>Ingresa tus datos para iniciar sesión en</p>
+          <p>Ingresa tus datos para iniciar sesión</p>
           {status === "success" && <Success />}
         </header>
 

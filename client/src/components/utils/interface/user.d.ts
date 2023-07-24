@@ -17,6 +17,7 @@ export namespace IUser {
     _id: string;
     verified: string;
     token: string | null;
+    roles: string;
   }
 
   export interface PostState {

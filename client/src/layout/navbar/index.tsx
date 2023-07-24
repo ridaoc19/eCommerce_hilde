@@ -23,15 +23,19 @@ function Navbar() {
   return (
     <div className='component__navbar--container'>
       <div className='navbar__cart--container'>
-        {Svg({ type: "shop", color:"white" })}
+        {Svg({ type: "shop", color: "white" })}
       </div>
       <div className='navbar__logo--container'>
-        <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50 })}</Link>
+        <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50, color:"white" })}</Link>
       </div>
       <div className='navbar__login--container'>
-        <Link to={'/login'}>{Svg({ type: 'user', color:"white"  })}</Link>
-        {user?.name && <button onClick={handleOnClick}>cerrar sesión</button>}
-        <span>{user?.name}</span>
+        <Link to={'/login'}>{Svg({ type: 'user', color: "white" })}</Link>
+        {user?.name &&
+          <>
+            <button onClick={handleOnClick}>cerrar sesión</button>
+            <Link to={'/dashboard'}>dashboard</Link>
+            <span>{user?.name}</span>
+          </>}
       </div>
     </div>
   );
