@@ -1,27 +1,30 @@
-import { MouseEventHandler, useContext, useState } from 'react';
+import React, { MouseEventHandler, useContext, useState } from 'react';
 import Svg from '../../components/assets/Svg';
 import { CreateContext } from '../../components/hooks/useContext';
 import { IContextData } from '../../components/utils/interface/context';
-// import { IContextData, IDashboard } from '../../components/hooks/useContext/interfaceContext';
+import { useAppSelector } from '../../redux/hooks';
+import { selectUserData } from '../../redux/reducers/user';
 
+
+type Role = "super" | "admin" | "edit" | "visitant";
 
 type Item = {
   id: number;
   value: string;
   type: string;
-  svg: any
+  svg: any;
+  roles: Role[]; // Aquí indicamos que roles es un array de roles permitidos
 };
-
 const item: Item[] = [
-  { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }) },
-  { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }) },
-  { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }) }
+  { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
+  { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
+  { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant'] }
 ];
 
 
 function Sidebar() {
   const { dashboard: { state: { component }, dispatch } }: IContextData = useContext(CreateContext)!
-  console.log(component);
+  const dataUser = useAppSelector(selectUserData)
 
   const [expanded, setExpanded] = useState(false);
 
@@ -39,7 +42,6 @@ function Sidebar() {
 
   };
 
-
   return (
     <div className={`component__sidebar--container sidebar ${expanded ? 'expanded' : ''}`}>
 
@@ -51,17 +53,23 @@ function Sidebar() {
       </div> */}
 
       <div className='sidebar__items--container'>
-        <ul className='item-logo'>
-          {item.map((e, i) => <li key={i} >
-            <button name='toggle' onClick={handleOnClick} 
-            className={component === e.value? `item__select-item` :""} >{e.svg}</button>
-          </li>)}
-        </ul>
-        <ul className='item-text'>
-          {item.map((e, i) => <li key={i} >
-            <button name='items' value={e.value} onClick={handleOnClick}>{e.type}</button>
-          </li>)}
-        </ul>
+        {['item-logo', 'item-text'].map((u, i) => <ul key={i} className={u}>
+          {item.map((e, i) => {
+            if (dataUser?.roles) {
+              const roleIncluded = e.roles.includes(dataUser.roles as Role);
+              return roleIncluded && (
+                <li key={i}>
+                  {u === "item-logo" ? <button name='toggle' onClick={handleOnClick} className={component === e.value ? `item__select-item` : ""}>
+                    {e.svg}
+                  </button> : <button name='items' value={e.value} onClick={handleOnClick}>{e.type}</button>
+                  }
+                </li>
+              );
+            } else {
+              return <React.Fragment key={i} />;
+            }
+          })}
+        </ul>)}
       </div>
 
     </div>

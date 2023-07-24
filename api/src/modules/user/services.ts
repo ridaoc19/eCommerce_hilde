@@ -48,7 +48,7 @@ export async function postLogin(req: Request, res: Response) {
 
     const userDB = await User.findOne({ email: emailFront })
     if (!userDB) throw new Error(`errorString: <p>Lo sentimos, el usuario (<span>${emailFront}</span>) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.</p>`)
-    const { _id, name, lastName, email, verified } = userDB;
+    const { _id, name, lastName, email, verified, roles } = userDB;
     const user = await fetchCount({ _id, name })
 
 
@@ -60,7 +60,7 @@ export async function postLogin(req: Request, res: Response) {
       token = generateToken({ _id, email, name })
     }
 
-    res.status(200).json({ _id, name, lastName, email, verified, token })
+    res.status(200).json({ _id, name, lastName, email, verified, token, roles })
 
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -78,10 +78,10 @@ export async function postLoginToken(req: Request, res: Response) {
 
     const userDB = await User.findById({ _id: decoded._id })
     if (!userDB) throw new Error(`errorString: Invalid User`)
-    const { _id, name, lastName, email, verified } = userDB;
+    const { _id, name, lastName, email, verified, roles } = userDB;
     const user = await fetchCount({ _id, name })
 
-    res.status(200).json({ _id, name, lastName, email, verified })
+    res.status(200).json({ _id, name, lastName, email, verified, roles })
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(409).json({ error: splitString(error) });

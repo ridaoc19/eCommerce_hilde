@@ -1,9 +1,8 @@
 import { useContext } from 'react';
 import { CreateContext } from '../../components/hooks/useContext';
-// import { IContextData } from '../../components/hooks/useContext/interfaceContext';
+import { IContextData } from '../../components/utils/interface/context';
 import Inventory from './Inventory';
 import User from './user';
-import { IContextData } from '../../components/utils/interface/context';
 
 function Dashboard() {
   const { dashboard: { state: { component } } }: IContextData = useContext(CreateContext)!
@@ -14,7 +13,7 @@ function Dashboard() {
     case "inventory":
       return <Inventory />
     default:
-      return <>default</>
+      return <></>
   }
 }
 

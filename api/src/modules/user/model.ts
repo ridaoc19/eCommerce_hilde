@@ -1,4 +1,4 @@
-import { Schema, model, connect, Document } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 
 interface IUser extends Document {
   name: string;
@@ -6,6 +6,7 @@ interface IUser extends Document {
   email: string;
   password: string;
   verified: boolean;
+  roles: "super" | "admin" | "edit" | "visitant";
 }
 
 const userSchema = new Schema<IUser>(
@@ -26,6 +27,10 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: [true, 'La contraseña es obligatoria.<^'],
+    },
+    roles: {
+      type: String,
+      default: 'visitant'
     },
     verified: {
       type: Boolean,
