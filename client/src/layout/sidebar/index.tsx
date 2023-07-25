@@ -18,7 +18,7 @@ type Item = {
 const item: Item[] = [
   { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
   { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
-  { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant'] }
+  { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
 ];
 
 

@@ -2,7 +2,6 @@ import { MouseEventHandler } from 'react';
 import { IUser } from '../../../../components/utils/interface/user';
 import { validationClick } from '../../../../components/utils/validation';
 import { useAppDispatch } from '../../../../redux/hooks';
-import { clearUser } from '../../../../redux/reducers/user';
 import { userPosts } from '../../../../redux/reducers/user/actions';
 import Input from '../../../../styles/content/input/Input';
 import Loading from '../../../../styles/content/loading';
@@ -17,7 +16,6 @@ function Form({ handleOnChange, change, errorBack, status }: IUser.PropsForm) {
     const { dataPost, authorize } = validationClick({ change, handleOnChange, routes: 'account' })
 
     if (authorize) dispatch(userPosts(Object.assign(dataPost, { components: "information" })));
-    // dispatch(clearUser());
   };
 
 

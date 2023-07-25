@@ -1,13 +1,13 @@
-import { useEffect, useState, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { CreateContext } from '../../../../components/hooks/useContext';
+import { ActionType } from '../../../../components/hooks/useContext/dashboard/reducer';
 import useOnChange from '../../../../components/hooks/useOnChange';
+import { IContextData } from '../../../../components/utils/interface/context';
 import { IOnChange } from '../../../../components/utils/interface/onChange';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
 import Form from './Form';
 import Render from './Render';
-import { IContextData } from '../../../../components/utils/interface/context';
-import { CreateContext } from '../../../../components/hooks/useContext';
-import { ActionType } from '../../../../components/hooks/useContext/dashboard/reducer';
 
 
 function Information() {
@@ -19,41 +19,40 @@ function Information() {
     phone: { change: dataUser?.phone, message: "" },
     _id: { change: dataUser?._id, message: "" },
   }
-  const { dashboard: { dispatch } }: IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { account: { password, information } }, dispatch } }: IContextData = useContext(CreateContext)!
   const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const [status, setStatus] = useState<"form" | "loading" | "success" | "error">("form");
-  const [edit, setEdit] = useState(false)
 
   useEffect(() => {
+    if (password) return
     if (errorBack instanceof Object) handleErrorOnBack()
     if (errorBack) return setStatus("error")
     if (loadingUser) return setStatus("loading")
-    if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.components === "information"){
+    if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.components === "information") {
       setStatus("success")
       setTimeout(() => {
-        setEdit(!edit)
         setStatus("form")
+        dispatch({ type: ActionType.ACCOUNT_TOGGLE_INFORMATION })
       }, 10000);
     }
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
   const handleOnClick = () => {
-    setEdit(!edit)
-    dispatch({ type: ActionType.TOGGLE_ACCOUNT , payload: "information" })
+    dispatch({ type: ActionType.ACCOUNT_TOGGLE_INFORMATION })
   }
 
   return (
     <>
       <div>
         <h4>Información personal</h4>
-        <button onClick={handleOnClick} >Editar</button>
+        <button className='button_light' onClick={handleOnClick} disabled={password || status === "loading" || status === "success"} >Editar</button>
       </div>
 
       <main>
-        {edit
+        {information
           ? <Form change={change} handleOnChange={handleOnChange} status={status} errorBack={errorBack} />
           : <Render />}
       </main>
