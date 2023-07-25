@@ -57,7 +57,7 @@ export async function postLogin(req: Request, res: Response) {
 
     let token = null
     if (userDB.verified) {
-      token = generateToken({ _id, email, name })
+      token = generateToken({ _id })
     }
 
     res.status(200).json({ _id, name, lastName, email, phone, verified, token, roles })
@@ -154,16 +154,16 @@ export async function postAccount(req: Request, res: Response) {
       const { _id, name, lastName, email, phone, verified, roles } = userDB;
       const user = await fetchCount({ _id, name })
       res.status(200).json({ _id, name, lastName, email, phone, verified, roles, components })
-      
-    } else if (req.body.components === "password")  {
+
+    } else if (req.body.components === "password") {
       let { _id: _idF, password: temporaryPassword, components } = req.body;
-      console.log(req.body)
+
       const password = await generateHashPassword(temporaryPassword)
       const userDB = await User.findByIdAndUpdate({ _id: _idF }, { password, verified: true }, { new: true })
       if (!userDB) throw new Error(`errorString: <p>Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a>. Disculpa las molestias.</p>`)
       const { _id, name, lastName, email, phone, verified, roles } = userDB;
       const user = await fetchCount({ _id, name })
-      res.status(200).json({ _id, name, lastName, email, phone, verified, roles, components})
+      res.status(200).json({ _id, name, lastName, email, phone, verified, roles, components })
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
