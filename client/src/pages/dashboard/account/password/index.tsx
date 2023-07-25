@@ -17,41 +17,40 @@ function Password() {
     confirmPassword: { change: "", message: "" },
     _id: { change: dataUser._id, message: "" },
   }
-  const { dashboard: { dispatch } }: IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { account: { information, password } }, dispatch } }: IContextData = useContext(CreateContext)!
   const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const [status, setStatus] = useState<"formP" | "loadingP" | "successP" | "errorP">("formP");
-  const [edit, setEdit] = useState(false)
 
   useEffect(() => {
+    if (information) return
     if (errorBack instanceof Object) handleErrorOnBack()
     if (errorBack) return setStatus("errorP")
     if (loadingUser) return setStatus("loadingP")
     if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.components === "password") {
       setStatus("successP")
       setTimeout(() => {
-        setEdit(!edit)
         setStatus("formP")
+        dispatch({ type: ActionType.ACCOUNT_TOGGLE_PASSWORD })
       }, 10000);
     }
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
   const handleOnClick = () => {
-    setEdit(!edit)
-    dispatch({ type: ActionType.TOGGLE_ACCOUNT , payload: "password" })
+    dispatch({ type: ActionType.ACCOUNT_TOGGLE_PASSWORD })
   }
 
   return (
     <>
       <div>
         <h4>Cambio de contraseña</h4>
-        <button onClick={handleOnClick} >Editar</button>
+        <button className='button_light' onClick={handleOnClick} disabled={information || status === "loadingP" || status === "successP"}>Editar</button>
       </div>
 
       <main>
-        {edit
+        {password
           ? <Form change={change} handleOnChange={handleOnChange} status={status} errorBack={errorBack} />
           : <Render />}
       </main>

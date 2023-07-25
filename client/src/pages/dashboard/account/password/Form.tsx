@@ -19,8 +19,6 @@ function Form({ handleOnChange, change, errorBack, status }: IUser.PropsForm) {
     // dispatch(clearUser());
   };
 
-  console.log(status)
-
   return (
     <div className="dashboard__user-form--container">
       <div className="dashboard__user-form--content">
@@ -47,7 +45,7 @@ function Form({ handleOnChange, change, errorBack, status }: IUser.PropsForm) {
           </div>
 
           <div className="form__button--content">
-            <button id='button__dashboard--save' onClick={handleOnClick} className="button_dark" disabled={status === "loadingP" || status === "successP"} >{status === "loadingP" ? <Loading /> : "Editar Usuario"}</button>
+            <button id='button__dashboard--save' onClick={handleOnClick} className="button_dark" disabled={status === "loadingP" || status === "successP"} >{status === "loadingP" ? <Loading /> : "Guardar nueva contraseña"}</button>
           </div>
         </main>
       </div>
