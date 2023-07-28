@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { CreateContext } from '../../../../components/hooks/useContext';
-import { ActionType } from '../../../../components/hooks/useContext/dashboard/reducer';
+import { ActionTypeDashboard } from '../../../../components/hooks/useContext/dashboard/reducer';
 import useOnChange from '../../../../components/hooks/useOnChange';
-import { IContextData } from '../../../../components/utils/interface/context';
 import { IOnChange } from '../../../../interfaces/onChange.interface';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
 import Form from './Form';
 import Render from './Render';
+import { IContextData } from '../../../../interfaces/context.interface';
 
 
 function Information() {
@@ -34,14 +34,14 @@ function Information() {
       setStatus("success")
       setTimeout(() => {
         setStatus("form")
-        dispatch({ type: ActionType.ACCOUNT_TOGGLE_INFORMATION })
+        dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: "" })
       }, 10000);
     }
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
   const handleOnClick = () => {
-    dispatch({ type: ActionType.ACCOUNT_TOGGLE_INFORMATION })
+    dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: "" })
   }
 
   return (

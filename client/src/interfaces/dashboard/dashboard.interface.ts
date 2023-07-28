@@ -1,11 +1,12 @@
 // ==============================|| Dashboard ||============================== //
 
-import { ActionType } from "../../components/hooks/useContext/dashboard/reducer";
+import { ActionTypeDashboard } from "../../components/hooks/useContext/dashboard/reducer";
+
 
 
 export namespace IDashboard {
 
-  export type SelectAction = { type: ActionType; payload: string };
+  export type SelectAction = { type: ActionTypeDashboard; payload: string };
   // export type SelectAction = { type: ActionType.SELECT_COMPONENT; payload: string };
 
   export type AppState = { component: string, account: { information: boolean, password: boolean } };
