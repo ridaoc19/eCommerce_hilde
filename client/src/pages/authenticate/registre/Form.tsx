@@ -8,7 +8,6 @@ import { userPosts } from '../../../redux/reducers/user/actions';
 import Input from '../../../styles/content/input/Input';
 import Loading from '../../../styles/content/loading';
 
-
 function Form({ handleOnChange, change, errorBack, status }: IUser.FormProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -22,7 +21,6 @@ function Form({ handleOnChange, change, errorBack, status }: IUser.FormProps) {
       case "save":
         const { dataPost, authorize } = validationClick({ change, handleOnChange, routes: 'registre' })
         if (authorize) dispatch(userPosts(dataPost));
-        // dispatch(fetchPosts({name: name.change, lastName: lastName.change, email: email.change}));
         return;
       case "back":
         navigate('/login');

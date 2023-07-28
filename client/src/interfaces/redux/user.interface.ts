@@ -1,9 +1,7 @@
 export namespace IReduxUser {
   // ==============================|| Redux User ||============================== //
-
   // =|| templateMessage --->tools ||= //
   export type Routes = "registre" | "login" | "token" | "change" | "reset" | "account" | "";
-
 
   export interface TemplateMessageReturn {
     routes: Routes;
@@ -11,13 +9,8 @@ export namespace IReduxUser {
   }
   export type TemplateMessageProps = (data: { routes: Routes }) => TemplateMessageReturn
 
-  // =|| Token --> App ||= //
-
-  export interface Token {
-  }
-
   // =|| userPosts --> actions ||= //
-  export interface UserPostsProps extends Partial<Token> {
+  export interface UserPostsProps {
     _id?: string;
     name?: string;
     lastName?: string;
