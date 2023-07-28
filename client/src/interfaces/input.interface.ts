@@ -1,6 +1,5 @@
 import { IOnChange } from './onChange.interface';
 
-
 export namespace IInput {
   export interface Props {
     svg?: {
@@ -22,7 +21,6 @@ export namespace IInput {
       placeholder: string;
       value: string;
       handleOnChange: IOnChange.HandleOnChangeProps
-      // handleOnChange: (data: { name: string; value: string; }) => void;
       name: string;
     };
   }

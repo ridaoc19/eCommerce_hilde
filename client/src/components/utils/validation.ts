@@ -63,7 +63,6 @@ export const validationChange: IValidation.ValidationChangeProps = ({ name, valu
       }
       break
 
-
     default: return error;
   }
 

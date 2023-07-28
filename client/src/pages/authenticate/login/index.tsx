@@ -1,11 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useOnChange from "../../../components/hooks/useOnChange";
+import { IOnChange } from "../../../interfaces/onChange.interface";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
-import { CreateContext } from "../../../components/hooks/useContext";
-import { IOnChange } from "../../../interfaces/onChange.interface";
 
 const initialState: IOnChange.UseOnChange = {
   email: { change: "", message: "" },
@@ -13,7 +12,6 @@ const initialState: IOnChange.UseOnChange = {
 }
 
 function Login() {
-  // const {} = useContext(CreateContext)
   const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
   const navigate = useNavigate()
   const errorBack = useAppSelector(selectUserError)
