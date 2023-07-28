@@ -1,9 +1,10 @@
 import React, { MouseEventHandler, useContext, useState } from 'react';
 import Svg from '../../components/assets/Svg';
 import { CreateContext } from '../../components/hooks/useContext';
-import { IContextData } from '../../components/utils/interface/context';
 import { useAppSelector } from '../../redux/hooks';
 import { selectUserData } from '../../redux/reducers/user';
+import { IContextData } from '../../interfaces/context.interface';
+import { ActionTypeDashboard } from '../../components/hooks/useContext/dashboard/reducer';
 
 
 type Role = "super" | "admin" | "edit" | "visitant";
@@ -35,7 +36,7 @@ function Sidebar() {
         return setExpanded(!expanded);
       case "items":
         setExpanded(!expanded)
-        return dispatch({ type: "SELECT_COMPONENT", payload: value })
+        return dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: value })
       default:
         break;
     }

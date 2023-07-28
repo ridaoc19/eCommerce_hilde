@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { CreateContext } from '../../../../components/hooks/useContext';
-import { ActionType } from '../../../../components/hooks/useContext/dashboard/reducer';
+import { ActionTypeDashboard } from '../../../../components/hooks/useContext/dashboard/reducer';
 import useOnChange from '../../../../components/hooks/useOnChange';
-import { IContextData } from '../../../../components/utils/interface/context';
+import { IContextData } from '../../../../interfaces/context.interface';
 import { IOnChange } from '../../../../interfaces/onChange.interface';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
@@ -31,14 +31,14 @@ function Password() {
       setStatus("successP")
       setTimeout(() => {
         setStatus("formP")
-        dispatch({ type: ActionType.ACCOUNT_TOGGLE_PASSWORD })
+        dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_PASSWORD, payload: "" })
       }, 10000);
     }
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
   const handleOnClick = () => {
-    dispatch({ type: ActionType.ACCOUNT_TOGGLE_PASSWORD })
+    dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_PASSWORD, payload: "" })
   }
 
   return (
