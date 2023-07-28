@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+// import React, { useContext } from 'react';
 import Information from './information';
 import Password from './password';
-import { CreateContext } from '../../../components/hooks/useContext';
-import { IContextData } from '../../../components/utils/interface/context';
+// import { CreateContext } from '../../../components/hooks/useContext';
+// import { IContextData } from '../../../interfaces/context.interface';
 
 function Account() {
-  const { dashboard: { dispatch } }: IContextData = useContext(CreateContext)!
+  // const { dashboard: { dispatch } }: IContextData = useContext(CreateContext)!
   return (
     <div>
       <header className="user-form__header--content">
