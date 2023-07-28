@@ -1,8 +1,8 @@
 import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Svg from '../../../components/assets/Svg';
-import { IUser } from '../../../components/utils/interface/user';
 import { validationClick } from '../../../components/utils/validation';
+import { IUser } from '../../../interfaces/user/user.interface';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
@@ -10,7 +10,7 @@ import Input from '../../../styles/content/input/Input';
 import Loading from '../../../styles/content/loading';
 import Success from './Success';
 
-function Form({ change, handleOnChange, status, errorBack }: IUser.PropsForm) {
+function Form({ change, handleOnChange, status, errorBack }: IUser.FormProps) {
   const { email, password } = change
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -21,9 +21,10 @@ function Form({ change, handleOnChange, status, errorBack }: IUser.PropsForm) {
 
     switch (id) {
       case "login":
-        const { dataPost, authorize } = validationClick({ change, handleOnChange, routes: "login" })
+        const validation = validationClick({ change, handleOnChange, routes: "login" })
+        const dataPost = validation.dataPost as any
         // if (authorize) dispatch(userPosts(Object.assign(dataPost, {route: "user/login"})));
-        if (authorize) dispatch(userPosts(dataPost));
+        if (validation.authorize) dispatch(userPosts(dataPost));
         // if (authorize) dispatch(loginPosts(dataPost));
         return;
       case "reset":
