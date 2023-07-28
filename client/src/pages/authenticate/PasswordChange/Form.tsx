@@ -1,14 +1,15 @@
 import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IUser } from '../../../components/utils/interface/user';
 import { validationClick } from '../../../components/utils/validation';
+import { IReduxUser } from '../../../interfaces/redux/user.interface';
+import { IUser } from '../../../interfaces/user/user.interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserData } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
 import Input from '../../../styles/content/input/Input';
 import Loading from '../../../styles/content/loading';
 
-function Form({ change, handleOnChange, status, errorBack }: IUser.PropsForm) {
+function Form({ change, handleOnChange, status, errorBack }: IUser.FormProps) {
   const { password, confirmPassword } = change
   const navigate = useNavigate();
   const dataUser = useAppSelector(selectUserData)
@@ -20,8 +21,11 @@ function Form({ change, handleOnChange, status, errorBack }: IUser.PropsForm) {
 
     switch (id) {
       case "save":
-        const { dataPost, authorize } = validationClick({ change, handleOnChange, routes: 'change' })
-        if (authorize) dispatch(userPosts(Object.assign(dataPost, { _id: dataUser?._id })));
+        const validation = validationClick({ change, handleOnChange, routes: 'change' })
+        if (dataUser?._id) {
+          const dataPost: Pick<IReduxUser.UserPostsProps, '_id' | 'password' | 'routes'> = Object.assign(validation.dataPost, { _id: dataUser._id })
+          if (validation.authorize) dispatch(userPosts(dataPost));
+        }
         return;
       case "back":
         navigate('/login');

@@ -3,7 +3,7 @@
 function Home() {
   return (
     <div>
-      home
+      <div className="hallelujah">¡Aleluya!</div>
     </div>
   );
 }

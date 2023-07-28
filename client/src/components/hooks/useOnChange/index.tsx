@@ -1,23 +1,42 @@
 import { useState } from 'react';
+import { IOnChange } from '../../../interfaces/onChange.interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUserError, selectUserError } from '../../../redux/reducers/user';
-import { IOnChange } from '../../utils/interface/onChange';
 import { validationChange } from '../../utils/validation';
 
-function useOnChange(initialState: IOnChange.PropsUseChange) {
+const useOnChange: IOnChange.UseOnChangeProps = (initialState) => {
   const dispatch = useAppDispatch();
   const errorBack = useAppSelector(selectUserError)
-  const [change, setChange] = useState<IOnChange.PropsUseChange>(initialState)
+  const [change, setChange] = useState<IOnChange.UseOnChange>(initialState)
 
-  const handleErrorOnBack = () => {
+  const handleErrorOnBack: IOnChange.HandleErrorOnBackProps = () => {
     if (errorBack) Object.entries(errorBack).forEach(([nameBack, valueBack]) => {
       setChange(prevState => { return ({ ...prevState, [nameBack]: { ...prevState[nameBack], message: valueBack } }) })
     })
   };
 
-  const handleOnChange = ({ name, value }: IOnChange.PropsOnChange) => {
+  // const handleErrorOnBack: IOnChange.handleErrorOnBack = () => {
+  //   if (errorBack) {
+  //     Object.entries(errorBack).forEach(([nameBack, valueBack]) => {
+  //       setChange(prevState => {
+  //         return ({
+  //           ...prevState,
+  //           [nameBack]: {
+  //             ...prevState[nameBack],
+  //             message: valueBack.message as string, // Ensure message is a string
+  //             change: valueBack.change as string,   // Ensure change is a string
+  //           }
+  //         });
+  //       });
+  //     });
+  //   }
+  // };
+
+
+
+  const handleOnChange: IOnChange.HandleOnChangeProps = ({ name, value }) => {
     if (errorBack) dispatch(clearUserError());
-    const { message, stop } = validationChange({ name: name.toString(), value, change })
+    const { message, stop } = validationChange({ name: name, value, change })
     setChange(prevState => {
       if (!stop) {
         return ({ ...prevState, [name]: { ...prevState[name], change: value, message: message } })

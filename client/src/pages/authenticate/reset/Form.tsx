@@ -1,6 +1,5 @@
 import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IUser } from '../../../components/utils/interface/user';
 import { validationClick } from '../../../components/utils/validation';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
@@ -8,9 +7,10 @@ import { userPosts } from '../../../redux/reducers/user/actions';
 import Input from '../../../styles/content/input/Input';
 import Loading from '../../../styles/content/loading';
 import Success from './Success';
+import { IUser } from '../../../interfaces/user/user.interface';
 
 
-function Form({ change, handleOnChange, status, errorBack }: IUser.PropsForm) {
+function Form({ change, handleOnChange, status, errorBack }: IUser.FormProps) {
   const { email } = change
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

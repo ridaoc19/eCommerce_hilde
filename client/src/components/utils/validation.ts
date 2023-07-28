@@ -1,16 +1,14 @@
-import { IValidation } from "./interface/validation";
+import { IValidation } from "../../interfaces/validation.interface";
 
-
-
-const initialState = {
+const initialState: IValidation.ValidationChangeReturn = {
   message: "",
   stop: false,
 };
 
-export function validationChange({ name, value, change }: IValidation.PropsChange): IValidation.ResponseChange {
+export const validationChange: IValidation.ValidationChangeProps = ({ name, value, change }) => {
 
-  let error: IValidation.ResponseChange = { ...initialState }
-  const updateError = ({ message, stop = false }: IValidation.ResponseChange) => { return { ...error, message, stop } }
+  let error: IValidation.ValidationChangeReturn = { ...initialState }
+  const updateError = ({ message, stop = false }: IValidation.ValidationChangeReturn) => { return { ...error, message, stop } }
   const { blankSpaces, requiredField, maximumCharacters, minimumCharacters } = repeatedMessages;
 
   switch (name) {
@@ -81,10 +79,10 @@ const repeatedMessages = {
 }
 
 
-export const validationClick = ({ change, handleOnChange, routes }: IValidation.PropsClick): IValidation.ResponseClick => {
+export const validationClick: IValidation.ValidationClickProps = ({ change, handleOnChange, routes }) => {
   const dataPost: IValidation.DataPost = { routes }
 
-  const filterError = Object.entries(change).map(([name, value]: [string, { change: string, message: string }]) => {
+  const filterError = Object.entries(change).map(([name, value]: IValidation.EntriesProps) => {
     handleOnChange({ name, value: value.change });
     const { message } = validationChange({ name, value: value.change, change })
     dataPost[name] = value.change

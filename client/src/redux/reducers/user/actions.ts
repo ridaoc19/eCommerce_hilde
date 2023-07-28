@@ -1,13 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { IReduxUser } from "../../../interfaces/redux/user.interface";
 import { templateMessage } from "./tools";
-import { IUser } from "../../../components/utils/interface/user";
-import { IValidation } from "../../../components/utils/interface/validation";
 
-export const userPosts = createAsyncThunk<IUser.ResponseUser, IValidation.DataPost | IUser.UserProps, { rejectValue: string }>(
+export const userPosts = createAsyncThunk<IReduxUser.UserPostsReturn, IReduxUser.UserPostsProps, { rejectValue: string }>(
   'posts/userPosts',
   async (dataPost, { rejectWithValue }) => {
-    const { routes, message } = templateMessage(dataPost.routes as IUser.Routes)
+    const { routes, message }: IReduxUser.TemplateMessageReturn = templateMessage({ routes: dataPost.routes as IReduxUser.Routes })
     delete dataPost.routes
     return await axios.post(`${process.env.REACT_APP_URL_API}/${`user/${routes}`}`, dataPost)
       .then(response => response.data)

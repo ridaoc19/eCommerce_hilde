@@ -1,6 +1,6 @@
-import { IUser } from "../../../components/utils/interface/user"
+import { IReduxUser } from "../../../interfaces/redux/user.interface"
 
-export function templateMessage(routes: IUser.Routes): { routes: string, message: string } {
+export const templateMessage: IReduxUser.TemplateMessageProps = ({ routes }) => {
   switch (routes) {
     case "registre":
       return {

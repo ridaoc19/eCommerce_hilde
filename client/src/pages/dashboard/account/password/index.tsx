@@ -1,18 +1,17 @@
-import { useEffect, useState, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { CreateContext } from '../../../../components/hooks/useContext';
+import { ActionType } from '../../../../components/hooks/useContext/dashboard/reducer';
 import useOnChange from '../../../../components/hooks/useOnChange';
-import { IOnChange } from '../../../../components/utils/interface/onChange';
+import { IContextData } from '../../../../components/utils/interface/context';
+import { IOnChange } from '../../../../interfaces/onChange.interface';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
 import Form from './Form';
 import Render from './Render';
-import { IContextData } from '../../../../components/utils/interface/context';
-import { CreateContext } from '../../../../components/hooks/useContext';
-import { ActionType } from '../../../../components/hooks/useContext/dashboard/reducer';
-
 
 function Password() {
   const dataUser = useAppSelector(selectUserData)!
-  const initialState: IOnChange.PropsUseChange = {
+  const initialState: IOnChange.UseOnChange = {
     password: { change: "", message: "" },
     confirmPassword: { change: "", message: "" },
     _id: { change: dataUser._id, message: "" },
