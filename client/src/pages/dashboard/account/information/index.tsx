@@ -3,7 +3,7 @@ import { CreateContext } from '../../../../components/hooks/useContext';
 import { ActionType } from '../../../../components/hooks/useContext/dashboard/reducer';
 import useOnChange from '../../../../components/hooks/useOnChange';
 import { IContextData } from '../../../../components/utils/interface/context';
-import { IOnChange } from '../../../../components/utils/interface/onChange';
+import { IOnChange } from '../../../../interfaces/onChange.interface';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
 import Form from './Form';
@@ -12,7 +12,7 @@ import Render from './Render';
 
 function Information() {
   const dataUser = useAppSelector(selectUserData)!
-  const initialState: IOnChange.PropsUseChange = {
+  const initialState: IOnChange.UseOnChange = {
     name: { change: dataUser?.name, message: "" },
     lastName: { change: dataUser?.lastName, message: "" },
     email: { change: dataUser?.email, message: "" },

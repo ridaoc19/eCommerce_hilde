@@ -1,32 +1,8 @@
 import { MouseEvent, useState } from "react";
 import Svg from "../../../components/assets/Svg";
+import { IInput } from "../../../interfaces/input.interface";
 
-interface Props {
-  // children: ReactNode,
-  svg?: {
-    type: string;
-    height?: number;
-    width?: number;
-    color?: string;
-  };
-  svgTwo?: {
-    type: string;
-    height?: number;
-    width?: number;
-    color?: string;
-  };
-  styleClass: string;
-  errorMessage: string;
-  input: {
-    type?: string;
-    placeholder: string;
-    value: string;
-    handleOnChange: (data: { name: string; value: string; }) => void;
-    name: string;
-  };
-}
-
-function Input({ svg, svgTwo, styleClass, errorMessage, input }: Props) {
+function Input({ svg, svgTwo, styleClass, errorMessage, input }: IInput.Props) {
   const [toggle, setToggle] = useState(false);
 
   const handleOnClick = (event: MouseEvent<HTMLButtonElement>) => {

@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { IReduxUser } from "../../../interfaces/redux/user.interface";
 import { RootState } from "../../store";
 import { userPosts } from "./actions";
-import { IUser } from "../../../components/utils/interface/user";
 
-const initialState: IUser.PostState = {
+const initialState: IReduxUser.InitialState = {
   data: null,
   loading: false,
   error: null,
@@ -28,7 +28,7 @@ const userSlice = createSlice({
       })
       .addCase(userPosts.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload
       })
       .addCase(userPosts.rejected, (state, action) => {
         state.loading = false;

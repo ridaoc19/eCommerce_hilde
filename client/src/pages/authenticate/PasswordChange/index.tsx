@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useOnChange from "../../../components/hooks/useOnChange";
-import { IOnChange } from "../../../components/utils/interface/onChange";
+import { IOnChange } from "../../../interfaces/onChange.interface";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
 import Success from "./Success";
 
-const initialState: IOnChange.PropsUseChange = {
+const initialState: IOnChange.UseOnChange = {
   password: { change: "", message: "" },
   confirmPassword: { change: "", message: "" },
 }
