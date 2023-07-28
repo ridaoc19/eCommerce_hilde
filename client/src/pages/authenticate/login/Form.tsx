@@ -21,11 +21,8 @@ function Form({ change, handleOnChange, status, errorBack }: IUser.FormProps) {
 
     switch (id) {
       case "login":
-        const validation = validationClick({ change, handleOnChange, routes: "login" })
-        const dataPost = validation.dataPost as any
-        // if (authorize) dispatch(userPosts(Object.assign(dataPost, {route: "user/login"})));
-        if (validation.authorize) dispatch(userPosts(dataPost));
-        // if (authorize) dispatch(loginPosts(dataPost));
+        const { dataPost, authorize } = validationClick({ change, handleOnChange, routes: "login" })
+        if (authorize) dispatch(userPosts(dataPost));
         return;
       case "reset":
         navigate('/reset');

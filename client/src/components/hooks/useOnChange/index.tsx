@@ -15,25 +15,6 @@ const useOnChange: IOnChange.UseOnChangeProps = (initialState) => {
     })
   };
 
-  // const handleErrorOnBack: IOnChange.handleErrorOnBack = () => {
-  //   if (errorBack) {
-  //     Object.entries(errorBack).forEach(([nameBack, valueBack]) => {
-  //       setChange(prevState => {
-  //         return ({
-  //           ...prevState,
-  //           [nameBack]: {
-  //             ...prevState[nameBack],
-  //             message: valueBack.message as string, // Ensure message is a string
-  //             change: valueBack.change as string,   // Ensure change is a string
-  //           }
-  //         });
-  //       });
-  //     });
-  //   }
-  // };
-
-
-
   const handleOnChange: IOnChange.HandleOnChangeProps = ({ name, value }) => {
     if (errorBack) dispatch(clearUserError());
     const { message, stop } = validationChange({ name: name, value, change })
