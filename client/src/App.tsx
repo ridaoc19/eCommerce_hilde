@@ -18,19 +18,17 @@ function App() {
     if (token) {
       const dataPost: Pick<IReduxUser.UserPostsProps, 'token' | 'routes'> = Object.assign({ token }, { routes: 'token' as const });
       if (token && !user) dispatch(userPosts(dataPost))
-    } else if (!token || error === "Invalid token") {
+    } 
+    // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    if (error === "Invalid token") {
       localStorage.removeItem("token")
-      if (error === "Invalid token") dispatch(clearUser());
+      dispatch(clearUser())
     }
     // eslint-disable-next-line
   }, [error])
-
-  // useEffect(() => {
-  //   if (error === "Invalid token") {
-  //     localStorage.removeItem("token")
-  //   }
-  //   // eslint-disable-next-line
-  // }, [error])
 
   return (
     <div className="App">
