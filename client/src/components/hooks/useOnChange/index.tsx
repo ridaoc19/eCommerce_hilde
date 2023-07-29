@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { IOnChange } from '../../../interfaces/onChange.interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUserError, selectUserError } from '../../../redux/reducers/user';
 import { validationChange } from '../../utils/validation';
+import { IOnChange } from '../../../interfaces/user/onChangeUser.interface';
 
 const useOnChange: IOnChange.UseOnChangeProps = (initialState) => {
   const dispatch = useAppDispatch();

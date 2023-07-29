@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { IReduxUser } from "../../../interfaces/redux/user.interface";
+import { IReduxUser } from "../../../interfaces/user/reduxUser.interface";
 import { templateMessage } from "./tools";
 
 export const userPosts = createAsyncThunk<IReduxUser.UserPostsReturn, IReduxUser.UserPostsProps, { rejectValue: string }>(

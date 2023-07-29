@@ -3,7 +3,7 @@ import { CreateContext } from '../../../../components/hooks/useContext';
 import { ActionTypeDashboard } from '../../../../components/hooks/useContext/dashboard/reducer';
 import useOnChange from '../../../../components/hooks/useOnChange';
 import { IContextData } from '../../../../interfaces/context.interface';
-import { IOnChange } from '../../../../interfaces/onChange.interface';
+import { IOnChange } from '../../../../interfaces/user/onChangeUser.interface';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
 import Form from './Form';

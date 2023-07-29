@@ -1,11 +1,11 @@
 import { MouseEventHandler } from 'react';
 import { validationClick } from '../../../../components/utils/validation';
+import { IUser } from '../../../../interfaces/user/authenticate/user.interface';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { userPosts } from '../../../../redux/reducers/user/actions';
 import Input from '../../../../styles/content/input/Input';
 import Loading from '../../../../styles/content/loading';
 import Success from './Success';
-import { IUser } from '../../../../interfaces/user/user.interface';
 
 function Form({ handleOnChange, change, errorBack, status }: IUser.FormProps) {
   const dispatch = useAppDispatch();
