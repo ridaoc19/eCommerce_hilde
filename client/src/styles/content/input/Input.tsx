@@ -1,6 +1,6 @@
 import { MouseEvent, useState } from "react";
 import Svg from "../../../components/assets/Svg";
-import { IInput } from "../../../interfaces/input.interface";
+import { IInput } from "../../../interfaces/style/input.interface";
 
 function Input({ svg, svgTwo, styleClass, errorMessage, input }: IInput.Props) {
   const [toggle, setToggle] = useState(false);

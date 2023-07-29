@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useOnChange from "../../../components/hooks/useOnChange";
-import { IOnChange } from "../../../interfaces/onChange.interface";
+import { IOnChange } from "../../../interfaces/user/onChangeUser.interface";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";

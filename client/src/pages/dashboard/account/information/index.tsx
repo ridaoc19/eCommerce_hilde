@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { CreateContext } from '../../../../components/hooks/useContext';
 import { ActionTypeDashboard } from '../../../../components/hooks/useContext/dashboard/reducer';
 import useOnChange from '../../../../components/hooks/useOnChange';
-import { IOnChange } from '../../../../interfaces/onChange.interface';
+import { IContextData } from '../../../../interfaces/context.interface';
+import { IOnChange } from '../../../../interfaces/user/onChangeUser.interface';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
 import Form from './Form';
 import Render from './Render';
-import { IContextData } from '../../../../interfaces/context.interface';
 
 
 function Information() {

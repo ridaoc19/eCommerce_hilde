@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validationClick } from '../../../components/utils/validation';
-import { IUser } from '../../../interfaces/user/user.interface';
+import { IUser } from '../../../interfaces/user/authenticate/user.interface';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';

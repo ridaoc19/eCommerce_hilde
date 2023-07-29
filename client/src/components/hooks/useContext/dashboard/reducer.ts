@@ -1,4 +1,4 @@
-import { IDashboard } from "../../../../interfaces/dashboard/dashboard.interface";
+import { IDashboard } from "../../../../interfaces/context.interface";
 
 export enum ActionTypeDashboard {
   SELECT_COMPONENT = "SELECT_COMPONENT",
