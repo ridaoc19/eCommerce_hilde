@@ -2,7 +2,7 @@
 // ==============================|| useContext ||============================== //
 
 import { ReactNode } from "react";
-import { IDashboard } from "./dashboard/dashboard.interface";
+import { ActionTypeDashboard } from "../components/hooks/useContext/dashboard/reducer";
 
 export interface IContextData {
   dashboard: {
@@ -13,4 +13,14 @@ export interface IContextData {
 
 export interface StoreContextProps {
   children: ReactNode;
+}
+
+
+export namespace IDashboard {
+
+  export type SelectAction = { type: ActionTypeDashboard; payload: string };
+  // export type SelectAction = { type: ActionType.SELECT_COMPONENT; payload: string };
+
+  export type AppState = { component: string, account: { information: boolean, password: boolean } };
+  export type AppAction = SelectAction;
 }

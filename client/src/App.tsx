@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import './App.scss';
 import { StoreContext } from './components/hooks/useContext';
-import { IReduxUser } from './interfaces/redux/user.interface';
+import { IReduxUser } from './interfaces/user/reduxUser.interface';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { clearUser, selectUserData, selectUserError } from './redux/reducers/user';
 import { userPosts } from './redux/reducers/user/actions';

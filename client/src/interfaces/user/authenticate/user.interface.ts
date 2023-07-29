@@ -1,5 +1,6 @@
-import { IOnChange } from "../onChange.interface";
-import { IReduxUser } from "../redux/user.interface";
+import { IOnChange } from "../onChangeUser.interface";
+import { IReduxUser } from "../reduxUser.interface";
+
 
 export namespace IUser {
   // ==============================|| Form user ||============================== //
