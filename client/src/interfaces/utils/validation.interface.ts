@@ -1,4 +1,4 @@
-import { IOnChange } from "./onChangeUser.interface";
+import { IOnChange } from "../hooks/onChange.interface";
 
 export namespace IValidation {
   // ==============================|| ValidationChangeProps ||============================== //

@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import Svg from '../../../assets/icons/Svg';
 import Input from '../../../components/common/input/Input';
 import Spinner from '../../../components/common/spinner';
-import { IUser } from '../../../interfaces/user/authenticate/user.interface';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
 import { validationClick } from '../../../utils/validations/validation';
 import Success from './Success';
+import { IAuth } from '../../../interfaces/features/auth/auth.interface';
 
-function Form({ change, handleOnChange, status, errorBack }: IUser.FormProps) {
+function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
   const { email, password } = change
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

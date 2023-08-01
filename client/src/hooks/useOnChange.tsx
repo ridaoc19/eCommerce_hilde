@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IOnChange } from '../interfaces/user/onChangeUser.interface';
+import { IOnChange } from '../interfaces/hooks/onChange.interface';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { clearUserError, selectUserError } from '../redux/reducers/user';
 import { validationChange } from '../utils/validations/validation';

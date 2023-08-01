@@ -5,7 +5,7 @@ import { Navigate, Outlet } from "react-router-dom";
 function ProtectedAuth() {
   // const user = useAppSelector(selectUserData);
 
-  if (!localStorage?.token) {
+  if (localStorage?.token) {
     // if (user?.v) {
     return <Navigate to={"/"} />
   } else {

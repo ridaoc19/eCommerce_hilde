@@ -1,4 +1,4 @@
-import { IReduxUser } from "../../../interfaces/user/reduxUser.interface"
+import { IReduxUser } from "../../../interfaces/redux/user/user.interface"
 
 export const templateMessage: IReduxUser.TemplateMessageProps = ({ routes }) => {
   switch (routes) {

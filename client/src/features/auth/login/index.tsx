@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IOnChange } from "../../../interfaces/user/onChangeUser.interface";
+import { IOnChange } from "../../../interfaces/hooks/onChange.interface";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
@@ -29,7 +29,7 @@ function Login() {
         setTimeout(() => {
           return navigate('/')
         }, 10000);
-        localStorage.token = dataUser.token;
+        // localStorage.token = dataUser.token;
       } else {
         return navigate('/change');
       }

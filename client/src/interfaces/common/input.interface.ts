@@ -1,4 +1,4 @@
-import { IOnChange } from "../user/onChangeUser.interface";
+import { IOnChange } from "../hooks/onChange.interface";
 
 export namespace IInput {
   export interface Props {
