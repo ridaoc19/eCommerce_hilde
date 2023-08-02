@@ -2,9 +2,8 @@ import { lazy } from 'react';
 import Loadable from '../_tools/Loadable';
 import ProtectedAuth from '../_tools/ProtectedAuth';
 
-
-
 const Login = Loadable(lazy(() => import('../../features/auth/login')))
+const Registre = Loadable(lazy(() => import('../../features/auth/registre')))
 
 const Auth = {
   path: "/",
@@ -14,10 +13,10 @@ const Auth = {
       path: "/login",
       element: <Login />,
     },
-    // {
-    //   path: "/registre",
-    //   element: <Registre />,
-    // },
+    {
+      path: "/registre",
+      element: <Registre />,
+    },
     // {
     //   path: "/reset",
     //   element: <Reset />,

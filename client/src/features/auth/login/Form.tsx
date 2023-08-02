@@ -1,7 +1,6 @@
 import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Svg from '../../../assets/icons/Svg';
-import Input from '../../../components/common/userInput/UserInput';
 import Spinner from '../../../components/common/spinner';
 import { IAuth } from '../../../interfaces/features/auth/auth.interface';
 import { useAppDispatch } from '../../../redux/hooks';
@@ -9,6 +8,7 @@ import { clearUser } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
 import Success from './Success';
 import { userValidationClick } from '../../../utils/validations/userValidation';
+import UserInput from '../../../components/common/userInput/UserInput';
 
 function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
   const { email, password } = change
@@ -52,11 +52,11 @@ function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
 
         <main>
           <div className="form__input--content">
-            <Input svg={{ type: "email" }} styleClass="login_email" errorMessage={email.message}
+            <UserInput svg={{ type: "email" }} styleClass="login_email" errorMessage={email.message}
               input={{ type: "email", placeholder: "Correo electrónico", value: email.change, handleOnChange, name: "email" }}
             />
 
-            <Input
+            <UserInput
               svg={{ type: "padlock" }} svgTwo={{ type: "eye" }} styleClass="login--password" errorMessage={password.message}
               input={{ type: "password", placeholder: "Contraseña", value: password.change, handleOnChange, name: "password" }}
             />

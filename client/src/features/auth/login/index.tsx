@@ -30,7 +30,7 @@ function Login() {
         setTimeout(() => {
           return navigate('/')
         }, 10000);
-        // localStorage.token = dataUser.token;
+        localStorage.token = dataUser.token;
       } else {
         return navigate('/change');
       }
