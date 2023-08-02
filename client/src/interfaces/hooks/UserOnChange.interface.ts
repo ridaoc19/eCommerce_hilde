@@ -1,7 +1,8 @@
-export namespace IOnChange {
+export namespace IUserOnChange {
 
   export type Keys = string;
   export type Values = { change: string, message: string };
+  // export type Values = { change: string | Array<string | number> | Record<string, string | number>, message: string };
 
   // ==============================|| UseOnChangeProps ||============================== //
   export type UseOnChange = { [key: Keys]: Values }
@@ -11,11 +12,11 @@ export namespace IOnChange {
     handleOnChange: HandleOnChangeProps,
     handleErrorOnBack: HandleErrorOnBackProps
   }
-  
+
   export type UseOnChangeProps = (data: UseOnChange) => UseOnChangeReturn;
 
   // ==============================|| OnChangeProps ||============================== //
- export type HandleOnChange = { name: string, value: string }
+  export type HandleOnChange = { name: string, value: string }
   export type HandleOnChangeProps = (data: HandleOnChange) => void;
 
   // ==============================|| handleErrorOnBack ||============================== //

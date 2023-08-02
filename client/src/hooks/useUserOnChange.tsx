@@ -1,22 +1,22 @@
 import { useState } from 'react';
-import { IOnChange } from '../interfaces/hooks/onChange.interface';
+import { IUserOnChange } from '../interfaces/hooks/UserOnChange.interface';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { clearUserError, selectUserError } from '../redux/reducers/user';
-import { validationChange } from '../utils/validations/validation';
+import { validationChange } from '../utils/validations/userValidation';
 
 
-const useOnChange: IOnChange.UseOnChangeProps = (initialState) => {
+const useUserOnChange: IUserOnChange.UseOnChangeProps = (initialState) => {
   const dispatch = useAppDispatch();
   const errorBack = useAppSelector(selectUserError)
-  const [change, setChange] = useState<IOnChange.UseOnChange>(initialState)
+  const [change, setChange] = useState<IUserOnChange.UseOnChange>(initialState)
 
-  const handleErrorOnBack: IOnChange.HandleErrorOnBackProps = () => {
+  const handleErrorOnBack: IUserOnChange.HandleErrorOnBackProps = () => {
     if (errorBack) Object.entries(errorBack).forEach(([nameBack, valueBack]) => {
       setChange(prevState => { return ({ ...prevState, [nameBack]: { ...prevState[nameBack], message: valueBack } }) })
     })
   };
 
-  const handleOnChange: IOnChange.HandleOnChangeProps = ({ name, value }) => {
+  const handleOnChange: IUserOnChange.HandleOnChangeProps = ({ name, value }) => {
     if (errorBack) dispatch(clearUserError());
     const { message, stop } = validationChange({ name: name, value, change })
     setChange(prevState => {
@@ -31,7 +31,7 @@ const useOnChange: IOnChange.UseOnChangeProps = (initialState) => {
   return { change, handleOnChange, handleErrorOnBack };
 }
 
-export default useOnChange;
+export default useUserOnChange;
 
 
 

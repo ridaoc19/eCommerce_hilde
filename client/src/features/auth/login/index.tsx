@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IOnChange } from "../../../interfaces/hooks/onChange.interface";
+import useOnChange from "../../../hooks/useUserOnChange";
+import { IAuth } from "../../../interfaces/features/auth/auth.interface";
+import { IUserOnChange } from "../../../interfaces/hooks/UserOnChange.interface";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
-import useOnChange from "../../../hooks/useOnChange";
 
-const initialState: IOnChange.UseOnChange = {
+const initialState: IUserOnChange.UseOnChange = {
   email: { change: "", message: "" },
   password: { change: "", message: "" },
 }
@@ -17,7 +18,7 @@ function Login() {
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const dataUser = useAppSelector(selectUserData)
-  const [status, setStatus] = useState<"form" | "loading" | "success" | "error">("form");
+  const [status, setStatus] = useState<IAuth.State>("form");
 
   useEffect(() => {
     if (errorBack instanceof Object) handleErrorOnBack()

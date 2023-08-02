@@ -1,14 +1,14 @@
-import { IValidation } from "../../interfaces/utils/validation.interface";
+import { IUserValidation } from "../../interfaces/utils/userValidation.interface";
 
-const initialState: IValidation.ValidationChangeReturn = {
+const initialState: IUserValidation.ValidationChangeReturn = {
   message: "",
   stop: false,
 };
 
-export const validationChange: IValidation.ValidationChangeProps = ({ name, value, change }) => {
+export const validationChange: IUserValidation.ValidationChangeProps = ({ name, value, change }) => {
 
-  let error: IValidation.ValidationChangeReturn = { ...initialState }
-  const updateError = ({ message, stop = false }: IValidation.ValidationChangeReturn) => { return { ...error, message, stop } }
+  let error: IUserValidation.ValidationChangeReturn = { ...initialState }
+  const updateError = ({ message, stop = false }: IUserValidation.ValidationChangeReturn) => { return { ...error, message, stop } }
   const { blankSpaces, requiredField, maximumCharacters, minimumCharacters } = repeatedMessages;
 
   switch (name) {
@@ -78,10 +78,10 @@ const repeatedMessages = {
 }
 
 
-export const validationClick: IValidation.ValidationClickProps = ({ change, handleOnChange, routes }) => {
-  const dataPost: IValidation.DataPost = { routes }
+export const validationClick: IUserValidation.ValidationClickProps = ({ change, handleOnChange, routes }) => {
+  const dataPost: IUserValidation.DataPost = { routes }
 
-  const filterError = Object.entries(change).map(([name, value]: IValidation.EntriesProps) => {
+  const filterError = Object.entries(change).map(([name, value]: IUserValidation.EntriesProps) => {
     handleOnChange({ name, value: value.change });
     const { message } = validationChange({ name, value: value.change, change })
     dataPost[name] = value.change

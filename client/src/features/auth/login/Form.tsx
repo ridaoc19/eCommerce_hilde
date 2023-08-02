@@ -6,7 +6,7 @@ import Spinner from '../../../components/common/spinner';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
-import { validationClick } from '../../../utils/validations/validation';
+import { validationClick } from '../../../utils/validations/userValidation';
 import Success from './Success';
 import { IAuth } from '../../../interfaces/features/auth/auth.interface';
 
@@ -22,7 +22,7 @@ function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
     switch (id) {
       case "login":
         const { dataPost, authorize } = validationClick({ change, handleOnChange, routes: "login" })
-        if (authorize) dispatch(userPosts(dataPost));
+        if (authorize) dispatch(userPosts(dataPost as IAuth.LoginData));
         return;
       case "reset":
         navigate('/reset');

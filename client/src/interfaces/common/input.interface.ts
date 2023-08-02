@@ -1,4 +1,3 @@
-import { IOnChange } from "../hooks/onChange.interface";
 
 export namespace IInput {
   export interface Props {
@@ -20,7 +19,7 @@ export namespace IInput {
       type?: string;
       placeholder: string;
       value: string;
-      handleOnChange: IOnChange.HandleOnChangeProps
+      handleOnChange: any
       name: string;
     };
   }

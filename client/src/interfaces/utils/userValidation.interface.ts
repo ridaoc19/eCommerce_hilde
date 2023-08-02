@@ -1,6 +1,6 @@
-import { IOnChange } from "../hooks/onChange.interface";
+import { IUserOnChange } from "../hooks/UserOnChange.interface";
 
-export namespace IValidation {
+export namespace IUserValidation {
   // ==============================|| ValidationChangeProps ||============================== //
   export interface ValidationChangeReturn {
     message: string;
@@ -10,15 +10,15 @@ export namespace IValidation {
   export interface ValidationChange {
     name: string;
     value: string;
-    change: IOnChange.UseOnChange;
+    change: IUserOnChange.UseOnChange;
   }
 
   export type ValidationChangeProps = (data: ValidationChange) => ValidationChangeReturn
 
   // ==============================|| ValidationClickProps ||============================== //
   export interface ValidationClick {
-    change: IOnChange.UseOnChange;
-    handleOnChange: IOnChange.HandleOnChangeProps
+    change: IUserOnChange.UseOnChange;
+    handleOnChange: IUserOnChange.HandleOnChangeProps
     routes: string;
   }
   export interface ValidationClickReturn {
@@ -28,5 +28,5 @@ export namespace IValidation {
   export type DataPost = Record<string, string | number>;
 
   export type ValidationClickProps = (data: ValidationClick) => ValidationClickReturn
-  export type EntriesProps = [IOnChange.Keys, IOnChange.Values]
+  export type EntriesProps = [IUserOnChange.Keys, IUserOnChange.Values]
 }
