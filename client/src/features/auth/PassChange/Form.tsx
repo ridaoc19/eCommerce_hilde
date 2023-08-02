@@ -1,18 +1,18 @@
 import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../../../components/common/spinner';
+import UserInput from '../../../components/common/userInput/UserInput';
+import { IAuth } from '../../../interfaces/features/auth/auth.interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserData } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
 import { userValidationClick } from '../../../utils/validations/userValidation';
-import { IAuth } from '../../../interfaces/features/auth/auth.interface';
-import UserInput from '../../../components/common/userInput/UserInput';
-import Spinner from '../../../components/common/spinner';
 
 
 function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
   const { password, confirmPassword } = change
   const navigate = useNavigate();
-  const dataUser = useAppSelector(selectUserData)
+  const dataUser = useAppSelector(selectUserData)!
   const dispatch = useAppDispatch();
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -21,9 +21,9 @@ function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
 
     switch (id) {
       case "save":
-        const { dataPost, authorize } = userValidationClick({ change, handleOnChange, routes: 'change' })
+        const { dataPost: data, authorize } = userValidationClick({ change, handleOnChange, routes: 'change' })
         if (dataUser?._id) {
-          if (authorize) dispatch(userPosts(dataPost as IAuth.passChangeData));
+          if (authorize) dispatch(userPosts(Object.assign(data, { _id: dataUser._id }) as IAuth.passChangeData));
         }
         return;
       case "back":
@@ -36,8 +36,8 @@ function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
   };
 
   return (
-    <div className="PasswordChange__form--container">
-      <div className="PasswordChange__form--content">
+    <div className="pass-change__form--container">
+      <div className="pass-change__form--content">
 
         <header className="form__header--content">
           <h2>Cambio de Contraseña</h2>
@@ -63,9 +63,9 @@ function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
           </div>
 
           <div className="form__button--content">
-            <button id='button__PasswordChange--save' onClick={handleOnClick} className="button_dark" disabled={status === "loading" || status === "success"} >{status === "loading" ? <Spinner /> : "Cambiar contraseña"}</button>
+            <button id='button__pass-change--save' onClick={handleOnClick} className="button_dark" disabled={status === "loading" || status === "success"} >{status === "loading" ? <Spinner /> : "Cambiar contraseña"}</button>
             <hr />
-            <button id='button__PasswordChange--back' onClick={handleOnClick} className="button_light" disabled={status === "loading" || status === "success"} >Volver</button>
+            <button id='button__pass-change--back' onClick={handleOnClick} className="button_light" disabled={status === "loading" || status === "success"} >Volver</button>
           </div>
         </main>
       </div>

@@ -6,7 +6,8 @@ export namespace IAuth {
   // ==============================|| Login ||============================== //
   export type LoginData = Pick<IUser.UserData, 'email' | 'password'> & Partial<Pick<IUser.UserData, 'routes'>>;
   export type RegistreData = Pick<IUser.UserData, 'name' | 'lastName' | 'email' | 'phone'> & Partial<Pick<IUser.UserData, 'routes'>>;
-  export type passChangeData = Pick<IUser.UserData, 'password'> & Partial<Pick<IUser.UserData, 'routes'>>;
+  export type passChangeData = Pick<IUser.UserData, 'password' | '_id'> & Partial<Pick<IUser.UserData, 'routes'>>;
+  export type resetData = Pick<IUser.UserData, 'email'> & Partial<Pick<IUser.UserData, 'routes'>>;
 
   // ==============================|| Form user ||============================== //
   export type Status = "form" | "loading" | "success" | "error"

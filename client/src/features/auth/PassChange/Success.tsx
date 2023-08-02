@@ -16,7 +16,7 @@ function Success() {
   };
 
   return (
-    <div className="passwordChange__success--container">
+    <div className="pass-change__success--container">
       <div>
         {Svg({ type: "success", height: 164, width: 164 })}
         <h2>¡Contraseña cambiada con éxito!</h2>
