@@ -14,6 +14,6 @@ export namespace IUserRedux {
     error: null | {} | string;
   }
 
-  export type UserPostsProps = IAuth.LoginData | IAuth.RegistreData
+  export type UserPostsProps = IAuth.LoginData | IAuth.RegistreData | IAuth.passChangeData
 
 }
