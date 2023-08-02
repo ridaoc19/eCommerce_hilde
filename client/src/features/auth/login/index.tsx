@@ -7,7 +7,7 @@ import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
 
-const initialState: IUserOnChange.UseOnChange = {
+const initialState: IUserOnChange.UseUserOnChange = {
   email: { change: "", message: "" },
   password: { change: "", message: "" },
 }
@@ -18,7 +18,7 @@ function Login() {
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const dataUser = useAppSelector(selectUserData)
-  const [status, setStatus] = useState<IAuth.State>("form");
+  const [status, setStatus] = useState<IAuth.Status>("form");
 
   useEffect(() => {
     if (errorBack instanceof Object) handleErrorOnBack()

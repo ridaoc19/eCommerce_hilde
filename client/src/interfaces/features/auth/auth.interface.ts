@@ -7,12 +7,12 @@ export namespace IAuth {
   export type LoginData = Pick<IUser.UserData, 'email' | 'password'> & Partial<Pick<IUser.UserData, 'routes'>>;
 
   // ==============================|| Form user ||============================== //
-  export type State = "form" | "loading" | "success" | "error"
+  export type Status = "form" | "loading" | "success" | "error"
 
   export interface FormProps {
-    change: IUserOnChange.UseOnChange
-    handleOnChange: (data: IUserOnChange.HandleOnChange) => void;
+    change: IUserOnChange.UseUserOnChange
+    handleOnChange: (data: IUserOnChange.HandleUserOnChange) => void;
     errorBack: IUserRedux.InitialState["error"];
-    status: string;
+    status: Status;
   }
 }

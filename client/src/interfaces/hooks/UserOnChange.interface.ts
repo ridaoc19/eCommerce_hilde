@@ -5,20 +5,20 @@ export namespace IUserOnChange {
   // export type Values = { change: string | Array<string | number> | Record<string, string | number>, message: string };
 
   // ==============================|| UseOnChangeProps ||============================== //
-  export type UseOnChange = { [key: Keys]: Values }
+  export type UseUserOnChange = { [key: Keys]: Values }
 
-  export type UseOnChangeReturn = {
-    change: UseOnChange,
-    handleOnChange: HandleOnChangeProps,
-    handleErrorOnBack: HandleErrorOnBackProps
+  export type UseUserOnChangeReturn = {
+    change: UseUserOnChange,
+    handleOnChange: HandleUserOnChangeProps,
+    handleErrorOnBack: HandleUserErrorOnBackProps
   }
 
-  export type UseOnChangeProps = (data: UseOnChange) => UseOnChangeReturn;
+  export type UseUserOnChangeProps = (data: UseUserOnChange) => UseUserOnChangeReturn;
 
   // ==============================|| OnChangeProps ||============================== //
-  export type HandleOnChange = { name: string, value: string }
-  export type HandleOnChangeProps = (data: HandleOnChange) => void;
+  export type HandleUserOnChange = { name: string, value: string }
+  export type HandleUserOnChangeProps = (data: HandleUserOnChange) => void;
 
-  // ==============================|| handleErrorOnBack ||============================== //
-  export type HandleErrorOnBackProps = () => void
+  // ==============================|| handleUserErrorOnBack ||============================== //
+  export type HandleUserErrorOnBackProps = () => void
 }

@@ -2,23 +2,23 @@ import { useState } from 'react';
 import { IUserOnChange } from '../interfaces/hooks/UserOnChange.interface';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { clearUserError, selectUserError } from '../redux/reducers/user';
-import { validationChange } from '../utils/validations/userValidation';
+import { userValidationChange } from '../utils/validations/userValidation';
 
 
-const useUserOnChange: IUserOnChange.UseOnChangeProps = (initialState) => {
+const useUserOnChange: IUserOnChange.UseUserOnChangeProps = (initialState) => {
   const dispatch = useAppDispatch();
   const errorBack = useAppSelector(selectUserError)
-  const [change, setChange] = useState<IUserOnChange.UseOnChange>(initialState)
+  const [change, setChange] = useState<IUserOnChange.UseUserOnChange>(initialState)
 
-  const handleErrorOnBack: IUserOnChange.HandleErrorOnBackProps = () => {
+  const handleErrorOnBack: IUserOnChange.HandleUserErrorOnBackProps = () => {
     if (errorBack) Object.entries(errorBack).forEach(([nameBack, valueBack]) => {
       setChange(prevState => { return ({ ...prevState, [nameBack]: { ...prevState[nameBack], message: valueBack } }) })
     })
   };
 
-  const handleOnChange: IUserOnChange.HandleOnChangeProps = ({ name, value }) => {
+  const handleOnChange: IUserOnChange.HandleUserOnChangeProps = ({ name, value }) => {
     if (errorBack) dispatch(clearUserError());
-    const { message, stop } = validationChange({ name: name, value, change })
+    const { message, stop } = userValidationChange({ name: name, value, change })
     setChange(prevState => {
       if (!stop) {
         return ({ ...prevState, [name]: { ...prevState[name], change: value, message: message } })

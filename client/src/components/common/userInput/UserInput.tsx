@@ -1,8 +1,8 @@
 import { MouseEvent, useState } from "react";
 import Svg from "../../../assets/icons/Svg";
-import { IInput } from "../../../interfaces/common/input.interface";
+import { IUserInput } from "../../../interfaces/common/userInput.interface";
 
-function Input({ svg, svgTwo, styleClass, errorMessage, input }: IInput.Props) {
+function UserInput({ svg, svgTwo, styleClass, errorMessage, input }: IUserInput.Props) {
   const [toggle, setToggle] = useState(false);
 
   const handleOnClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -11,7 +11,7 @@ function Input({ svg, svgTwo, styleClass, errorMessage, input }: IInput.Props) {
   };
 
   return (
-    <div className={`input input__container--${styleClass}`}>
+    <div className={`user-input input__container--${styleClass}`}>
       <div className={`${errorMessage ? "input_error" : "input_brand"} input__content--${styleClass}`} >
         <span style={{ border: errorMessage ? "1px solid #DB2424" : input.value.length === 0 ? "1px solid #FFA451" : "1px solid #66B949" }}>
           <span className={`input__svg--${styleClass}`}>
@@ -56,4 +56,4 @@ function Input({ svg, svgTwo, styleClass, errorMessage, input }: IInput.Props) {
   );
 }
 
-export default Input;
+export default UserInput;

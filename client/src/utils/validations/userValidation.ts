@@ -5,7 +5,7 @@ const initialState: IUserValidation.ValidationChangeReturn = {
   stop: false,
 };
 
-export const validationChange: IUserValidation.ValidationChangeProps = ({ name, value, change }) => {
+export const userValidationChange: IUserValidation.ValidationChangeProps = ({ name, value, change }) => {
 
   let error: IUserValidation.ValidationChangeReturn = { ...initialState }
   const updateError = ({ message, stop = false }: IUserValidation.ValidationChangeReturn) => { return { ...error, message, stop } }
@@ -78,12 +78,12 @@ const repeatedMessages = {
 }
 
 
-export const validationClick: IUserValidation.ValidationClickProps = ({ change, handleOnChange, routes }) => {
+export const userValidationClick: IUserValidation.ValidationClickProps = ({ change, handleOnChange, routes }) => {
   const dataPost: IUserValidation.DataPost = { routes }
 
   const filterError = Object.entries(change).map(([name, value]: IUserValidation.EntriesProps) => {
     handleOnChange({ name, value: value.change });
-    const { message } = validationChange({ name, value: value.change, change })
+    const { message } = userValidationChange({ name, value: value.change, change })
     dataPost[name] = value.change
     return message
   })

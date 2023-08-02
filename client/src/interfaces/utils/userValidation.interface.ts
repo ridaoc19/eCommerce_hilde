@@ -1,4 +1,5 @@
 import { IUserOnChange } from "../hooks/UserOnChange.interface";
+import { IUser } from "../sections/user.interface";
 
 export namespace IUserValidation {
   // ==============================|| ValidationChangeProps ||============================== //
@@ -10,16 +11,16 @@ export namespace IUserValidation {
   export interface ValidationChange {
     name: string;
     value: string;
-    change: IUserOnChange.UseOnChange;
+    change: IUserOnChange.UseUserOnChange;
   }
 
   export type ValidationChangeProps = (data: ValidationChange) => ValidationChangeReturn
 
   // ==============================|| ValidationClickProps ||============================== //
   export interface ValidationClick {
-    change: IUserOnChange.UseOnChange;
-    handleOnChange: IUserOnChange.HandleOnChangeProps
-    routes: string;
+    change: IUserOnChange.UseUserOnChange;
+    handleOnChange: IUserOnChange.HandleUserOnChangeProps
+    routes: IUser.Routes;
   }
   export interface ValidationClickReturn {
     dataPost: DataPost,

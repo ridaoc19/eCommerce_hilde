@@ -1,5 +1,6 @@
+import { IUserOnChange } from "../hooks/UserOnChange.interface";
 
-export namespace IInput {
+export namespace IUserInput {
   export interface Props {
     svg?: {
       type: string;
@@ -19,7 +20,7 @@ export namespace IInput {
       type?: string;
       placeholder: string;
       value: string;
-      handleOnChange: any
+      handleOnChange: IUserOnChange.HandleUserOnChangeProps
       name: string;
     };
   }
