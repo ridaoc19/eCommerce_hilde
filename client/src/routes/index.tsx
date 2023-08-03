@@ -1,11 +1,9 @@
 import { useRoutes } from "react-router-dom";
-import Authenticate from "./Authenticate";
-import Main from "./Main";
-import DashboardRoute from "./DashboardRoute";
+import Auth from "./content/Auth";
+import Feature from "./content/Feature";
+import Dash from "./content/Dash";
 
-// ==============================|| ROUTING RENDER ||============================== //
 
-export default function ThemeRoutes() {
-  return useRoutes([...Main, Authenticate, DashboardRoute])
-  // return useRoutes(Main.concat(Authenticate))
+export default function Routes() {
+  return useRoutes([...Feature, Auth, Dash])
 }

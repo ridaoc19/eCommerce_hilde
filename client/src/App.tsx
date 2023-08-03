@@ -1,24 +1,24 @@
 import { useEffect } from 'react';
-import './App.scss';
-import { StoreContext } from './components/hooks/useContext';
-import { IReduxUser } from './interfaces/user/reduxUser.interface';
+import { IAuth } from './interfaces/features/auth/auth.interface';
+import { IUser } from './interfaces/sections/user.interface';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { clearUser, selectUserData, selectUserError } from './redux/reducers/user';
 import { userPosts } from './redux/reducers/user/actions';
 import Routes from './routes';
-
+import './styles/app/App.scss';
+import { StoreContext } from './hooks/useContext';
 
 function App() {
   const dispatch = useAppDispatch();
   const error = useAppSelector(selectUserError)
   const user = useAppSelector(selectUserData)
-  const token: IReduxUser.UserPostsProps['token'] = localStorage?.token
+  const token: IUser.UserData['token'] = localStorage?.token
 
   useEffect(() => {
     if (token) {
-      const dataPost: Pick<IReduxUser.UserPostsProps, 'token' | 'routes'> = Object.assign({ token }, { routes: 'token' as const });
-      if (token && !user) dispatch(userPosts(dataPost))
-    } 
+      const dataPost = Object.assign({ token }, { routes: 'token' as const });
+      if (token && !user) dispatch(userPosts(dataPost as IAuth.tokenData))
+    }
     // eslint-disable-next-line
   }, [])
 
@@ -29,14 +29,11 @@ function App() {
     }
     // eslint-disable-next-line
   }, [error])
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <StoreContext>
-          <Routes />
-        </StoreContext>
-      </header>
+    <div>
+      <StoreContext>
+        <Routes />
+      </StoreContext>
     </div>
   );
 }

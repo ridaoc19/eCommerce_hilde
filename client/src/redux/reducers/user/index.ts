@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IReduxUser } from "../../../interfaces/user/reduxUser.interface";
 import { RootState } from "../../store";
 import { userPosts } from "./actions";
+import { IUserRedux } from "../../../interfaces/redux/user/user.interface";
 
-const initialState: IReduxUser.InitialState = {
+const initialState: IUserRedux.InitialState = {
   data: null,
   loading: false,
   error: null,
