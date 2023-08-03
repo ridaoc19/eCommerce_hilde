@@ -1,12 +1,12 @@
 import React, { MouseEventHandler, useContext, useState } from 'react';
 import Svg from '../../../assets/icons/Svg';
 import { CreateContext } from '../../../hooks/useContext';
-import { ActionTypeDashboard } from '../../../hooks/useContext/dashboard/reducer';
+import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
 import { ISidebar } from '../../../interfaces/components/layout/layout.interface';
-import { IContextData } from '../../../interfaces/hooks/context.interface';
 import { IUser } from '../../../interfaces/sections/user.interface';
 import { useAppSelector } from '../../../redux/hooks';
 import { selectUserData } from '../../../redux/reducers/user';
+import { IContext } from '../../../interfaces/hooks/context.interface';
 
 const item: ISidebar.ItemRole[] = [
   { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
@@ -16,7 +16,7 @@ const item: ISidebar.ItemRole[] = [
 
 
 function Sidebar() {
-  const { dashboard: { state: { component }, dispatch } }: IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { component }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
   const dataUser = useAppSelector(selectUserData)
 
   const [expanded, setExpanded] = useState(false);

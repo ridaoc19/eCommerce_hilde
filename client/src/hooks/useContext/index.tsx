@@ -1,10 +1,10 @@
 import { createContext } from "react";
-import StateDashboard from "./dashboard/State";
-import { IContextData, StoreContextProps } from "../../interfaces/hooks/context.interface";
+import StateDashboard from "./dash/State";
+import { IContext } from "../../interfaces/hooks/context.interface";
 
-export const CreateContext = createContext<IContextData | null>(null);
+export const CreateContext = createContext<IContext.IContextData | null>(null);
 
-export const StoreContext = ({ children }: StoreContextProps) => {
+export const StoreContext = ({ children }: IContext.StoreContextProps) => {
   const dashboard = StateDashboard();
 
   return (

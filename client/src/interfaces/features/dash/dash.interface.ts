@@ -1,10 +1,12 @@
-import { ActionTypeDashboard } from "../../../hooks/useContext/dashboard/reducer";
+import { IUser } from "../../sections/user.interface";
 
 export namespace IDash {
+}
 
-  export type SelectAction = { type: ActionTypeDashboard; payload: string };
-  // export type SelectAction = { type: ActionType.SELECT_COMPONENT; payload: string };
+export namespace IInformation {
+  export type InformationData = Pick<IUser.UserData, '_id' | 'name' | 'lastName' | 'email' | 'phone' | 'components'> & Partial<Pick<IUser.UserData, 'routes'>>;
+}
 
-  export type AppState = { component: string, account: { information: boolean, password: boolean } };
-  export type AppAction = SelectAction;
+export namespace IPassword {
+  export type PasswordData = Pick<IUser.UserData, '_id' | 'password' | 'components'> & Partial<Pick<IUser.UserData, 'routes'>>;
 }

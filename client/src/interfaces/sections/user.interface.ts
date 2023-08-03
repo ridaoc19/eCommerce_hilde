@@ -14,7 +14,7 @@ export namespace IUser {
     routes: Routes;
     verified: boolean;
     roles: Roles;
-    // components: string;
+    components: string;
     // oldPassword: string;
     // newPassword: string;
     // confirmNewPassword: string;

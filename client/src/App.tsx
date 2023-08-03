@@ -6,6 +6,7 @@ import { clearUser, selectUserData, selectUserError } from './redux/reducers/use
 import { userPosts } from './redux/reducers/user/actions';
 import Routes from './routes';
 import './styles/app/App.scss';
+import { StoreContext } from './hooks/useContext';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -30,7 +31,9 @@ function App() {
   }, [error])
   return (
     <div>
-      <Routes />
+      <StoreContext>
+        <Routes />
+      </StoreContext>
     </div>
   );
 }

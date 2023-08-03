@@ -1,4 +1,5 @@
 import { IAuth } from "../../features/auth/auth.interface";
+import { IInformation, IPassword } from "../../features/dash/dash.interface";
 import { IUser } from "../../sections/user.interface";
 
 export namespace IUserRedux {
@@ -14,6 +15,6 @@ export namespace IUserRedux {
     error: null | {} | string;
   }
 
-  export type UserPostsProps = IAuth.LoginData | IAuth.RegistreData | IAuth.passChangeData | IAuth.resetData | IAuth.tokenData;
+  export type UserPostsProps = IAuth.LoginData | IAuth.RegistreData | IAuth.passChangeData | IAuth.resetData | IAuth.tokenData | IInformation.InformationData | IPassword.PasswordData;
 
 }

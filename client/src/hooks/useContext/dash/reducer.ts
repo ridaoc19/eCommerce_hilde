@@ -1,11 +1,11 @@
-import { IDash } from "../../../interfaces/features/dash/dash.interface";
+import { IDashReducer } from "../../../interfaces/hooks/context.interface";
 
 export enum ActionTypeDashboard {
   SELECT_COMPONENT = "SELECT_COMPONENT",
   ACCOUNT_TOGGLE_INFORMATION = "ACCOUNT_TOGGLE_INFORMATION",
   ACCOUNT_TOGGLE_PASSWORD = "ACCOUNT_TOGGLE_PASSWORD",
 }
-const initialState: IDash.AppState = {
+const initialState: IDashReducer.AppState = {
   component: "",
   account: {
     information: false,
@@ -13,7 +13,7 @@ const initialState: IDash.AppState = {
   }
 };
 
-const reducer = (state: IDash.AppState, action: IDash.AppAction): IDash.AppState => {
+const reducer: IDashReducer.Reducer = (state, action) => {
   switch (action.type) {
     case ActionTypeDashboard.SELECT_COMPONENT:
       return { ...state, component: action.payload };
