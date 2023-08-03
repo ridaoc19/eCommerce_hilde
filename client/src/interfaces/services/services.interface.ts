@@ -3,7 +3,7 @@ import { IUser } from "../sections/user.interface";
 
 export namespace IServices {
   export interface UserApi {
-    routes: IUser.Routes;
+    routes: IUser.UserData["routes"];
     dataPost: IUserRedux.UserPostsProps;
   }
 }

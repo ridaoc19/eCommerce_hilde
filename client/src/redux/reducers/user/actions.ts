@@ -7,7 +7,7 @@ import { templateMessage } from "./templateMessage";
 export const userPosts = createAsyncThunk<IUser.UserData, IUserRedux.UserPostsProps, { rejectValue: string }>(
   'posts/userPosts',
   async (dataPost, { rejectWithValue }) => {
-    const { routes, message }: IUserRedux.TemplateMessageReturn = templateMessage({ routes: dataPost.routes as IUser.Routes })
+    const { routes, message }: IUserRedux.TemplateMessageReturn = templateMessage({ routes: dataPost.routes as IUser.UserData["routes"] })
     delete dataPost.routes
     return await userApi({ routes, dataPost })
       .then(response => response.data)

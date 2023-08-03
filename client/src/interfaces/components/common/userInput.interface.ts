@@ -1,4 +1,4 @@
-import { IUserOnChange } from "../hooks/UserOnChange.interface";
+import { IUserOnChange } from "../../hooks/UserOnChange.interface";
 
 export namespace IUserInput {
   export interface Props {

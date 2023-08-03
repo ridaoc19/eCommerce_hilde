@@ -3,10 +3,10 @@ import { IUser } from "../../sections/user.interface";
 
 export namespace IUserRedux {
   export interface TemplateMessageReturn {
-    routes: IUser.Routes;
+    routes: IUser.UserData["routes"];
     message: string;
   }
-  export type TemplateMessageProps = (data: { routes: IUser.Routes }) => TemplateMessageReturn
+  export type TemplateMessageProps = (data: { routes: IUser.UserData["routes"] }) => TemplateMessageReturn
 
   export interface InitialState {
     data: IUser.UserData | null;

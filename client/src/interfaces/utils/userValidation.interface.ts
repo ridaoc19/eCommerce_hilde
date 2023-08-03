@@ -20,7 +20,7 @@ export namespace IUserValidation {
   export interface ValidationClick {
     change: IUserOnChange.UseUserOnChange;
     handleOnChange: IUserOnChange.HandleUserOnChangeProps
-    routes: IUser.Routes;
+    routes: IUser.UserData["routes"];
   }
   export interface ValidationClickReturn {
     dataPost: DataPost,
