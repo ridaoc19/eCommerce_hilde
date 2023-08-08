@@ -1,22 +1,22 @@
 import React, { MouseEventHandler, useContext, useState } from 'react';
-import Svg from '../../../assets/icons/Svg';
+// import Svg from '../../../assets/icons/Svg';
 import { CreateContext } from '../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
-import { ISidebar } from '../../../interfaces/components/layout/layout.interface';
+// import { ISidebar } from '../../../interfaces/components/layout/layout.interface';
 import { IUser } from '../../../interfaces/sections/user.interface';
 import { useAppSelector } from '../../../redux/hooks';
 import { selectUserData } from '../../../redux/reducers/user';
 import { IContext } from '../../../interfaces/hooks/context.interface';
 
-const item: ISidebar.ItemRole[] = [
-  { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
-  { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
-  { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
-];
+// const item: ISidebar.ItemRole[] = [
+//   { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
+//   { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
+//   { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
+// ];
 
 
 function Sidebar() {
-  const { dashboard: { state: { component }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { component, itemSidebar }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
   const dataUser = useAppSelector(selectUserData)
 
   const [expanded, setExpanded] = useState(false);
@@ -47,7 +47,7 @@ function Sidebar() {
 
       <div className='sidebar__items--container'>
         {['item-logo', 'item-text'].map((u, i) => <ul key={i} className={u}>
-          {item.map((e, i) => {
+          {itemSidebar.map((e, i) => {
             if (dataUser?.roles) {
               const roleIncluded = e.roles.includes(dataUser.roles as IUser.UserData["roles"]);
               return roleIncluded && (
