@@ -4,6 +4,7 @@ import { RootState } from "../../store";
 import { departmentPosts, productPosts } from "./actions";
 
 const initialState: IProductRedux.InitialState = {
+  products: null,
   product: null,
   loading: false,
   error: null,
@@ -14,7 +15,7 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     clearProduct: (state) => {
-      state.product = null;
+      state.products = null;
       state.loading = false;
       state.error = null;
     },
@@ -28,7 +29,7 @@ const productSlice = createSlice({
       })
       .addCase(departmentPosts.fulfilled, (state, action) => {
         state.loading = false;
-        state.product = action.payload
+        state.products = action.payload
       })
       .addCase(departmentPosts.rejected, (state, action) => {
         state.loading = false;
@@ -41,7 +42,7 @@ const productSlice = createSlice({
       })
       .addCase(productPosts.fulfilled, (state, action) => {
         state.loading = false;
-        state.product = action.payload
+        state.products = action.payload
       })
       .addCase(productPosts.rejected, (state, action) => {
         state.loading = false;
@@ -56,4 +57,4 @@ export const { clearProduct, clearProductError } = productSlice.actions;
 
 export const selectProductError = (state: RootState) => state.product.error;
 export const selectProductLoading = (state: RootState) => state.product.loading;
-export const selectProductData = (state: RootState) => state.product.product;
+export const selectProductData = (state: RootState) => state.product.products;

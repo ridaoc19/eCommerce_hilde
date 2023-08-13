@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
 import { splitString } from "../../core/utils/splitString";
 import Product from "./model";
+import Department from "../department/model";
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
@@ -58,6 +59,31 @@ export async function postRegistre(req: Request, res: Response) {
 
 
   } catch (error: unknown) {
+    console.log(error)
+    if (error instanceof Error) {
+      res.status(409).json({ error: splitString(error) });
+    } else {
+      res.status(500).json({ error: `Error desconocido: ${error}` });
+    }
+  }
+}
+
+
+export async function getProduct(req: Request, res: Response) {
+  try {
+    const departamentos = await Department.find()
+      .populate({
+        path: 'categories',
+        populate: {
+          path: 'subcategories',
+          // populate: {
+          //   path: 'products',
+          // },
+        },
+      })
+      .exec();
+    res.json(departamentos);
+  } catch (error) {
     console.log(error)
     if (error instanceof Error) {
       res.status(409).json({ error: splitString(error) });

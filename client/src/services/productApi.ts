@@ -15,10 +15,16 @@ export const departmentApi = async ({ routes, dataPost }: IProductRedux.Departme
   }
 };
 
-export const productApi = async ({ routes, dataPost }: any) => {
+export const productApi = async ({ routes, method, dataPost }: IProductRedux.ProductApi) => {
   try {
-    const response = await axios.post(`${process.env.REACT_APP_URL_API}/${routes}`, dataPost);
-    return response;
+    const fetchPost = method !== "get" ? {
+      method: method,
+      body: JSON.stringify(dataPost),
+      headers: { "Content-Type": "application/json" }
+    } : {}
+
+    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/product/${routes}`, fetchPost)
+    return await responseApi.json()
   } catch (error) {
     if (error instanceof Error) {
       throw error;
@@ -27,3 +33,19 @@ export const productApi = async ({ routes, dataPost }: any) => {
     }
   }
 };
+
+// const callApi = async ({ method, route, loading, post }) => {
+//   dispatch({ type: LOADING_API, payload: { [loading]: true } })
+
+//   fetch(`${process.env.REACT_APP_URL}/${route}`, {
+//     method: method,
+//     body: JSON.stringify(post),
+//     headers: { "Content-Type": "application/json" },
+//   })
+//     .then((res) => res.json())
+//     .then((data) => {
+//       dispatch({ type: DATA_UPDATE, payload: data, })
+//       dispatch({ type: LOADING_API, payload: { [loading]: false } })
+//     })
+//     .catch((error) => console.log({ errPost: error.message }));
+// };

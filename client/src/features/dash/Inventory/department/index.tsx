@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../../../redux/hooks';
-import { departmentPosts } from '../../../../redux/reducers/product/actions';
+import { productPosts } from '../../../../redux/reducers/product/actions';
 
 interface State {
   department: string[];
@@ -10,14 +10,14 @@ const initialState: State = {
   department: ['Mercado', 'Postres', 'Helados'],
 };
 
-const Department: React.FC = () => {
+const Departments: React.FC = () => {
   const dispatchRedux = useAppDispatch();
   const [state, setState] = useState<State>(initialState);
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
 
 
   useEffect(() => {
-    dispatchRedux(departmentPosts({routes: "registre"}));
+    dispatchRedux(productPosts({ routes: "request" }));
   }, [])
 
 
@@ -56,6 +56,6 @@ const Department: React.FC = () => {
   );
 };
 
-export default Department;
+export default Departments;
 
 

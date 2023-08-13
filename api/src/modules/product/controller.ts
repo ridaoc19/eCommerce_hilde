@@ -1,15 +1,13 @@
 import { Router } from "express";
-import { postRegistre } from "./services";
-import multer from 'multer';
 import { uploadImages } from "../images/middleware";
+import { getProduct, postRegistre } from "./services";
 
 
 const router = Router();
+const { upload } = uploadImages()
 
-const { upload} = uploadImages()
-
-// router.post('/registre', postRegistre);
-router.post('/registre',upload.array('images'), postRegistre);
+router.post('/registre', upload.array('images'), postRegistre);
+router.get('/request', getProduct);
 
 
 export { router };
