@@ -1,7 +1,7 @@
 import axios from "axios";
-import { IServices } from "../interfaces/services/services.interface";
+import { IUserRedux } from "../interfaces/user.interface";
 
-export const userApi = async ({ routes, dataPost }: IServices.UserApi) => {
+export const userApi = async ({ routes, dataPost }: IUserRedux.UserApi) => {
   try {
     const response = await axios.post(`${process.env.REACT_APP_URL_API}/user/${routes}`, dataPost);
     return response;

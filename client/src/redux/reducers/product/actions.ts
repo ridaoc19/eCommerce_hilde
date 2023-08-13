@@ -1,10 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IProductRedux } from "../../../interfaces/redux/product/product.interface";
-import { IUserRedux } from "../../../interfaces/redux/user/user.interface";
-import { IProduct } from "../../../interfaces/sections/product.interface";
-import { IUser } from "../../../interfaces/sections/user.interface";
 import { departmentApi, productApi } from "../../../services/productApi";
 import { templateMessage } from "./templateMessage";
+import { IUser, IUserRedux } from "../../../interfaces/user.interface";
+import { IProduct, IProductRedux } from "../../../interfaces/product.interface";
 
 export const departmentPosts = createAsyncThunk<IProduct.ProductData, IProductRedux.DepartmentPostsProps, { rejectValue: string }>(
   'posts/departmentPosts',

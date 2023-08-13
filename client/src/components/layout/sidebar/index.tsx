@@ -3,10 +3,10 @@ import React, { MouseEventHandler, useContext, useState } from 'react';
 import { CreateContext } from '../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
 // import { ISidebar } from '../../../interfaces/components/layout/layout.interface';
-import { IUser } from '../../../interfaces/sections/user.interface';
+import { IContext } from '../../../interfaces/hooks/context.interface';
+import { IUser } from '../../../interfaces/user.interface';
 import { useAppSelector } from '../../../redux/hooks';
 import { selectUserData } from '../../../redux/reducers/user';
-import { IContext } from '../../../interfaces/hooks/context.interface';
 
 // const item: ISidebar.ItemRole[] = [
 //   { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import useUserOnChange from "../../../hooks/useUserOnChange";
-import { IAuth } from "../../../interfaces/features/auth/auth.interface";
-import { IUserOnChange } from "../../../interfaces/hooks/UserOnChange.interface";
+import { IUserComponents, IUserOnChange } from "../../../interfaces/user.interface";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { clearUser, selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
@@ -19,7 +17,7 @@ function Reset() {
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const dataUser = useAppSelector(selectUserData)
-  const [status, setStatus] = useState<IAuth.Status>("form");
+  const [status, setStatus] = useState<IUserComponents.Status>("form");
 
   useEffect(() => {
     if (errorBack instanceof Object) handleErrorOnBack()

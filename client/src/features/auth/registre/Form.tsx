@@ -2,13 +2,13 @@ import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../../../components/common/spinner';
 import UserInput from '../../../components/common/userInput/UserInput';
-import { IAuth } from '../../../interfaces/features/auth/auth.interface';
+import { IUser, IUserComponents } from '../../../interfaces/user.interface';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
 import { userValidationClick } from '../../../utils/validations/userValidation';
 
-function Form({ handleOnChange, change, errorBack, status }: IAuth.FormProps) {
+function Form({ handleOnChange, change, errorBack, status }: IUserComponents.FormProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { name, lastName, email, phone } = change;
@@ -20,7 +20,7 @@ function Form({ handleOnChange, change, errorBack, status }: IAuth.FormProps) {
     switch (id) {
       case "save":
         const { dataPost, authorize } = userValidationClick({ change, handleOnChange, routes: 'registre' })
-        if (authorize) dispatch(userPosts(dataPost as IAuth.RegistreData));
+        if (authorize) dispatch(userPosts(dataPost as IUser.RegistreData));
         return;
       case "back":
         navigate('/login');

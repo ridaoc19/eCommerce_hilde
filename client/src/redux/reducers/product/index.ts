@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IProductRedux } from "../../../interfaces/redux/product/product.interface";
+import { IProductRedux } from "../../../interfaces/product.interface";
 import { RootState } from "../../store";
 import { departmentPosts, productPosts } from "./actions";
 

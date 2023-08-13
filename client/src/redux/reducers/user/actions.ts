@@ -1,8 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IUserRedux } from "../../../interfaces/redux/user/user.interface";
-import { IUser } from "../../../interfaces/sections/user.interface";
 import { userApi } from "../../../services/userApi";
 import { templateMessage } from "./templateMessage";
+import { IUser, IUserRedux } from "../../../interfaces/user.interface";
 
 export const userPosts = createAsyncThunk<IUser.UserData, IUserRedux.UserPostsProps, { rejectValue: string }>(
   'posts/userPosts',

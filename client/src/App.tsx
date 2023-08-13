@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
-import { IAuth } from './interfaces/features/auth/auth.interface';
-import { IUser } from './interfaces/sections/user.interface';
+import { StoreContext } from './hooks/useContext';
+import { IUser } from './interfaces/user.interface';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { clearUser, selectUserData, selectUserError } from './redux/reducers/user';
 import { userPosts } from './redux/reducers/user/actions';
 import Routes from './routes';
 import './styles/app/App.scss';
-import { StoreContext } from './hooks/useContext';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -17,7 +16,7 @@ function App() {
   useEffect(() => {
     if (token) {
       const dataPost = Object.assign({ token }, { routes: 'token' as const });
-      if (token && !user) dispatch(userPosts(dataPost as IAuth.tokenData))
+      if (token && !user) dispatch(userPosts(dataPost as IUser.tokenData))
     }
     // eslint-disable-next-line
   }, [])

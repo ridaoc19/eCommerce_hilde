@@ -2,9 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import useUserOnChange from '../../../../hooks/useUserOnChange';
-import { IAuth } from '../../../../interfaces/features/auth/auth.interface';
-import { IUserOnChange } from '../../../../interfaces/hooks/UserOnChange.interface';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { IUserComponents, IUserOnChange } from '../../../../interfaces/user.interface';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
 import Form from './Form';
@@ -24,7 +23,7 @@ function Information() {
   const { change, handleOnChange, handleErrorOnBack } = useUserOnChange(initialState)
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
-  const [status, setStatus] = useState<IAuth.Status>("form");
+  const [status, setStatus] = useState<IUserComponents.Status>("form");
 
   useEffect(() => {
     if (password) return

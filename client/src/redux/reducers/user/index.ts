@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { IUserRedux } from "../../../interfaces/user.interface";
 import { RootState } from "../../store";
 import { userPosts } from "./actions";
-import { IUserRedux } from "../../../interfaces/redux/user/user.interface";
 
 const initialState: IUserRedux.InitialState = {
   data: null,
