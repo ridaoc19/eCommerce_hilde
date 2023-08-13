@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAppDispatch } from '../../../../redux/hooks';
+import { departmentPosts } from '../../../../redux/reducers/product/actions';
 
 interface State {
   department: string[];
@@ -8,9 +10,16 @@ const initialState: State = {
   department: ['Mercado', 'Postres', 'Helados'],
 };
 
-const MyComponent: React.FC = () => {
+const Department: React.FC = () => {
+  const dispatchRedux = useAppDispatch();
   const [state, setState] = useState<State>(initialState);
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    dispatchRedux(departmentPosts({routes: "registre"}));
+  }, [])
+
 
   const handleAddDepartment = (newDepartment: string) => {
     setState((prevState) => ({
@@ -42,48 +51,11 @@ const MyComponent: React.FC = () => {
           }}
         />
       </div>
-      {selectedDepartment && <CategoryComponent department={selectedDepartment} />}
+      {selectedDepartment}
     </div>
   );
 };
 
-export default MyComponent;
+export default Department;
 
-
-////////////////////////////////////////////////////////////////////////
-interface Props {
-  department: string;
-}
-
-const CategoryComponent: React.FC<Props> = ({ department }) => {
-  const [category, setCategory] = useState<string[]>([]);
-
-  const handleAddCategory = (newCategory: string) => {
-    setCategory((prevCategory) => [...prevCategory, newCategory]);
-  };
-
-  return (
-    <div>
-      <h3>Category Component for {department}</h3>
-      <div>
-        <h4>Categories:</h4>
-        <ul>
-          {category.map((cat, index) => (
-            <li key={index}>{cat}</li>
-          ))}
-        </ul>
-        <input
-          type="text"
-          placeholder="Enter a new category"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleAddCategory(e.currentTarget.value);
-              e.currentTarget.value = '';
-            }
-          }}
-        />
-      </div>
-    </div>
-  );
-};
 

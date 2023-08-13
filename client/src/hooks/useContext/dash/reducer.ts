@@ -23,7 +23,7 @@ const initialState: IDashReducer.AppState = {
   inventory: {
     department: false,
     category: false,
-    subcategory: false
+    subcategory: false,
   },
   itemSidebar: [
     { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },

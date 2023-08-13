@@ -1,3 +1,4 @@
+import { IProduct } from "../../sections/product.interface";
 import { IUser } from "../../sections/user.interface";
 
 export namespace IDash {
@@ -9,4 +10,8 @@ export namespace IInformation {
 
 export namespace IPassword {
   export type PasswordData = Pick<IUser.UserData, '_id' | 'password' | 'components'> & Partial<Pick<IUser.UserData, 'routes'>>;
+}
+
+export namespace IDepartment {
+  export type departmentData = Pick<IProduct.ProductData, 'routes'>;
 }
