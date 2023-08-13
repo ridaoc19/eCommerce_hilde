@@ -1,21 +1,20 @@
 import { MouseEventHandler } from 'react';
+import Spinner from '../../../../components/common/spinner';
+import UserInput from '../../../../components/common/userInput/UserInput';
+import { IUser, IUserComponents } from '../../../../interfaces/user.interface';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { userPosts } from '../../../../redux/reducers/user/actions';
-import Success from './Success';
-import { IAuth } from '../../../../interfaces/features/auth/auth.interface';
 import { userValidationClick } from '../../../../utils/validations/userValidation';
-import UserInput from '../../../../components/common/userInput/UserInput';
-import Spinner from '../../../../components/common/spinner';
-import { IInformation } from '../../../../interfaces/features/dash/dash.interface';
+import Success from './Success';
 
-function Form({ handleOnChange, change, errorBack, status }: IAuth.FormProps) {
+function Form({ handleOnChange, change, errorBack, status }: IUserComponents.FormProps) {
   const dispatch = useAppDispatch();
   const { name, lastName, email, phone } = change;
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     const { dataPost, authorize } = userValidationClick({ change, handleOnChange, routes: 'account' })
-    if (authorize) dispatch(userPosts(Object.assign(dataPost, { components: "information" }) as IInformation.InformationData));
+    if (authorize) dispatch(userPosts(Object.assign(dataPost, { components: "information" }) as IUser.InformationData));
   };
 
 
