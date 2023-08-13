@@ -1,14 +1,13 @@
 import { MouseEventHandler } from 'react';
 import Spinner from '../../../../components/common/spinner';
 import UserInput from '../../../../components/common/userInput/UserInput';
-import { IAuth } from '../../../../interfaces/features/auth/auth.interface';
+import { IUser, IUserComponents } from '../../../../interfaces/user.interface';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { userPosts } from '../../../../redux/reducers/user/actions';
 import { userValidationClick } from '../../../../utils/validations/userValidation';
 import Success from './Success';
-import { IPassword } from '../../../../interfaces/features/dash/dash.interface';
 
-function Form({ handleOnChange, change, errorBack, status }: IAuth.FormProps) {
+function Form({ handleOnChange, change, errorBack, status }: IUserComponents.FormProps) {
   const dispatch = useAppDispatch();
   const { confirmPassword, password } = change;
 
@@ -16,7 +15,7 @@ function Form({ handleOnChange, change, errorBack, status }: IAuth.FormProps) {
     event.preventDefault();
     const { dataPost, authorize } = userValidationClick({ change, handleOnChange, routes: 'account' })
 
-    if (authorize) dispatch(userPosts(Object.assign(dataPost, { components: "password" }) as IPassword.PasswordData));
+    if (authorize) dispatch(userPosts(Object.assign(dataPost, { components: "password" }) as IUser.PasswordData));
     // dispatch(clearUser());
   };
 

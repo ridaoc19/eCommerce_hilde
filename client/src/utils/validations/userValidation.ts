@@ -1,4 +1,4 @@
-import { IUserValidation } from "../../interfaces/utils/userValidation.interface";
+import { IUserValidation } from "../../interfaces/user.interface";
 
 const initialState: IUserValidation.ValidationChangeReturn = {
   message: "",

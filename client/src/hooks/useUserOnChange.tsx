@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IUserOnChange } from '../interfaces/hooks/UserOnChange.interface';
+import { IUserOnChange } from '../interfaces/user.interface';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { clearUserError, selectUserError } from '../redux/reducers/user';
 import { userValidationChange } from '../utils/validations/userValidation';

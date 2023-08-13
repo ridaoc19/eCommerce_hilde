@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Spinner from '../../../components/common/spinner';
 import UserInput from '../../../components/common/userInput/UserInput';
-import { IAuth } from '../../../interfaces/features/auth/auth.interface';
+import { IUser, IUserComponents } from '../../../interfaces/user.interface';
 import { useAppDispatch } from '../../../redux/hooks';
 import { clearUser } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
@@ -11,7 +11,7 @@ import { userValidationClick } from '../../../utils/validations/userValidation';
 import Success from './Success';
 
 
-function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
+function Form({ change, handleOnChange, status, errorBack }: IUserComponents.FormProps) {
   const { email } = change
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -24,7 +24,7 @@ function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
     switch (id) {
       case "save":
         const { dataPost, authorize } = userValidationClick({ change, handleOnChange, routes: 'reset' })
-        if (authorize) dispatch(userPosts(dataPost as IAuth.resetData));
+        if (authorize) dispatch(userPosts(dataPost as IUser.resetData));
         return;
       case "back":
         navigate('/login');

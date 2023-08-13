@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { IUser } from '../../sections/user.interface';
+import { IUser } from '../../user.interface';
 
 export namespace ILayout {
   export type LayoutProps = {

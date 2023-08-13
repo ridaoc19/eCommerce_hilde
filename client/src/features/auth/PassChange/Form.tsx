@@ -2,14 +2,14 @@ import { MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../../../components/common/spinner';
 import UserInput from '../../../components/common/userInput/UserInput';
-import { IAuth } from '../../../interfaces/features/auth/auth.interface';
+import { IUser, IUserComponents } from '../../../interfaces/user.interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserData } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
 import { userValidationClick } from '../../../utils/validations/userValidation';
 
 
-function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
+function Form({ change, handleOnChange, status, errorBack }: IUserComponents.FormProps) {
   const { password, confirmPassword } = change
   const navigate = useNavigate();
   const dataUser = useAppSelector(selectUserData)!
@@ -23,7 +23,7 @@ function Form({ change, handleOnChange, status, errorBack }: IAuth.FormProps) {
       case "save":
         const { dataPost: data, authorize } = userValidationClick({ change, handleOnChange, routes: 'change' })
         if (dataUser?._id) {
-          if (authorize) dispatch(userPosts(Object.assign(data, { _id: dataUser._id }) as IAuth.passChangeData));
+          if (authorize) dispatch(userPosts(Object.assign(data, { _id: dataUser._id }) as IUser.passChangeData));
         }
         return;
       case "back":

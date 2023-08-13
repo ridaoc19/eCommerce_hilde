@@ -1,8 +1,8 @@
 import { MouseEvent, useState } from "react";
 import Svg from "../../../assets/icons/Svg";
-import { IUserInput } from "../../../interfaces/components/common/userInput.interface";
+import { IUserComponents } from "../../../interfaces/user.interface";
 
-function UserInput({ svg, svgTwo, styleClass, errorMessage, input }: IUserInput.Props) {
+function UserInput({ svg, svgTwo, styleClass, errorMessage, input }: IUserComponents.InputProps) {
   const [toggle, setToggle] = useState(false);
 
   const handleOnClick = (event: MouseEvent<HTMLButtonElement>) => {

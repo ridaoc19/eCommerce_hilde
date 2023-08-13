@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserOnChange from "../../../hooks/useUserOnChange";
-import { IAuth } from "../../../interfaces/features/auth/auth.interface";
-import { IUserOnChange } from "../../../interfaces/hooks/UserOnChange.interface";
+import { IUserComponents, IUserOnChange } from "../../../interfaces/user.interface";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
 import Form from "./Form";
@@ -19,7 +18,7 @@ function PassChange() {
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
   const dataUser = useAppSelector(selectUserData)
-  const [status, setStatus] = useState<IAuth.Status>("form");
+  const [status, setStatus] = useState<IUserComponents.Status>("form");
 
   useEffect(() => {
     if (!dataUser && !loadingUser) return navigate('/login')
