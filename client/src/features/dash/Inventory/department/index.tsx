@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch } from '../../../../redux/hooks';
-import { productPosts } from '../../../../redux/reducers/product/actions';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { productsGet } from '../../../../redux/reducers/product/actions';
+import { selectProductsData } from '../../../../redux/reducers/product';
 
 interface State {
   department: string[];
@@ -12,12 +13,13 @@ const initialState: State = {
 
 const Departments: React.FC = () => {
   const dispatchRedux = useAppDispatch();
+  const product = useAppSelector(selectProductsData)
   const [state, setState] = useState<State>(initialState);
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
-
+console.log(state);
 
   useEffect(() => {
-    dispatchRedux(productPosts({ routes: "request" }));
+    dispatchRedux(productsGet({ routes: "request" }));
   }, [])
 
 
@@ -34,9 +36,9 @@ const Departments: React.FC = () => {
       <div>
         <h3>Departments:</h3>
         <ul>
-          {state.department.map((dept, index) => (
-            <li key={index} onClick={() => setSelectedDepartment(dept)}>
-              {dept}
+          {product?.map((dept, index) => (
+            <li key={index} onClick={() => setSelectedDepartment(dept._id)}>
+              {dept.name}
             </li>
           ))}
         </ul>

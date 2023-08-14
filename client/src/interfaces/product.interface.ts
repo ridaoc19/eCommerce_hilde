@@ -1,55 +1,86 @@
 
 // ==============================|| Product ||============================== //
 export namespace IProduct {
-  type Routes = "request" | "registre" | "update" | "delete" | "";
+  export type Routes = "request" | "registre" | "update" | "delete" | "";
   // type Roles = "super" | "admin" | "edit" | "visitant";
   interface Specification {
-    key: string;
-    value: string;
+    [key: string]: string;
   }
-
-  export interface ProductData {
+  export interface Product {
     _id: string;
-    department: string;
-    category: string,
-    subCategory: string;
+    subcategoryId: string;
     name: string;
     price: string;
-    images: string[];
-    description: string;
     specification: Specification[];
-    routes: Routes;
+    description: string;
+    images: string[];
+    createdAt: string;
+    updatedAt: string;
+  }
+  export interface Subcategory {
+    _id: string;
+    name: string;
+    productsId: Product[];
+    categoryId: string;
+    createdAt: string;
+    updatedAt: string;
   }
 
-  export type departmentData = Pick<IProduct.ProductData, 'routes'>;
-  export type productData = Pick<IProduct.ProductData, 'routes'>;
+  export interface Category {
+    _id: string;
+    name: string;
+    subcategoriesId: Subcategory[];
+    departmentId: string;
+    createdAt: string;
+    updatedAt: string;
+  }
+
+  export interface Department {
+    _id: string;
+    name: string;
+    categoriesId: Category[];
+    createdAt: string;
+    updatedAt: string;
+  }
+
+  export type ProductsData = Department[];
+
+  export type departmentData = any;
+
+  /////////////////////////////////
 }
 
 // ==============================|| Redux ||============================== //
 export namespace IProductRedux {
 
   export interface InitialState {
-    products: IProduct.ProductData | null;
-    product: IProduct.ProductData | null;
+    products: IProduct.ProductsData | null;
+    product: IProduct.Product | null;
     loading: boolean;
     error: null | {} | string;
   }
 
+  export type ProductPostsReturn = IProduct.ProductsData
+  export type ProductPostsProps = { routes: IProduct.Routes };
+
   export type DepartmentPostsProps = IProduct.departmentData;
-  export type ProductPostsProps = IProduct.productData;
+
+
 
   // =|| Template message error ||= //
   export interface TemplateMessageReturn {
-    routes: IProduct.ProductData["routes"];
+    routes: IProduct.Routes;
     method: Method;
     message: string;
   }
-  export type TemplateMessageProps = (data: { routes: IProduct.ProductData["routes"] }) => TemplateMessageReturn
+  export type TemplateMessageProps = (data: { routes: IProduct.Routes }) => TemplateMessageReturn
+
+
 
   // =|| Api ||= //
   type Method = "get" | "post" | "put" | "delete";
   export interface DepartmentApi {
-    routes: IProduct.ProductData["routes"];
+    routes: IProduct.Routes;
     dataPost?: DepartmentPostsProps;
   }
 

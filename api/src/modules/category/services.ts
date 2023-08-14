@@ -12,9 +12,9 @@ function fetchCount(info: any) {
 export async function postRegistre(req: Request, res: Response) {
   try {
     const { departmentId } = req.params;
-    const category = await Category.create({ ...req.body, department: departmentId });
+    const category = await Category.create({ ...req.body, departmentId: departmentId });
 
-    await Department.findByIdAndUpdate(departmentId, { $push: { categories: category._id } });
+    await Department.findByIdAndUpdate(departmentId, { $push: { categoriesId: category._id } });
 
     res.status(201).json(category);
 

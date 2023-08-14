@@ -4,9 +4,10 @@ import { getProduct, postRegistre } from "./services";
 
 
 const router = Router();
-const { upload } = uploadImages()
+// const { upload } = uploadImages()
 
-router.post('/registre', upload.array('images'), postRegistre);
+router.post('/registre/:subcategoryId', postRegistre);
+// router.post('/registre', upload.array('images'), postRegistre);
 router.get('/request', getProduct);
 
 

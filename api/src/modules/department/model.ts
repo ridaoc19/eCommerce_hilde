@@ -3,12 +3,16 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IDepartment extends Document {
   name: string;
-  categories: mongoose.Types.ObjectId[];
+  categoriesId: mongoose.Types.ObjectId[];
 }
 
 const departmentSchema = new Schema<IDepartment>({
   name: { type: String, required: true },
-  categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
+  categoriesId: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
+},
+{
+  versionKey: false,
+  timestamps: true
 });
 
 const Department = mongoose.model<IDepartment>('Department', departmentSchema);
