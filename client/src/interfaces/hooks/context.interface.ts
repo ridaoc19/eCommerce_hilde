@@ -20,21 +20,25 @@ export namespace IContext {
 }
 
 export namespace IDashReducer {
-  export type SelectAction = { type: ActionTypeDashboard; payload: string };
-  // export type SelectAction = { type: ActionType.SELECT_COMPONENT; payload: string };
-  export type AppState = { 
-    component: string, 
-    account: { 
-      information: boolean, 
-      password: boolean 
-    }; 
-    inventory:{
-      department: boolean,
-      category: boolean,
-      subcategory: boolean
+  export type AppState = {
+    component: string,
+    account: {
+      information: boolean,
+      password: boolean
     };
-    itemSidebar: ISidebar.ItemRole[] 
+    inventory: {
+      department: string | null,
+      category: string | null,
+      subcategory: string | null
+    };
+    itemSidebar: ISidebar.ItemRole[]
+  };
+
+  export type SelectAction = {
+    type: ActionTypeDashboard;
+    payload: { name: string | null, value: string }
   };
   export type AppAction = SelectAction;
+
   export type Reducer = (state: AppState, action: AppAction) => AppState
 }

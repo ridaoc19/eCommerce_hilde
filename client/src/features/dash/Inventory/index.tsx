@@ -1,12 +1,21 @@
 // import Form from './Form';
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useAppDispatch } from '../../../redux/hooks';
+import { productsGet } from '../../../redux/reducers/product/actions';
 import Department from './department';
 
 function Inventory() {
-  const [] = useState("department")
+  const dispatchRedux = useAppDispatch();
+
+  useEffect(() => {
+    dispatchRedux(productsGet({ routes: "request" }));
+  }, [])
 
   return <div>
-    <Department />
+    {
+      <Department />
+
+    }
     {/* <Form /> */}
   </div>;
 }
