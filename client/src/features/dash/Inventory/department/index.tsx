@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectProductsData } from '../../../../redux/reducers/product';
+import { CreateContext } from '../../../../hooks/useContext';
+import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 
 const Departments: React.FC = () => {
+  const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const product = useAppSelector(selectProductsData)
 
   return (
@@ -11,8 +15,7 @@ const Departments: React.FC = () => {
         <h3>Departments:</h3>
         <ul>
           {product?.map((dept, index) => (
-            <li key={index} >
-              {/* <li key={index} onClick={() => setSelectedDepartment(dept._id)}> */}
+            <li key={index} onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'department', value: dept._id } })}>
               {dept.name}
             </li>
           ))}

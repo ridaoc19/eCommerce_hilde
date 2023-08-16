@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { useAppDispatch } from '../../../redux/hooks';
 import { productsGet } from '../../../redux/reducers/product/actions';
 import Department from './department';
+import Category from './category';
+import Subcategory from './subCategory';
 
 function Inventory() {
   const dispatchRedux = useAppDispatch();
@@ -12,10 +14,11 @@ function Inventory() {
   }, [])
 
   return <div>
-    {
-      <Department />
 
-    }
+    <Department />
+    <Category />
+    <Subcategory />
+
     {/* <Form /> */}
   </div>;
 }

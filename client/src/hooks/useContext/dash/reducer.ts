@@ -1,5 +1,4 @@
 import Svg from "../../../assets/icons/Svg";
-// import { ISidebar } from "../../../interfaces/components/layout/layout.interface";
 import { IDashReducer } from "../../../interfaces/hooks/context.interface";
 
 export enum ActionTypeDashboard {
@@ -8,12 +7,6 @@ export enum ActionTypeDashboard {
   ACCOUNT_TOGGLE_PASSWORD = "ACCOUNT_TOGGLE_PASSWORD",
   SELECT_INVENTORY = "SELECT_INVENTORY"
 }
-
-// const item: ISidebar.ItemRole[] = [
-//   { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
-//   { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
-//   { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
-// ];
 
 const initialState: IDashReducer.AppState = {
   component: "",
@@ -42,13 +35,17 @@ const reducer: IDashReducer.Reducer = (state, action) => {
     case ActionTypeDashboard.ACCOUNT_TOGGLE_PASSWORD:
       return { ...state, account: { ...state.account, password: !state.account.password } }
     case ActionTypeDashboard.SELECT_INVENTORY:
-      return {
-        ...state,
-        inventory: {
-          ...state.inventory,
-          ...action.payload, // Ahora directamente usamos el payload
-        },
-      };
+      const { name, value } = action.payload;
+      switch (name) {
+        case 'department':
+          return { ...state, inventory: { department: value, category: "", subcategory: "" } }
+        case 'category':
+          return { ...state, inventory: { ...state.inventory, category: value, subcategory: "" } }
+        case 'subcategory':
+          return { ...state, inventory: { ...state.inventory, subcategory: value } }
+        default:
+          return state;
+      }
     default:
       return state;
   }
