@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import ModalConfirm from '../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
@@ -9,25 +10,23 @@ import DepartmentForm from './DepartmentForm';
 import DepartmentList from './DepartmentList';
 // import './Departments.scss'; // Importa tu archivo Sass aquí
 
+
+
 export enum ButtonName {
   Edit = 'edit',
   Delete = 'delete',
   Clean = 'clean',
   Save = 'save',
-  Add = 'add'
+  Add = 'add',
+  Confirm = 'confirm',
+  Cancel = 'cancel'
 }
 
-export interface SelectedDepartment {
-  _id: string;
-  name: string;
-}
 
+export interface SelectedDepartment { _id: string; name: string; }
 export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
 export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
-export const initialState: SelectedDepartment = {
-  _id: '',
-  name: ''
-}
+export const initialState: SelectedDepartment = { _id: '', name: '' }
 
 const Departments: React.FC = () => {
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
@@ -55,7 +54,6 @@ const Departments: React.FC = () => {
         emptyDepartment();
         const updatedList = departmentList?.filter(dept => dept._id !== value) || [];
         const editedDepartment = departmentList?.find(dept => dept._id === value);
-
         if (editedDepartment) {
           let { _id, name } = editedDepartment;
           setSelectedDepartment({ _id, name });
@@ -69,18 +67,26 @@ const Departments: React.FC = () => {
         break;
 
       case ButtonName.Clean:
-        // Lógica para limpiar
         setSelectedDepartment(initialState);
         if (products) setDepartmentList(products);
         break;
 
       case ButtonName.Save:
-        // Lógica para guardar o actualizar
         break;
-      case ButtonName.Add:
+
+        case ButtonName.Add:
         emptyDepartment();
         break;
-      default:
+
+        case ButtonName.Confirm:
+        setShowDeleteModal(false);
+        break;
+
+        case ButtonName.Cancel:
+        setShowDeleteModal(false);
+        break;
+
+        default:
         break;
     }
   };
@@ -88,15 +94,6 @@ const Departments: React.FC = () => {
   const emptyDepartment = () => {
     dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'empty', value: "" } })
   }
-
-  const handleDeleteConfirm = () => {
-    // Lógica para eliminar
-    setShowDeleteModal(false);
-  };
-
-  const handleDeleteCancel = () => {
-    setShowDeleteModal(false);
-  };
 
   return (
     <div>
@@ -106,15 +103,12 @@ const Departments: React.FC = () => {
       <div>
         <DepartmentForm selectedDepartment={selectedDepartment} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
       </div>
-      {showDeleteModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <p>¿Estás seguro de eliminar este departamento?</p>
-            <button onClick={handleDeleteConfirm}>Confirmar</button>
-            <button onClick={handleDeleteCancel}>Cancelar</button>
-          </div>
-        </div>
-      )}
+      {showDeleteModal &&
+        <ModalConfirm
+          message='¿Estás seguro de eliminar este departamento?'
+          handleOnClick={handleOnClick}
+          Confirm={ButtonName.Confirm}
+          Cancel={ButtonName.Cancel} />}
     </div>
   );
 };
