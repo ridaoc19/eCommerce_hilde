@@ -34,7 +34,7 @@ export namespace IDashReducer {
     itemSidebar: ISidebar.ItemRole[]
   };
 
-  type Name = "department" |"category" |"subcategory"
+  type Name = "department" |"category" |"subcategory" | "empty"
   export type SelectAction = {
     type: ActionTypeDashboard;
     payload: { name: null | Name, value: string }

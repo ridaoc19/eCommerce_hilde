@@ -7,9 +7,10 @@ import { useAppSelector } from '../../../../redux/hooks';
 import { selectProductsData } from '../../../../redux/reducers/product';
 
 const Category: React.FC = () => {
-  const { dashboard: { state: { inventory: { department } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { inventory: { department, category, subcategory } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  // const dispatchRedux = useAppDispatch()
   const product = useAppSelector(selectProductsData)
-  
+
   return (
     <div>
       <div>
@@ -21,6 +22,16 @@ const Category: React.FC = () => {
             </li>
           ))}
         </ul>
+        {department && category && !subcategory && <input
+          type="text"
+          placeholder="Ingresar un nuevo departamento"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              // handleAddDepartment(e.currentTarget.value);
+              e.currentTarget.value = '';
+            }
+          }}
+        />}
       </div>
     </div>
   );

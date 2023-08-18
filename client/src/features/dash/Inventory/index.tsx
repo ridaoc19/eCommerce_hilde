@@ -1,26 +1,32 @@
 // import Form from './Form';
-import { useEffect } from 'react';
-import { useAppDispatch } from '../../../redux/hooks';
-import { productsGet } from '../../../redux/reducers/product/actions';
-import Department from './department';
-import Category from './category';
-import Subcategory from './subCategory';
+import { useEffect } from "react";
+import { useAppDispatch } from "../../../redux/hooks";
+import { productsGet } from "../../../redux/reducers/product/actions";
+import Department from "./department";
+import Category from "./category";
+import Subcategory from "./subCategory";
+// import CrudForm from './department/ejemplo';
 
 function Inventory() {
   const dispatchRedux = useAppDispatch();
 
   useEffect(() => {
     dispatchRedux(productsGet({ routes: "request" }));
-  }, [])
+  }, []);
 
-  return <div>
+  return (
+    <div>
+      <div className="department">
+        <h2>Departamento</h2>
+        <Department />
+      </div>
+      <Category />
+      <Subcategory />
+      {/* <CrudForm /> */}
 
-    <Department />
-    <Category />
-    <Subcategory />
-
-    {/* <Form /> */}
-  </div>;
+      {/* <Form /> */}
+    </div>
+  );
 }
 
 export default Inventory;
