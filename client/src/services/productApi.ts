@@ -1,11 +1,16 @@
-import axios from "axios";
 import { IProductRedux } from "../interfaces/product.interface";
 
 
-export const departmentApi = async ({ routes, dataPost }: IProductRedux.DepartmentApi) => {
+export const departmentApi = async ({ routes, method, dataPost }: IProductRedux.DepartmentApi) => {
   try {
-    const response = await axios.post(`${process.env.REACT_APP_URL_API}/department${routes}`, dataPost);
-    return response;
+    const fetchPost = method !== "get" ? {
+      method: method,
+      body: JSON.stringify(dataPost),
+      headers: { "Content-Type": "application/json" }
+    } : {}
+
+    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/department/${routes}`, fetchPost)
+    return await responseApi.json()
   } catch (error) {
     if (error instanceof Error) {
       throw error;

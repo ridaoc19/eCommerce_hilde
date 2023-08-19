@@ -3,10 +3,10 @@ import { combineReducers } from 'redux';
 
 // project import
 import user from './user';
-import product from './product';
+import products from './product';
 
 // ==============================|| COMBINE REDUCERS ||============================== //
 
-const reducers = combineReducers({ user, product });
+const reducers = combineReducers({ user, products });
 
 export default reducers;

@@ -1,15 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { IProductRedux } from "../../../interfaces/product.interface";
 import { departmentApi, productApi } from "../../../services/productApi";
 import { templateMessage } from "./templateMessage";
-import { IProduct, IProductRedux } from "../../../interfaces/product.interface";
 
-export const departmentPosts = createAsyncThunk<IProduct.ProductData, IProductRedux.DepartmentPostsProps, { rejectValue: string }>(
-  'posts/departmentPosts',
+
+
+export const productsGet = createAsyncThunk<IProductRedux.ProductPostsReturn, IProductRedux.ProductPostsProps, { rejectValue: string }>(
+  'posts/productGet',
   async (dataPost, { rejectWithValue }) => {
-    const { routes, message }: IProductRedux.TemplateMessageReturn = templateMessage({ routes: dataPost.routes as IProduct.ProductData["routes"] })
+    const { routes, method, message }: IProductRedux.TemplateMessageReturn = templateMessage({ routes: dataPost.routes })
     // delete dataPost.routes
-    return await departmentApi({ routes })
-      .then(response => response.data)
+    return await productApi({ routes, method, dataPost })
+      .then(response => response)
       .catch(error => { // Lógica para manejar el error
         if (error.response) { // El servidor respondió con un código de estado diferente de 2xx
           return rejectWithValue(error.response.data.error)
@@ -21,15 +23,13 @@ export const departmentPosts = createAsyncThunk<IProduct.ProductData, IProductRe
       });
   }
 );
-
-
-export const productPosts = createAsyncThunk<IProduct.ProductData, IProductRedux.ProductPostsProps, { rejectValue: string }>(
-  'posts/productPosts',
+export const departmentPosts = createAsyncThunk<IProductRedux.DepartmentPostsReturn, IProductRedux.DepartmentPostsProps, { rejectValue: string }>(
+  'posts/departmentPosts',
   async (dataPost, { rejectWithValue }) => {
-    const { routes, method, message }: IProductRedux.TemplateMessageReturn = templateMessage({ routes: dataPost.routes as IProduct.ProductData["routes"] })
+    const { routes, method, message }: IProductRedux.TemplateMessageReturn = templateMessage({ routes: dataPost.routes })
     // delete dataPost.routes
-    return await productApi({ routes, method, dataPost })
-      .then(response => response)
+    return await departmentApi({ routes, method, dataPost })
+      .then(response => response.data)
       .catch(error => { // Lógica para manejar el error
         if (error.response) { // El servidor respondió con un código de estado diferente de 2xx
           return rejectWithValue(error.response.data.error)
