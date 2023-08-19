@@ -4,6 +4,7 @@ import { splitString } from "../../core/utils/splitString";
 import Product from "./model";
 import Department from "../department/model";
 import Subcategory from "../subcategory/model";
+import { products } from "../../core/utils/helpers";
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
@@ -78,20 +79,25 @@ export async function postRegistre(req: Request, res: Response) {
 }
 
 
-export async function getProduct(req: Request, res: Response) {
+export async function productGet(req: Request, res: Response) {
   try {
-    const departamentos = await Department.find()
-      .populate({
-        path: 'categoriesId',
-        populate: {
-          path: 'subcategoriesId',
-          populate: {
-            path: 'productsId',
-          },
-        },
-      })
-      .exec();
-    res.json(departamentos);
+    // const departamentos = await Department.find()
+    //   .populate({
+    //     path: 'categoriesId',
+    //     populate: {
+    //       path: 'subcategoriesId',
+    //       populate: {
+    //         path: 'productsId',
+    //       },
+    //     },
+    //   })
+    //   .exec();
+    
+    const updatedProducts = await products();
+    return res.status(200).json({
+      message: "Productos completo",
+      products: updatedProducts,
+    });
   } catch (error) {
     console.log(error)
     if (error instanceof Error) {

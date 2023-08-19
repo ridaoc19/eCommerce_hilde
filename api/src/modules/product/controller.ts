@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { uploadImages } from "../images/middleware";
-import { getProduct, postRegistre } from "./services";
+import { postRegistre, productGet } from "./services";
 
 
 const router = Router();
@@ -8,7 +8,7 @@ const router = Router();
 
 router.post('/registre/:subcategoryId', postRegistre);
 // router.post('/registre', upload.array('images'), postRegistre);
-router.get('/request', getProduct);
+router.get('/request', productGet);
 
 
 export { router };

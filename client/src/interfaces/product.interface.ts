@@ -2,11 +2,15 @@
 // ==============================|| Product ||============================== //
 export namespace IProduct {
   export type Routes = "request" | "registre" | "update" | "delete" | "";
+  export interface Routeable {
+    routes: Routes;
+  }
+
   // type Roles = "super" | "admin" | "edit" | "visitant";
   interface Specification {
     [key: string]: string;
   }
-  export interface Product {
+  export interface Product extends Routeable {
     _id: string;
     subcategoryId: string;
     name: string;
@@ -17,7 +21,7 @@ export namespace IProduct {
     createdAt: string;
     updatedAt: string;
   }
-  export interface Subcategory {
+  export interface Subcategory extends Routeable {
     _id: string;
     name: string;
     productsId: Product[];
@@ -26,7 +30,7 @@ export namespace IProduct {
     updatedAt: string;
   }
 
-  export interface Category {
+  export interface Category extends Routeable {
     _id: string;
     name: string;
     subcategoriesId: Subcategory[];
@@ -35,7 +39,7 @@ export namespace IProduct {
     updatedAt: string;
   }
 
-  export interface Department {
+  export interface Department extends Routeable {
     _id: string;
     name: string;
     categoriesId: Category[];
@@ -45,7 +49,8 @@ export namespace IProduct {
 
   export type ProductsData = Department[];
 
-  export type departmentData = any;
+  // export type DepartmentData = any
+  export type DepartmentData = Pick<Department, '_id' | 'name' | 'routes'>
 
   /////////////////////////////////
 }
@@ -60,10 +65,13 @@ export namespace IProductRedux {
     error: null | {} | string;
   }
 
-  export type ProductPostsReturn = IProduct.ProductsData
-  export type ProductPostsProps = { routes: IProduct.Routes };
 
-  export type DepartmentPostsProps = IProduct.departmentData;
+  // createAsyncThunk
+  export type ProductPostsProps = IProduct.Product;
+  export type ProductPostsReturn = IProduct.ProductsData
+
+  export type DepartmentPostsProps = IProduct.DepartmentData;
+  export type DepartmentPostsReturn = IProduct.ProductsData;
 
 
 
@@ -79,15 +87,15 @@ export namespace IProductRedux {
 
   // =|| Api ||= //
   type Method = "get" | "post" | "put" | "delete";
-  export interface DepartmentApi {
-    routes: IProduct.Routes;
-    dataPost?: DepartmentPostsProps;
-  }
-
   export interface ProductApi {
     routes: TemplateMessageReturn["routes"]
     method: TemplateMessageReturn["method"];
-    dataPost?: DepartmentPostsProps;
+    dataPost: ProductPostsProps;
   }
 
+  export interface DepartmentApi {
+    routes: TemplateMessageReturn["routes"]
+    method: TemplateMessageReturn["method"];
+    dataPost: DepartmentPostsProps;
+  }
 }
