@@ -6,23 +6,24 @@ import { IContext } from '../../../../interfaces/hooks/context.interface';
 import { useAppSelector } from '../../../../redux/hooks';
 import { selectProductsData } from '../../../../redux/reducers/product';
 
-const Category: React.FC = () => {
+const Subcategory: React.FC = () => {
   const { dashboard: { state: { inventory: { department, category, subcategory } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
-  // const dispatchRedux = useAppDispatch()
   const product = useAppSelector(selectProductsData)
+  // console.log(product?.find(e => e._id === department)?.categoriesId.find(s => s._id === category)?.subcategoriesId
+  // );
 
   return (
     <div>
       <div>
-        <h3>Category</h3>
+        <h3>SubCategory</h3>
         <ul>
-          {product?.find(e => e._id === department)?.categoriesId?.map((cat, index) => (
-            <li key={index} onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'category', value: cat._id } })}>
-              {cat.name}
+          {product?.find(e => e._id === department)?.categoriesId.find(s => s._id === category)?.subcategoriesId?.map((sub, index) => (
+            <li key={index} onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'subcategory', value: sub._id } })}>
+              {sub.name}
             </li>
           ))}
         </ul>
-        {department && category && !subcategory && <input
+        {department && category && subcategory  && <input
           type="text"
           placeholder="Ingresar un nuevo departamento"
           onKeyDown={(e) => {
@@ -37,6 +38,6 @@ const Category: React.FC = () => {
   );
 };
 
-export default Category;
+export default Subcategory;
 
 

@@ -28,7 +28,7 @@ function Sidebar() {
         return setExpanded(!expanded);
       case "items":
         setExpanded(!expanded)
-        return dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: value })
+        return dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: {name: null, value: value} })
       default:
         break;
     }

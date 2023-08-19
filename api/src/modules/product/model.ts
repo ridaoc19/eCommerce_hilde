@@ -1,33 +1,26 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-interface Specification {
-  key: string;
-  value: string;
-}
 
 interface IProduct extends Document {
-  images: string[];
-  department: string;
-  category: string;
-  subcategory: string;
+  name: string;
   price: string;
-  specification: Specification[];
+  specification: Record<string, string>[];
   description: string;
+  images: string[];
+  subcategoryId: mongoose.Types.ObjectId;
 }
 
-const specificationSchema = new Schema<Specification>({
-  key: String,
-  value: String,
-});
-
 const productSchema = new Schema<IProduct>({
-  images: [String],
-  department: String,
-  category: String,
-  subcategory: String,
+  name: String,
   price: String,
-  specification: [specificationSchema],
+  specification:[{ type: Schema.Types.Mixed }],
   description: String,
+  images: [String],
+  subcategoryId: { type: Schema.Types.ObjectId, ref: 'Subcategory', required: true },
+},
+{
+  versionKey: false,
+  timestamps: true
 });
 
 const Product = mongoose.model<IProduct>('Product', productSchema);

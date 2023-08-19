@@ -34,14 +34,14 @@ function Information() {
       setStatus("success")
       setTimeout(() => {
         setStatus("form")
-        dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: "" })
+        dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: {name: null, value: ""} })
       }, 10000);
     }
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
   const handleOnClick = () => {
-    dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: "" })
+    dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: {name: null, value: ""} })
   }
 
   return (
