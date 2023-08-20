@@ -11,18 +11,7 @@ function Inventory() {
   const dispatchRedux = useAppDispatch();
 
   useEffect(() => {
-    dispatchRedux(productsGet({
-      routes: "request",
-      _id: "",
-      subcategoryId: "",
-      name: "",
-      price: "",
-      specification: [],
-      description: "",
-      images: [],
-      createdAt: "",
-      updatedAt: ""
-    }));
+    dispatchRedux(productsGet({ routes: 'request' }));
   }, []);
 
   return (

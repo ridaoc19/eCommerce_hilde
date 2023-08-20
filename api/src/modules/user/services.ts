@@ -49,7 +49,7 @@ export async function postLogin(req: Request, res: Response) {
     const userDB = await User.findOne({ email: emailFront })
     if (!userDB) throw new Error(`errorString: Lo sentimos, el usuario (${emailFront}) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.`)
     const { _id, name, lastName, email, phone, verified, roles } = userDB;
-    const user = await fetchCount({ _id, name })
+    // const user = await fetchCount({ _id, name })
 
 
     const validatePass = await comparePassword(password, userDB.password)
@@ -79,7 +79,7 @@ export async function postLoginToken(req: Request, res: Response) {
     const userDB = await User.findById({ _id: decoded._id })
     if (!userDB) throw new Error(`errorString: Invalid User`)
     const { _id, name, lastName, email, phone, verified, roles } = userDB;
-    const user = await fetchCount({ _id, name })
+    // const user = await fetchCount({ _id, name })
 
     res.status(200).json({ _id, name, lastName, email, phone, verified, roles })
   } catch (error: unknown) {

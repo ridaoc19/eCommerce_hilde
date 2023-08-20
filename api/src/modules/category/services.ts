@@ -60,12 +60,12 @@ export async function categoryEdit(req: Request, res: Response) {
 
 export async function categoryDelete(req: Request, res: Response) {
   try {
-    const { categoriesId } = req.params;
-    const category = await Category.findByIdAndDelete(categoriesId);
+    const { _id } = req.params;
+    const category = await Category.findByIdAndDelete(_id);
     if (!category) throw new Error("El categoría no existe");
 
     // department
-    await Department.findByIdAndUpdate(category.departmentId, { $pull: { categoriesId } });
+    await Department.findByIdAndUpdate(category.departmentId, { $pull: { categoriesId: _id } });
     // subcategory
     if (category && category.subcategoriesId.length > 0) {
       category.subcategoriesId.forEach(async (subcategoryId) => {

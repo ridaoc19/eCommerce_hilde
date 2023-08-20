@@ -1,21 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IProductRedux } from "../../../interfaces/product.interface";
 import { RootState } from "../../store";
-import { productsGet } from "./actions";
+import { departmentCall, productsGet } from "./actions";
 
 const initialState: IProductRedux.InitialState = {
-  products: null,
-  product: null,
+  products: { message: "", products: [] },
+  product: {},
   loading: false,
   error: null,
 };
 
 const productSlice = createSlice({
-  name: "posts",
+  name: "product",
   initialState,
   reducers: {
     clearProduct: (state) => {
-      state.products = null;
+      state.products = { message: "", products: [] };
       state.loading = false;
       state.error = null;
     },
@@ -33,6 +33,20 @@ const productSlice = createSlice({
         // products = action.payload
       })
       .addCase(productsGet.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Error occurred";
+      });
+    builder
+      .addCase(departmentCall.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(departmentCall.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload
+        // products = action.payload
+      })
+      .addCase(departmentCall.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "Error occurred";
       });
