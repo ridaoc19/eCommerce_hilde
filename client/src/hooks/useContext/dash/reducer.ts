@@ -43,8 +43,12 @@ const reducer: IDashReducer.Reducer = (state, action) => {
           return { ...state, inventory: { ...state.inventory, category: value, subcategory: "" } }
         case 'subcategory':
           return { ...state, inventory: { ...state.inventory, subcategory: value } }
-        case 'empty':
+        case 'departmentEmpty':
           return { ...state, inventory: initialState.inventory }
+        case 'categoryEmpty':
+          return { ...state, inventory: { ...state.inventory, category: "", subcategory: "" } }
+        case 'subcategoryEmpty':
+          return { ...state, inventory: { ...state.inventory, subcategory: "" } }
         default:
           return state;
       }
