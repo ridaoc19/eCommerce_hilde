@@ -28,8 +28,13 @@ export async function departmentGet(req: Request, res: Response) {
 
 export async function departmentPost(req: Request, res: Response) {
   try {
-    const department = await Department.create(req.body);
-    res.status(201).json(department);
+    const { name } = req.body;
+    await Department.create({ name });
+    const updatedProducts = await products();
+    return res.status(200).json({
+      message: "Departamento Departamento exitosamente",
+      products: updatedProducts,
+    });
 
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -47,7 +52,7 @@ export async function departmentPut(req: Request, res: Response) {
     const { _id } = req.params;
 
     await Department.findByIdAndUpdate(_id, { name }, { new: true });
-    
+
     const updatedProducts = await products();
     return res.status(200).json({
       message: "Departamento Editado exitosamente",

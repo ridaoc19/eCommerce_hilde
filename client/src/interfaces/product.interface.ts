@@ -2,6 +2,7 @@
 // ==============================|| Product ||============================== //
 export namespace IProduct {
   type Route = "request" | "create" | "edit" | "delete" | "";
+  export type Method = "get" | "post" | "put" | "delete";
   export type Routes = {
     routes: Route
   }
@@ -69,14 +70,25 @@ export namespace IProductRedux {
   export type ProductPostsReturn = { message: string, products: IProduct.Department[] | [] };
   
   // export type DepartmentPostsProps = IProduct.DepartmentData;
-  export type DepartmentPostsReturn = { message: string, products: IProduct.Department[] };
+  // export type DepartmentPostsReturn = { message: string, products: IProduct.Department[] };
   
   
+
+
+
+
+
+
+
+
+
+
+
+
   // =|| Template message error ||= //
-  type Method = "get" | "post" | "put" | "delete";
   export interface TemplateMessageReturn {
     route: IProduct.Routes['routes'];
-    method: Method;
+    method: IProduct.Method;
     message: string;
   }
   export type TemplateMessageProps = (data: IProduct.Routes) => TemplateMessageReturn

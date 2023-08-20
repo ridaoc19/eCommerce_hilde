@@ -19,6 +19,7 @@ function DepartmentForm({ selectedDepartment, handleOnChange, handleOnClick }: D
             <input
               type="text"
               placeholder="Ingresar un nuevo departamento"
+              name='name'
               value={selectedDepartment.name}
               onChange={handleOnChange}
             />

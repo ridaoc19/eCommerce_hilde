@@ -1,7 +1,114 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { IProduct, IProductRedux } from "../../../interfaces/product.interface";
-import { templateMessage } from "./templateMessage";
+
+export const productsGet = createAsyncThunk<IProductRedux.ProductPostsReturn, IProduct.Routes, { rejectValue: string }>(
+  'posts/product',
+  async (dataPost, { rejectWithValue }) => {
+    // const { route, message }: IProductRedux.TemplateMessageReturn = templateMessage(routes)
+    return await axios.get(`${process.env.REACT_APP_URL_API}/product/${dataPost.routes}`)
+      .then(response => response.data)
+      .catch(error => {
+        if (error.response) {
+          return rejectWithValue(error.response.data.error)
+        } else if (error.request) {
+          return rejectWithValue("Lamentamos informarte que estamos experimentando dificultades técnicas en este momento")
+        } else {
+          return rejectWithValue(error.message)
+        }
+      });
+  }
+);
+
+export interface DepartmentCallProps extends Pick<IProduct.Department, '_id' | 'name'> {
+  method: IProduct.Method;
+  route: IProduct.Routes['routes'];
+}
+
+export const departmentCall = createAsyncThunk<IProductRedux.ProductPostsReturn, DepartmentCallProps, { rejectValue: string }>(
+  'posts/department',
+  async (dataPost, { rejectWithValue }) => {
+    const fetchPost = dataPost.method !== "get" || "delete" ? {
+      method: dataPost.method,
+      body: JSON.stringify(dataPost),
+      headers: { "Content-Type": "application/json" }
+    } : {}
+    return await fetch(`${process.env.REACT_APP_URL_API}/department/${dataPost.route}/${dataPost._id}`, fetchPost)
+      .then(response => response.json())
+      .then(response => response)
+      .catch(error => {
+        if (error.response) {
+          return rejectWithValue(error.response.data.error)
+        } else if (error.request) {
+          return rejectWithValue("Lamentamos informarte que estamos experimentando dificultades técnicas en este momento")
+        } else {
+          return rejectWithValue(error.message)
+        }
+      });
+  }
+);
+
+
+// interface DepartmentEditProps {
+//   route: IProduct.Routes['routes'],
+//   _id: IProduct.Department['_id']
+//   name: IProduct.Department['name'],
+// }
+
+// export const departmentEdit = createAsyncThunk<IProductRedux.ProductPostsReturn, DepartmentEditProps, { rejectValue: string }>(
+//   'posts/userPosts',
+//   async (dataPost, { rejectWithValue }) => {
+//     // const { route, message }: IProductRedux.TemplateMessageReturn = templateMessage({})
+//     return await axios.post(`${process.env.REACT_APP_URL_API}/department/${dataPost.route}`, dataPost)
+//       .then(response => response.data)
+//       .catch(error => {
+//         if (error.response) {
+//           return rejectWithValue(error.response.data.error)
+//         } else if (error.request) {
+//           return rejectWithValue("Lamentamos informarte que estamos experimentando dificultades técnicas en este momento")
+//         } else {
+//           return rejectWithValue(error.message)
+//         }
+//       });
+//   }
+// );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23,25 +130,6 @@ import { templateMessage } from "./templateMessage";
 //       });
 //   }
 // );
-
-export const productsGet = createAsyncThunk<IProductRedux.ProductPostsReturn, IProduct.Routes, { rejectValue: string }>(
-  'posts/userPosts',
-  async (routes, { rejectWithValue }) => {
-    const { route, message }: IProductRedux.TemplateMessageReturn = templateMessage(routes)
-    return await axios.get(`${process.env.REACT_APP_URL_API}/${`product/${route}`}`)
-      .then(response => response.data)
-      .catch(error => {
-        if (error.response) {
-          return rejectWithValue(error.response.data.error)
-        } else if (error.request) {
-          return rejectWithValue(message)
-        } else {
-          return rejectWithValue(error.message)
-        }
-      });
-  }
-);
-
 
 // export const departmentPosts = createAsyncThunk<IProductRedux.DepartmentPostsReturn, IProductRedux.DepartmentPostsProps, { rejectValue: string }>(
 //   'posts/departmentPosts',
