@@ -9,9 +9,6 @@ import { selectProductsData } from '../../../../redux/reducers/product';
 import { DepartmentCallProps, departmentCall } from '../../../../redux/reducers/product/actions';
 import DepartmentForm from './DepartmentForm';
 import DepartmentList from './DepartmentList';
-// import './Departments.scss'; // Importa tu archivo Sass aquí
-
-
 
 export enum ButtonName {
   Edit = 'edit',
@@ -30,31 +27,32 @@ export const initialState: SelectedDepartment = { _id: "", name: '' }
 
 const Departments: React.FC = () => {
   const dispatchRedux = useAppDispatch();
-  const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
   const products: IProductRedux.ProductPostsReturn = useAppSelector(selectProductsData);
+  const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
   const [departmentList, setDepartmentList] = useState<IProductRedux.InitialState["products"]>({ message: "", products: [] });
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<SelectedDepartment>(initialState);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { _id, name } = selectedDepartment;
 
   useEffect(() => {
     if (products) setDepartmentList(products);
+    // eslint-disable-next-line
   }, [products]);
 
   const handleOnChange: HandleOnChange = (event) => {
     const { name, value } = event.target;
     setSelectedDepartment({ ...selectedDepartment, [name]: value })
   }
+
   const handleOnClick: HandleOnClick = (event) => {
     event.preventDefault();
     const targetButton = event.target as HTMLButtonElement;
-    const { value } = targetButton;
 
     switch (targetButton.name) {
       case ButtonName.Edit:
         emptyDepartment();
-        const updatedList = departmentList.products?.filter(dept => dept._id !== value) || [];
-        const editedDepartment = departmentList.products?.find(dept => dept._id === value);
+        const updatedList = departmentList.products?.filter(dept => dept._id !== targetButton.value) || [];
+        const editedDepartment = departmentList.products?.find(dept => dept._id === targetButton.value);
         if (editedDepartment) {
           let { _id, name } = editedDepartment;
           setSelectedDepartment({ _id, name });
@@ -64,7 +62,7 @@ const Departments: React.FC = () => {
 
       case ButtonName.Delete:
         emptyDepartment();
-        setSelectedDepartment({ ...selectedDepartment, _id: value });
+        setSelectedDepartment({ ...selectedDepartment, _id: targetButton.value });
         setShowDeleteModal(true);
         return;
 
@@ -75,16 +73,13 @@ const Departments: React.FC = () => {
       case ButtonName.Save:
         if (selectedDepartment._id.length > 6) dispatchRedux(departmentCall({ route: 'edit', method: 'put', _id, name }))
         if (selectedDepartment._id.length === 0) dispatchRedux(departmentCall({ route: 'create', method: 'post', _id, name }))
-
-        break;
-
-      case ButtonName.Add:
-        emptyDepartment();
         break;
 
       case ButtonName.Confirm:
-        // setShowDeleteModal(false);
         dispatchRedux(departmentCall({ route: 'delete', method: 'delete', _id, name }))
+        break;
+
+      case ButtonName.Add:
         break;
 
       case ButtonName.Cancel:
@@ -94,12 +89,13 @@ const Departments: React.FC = () => {
         break;
 
     }
+    emptyDepartment();
     setShowDeleteModal(false);
     setSelectedDepartment(initialState);
   };
 
   const emptyDepartment = () => {
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'empty', value: "" } })
+    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'departmentEmpty', value: "" } })
   }
 
   return (
