@@ -4,7 +4,7 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
   switch (routes) {
     case 'request':
       return {
-        routes,
+        route: routes,
         method: 'get',
         message: `
       <p>No se pudo completar la creación de tu cuenta</p>
@@ -14,7 +14,7 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
 
     case 'create':
       return {
-        routes,
+        route: routes,
         method: 'get',
         message: `
       <p>No se pudo cambiar la contraseña en este momento</p>
@@ -25,7 +25,7 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
 
     case 'edit':
       return {
-        routes,
+        route: routes,
         method: 'get',
         message: `
         <p>No se pudo restablecer la contraseña en este momento</p>
@@ -35,7 +35,7 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
 
     case 'delete':
       return {
-        routes,
+        route: routes,
         method: 'get',
         message: `
           <p>No se pudo iniciar sesión en este momento</p>
@@ -47,6 +47,6 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
 
 
     default:
-      return { routes: "", method: "get", message: "" }
+      return { route: "", method: "get", message: "" }
   }
 }
