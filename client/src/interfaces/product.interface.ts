@@ -1,7 +1,7 @@
 
 // ==============================|| Product ||============================== //
 export namespace IProduct {
-  export type Routes = "request" | "registre" | "update" | "delete" | "";
+  export type Routes = "request" | "create" | "edit" | "delete" | "";
   export interface Routeable {
     routes: Routes;
   }
@@ -18,16 +18,16 @@ export namespace IProduct {
     specification: Specification[];
     description: string;
     images: string[];
-    createdAt: string;
-    updatedAt: string;
+    // createdAt?: string;
+    // updatedAt?: string;
   }
   export interface Subcategory extends Routeable {
     _id: string;
     name: string;
     productsId: Product[];
     categoryId: string;
-    createdAt: string;
-    updatedAt: string;
+    // createdAt?: string;
+    // updatedAt?: string;
   }
 
   export interface Category extends Routeable {
@@ -35,19 +35,18 @@ export namespace IProduct {
     name: string;
     subcategoriesId: Subcategory[];
     departmentId: string;
-    createdAt: string;
-    updatedAt: string;
+    // createdAt?: string;
+    // updatedAt?: string;
   }
 
   export interface Department extends Routeable {
     _id: string;
     name: string;
     categoriesId: Category[];
-    createdAt: string;
-    updatedAt: string;
+    // createdAt?: string;
+    // updatedAt?: string;
   }
 
-  export type ProductsData = Department[];
 
   // export type DepartmentData = any
   export type DepartmentData = Pick<Department, '_id' | 'name' | 'routes'>
@@ -59,8 +58,8 @@ export namespace IProduct {
 export namespace IProductRedux {
 
   export interface InitialState {
-    products: IProduct.ProductsData | null;
-    product: IProduct.Product | null;
+    products: ProductPostsReturn; // ProductPostsReturn
+    product: IProduct.Product | {};
     loading: boolean;
     error: null | {} | string;
   }
@@ -68,10 +67,10 @@ export namespace IProductRedux {
 
   // createAsyncThunk
   export type ProductPostsProps = IProduct.Product;
-  export type ProductPostsReturn = IProduct.ProductsData
+  export type ProductPostsReturn = { message: string, products: IProduct.Department[] | [] };
 
   export type DepartmentPostsProps = IProduct.DepartmentData;
-  export type DepartmentPostsReturn = IProduct.ProductsData;
+  export type DepartmentPostsReturn = { message: string, products: IProduct.Department[] };
 
 
 

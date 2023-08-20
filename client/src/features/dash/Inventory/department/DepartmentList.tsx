@@ -16,7 +16,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, handleO
   return (
     <div>
       <ul>
-        {departmentList?.map((dept, index) => (
+        {departmentList.products?.map((dept, index) => (
           <li key={index}>
             <button name={ButtonName.Edit} value={dept._id} onClick={handleOnClick}>Edit</button>
             <button name={ButtonName.Delete} onClick={handleOnClick}>Delete</button>

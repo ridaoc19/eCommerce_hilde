@@ -20,8 +20,6 @@ function Inventory() {
       specification: [],
       description: "",
       images: [],
-      createdAt: "",
-      updatedAt: ""
     }));
   }, []);
 

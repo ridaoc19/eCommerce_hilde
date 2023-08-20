@@ -12,7 +12,7 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
       <p>Si tienes alguna pregunta o necesitas asistencia, por favor, contáctanos a través de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a> y estaremos encantados de ayudarte.</p>
       ` }
 
-    case 'registre':
+    case 'create':
       return {
         routes,
         method: 'get',
@@ -23,7 +23,7 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
       de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a></p>
       `}
 
-    case 'update':
+    case 'edit':
       return {
         routes,
         method: 'get',

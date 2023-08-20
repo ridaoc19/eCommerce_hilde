@@ -4,8 +4,8 @@ import { RootState } from "../../store";
 import { productsGet } from "./actions";
 
 const initialState: IProductRedux.InitialState = {
-  products: null,
-  product: null,
+  products: { message: "", products: [] },
+  product: {},
   loading: false,
   error: null,
 };
@@ -15,7 +15,7 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     clearProduct: (state) => {
-      state.products = null;
+      state.products = { message: "", products: [] };
       state.loading = false;
       state.error = null;
     },

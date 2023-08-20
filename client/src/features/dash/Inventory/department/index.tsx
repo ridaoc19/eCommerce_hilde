@@ -22,7 +22,6 @@ export enum ButtonName {
   Cancel = 'cancel'
 }
 
-
 export interface SelectedDepartment { _id: string; name: string; }
 export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
 export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
@@ -30,8 +29,8 @@ export const initialState: SelectedDepartment = { _id: '', name: '' }
 
 const Departments: React.FC = () => {
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
-  const products = useAppSelector(selectProductsData);
-  const [departmentList, setDepartmentList] = useState<IProductRedux.InitialState["products"]>(null);
+  const products: IProductRedux.ProductPostsReturn = useAppSelector(selectProductsData);
+  const [departmentList, setDepartmentList] = useState<IProductRedux.InitialState["products"]>({ message: "", products: [] });
   const [selectedDepartment, setSelectedDepartment] = useState<SelectedDepartment>(initialState);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -52,12 +51,12 @@ const Departments: React.FC = () => {
     switch (name) {
       case ButtonName.Edit:
         emptyDepartment();
-        const updatedList = departmentList?.filter(dept => dept._id !== value) || [];
-        const editedDepartment = departmentList?.find(dept => dept._id === value);
+        const updatedList = departmentList.products?.filter(dept => dept._id !== value) || [];
+        const editedDepartment = departmentList.products?.find(dept => dept._id === value);
         if (editedDepartment) {
           let { _id, name } = editedDepartment;
           setSelectedDepartment({ _id, name });
-          setDepartmentList(updatedList);
+          setDepartmentList({ ...departmentList, products: updatedList });
         }
         break;
 
@@ -74,19 +73,19 @@ const Departments: React.FC = () => {
       case ButtonName.Save:
         break;
 
-        case ButtonName.Add:
+      case ButtonName.Add:
         emptyDepartment();
         break;
 
-        case ButtonName.Confirm:
+      case ButtonName.Confirm:
         setShowDeleteModal(false);
         break;
 
-        case ButtonName.Cancel:
+      case ButtonName.Cancel:
         setShowDeleteModal(false);
         break;
 
-        default:
+      default:
         break;
     }
   };
