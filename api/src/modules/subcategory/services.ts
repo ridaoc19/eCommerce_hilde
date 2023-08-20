@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { products } from "../../core/utils/helpers";
 import { splitString } from "../../core/utils/splitString";
 import Category from "../category/model";
-import Department from "../department/model";
 import Product from "../product/model";
 import Subcategory from "./model";
 
@@ -15,7 +14,8 @@ function fetchCount(info: any) {
 export async function subcategoryCreate(req: Request, res: Response) {
   try {
     const { categoryId } = req.params;
-    const subcategory = await Subcategory.create({ ...req.body, categoryId: categoryId });
+    const { name } = req.body;
+    const subcategory = await Subcategory.create({ name, categoryId: categoryId });
 
     await Category.findByIdAndUpdate(categoryId, { $push: { subcategoriesId: subcategory._id } });
 
