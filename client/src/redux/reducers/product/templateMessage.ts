@@ -4,7 +4,7 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
   switch (routes) {
     case 'request':
       return {
-        routes,
+        route: routes,
         method: 'get',
         message: `
       <p>No se pudo completar la creación de tu cuenta</p>
@@ -12,9 +12,9 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
       <p>Si tienes alguna pregunta o necesitas asistencia, por favor, contáctanos a través de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a> y estaremos encantados de ayudarte.</p>
       ` }
 
-    case 'registre':
+    case 'create':
       return {
-        routes,
+        route: routes,
         method: 'get',
         message: `
       <p>No se pudo cambiar la contraseña en este momento</p>
@@ -23,9 +23,9 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
       de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a></p>
       `}
 
-    case 'update':
+    case 'edit':
       return {
-        routes,
+        route: routes,
         method: 'get',
         message: `
         <p>No se pudo restablecer la contraseña en este momento</p>
@@ -35,7 +35,7 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
 
     case 'delete':
       return {
-        routes,
+        route: routes,
         method: 'get',
         message: `
           <p>No se pudo iniciar sesión en este momento</p>
@@ -47,6 +47,6 @@ export const templateMessage: IProductRedux.TemplateMessageProps = ({ routes }) 
 
 
     default:
-      return { routes: "", method: "get", message: "" }
+      return { route: "", method: "get", message: "" }
   }
 }
