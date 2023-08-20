@@ -15,6 +15,7 @@ function Inventory() {
 
   useEffect(() => {
     dispatchRedux(productsGet({ routes: 'request' }));
+    // eslint-disable-next-line
   }, []);
 
   return (

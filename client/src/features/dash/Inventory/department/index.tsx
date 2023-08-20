@@ -36,6 +36,7 @@ const Departments: React.FC = () => {
 
   useEffect(() => {
     if (products) setDepartmentList(products);
+    // eslint-disable-next-line
   }, [products]);
 
   const handleOnChange: HandleOnChange = (event) => {
