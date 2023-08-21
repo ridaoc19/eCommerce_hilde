@@ -1,33 +1,33 @@
 import { useContext } from 'react';
-import { ButtonName, HandleOnChange, HandleOnClick, SelectedSubcategory } from '.';
+import { ButtonName, HandleOnChange, HandleOnClick, SelectedProducts } from '.';
 import { CreateContext } from '../../../../hooks/useContext';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
 
-interface SubcategoryFormProps {
-  selectedSubcategory: SelectedSubcategory
+interface ProductsFormProps {
+  selectedProducts: SelectedProducts
   handleOnChange: HandleOnChange;
   handleOnClick: HandleOnClick;
 }
 
-function SubcategoryForm({ selectedSubcategory, handleOnChange, handleOnClick }: SubcategoryFormProps) {
-  const { dashboard: { state: { inventory: { subcategory }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+function ProductsForm({ selectedProducts, handleOnChange, handleOnClick }: ProductsFormProps) {
+  const { dashboard: { state: { inventory: { products } } } }: IContext.IContextData = useContext(CreateContext)!;
   return (
     <div>
-      {!subcategory && inventory_subcategory && (
+      {!products && (
         <>
           <div className='input'>
             <input
               type="text"
               placeholder="Ingresar nueva sub categoría"
               name='name'
-              value={selectedSubcategory.name}
+              value={selectedProducts.name}
               onChange={handleOnChange}
             />
           </div>
           <div className="-button">
             <div>
               <button name={ButtonName.Clean} onClick={handleOnClick}>Limpiar</button>
-              <button name={ButtonName.Save} onClick={handleOnClick}>{selectedSubcategory._id ? 'Actualizar' : 'Crear'}</button>
+              <button name={ButtonName.Save} onClick={handleOnClick}>{selectedProducts._id ? 'Actualizar' : 'Crear'}</button>
             </div>
           </div>
         </>
@@ -36,4 +36,4 @@ function SubcategoryForm({ selectedSubcategory, handleOnChange, handleOnClick }:
   );
 }
 
-export default SubcategoryForm;
+export default ProductsForm;

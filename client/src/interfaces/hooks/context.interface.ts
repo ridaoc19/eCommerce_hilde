@@ -3,7 +3,7 @@
 
 import { ReactNode } from "react";
 import { ActionTypeDashboard } from "../../hooks/useContext/dash/reducer";
-import { ISidebar } from "../components/layout/layout.interface";
+import { PermitsRoles } from "../user.interface";
 
 
 export namespace IContext {
@@ -29,12 +29,15 @@ export namespace IDashReducer {
     inventory: {
       department: string | null,
       category: string | null,
-      subcategory: string | null
+      subcategory: string | null,
+      products: string | null,
     };
-    itemSidebar: ISidebar.ItemRole[]
+    permits: {
+      [key in PermitsRoles['id']]: boolean;
+    }
   };
 
-  type Name = "department" |"category" |"subcategory" |"departmentEmpty" |"categoryEmpty" |"subcategoryEmpty"
+  type Name = "department" | "category" | "subcategory" | "products" | "departmentEmpty" | "categoryEmpty" | "subcategoryEmpty" | "productsEmpty"
   export type SelectAction = {
     type: ActionTypeDashboard;
     payload: { name: null | Name, value: string }

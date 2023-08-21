@@ -1,11 +1,12 @@
-import Svg from "../../../assets/icons/Svg";
 import { IDashReducer } from "../../../interfaces/hooks/context.interface";
 
 export enum ActionTypeDashboard {
+  PERMITS_ROLES = 'PERMITS_ROLES',
   SELECT_COMPONENT = "SELECT_COMPONENT",
   ACCOUNT_TOGGLE_INFORMATION = "ACCOUNT_TOGGLE_INFORMATION",
   ACCOUNT_TOGGLE_PASSWORD = "ACCOUNT_TOGGLE_PASSWORD",
-  SELECT_INVENTORY = "SELECT_INVENTORY"
+  SELECT_INVENTORY = "SELECT_INVENTORY",
+  LOGOUT = "LOGOUT"
 }
 
 const initialState: IDashReducer.AppState = {
@@ -18,12 +19,17 @@ const initialState: IDashReducer.AppState = {
     department: null,
     category: null,
     subcategory: null,
+    products: null,
   },
-  itemSidebar: [
-    { id: 1, value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
-    { id: 2, value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
-    { id: 3, value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
-  ]
+  permits: {
+    sidebar_user: false,
+    sidebar_inventory: false,
+    sidebar_otro: false,
+    inventory_department: false,
+    inventory_category: false,
+    inventory_subcategory: false,
+    inventory_product: false
+  }
 };
 
 const reducer: IDashReducer.Reducer = (state, action) => {
@@ -38,20 +44,28 @@ const reducer: IDashReducer.Reducer = (state, action) => {
       const { name, value } = action.payload;
       switch (name) {
         case 'department':
-          return { ...state, inventory: { department: value, category: "", subcategory: "" } }
+          return { ...state, inventory: { department: value, category: "", subcategory: "", products: "" } }
         case 'category':
-          return { ...state, inventory: { ...state.inventory, category: value, subcategory: "" } }
+          return { ...state, inventory: { ...state.inventory, category: value, subcategory: "", products: "" } }
         case 'subcategory':
-          return { ...state, inventory: { ...state.inventory, subcategory: value } }
+          return { ...state, inventory: { ...state.inventory, subcategory: value, products: "" } }
+        case 'products':
+          return { ...state, inventory: { ...state.inventory, products: value } }
         case 'departmentEmpty':
           return { ...state, inventory: initialState.inventory }
         case 'categoryEmpty':
-          return { ...state, inventory: { ...state.inventory, category: "", subcategory: "" } }
+          return { ...state, inventory: { ...state.inventory, category: "", subcategory: "", products: "" } }
         case 'subcategoryEmpty':
-          return { ...state, inventory: { ...state.inventory, subcategory: "" } }
+          return { ...state, inventory: { ...state.inventory, subcategory: "", products: "" } }
+        case 'productsEmpty':
+          return { ...state, inventory: { ...state.inventory, products: "" } }
         default:
           return state;
       }
+    case ActionTypeDashboard.PERMITS_ROLES:
+      return { ...state, permits: { ...state.permits, [action.payload.value]: true } }
+    case ActionTypeDashboard.LOGOUT:
+      return initialState
     default:
       return state;
   }
