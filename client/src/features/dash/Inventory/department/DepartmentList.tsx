@@ -11,22 +11,26 @@ type DepartmentListProps = {
 };
 
 const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { inventory: { department } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
       <ul>
         {departmentList.products?.map((dept, index) => (
           <li key={index}>
-            <button name={ButtonName.Edit} value={dept._id} onClick={handleOnClick}>Edit</button>
-            <button name={ButtonName.Delete} value={dept._id} onClick={handleOnClick}>Delete</button>
+            {inventory_department &&
+              <>
+                <button name={ButtonName.Edit} value={dept._id} onClick={handleOnClick}>Edit</button>
+                <button name={ButtonName.Delete} value={dept._id} onClick={handleOnClick}>Delete</button>
+              </>
+            }
             <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'department', value: dept._id } })}>
               {dept.name}
             </span>
           </li>
         ))}
       </ul>
-      {department && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
+      {inventory_department && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
     </div>
   );
 }

@@ -11,22 +11,26 @@ type CategoryListProps = {
 };
 
 const CategoryList: React.FC<CategoryListProps> = ({ categoryList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
       <ul>
         {categoryList?.map((cat, index) => (
           <li key={index}>
-            <button name={ButtonName.Edit} value={cat._id} onClick={handleOnClick}>Edit</button>
-            <button name={ButtonName.Delete} value={cat._id} onClick={handleOnClick}>Delete</button>
+            {inventory_category &&
+              <>
+                <button name={ButtonName.Edit} value={cat._id} onClick={handleOnClick}>Edit</button>
+                <button name={ButtonName.Delete} value={cat._id} onClick={handleOnClick}>Delete</button>
+              </>
+            }
             <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'category', value: cat._id } })}>
               {cat.name}
             </span>
           </li>
         ))}
       </ul>
-      <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>
+      {inventory_category && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
     </div>
   );
 }
