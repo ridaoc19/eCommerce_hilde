@@ -10,10 +10,10 @@ interface DepartmentFormProps {
 }
 
 function DepartmentForm({ selectedDepartment, handleOnChange, handleOnClick }: DepartmentFormProps) {
-  const { dashboard: { state: { inventory: { department } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { department }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
   return (
     <div>
-      {!department && (
+      {!department && inventory_department && (
         <>
           <div className='input'>
             <input

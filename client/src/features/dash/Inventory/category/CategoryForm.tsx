@@ -10,10 +10,10 @@ interface CategoryFormProps {
 }
 
 function CategoryForm({ selectedCategory, handleOnChange, handleOnClick }: CategoryFormProps) {
-  const { dashboard: { state: { inventory: { category } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { category }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
   return (
     <div>
-      {!category && (
+      {!category && inventory_category && (
         <>
           <div className='input'>
             <input

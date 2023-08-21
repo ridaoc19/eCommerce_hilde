@@ -1,7 +1,13 @@
 import Navbar from './navbar';
 import Sidebar from './sidebar';
 import Footer from './footer';
-import { ILayout } from '../../interfaces/components/layout/layout.interface';
+import { ReactNode } from 'react';
+
+export namespace ILayout {
+  export type LayoutProps = {
+    children: ReactNode
+  }
+}
 
 
 function Layout({ children }: ILayout.LayoutProps) {

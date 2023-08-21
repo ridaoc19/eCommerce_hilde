@@ -151,4 +151,24 @@ export namespace IUserOnChange {
   export type HandleUserErrorOnBackProps = () => void
 }
 
+/////////////////////////////////////////////
+export type PermitsRoles = {
+  id: 'sidebar_user'
+  | 'sidebar_inventory'
+  | 'sidebar_otro'
+  | 'inventory_department'
+  | 'inventory_category'
+  | 'inventory_subcategory'
+  | 'inventory_product'
+  roles: IUser.UserData["roles"][]; // Aquí indicamos que roles es un array de roles permitidos
+}
 
+export const permitsRoles: PermitsRoles[] = [
+  { id: 'sidebar_user', roles: ["super", "admin", 'edit', 'visitant'] },
+  { id: 'sidebar_inventory', roles: ['super', 'admin', 'edit'] },
+  { id: 'sidebar_otro', roles: ['visitant', "super", 'admin'] },
+  { id: 'inventory_department', roles: ['super', 'admin'] },
+  { id: 'inventory_category', roles: ['super', 'admin'] },
+  { id: 'inventory_subcategory', roles: ['super', 'admin'] },
+  { id: 'inventory_product', roles: ["super", "admin", 'edit'] },
+]

@@ -1,24 +1,39 @@
-import { MouseEventHandler } from 'react';
+import { MouseEventHandler, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Svg from '../../../assets/icons/Svg';
+import { CreateContext } from '../../../hooks/useContext';
+import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
+import { IContext } from '../../../interfaces/hooks/context.interface';
+import { permitsRoles } from '../../../interfaces/user.interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserData } from '../../../redux/reducers/user';
 
 
 function Navbar() {
   const dispatch = useAppDispatch();
+  const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
+
   const user = useAppSelector(selectUserData)
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     localStorage.removeItem("token");
     dispatch(clearUser());
+    dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
   }
 
-  // setTimeout(() => {
-  //   const card = document.querySelector('.card')!;
-  //   card.classList.add('show');
-  // }, 4000);
+  useEffect(() => {
+    if (user instanceof Object) {
+      if (user?.verified) {
+        permitsRoles.forEach(acc => {
+          if (acc.roles.some(r => r.includes(user.roles))) {
+            dispatchContext({ type: ActionTypeDashboard.PERMITS_ROLES, payload: { name: null, value: acc.id } })
+          }
+        });
+      }
+    }
+    // eslint-disable-next-line
+  }, [user])
 
   return (
     <div className='component__navbar--container'>

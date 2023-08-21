@@ -10,10 +10,10 @@ interface SubcategoryFormProps {
 }
 
 function SubcategoryForm({ selectedSubcategory, handleOnChange, handleOnClick }: SubcategoryFormProps) {
-  const { dashboard: { state: { inventory: { subcategory }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
   return (
     <div>
-      {!subcategory && inventory_subcategory && (
+      {!subcategory && (
         <>
           <div className='input'>
             <input

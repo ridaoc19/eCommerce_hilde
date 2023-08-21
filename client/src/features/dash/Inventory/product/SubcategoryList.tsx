@@ -11,27 +11,22 @@ type SubcategoryListProps = {
 };
 
 const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
       <ul>
         {subcategoryList?.map((sub, index) => (
           <li key={index}>
-            {
-              inventory_subcategory &&
-              <>
-                <button name={ButtonName.Edit} value={sub._id} onClick={handleOnClick}>Edit</button>
-                <button name={ButtonName.Delete} value={sub._id} onClick={handleOnClick}>Delete</button>
-              </>
-            }
+            <button name={ButtonName.Edit} value={sub._id} onClick={handleOnClick}>Edit</button>
+            <button name={ButtonName.Delete} value={sub._id} onClick={handleOnClick}>Delete</button>
             <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'subcategory', value: sub._id } })}>
               {sub.name}
             </span>
           </li>
         ))}
       </ul>
-      {inventory_subcategory && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
+      <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>
     </div>
   );
 }
