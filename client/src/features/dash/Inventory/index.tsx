@@ -8,6 +8,7 @@ import { productsGet } from "../../../redux/reducers/product/actions";
 import Category from "./category/index";
 import Department from "./department";
 import Subcategory from "./subCategory";
+import Products from "./product";
 // import CrudForm from './department/ejemplo';
 
 export namespace IInventory {
@@ -21,7 +22,7 @@ export namespace IInventory {
 
 function Inventory() {
   const dispatchRedux = useAppDispatch();
-  const { dashboard: { state: { inventory: { department, category } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { department, category, subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   useEffect(() => {
     dispatchRedux(productsGet({ routes: 'request' }));
@@ -47,8 +48,8 @@ function Inventory() {
 
       {<div className="admin_inventory">
         <div className="department">
-          <h2>Subcategoría</h2>
-          {category && <Subcategory />}
+          <h2>Products</h2>
+          {subcategory && <Products />}
         </div>
       </div>}
       {/* <CrudForm /> */}

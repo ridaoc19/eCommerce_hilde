@@ -28,7 +28,7 @@ export const initialState: SelectedSubcategory = { _id: "", name: '' }
 const Subcategory: React.FC = () => {
   const dispatchRedux = useAppDispatch();
   const { products }: IProductRedux.ProductPostsReturn = useAppSelector(selectProductsData);
-  const { dashboard: { state: { inventory: { department, category, subcategory } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { inventory: { department, category } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const [subcategoryList, setSubcategoryList] = useState<IProduct.Subcategory[]>([]);
   const [selectedSubcategory, setSelectedSubcategory] = useState<SelectedSubcategory>(initialState);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -37,7 +37,7 @@ const Subcategory: React.FC = () => {
   useEffect(() => {
     let subcategory = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
     if (subcategory) setSubcategoryList(subcategory);
-  }, [products, department, category, subcategory]);
+  }, [products, department, category]);
 
   const handleOnChange: HandleOnChange = (event) => {
     const { name, value } = event.target;

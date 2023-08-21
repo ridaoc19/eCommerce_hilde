@@ -5,23 +5,23 @@ import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from "../../../../interfaces/hooks/context.interface";
 import { IProduct } from "../../../../interfaces/product.interface";
 
-type SubcategoryListProps = {
-  subcategoryList: IProduct.Subcategory[];
+type ProductsListProps = {
+  productsList: IProduct.Product[];
   handleOnClick: HandleOnClick;
 };
 
-const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, handleOnClick }) => {
+const ProductsList: React.FC<ProductsListProps> = ({ productsList, handleOnClick }) => {
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
       <ul>
-        {subcategoryList?.map((sub, index) => (
+        {productsList?.map((prod, index) => (
           <li key={index}>
-            <button name={ButtonName.Edit} value={sub._id} onClick={handleOnClick}>Edit</button>
-            <button name={ButtonName.Delete} value={sub._id} onClick={handleOnClick}>Delete</button>
-            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'subcategory', value: sub._id } })}>
-              {sub.name}
+            <button name={ButtonName.Edit} value={prod._id} onClick={handleOnClick}>Edit</button>
+            <button name={ButtonName.Delete} value={prod._id} onClick={handleOnClick}>Delete</button>
+            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'products', value: prod._id } })}>
+              {prod.name}
             </span>
           </li>
         ))}
@@ -31,4 +31,4 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, hand
   );
 }
 
-export default SubcategoryList;
+export default ProductsList;

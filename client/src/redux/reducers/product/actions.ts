@@ -105,6 +105,33 @@ export const subcategoryCall = createAsyncThunk<IProductRedux.ProductPostsReturn
   }
 );
 
+export interface ProductsCallProps extends Pick<IProduct.Product, '_id' | 'name'> {
+  method: IProduct.Method;
+  route: IProduct.Routes['routes'];
+}
+
+export const productsCall = createAsyncThunk<IProductRedux.ProductPostsReturn, ProductsCallProps, { rejectValue: string }>(
+  'posts/product',
+  async (dataPost, { rejectWithValue }) => {
+    const fetchPost = dataPost.method !== "get" || "delete" ? {
+      method: dataPost.method,
+      body: JSON.stringify(dataPost),
+      headers: { "Content-Type": "application/json" }
+    } : {}
+    return await fetch(`${process.env.REACT_APP_URL_API}/product/${dataPost.route}/${dataPost._id}`, fetchPost)
+      .then(response => response.json())
+      .then(response => response)
+      .catch(error => {
+        if (error.response) {
+          return rejectWithValue(error.response.data.error)
+        } else if (error.request) {
+          return rejectWithValue("Lamentamos informarte que estamos experimentando dificultades técnicas en este momento")
+        } else {
+          return rejectWithValue(error.message)
+        }
+      });
+  }
+);
 
 // interface DepartmentEditProps {
 //   route: IProduct.Routes['routes'],

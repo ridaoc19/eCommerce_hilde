@@ -19,6 +19,7 @@ const initialState: IDashReducer.AppState = {
     department: null,
     category: null,
     subcategory: null,
+    products: null,
   },
   permits: {
     sidebar_user: false,
@@ -43,17 +44,21 @@ const reducer: IDashReducer.Reducer = (state, action) => {
       const { name, value } = action.payload;
       switch (name) {
         case 'department':
-          return { ...state, inventory: { department: value, category: "", subcategory: "" } }
+          return { ...state, inventory: { department: value, category: "", subcategory: "", products: "" } }
         case 'category':
-          return { ...state, inventory: { ...state.inventory, category: value, subcategory: "" } }
+          return { ...state, inventory: { ...state.inventory, category: value, subcategory: "", products: "" } }
         case 'subcategory':
-          return { ...state, inventory: { ...state.inventory, subcategory: value } }
+          return { ...state, inventory: { ...state.inventory, subcategory: value, products: "" } }
+        case 'products':
+          return { ...state, inventory: { ...state.inventory, products: value } }
         case 'departmentEmpty':
           return { ...state, inventory: initialState.inventory }
         case 'categoryEmpty':
-          return { ...state, inventory: { ...state.inventory, category: "", subcategory: "" } }
+          return { ...state, inventory: { ...state.inventory, category: "", subcategory: "", products: "" } }
         case 'subcategoryEmpty':
-          return { ...state, inventory: { ...state.inventory, subcategory: "" } }
+          return { ...state, inventory: { ...state.inventory, subcategory: "", products: "" } }
+        case 'productsEmpty':
+          return { ...state, inventory: { ...state.inventory, products: "" } }
         default:
           return state;
       }
