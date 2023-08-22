@@ -11,22 +11,25 @@ type ProductsListProps = {
 };
 
 const ProductsList: React.FC<ProductsListProps> = ({ productsList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { permits: { inventory_product } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
       <ul>
         {productsList?.map((prod, index) => (
           <li key={index}>
-            <button name={ButtonName.Edit} value={prod._id} onClick={handleOnClick}>Edit</button>
-            <button name={ButtonName.Delete} value={prod._id} onClick={handleOnClick}>Delete</button>
-            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'products', value: prod._id } })}>
-              {prod.name}
-            </span>
+            {
+              inventory_product &&
+              <>
+                <button name={ButtonName.Edit} value={prod._id} onClick={handleOnClick}>Edit</button>
+                <button name={ButtonName.Delete} value={prod._id} onClick={handleOnClick}>Delete</button>
+              </>
+            }
+            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'products', value: prod._id } })}>{prod.name}</span>
           </li>
         ))}
       </ul>
-      <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>
+      {inventory_product && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Producto</button>}
     </div>
   );
 }

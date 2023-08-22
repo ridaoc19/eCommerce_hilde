@@ -11,7 +11,7 @@ type SubcategoryListProps = {
 };
 
 const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { inventory: { subcategory }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -31,7 +31,7 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, hand
           </li>
         ))}
       </ul>
-      {inventory_subcategory && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
+      {subcategory && inventory_subcategory && <button name={ButtonName.Add} onClick={handleOnClick}>Nueva Subcategoría</button>}
     </div>
   );
 }
