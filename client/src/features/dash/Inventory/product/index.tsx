@@ -7,6 +7,7 @@ import { IProduct, IProductRedux } from '../../../../interfaces/product.interfac
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { selectProductsData } from '../../../../redux/reducers/product';
 import { ProductsCallProps, productsCall } from '../../../../redux/reducers/product/actions';
+import ProductDetail, { DataProductDetail } from './ProductDetail';
 import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 
@@ -17,7 +18,8 @@ export enum ButtonName {
   Save = 'save',
   Add = 'add',
   Confirm = 'confirm',
-  Cancel = 'cancel'
+  Cancel = 'cancel',
+  product = 'product',
 }
 
 export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
@@ -28,10 +30,11 @@ export const initialState: SelectedProducts = { _id: "", name: '' }
 const Products: React.FC = () => {
   const dispatchRedux = useAppDispatch();
   const { products }: IProductRedux.ProductPostsReturn = useAppSelector(selectProductsData);
-  const { dashboard: { state: { inventory: { department, category, subcategory } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { inventory: { department, category, subcategory, products: product } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const [productsList, setProductsList] = useState<IProduct.Product[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<SelectedProducts>(initialState);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [productDetail, setProductDetail] = useState<DataProductDetail>({ breadcrumb: ["", "", ""], product: { _id: "", name: "", description: "", images: [], price: "", specification: [], subcategoryId: "" } });
   const { _id, name } = selectedProducts;
 
   useEffect(() => {
@@ -80,6 +83,19 @@ const Products: React.FC = () => {
         dispatchRedux(productsCall({ route: 'delete', method: 'delete', _id, name }))
         break;
 
+      case ButtonName.product:
+        dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'products', value: targetButton.value } })
+        const filterProductList = productsList.find(prod => prod._id === targetButton.value)!
+        const departmentFilter = products.find(dep => dep._id === department)!
+        const categoryFilter = departmentFilter?.categoriesId.find(cat => cat._id === category)!
+        const subcategoryFilter = categoryFilter?.subcategoriesId.find(sub => sub._id === subcategory)!
+        const dataProductDetail: DataProductDetail = {
+          breadcrumb: [departmentFilter?.name, categoryFilter?.name, subcategoryFilter?.name],
+          product: filterProductList
+        }
+        setProductDetail(dataProductDetail)
+        return;
+
       case ButtonName.Add:
         break;
 
@@ -107,6 +123,7 @@ const Products: React.FC = () => {
       <div>
         <ProductsForm selectedProducts={selectedProducts} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
       </div>
+      {product && productDetail && <ProductDetail product={productDetail} />}
       {showDeleteModal &&
         <ModalConfirm
           message='¿Estás seguro de eliminar este producto?'
@@ -118,3 +135,4 @@ const Products: React.FC = () => {
 };
 
 export default Products;
+
