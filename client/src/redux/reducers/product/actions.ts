@@ -105,7 +105,9 @@ export const subcategoryCall = createAsyncThunk<IProductRedux.ProductPostsReturn
   }
 );
 
-export interface ProductsCallProps extends Pick<IProduct.Product, '_id' | 'name'> {
+export type ProductCall = Omit<IProduct.Product, 'subcategoryId' | 'images'> & { images: File[], imgDelete: string[] }
+// export type ProductCall = Omit<IProduct.Product, 'subcategoryId' | 'images'> & { images: File[] }
+export interface ProductsCallProps extends ProductCall {
   method: IProduct.Method;
   route: IProduct.Routes['routes'];
 }
@@ -113,11 +115,29 @@ export interface ProductsCallProps extends Pick<IProduct.Product, '_id' | 'name'
 export const productsCall = createAsyncThunk<IProductRedux.ProductPostsReturn, ProductsCallProps, { rejectValue: string }>(
   'posts/product',
   async (dataPost, { rejectWithValue }) => {
-    const fetchPost = dataPost.method !== "get" || "delete" ? {
-      method: dataPost.method,
-      body: JSON.stringify(dataPost),
-      headers: { "Content-Type": "application/json" }
-    } : {}
+    let fetchPost
+    if (dataPost.method === 'post' || dataPost.method === 'put') {
+      const form = new FormData();
+      form.append('_id', dataPost._id);
+      form.append('name', dataPost.name);
+      form.append('price', dataPost.price);
+      form.append('description', dataPost.description);
+      dataPost.images.forEach((image, _index) => {
+        form.append(`images`, image);  // Usar el mismo nombre
+      });
+
+      dataPost.specification.forEach((spec, index) => {
+        form.append(`specification[${index}][key]`, spec.key);
+        form.append(`specification[${index}][value]`, spec.value);
+      });
+
+      fetchPost = {
+        method: dataPost.method,
+        body: JSON.stringify(form),
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }
+    } else if (dataPost.method === 'get' || dataPost.method === 'delete') fetchPost = {}
+
     return await fetch(`${process.env.REACT_APP_URL_API}/product/${dataPost.route}/${dataPost._id}`, fetchPost)
       .then(response => response.json())
       .then(response => response)

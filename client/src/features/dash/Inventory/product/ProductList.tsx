@@ -24,7 +24,7 @@ const ProductsList: React.FC<ProductsListProps> = ({ productsList, handleOnClick
                 <button name={ButtonName.Delete} value={prod._id} onClick={handleOnClick}>Delete</button>
               </>
             }
-            <button name={ButtonName.product} className='button_link' value={prod._id} onClick={handleOnClick}>{prod.name}</button>
+            <button name={ButtonName.Product} className='button_link' value={prod._id} onClick={handleOnClick}>{prod.name}</button>
             {/* <span data-value={prod._id} onClick={handleOnClickProduct} > {prod.name}</span> */}
           </li>
         ))}
