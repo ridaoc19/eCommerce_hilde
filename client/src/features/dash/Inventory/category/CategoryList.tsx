@@ -11,7 +11,7 @@ type CategoryListProps = {
 };
 
 const CategoryList: React.FC<CategoryListProps> = ({ categoryList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { inventory: { category }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -30,7 +30,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryList, handleOnClick
           </li>
         ))}
       </ul>
-      {inventory_category && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
+      {category && inventory_category && <button name={ButtonName.Add} onClick={handleOnClick}>Nueva categoría</button>}
     </div>
   );
 }
