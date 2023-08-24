@@ -115,32 +115,24 @@ export interface ProductsCallProps extends ProductCall {
 export const productsCall = createAsyncThunk<IProductRedux.ProductPostsReturn, ProductsCallProps, { rejectValue: string }>(
   'posts/product',
   async (dataPost, { rejectWithValue }) => {
-    let fetchPost
-    if (dataPost.method === 'post' || dataPost.method === 'put') {
-      const form = new FormData();
-      form.append('_id', dataPost._id);
-      form.append('name', dataPost.name);
-      form.append('price', dataPost.price);
-      form.append('description', dataPost.description);
-      dataPost.images.forEach((image, _index) => {
-        form.append(`images`, image);  // Usar el mismo nombre
-      });
+    const form = new FormData();
+    form.append('_id', dataPost._id);
+    form.append('name', dataPost.name);
+    form.append('price', dataPost.price);
+    form.append('description', dataPost.description);
+    dataPost.images.forEach((image, _index) => {
+      form.append(`images`, image);  // Usar el mismo nombre
+    });
 
-      dataPost.specification.forEach((spec, index) => {
-        form.append(`specification[${index}][key]`, spec.key);
-        form.append(`specification[${index}][value]`, spec.value);
-      });
+    dataPost.specification.forEach((spec, index) => {
+      form.append(`specification[${index}][key]`, spec.key);
+      form.append(`specification[${index}][value]`, spec.value);
+    });
 
-      fetchPost = {
-        method: dataPost.method,
-        body: JSON.stringify(form),
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }
-    } else if (dataPost.method === 'get' || dataPost.method === 'delete') fetchPost = {}
-
-    return await fetch(`${process.env.REACT_APP_URL_API}/product/${dataPost.route}/${dataPost._id}`, fetchPost)
-      .then(response => response.json())
-      .then(response => response)
+    // const response = await axios.post(`${process.env.REACT_APP_URL_API}/product/create`,
+    // form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return await axios.post(`${process.env.REACT_APP_URL_API}/product/${dataPost.route}`, form, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .then(response => response.data)
       .catch(error => {
         if (error.response) {
           return rejectWithValue(error.response.data.error)
@@ -152,4 +144,48 @@ export const productsCall = createAsyncThunk<IProductRedux.ProductPostsReturn, P
       });
   }
 );
+
+
+// export const productsCall = createAsyncThunk<IProductRedux.ProductPostsReturn, ProductsCallProps, { rejectValue: string }>(
+//   'posts/product',
+//   async (dataPost, { rejectWithValue }) => {
+//     let fetchPost
+//     if (dataPost.method === 'post' || dataPost.method === 'put') {
+//       const form = new FormData();
+//       form.append('_id', dataPost._id);
+//       form.append('name', dataPost.name);
+//       form.append('price', dataPost.price);
+//       form.append('description', dataPost.description);
+//       dataPost.images.forEach((image, _index) => {
+//         form.append(`images`, image);  // Usar el mismo nombre
+//       });
+
+//       dataPost.specification.forEach((spec, index) => {
+//         form.append(`specification[${index}][key]`, spec.key);
+//         form.append(`specification[${index}][value]`, spec.value);
+//       });
+
+//       fetchPost = {
+//         method: dataPost.method,
+//         body: form,
+//         headers: { 'Content-Type': 'multipart/form-data' }
+//       }
+//     } else if (dataPost.method === 'get' || dataPost.method === 'delete') fetchPost = {}
+
+//     return await fetch(`${process.env.REACT_APP_URL_API}/product/${dataPost.route}`, fetchPost)
+//       .then(response => response.json())
+//       .then(response => response)
+//       .catch(error => {
+//         if (error.response) {
+//           return rejectWithValue(error.response.data.error)
+//         } else if (error.request) {
+//           return rejectWithValue("Lamentamos informarte que estamos experimentando dificultades técnicas en este momento")
+//         } else {
+//           return rejectWithValue(error.message)
+//         }
+//       });
+//   }
+// );
+
+
 

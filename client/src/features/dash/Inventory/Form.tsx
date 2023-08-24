@@ -120,7 +120,7 @@ const Form: React.FC = () => {
 
     try {
       // console.log(form.getAll("images"));
-      const response = await axios.post(`${process.env.REACT_APP_URL_API}/product/registre`,
+      const response = await axios.post(`${process.env.REACT_APP_URL_API}/product/create`,
         form, { headers: { 'Content-Type': 'multipart/form-data' } });
       console.log(response.data);
     } catch (error) {

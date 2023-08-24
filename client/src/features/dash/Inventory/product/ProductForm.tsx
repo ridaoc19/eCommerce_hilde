@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { ButtonName, HandleOnChange, HandleOnClick, SelectedProducts } from '.';
 import { CreateContext } from '../../../../hooks/useContext';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
+import Form from '../Form';
 
 interface ProductsFormProps {
   selectedProducts: SelectedProducts;
@@ -78,7 +79,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProducts, handleOnC
               ))}
             </div>
           </div>
-
+          <Form />
           <div className="-button">
             <div>
               <button name={ButtonName.Clean} onClick={handleOnClick}>Limpiar</button>
