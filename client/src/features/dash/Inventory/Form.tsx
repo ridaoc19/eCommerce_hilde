@@ -73,39 +73,27 @@ const Form: React.FC = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputName = e.target.name;
+
     if (inputName === 'images') {
       const files = e.target.files;
       if (files && files.length > 0) {
-        setFormData((prevData) => ({
-          ...prevData,
-          images: [...prevData.images, files[0]],
-        }));
+        setFormData((prevData) => ({ ...prevData, images: [...prevData.images, files[0]] }));
       }
+
     } else if (inputName === 'specificationKey' || inputName === 'specificationValue') {
       const specIndex = parseInt(e.target.dataset.index || '0', 10);
       const specField = inputName === 'specificationKey' ? 'key' : 'value';
       const updatedSpecification = [...formData.specification];
-      updatedSpecification[specIndex] = {
-        ...updatedSpecification[specIndex],
-        [specField]: e.target.value,
-      };
-      setFormData((prevData) => ({
-        ...prevData,
-        specification: updatedSpecification,
-      }));
+      updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: e.target.value };
+      setFormData((prevData) => ({ ...prevData, specification: updatedSpecification }));
+
     } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        [inputName]: e.target.value,
-      }));
+      setFormData((prevData) => ({ ...prevData, [inputName]: e.target.value }));
     }
   };
 
   const handleAddSpecification = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      specification: [...prevData.specification, { key: '', value: '' }],
-    }));
+    setFormData((prevData) => ({ ...prevData, specification: [...prevData.specification, { key: '', value: '' }] }));
   };
 
   const handleUpload = async () => {
@@ -132,7 +120,7 @@ const Form: React.FC = () => {
 
     try {
       // console.log(form.getAll("images"));
-      const response = await axios.post(`${process.env.REACT_APP_URL_API}/product/registre`,
+      const response = await axios.post(`${process.env.REACT_APP_URL_API}/product/create`,
         form, { headers: { 'Content-Type': 'multipart/form-data' } });
       console.log(response.data);
     } catch (error) {
@@ -146,7 +134,7 @@ const Form: React.FC = () => {
       <input type="file" name="images" onChange={handleFileChange} />
       <input type="file" name="images" onChange={handleFileChange} />
       <input type="file" name="images" onChange={handleFileChange} />
-      <input
+      {/* <input
         type="text"
         name="department"
         placeholder="departamento"
@@ -163,7 +151,7 @@ const Form: React.FC = () => {
         name="subcategory"
         placeholder="subcategoria"
         onChange={handleFileChange}
-      />
+      /> */}
       <input
         type="text"
         name="price"
@@ -191,6 +179,7 @@ const Form: React.FC = () => {
         </div>
       ))}
       <button onClick={handleAddSpecification}>Agregar especificación</button>
+
       <input
         type="text"
         name="description"

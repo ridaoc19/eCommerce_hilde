@@ -11,7 +11,7 @@ type DepartmentListProps = {
 };
 
 const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { inventory: { department }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -30,7 +30,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, handleO
           </li>
         ))}
       </ul>
-      {inventory_department && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
+      {department && inventory_department && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
     </div>
   );
 }
