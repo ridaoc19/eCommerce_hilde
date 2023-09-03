@@ -9,6 +9,9 @@ import Category from "./category/index";
 import Department from "./department";
 import Subcategory from "./subCategory";
 import Products from "./product";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Route, createRequest } from "../../../services/productApi";
+
 // import CrudForm from './department/ejemplo';
 
 export namespace IInventory {
@@ -23,6 +26,16 @@ export namespace IInventory {
 function Inventory() {
   const dispatchRedux = useAppDispatch();
   const { dashboard: { state: { inventory: { department, category, subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const queryClient = useQueryClient();
+  const { isLoading, error, data } = useQuery({ queryKey: ['product'], queryFn: () => createRequest(Route.ProductRequest).withRoute({}) })
+  if (data) queryClient.setQueryData(['product'], data);
+  // if (isLoading) return <>Loading...</>
+
+  // if (error) return <>'An error has occurred: ' {+ error}</>
+  console.log(isLoading, "loading");
+  console.log(error, "error");
+  console.log(data, "data");
+
 
   useEffect(() => {
     dispatchRedux(productsGet({ routes: 'request' }));
