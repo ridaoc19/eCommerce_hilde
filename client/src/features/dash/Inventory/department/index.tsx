@@ -21,8 +21,6 @@ const Departments = ({ department }: DepartmentProps) => {
   const mutation = useMutation(callApi, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
   const [state, setState] = useState(initialState);
   const { selectedDepartment, showDeleteModal, departmentList } = state;
-  // const { isLoading, isError } = mutation
-// console.log(isLoading, isError, "depa");
 
   useEffect(() => {
     if (department) setState(prevState => ({ ...prevState, departmentList: department || [] }));

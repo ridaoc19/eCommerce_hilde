@@ -6,7 +6,7 @@ import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
 import SubcategoryForm from './SubcategoryForm';
 import SubcategoryList from './SubcategoryList';
-import { ButtonName, SubcategoryProps, HandleOnChange, HandleOnClick, InitialState, callApiSubcategory } from './interface.subcategory';
+import { ButtonName, HandleOnChange, HandleOnClick, InitialState, SubcategoryProps, callApiSubcategory } from './interface.subcategory';
 
 export const initialState: InitialState = {
   subcategoryList: [],
@@ -15,17 +15,13 @@ export const initialState: InitialState = {
 }
 
 const Subcategory = ({ subcategory }: SubcategoryProps) => {
-
   const { dashboard: { state: { inventory: { department, category } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
   const mutation = useMutation(callApiSubcategory, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
   const [state, setState] = useState(initialState);
   const { selectedSubcategory, subcategoryList, showDeleteModal } = state;
 
-  // const { _id, name } = selectedSubcategory;
-
   useEffect(() => {
-    // let subcategory = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
     if (subcategory) setState(prevState => ({ ...prevState, subcategoryList: subcategory }));
   }, [subcategory, department, category]);
 
@@ -63,7 +59,7 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
         if (selectedSubcategory.subcategoryId.length > 0) {
           await mutation.mutateAsync({ selectedSubcategory, state: 'edit' })
         } else if (category) {
-          await mutation.mutateAsync({ selectedSubcategory: { categoryId: category, requestData: selectedSubcategory.requestData, subcategoryId: selectedSubcategory.subcategoryId }, state: 'create' })
+          await mutation.mutateAsync({ selectedSubcategory: { ...selectedSubcategory, categoryId: category }, state: 'create' })
         }
         break;
 

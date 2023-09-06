@@ -22,10 +22,8 @@ const Category = ({ category }: CategoryProps) => {
   const [state, setState] = useState(initialState);
   const { selectedCategory, categoryList, showDeleteModal } = state;
 
-  // const { _id, name } = selectedCategory;
 
   useEffect(() => {
-    // let category = products.find(dep => dep._id === department)?.categoriesId
     if (category) setState(prevState => ({ ...prevState, categoryList: category }));
   }, [category, department]);
 
@@ -63,7 +61,7 @@ const Category = ({ category }: CategoryProps) => {
         if ('categoryId' in selectedCategory && selectedCategory.categoryId.length > 0) {
           await mutation.mutateAsync({ selectedCategory, state: 'edit' })
         } else if (department) {
-          await mutation.mutateAsync({ selectedCategory: { departmentId: department, requestData: selectedCategory.requestData }, state: 'create' })
+          await mutation.mutateAsync({ selectedCategory: { ...selectedCategory, departmentId: department }, state: 'create' })
         }
         break;
 

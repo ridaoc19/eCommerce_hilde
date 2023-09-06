@@ -39,20 +39,21 @@ export type SubcategoryListProps = {
 type State = 'delete' | 'edit' | 'create'
 
 export const callApiSubcategory = async ({ selectedSubcategory, state }: { selectedSubcategory: InitialState['selectedSubcategory'], state: State }): Promise<MakeProductsRequestReturn> => {
-
+  const { categoryId, subcategoryId, requestData } = selectedSubcategory;
+  
   let response: MakeProductsRequestReturn = { message: "error personal department", products: [] }; // Inicializar con un valor predeterminado
 
   switch (state) {
     case 'create':
-      response = await makeProductsRequest(Route.SubCategoryCreate).withOptions({ categoryId: selectedSubcategory.categoryId, requestData: selectedSubcategory.requestData })
+      response = await makeProductsRequest(Route.SubCategoryCreate).withOptions({ categoryId, requestData })
       break;
 
     case 'edit':
-      response = await makeProductsRequest(Route.SubCategoryEdit).withOptions({ subcategoryId: selectedSubcategory.subcategoryId, requestData: selectedSubcategory.requestData })
+      response = await makeProductsRequest(Route.SubCategoryEdit).withOptions({ subcategoryId, requestData })
       break;
 
     case 'delete':
-      response = await makeProductsRequest(Route.SubCategoryDelete).withOptions({ subcategoryId: selectedSubcategory.subcategoryId })
+      response = await makeProductsRequest(Route.SubCategoryDelete).withOptions({ subcategoryId })
       break;
 
     default:
