@@ -31,7 +31,8 @@ function Inventory() {
 
   let categoryData = data?.products.find(dep => dep._id === department)?.categoriesId
   let subcategoryData = data?.products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
-
+  let productData = data?.products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
+// console.log(product, "tiene");
 
 
   return (
@@ -58,7 +59,7 @@ function Inventory() {
       {<div className="admin_inventory">
         <div className="department">
           <h2>Products</h2>
-          {subcategory && <Products />}
+          {subcategory && <Products productss={productData} />}
         </div>
       </div>}
       {/* <CrudForm /> */}

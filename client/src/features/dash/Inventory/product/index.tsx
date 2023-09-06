@@ -28,7 +28,7 @@ export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
 export type SelectedProducts = ProductCall;
 export const initialState: SelectedProducts = { _id: '', name: '', price: '', description: '', images: [], specification: [], imgDelete: [] }
 
-const Products: React.FC = () => {
+const Products = ({ productss }: { productss: any }) => {
   const dispatchRedux = useAppDispatch();
   const { products }: IProductRedux.ProductPostsReturn = useAppSelector(selectProductsData);
   const { dashboard: { state: { inventory: { department, category, subcategory, products: product } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
@@ -39,8 +39,8 @@ const Products: React.FC = () => {
 
 
   useEffect(() => {
-    let product = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
-    if (product) setProductsList(product);
+    // let product = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
+    if (productss) setProductsList(productss);
   }, [products, department, category, subcategory]);
 
   const handleOnChange: HandleOnChange = (event) => {
@@ -91,8 +91,8 @@ const Products: React.FC = () => {
         return;
 
       case ButtonName.Clean:
-        let product = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
-        if (product) setProductsList(product);
+        // let product = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
+        if (productss) setProductsList(productss);
         break;
 
       case ButtonName.Save:
