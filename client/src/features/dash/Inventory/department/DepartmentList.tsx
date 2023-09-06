@@ -1,14 +1,8 @@
 import { useContext } from 'react';
-import { ButtonName, HandleOnClick } from ".";
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from "../../../../interfaces/hooks/context.interface";
-import { IProductRedux } from "../../../../interfaces/product.interface";
-
-type DepartmentListProps = {
-  departmentList: IProductRedux.InitialState["products"];
-  handleOnClick: HandleOnClick;
-};
+import { ButtonName, DepartmentListProps } from "./interface.department";
 
 const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, handleOnClick }) => {
   const { dashboard: { dispatch: dispatchContext, state: { inventory: { department }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
@@ -16,7 +10,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, handleO
   return (
     <div>
       <ul>
-        {departmentList.products?.map((dept, index) => (
+        {departmentList?.map((dept, index) => (
           <li key={index}>
             {inventory_department &&
               <>

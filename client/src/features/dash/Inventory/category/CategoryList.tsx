@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { ButtonName, HandleOnClick } from ".";
+import { ButtonName, HandleOnClick } from "./interface.category";
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from "../../../../interfaces/hooks/context.interface";

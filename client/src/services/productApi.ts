@@ -65,32 +65,75 @@ export interface DepartmentDeleteApi {
 /////////////////////////////////////////////
 
 
-// Define un enum para las rutas
+// Enumeración para las rutas de las solicitudes
 export enum Route {
   DepartmentCreate = 'department/create',
   DepartmentEdit = 'department/edit',
   DepartmentDelete = 'department/delete',
+
+  CategoryCreate = 'category/create',
+  CategoryEdit = 'category/edit',
+  CategoryDelete = 'category/delete',
+
+  SubCategoryCreate = 'subCategory/create',
+  SubCategoryEdit = 'subCategory/edit',
+  SubCategoryDelete = 'subCategory/delete',
+
   ProductRequest = 'product/request',
   ProductDelete = 'product/delete',
   ProductCreate = 'product/create',
   ProductEdit = 'product/edit',
 }
 
-// Define tipos para las solicitudes basadas en las rutas
-type RequestMap = {
+// Definición de tipos para las solicitudes basadas en las rutas
+export type RequestMap = {
+  // departamento
   [Route.DepartmentCreate]: {
     route: Route.DepartmentCreate;
-    dataPost: Pick<IProduct.Department, 'name'>;
+    requestData: Pick<IProduct.Department, 'name'>;
   };
   [Route.DepartmentEdit]: {
     route: Route.DepartmentEdit;
     departmentId: IProduct.Department['_id'];
-    dataPost: Pick<IProduct.Department, 'name'>;
+    requestData: Pick<IProduct.Department, 'name'>;
   };
   [Route.DepartmentDelete]: {
     route: Route.DepartmentDelete;
     departmentId: IProduct.Department['_id'];
   };
+  // category
+  [Route.CategoryCreate]: {
+    route: Route.CategoryCreate;
+    departmentId: IProduct.Department['_id'];
+    requestData: Pick<IProduct.Category, 'name'>;
+  };
+  [Route.CategoryEdit]: {
+    route: Route.CategoryEdit;
+    categoryId: IProduct.Category['_id'];
+    requestData: Pick<IProduct.Category, 'name'>;
+  };
+  [Route.CategoryDelete]: {
+    route: Route.CategoryDelete;
+    categoryId: IProduct.Category['_id'];
+  };
+  // subcategory
+  [Route.SubCategoryCreate]: {
+    route: Route.SubCategoryCreate;
+    categoryId: IProduct.Category['_id'];
+    requestData: Pick<IProduct.Subcategory, 'name'>;
+  };
+  [Route.SubCategoryEdit]: {
+    route: Route.SubCategoryEdit;
+    subcategoryId: IProduct.Subcategory['_id'];
+    requestData: Pick<IProduct.Subcategory, 'name'>;
+  };
+  [Route.SubCategoryDelete]: {
+    route: Route.SubCategoryDelete;
+    subcategoryId: IProduct.Subcategory['_id'];
+  };
+
+
+  // product
   [Route.ProductRequest]: {
     route: Route.ProductRequest;
   };
@@ -100,56 +143,86 @@ type RequestMap = {
   };
   [Route.ProductCreate]: {
     route: Route.ProductCreate;
-    dataPost: any; // Ajustar este tipo si es más específico
+    requestData: any;
   };
   [Route.ProductEdit]: {
     route: Route.ProductEdit;
     productId: string;
-    dataPost: any; // Ajustar este tipo si es más específico
+    requestData: any;
   };
 };
 
-// Define el tipo RequestOptions
+// Definición del tipo RequestOptions
 interface RequestOptions {
   method: IProduct.Method;
   body?: string;
   headers?: Record<string, string>;
 }
 
-// Define la función payload
+// Función que crea la carga útil de la solicitud
 type Payload<T extends Route> = (params: RequestMap[T]) => {
   route: string;
   requestOptions: RequestOptions;
 };
 
-const payload: Payload<Route> = (params) => {
+const createPayload: Payload<Route> = (params) => {
+  // Definición de los encabezados comunes para las solicitudes
   const headers = { "Content-Type": "application/json" };
   const { route } = params;
 
   switch (route) {
+    // department
     case Route.DepartmentCreate:
-      return { route, requestOptions: { method: 'post', body: JSON.stringify(params.dataPost), headers } };
+      return { route, requestOptions: { method: 'post', body: JSON.stringify(params.requestData), headers, }, };
     case Route.DepartmentEdit:
-      return { route: `${route}/${params.departmentId}`, requestOptions: { method: 'put', body: JSON.stringify(params.dataPost), headers } };
+      return { route: `${route}/${params.departmentId}`, requestOptions: { method: 'put', body: JSON.stringify(params.requestData), headers, }, };
     case Route.DepartmentDelete:
-      return { route: `${route}/${params.departmentId}`, requestOptions: { method: 'delete' } };
+      return { route: `${route}/${params.departmentId}`, requestOptions: { method: 'delete', }, };
+    // category
+    case Route.CategoryCreate:
+      return { route: `${route}/${params.departmentId}`, requestOptions: { method: 'post', body: JSON.stringify(params.requestData), headers, }, };
+    case Route.CategoryEdit:
+      return { route: `${route}/${params.categoryId}`, requestOptions: { method: 'put', body: JSON.stringify(params.requestData), headers, }, };
+    case Route.CategoryDelete:
+      return { route: `${route}/${params.categoryId}`, requestOptions: { method: 'delete', }, };
+    // subcategory
+    case Route.SubCategoryCreate:
+      return { route: `${route}/${params.categoryId}`, requestOptions: { method: 'post', body: JSON.stringify(params.requestData), headers, }, };
+    case Route.SubCategoryEdit:
+      return { route: `${route}/${params.subcategoryId}`, requestOptions: { method: 'put', body: JSON.stringify(params.requestData), headers, }, };
+    case Route.SubCategoryDelete:
+      return { route: `${route}/${params.subcategoryId}`, requestOptions: { method: 'delete', }, };
+    // product
     case Route.ProductRequest:
-      return { route: `${route}`, requestOptions: { method: 'get' } };
+      return { route: `${route}`, requestOptions: { method: 'get', }, };
     case Route.ProductDelete:
-      return { route: `${route}/${params.productId}`, requestOptions: { method: 'delete' } };
+      return { route: `${route}/${params.productId}`, requestOptions: { method: 'delete', }, };
     case Route.ProductCreate:
-      return { route, requestOptions: { method: 'post', body: params.dataPost, headers } };
+      return { route, requestOptions: { method: 'post', body: params.requestData, headers, }, };
     case Route.ProductEdit:
-      return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', body: params.dataPost, headers } };
+      return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', body: params.requestData, headers, }, };
     default:
       return { route: 'request', requestOptions: { method: 'get' } };
   }
 };
 
-// Define la función productApis
-async function productApis<T extends Route>(params: RequestMap[T]) {
+// Tipo de retorno para las respuestas de las solicitudes
+export type MakeProductsRequestReturn = { message: string; products: IProduct.Department[] };
+
+// Función que realiza las solicitudes a la API
+export function makeProductsRequest<R extends Route>(route: R): { withOptions: (options: Omit<RequestMap[R], 'route'>) => Promise<MakeProductsRequestReturn> } {
+  return {
+    withOptions: async (options: Omit<RequestMap[R], 'route'>) => {
+      const requestParams = { route, ...options } as RequestMap[R];
+      return await productApis(requestParams);
+    },
+  };
+}
+
+// Función que realiza las llamadas a la API
+async function productApis<T extends Route>(params: RequestMap[T]): Promise<MakeProductsRequestReturn> {
   try {
-    const { route, requestOptions } = payload(params);
+    const { route, requestOptions } = createPayload(params);
     const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}`, requestOptions);
     return await responseApi.json();
   } catch (error) {
@@ -160,43 +233,3 @@ async function productApis<T extends Route>(params: RequestMap[T]) {
     }
   }
 }
-
-// Define la función que crea solicitudes con autocompletado
-export function createRequest<R extends Route>(route: R) {
-  return {
-    withRoute: (options: Omit<RequestMap[R], 'route'>) => {
-      const request = { route, ...options } as RequestMap[R];
-      return productApis(request);
-    },
-  };
-}
-
-// Ejemplo de uso
-// createRequest(Route.DepartmentCreate).withRoute({ dataPost: { name: "" } })
-// createRequest(Route.DepartmentDelete).withRoute({ departmentId: "faf" })
-// createRequest(Route.ProductEdit).withRoute({ productId: "", dataPost: {} })
-
-
-// import { useQuery, useQueryClient } from 'react-query';
-
-// export function useGetProducts() {
-//   const queryClient = useQueryClient();
-
-//   return useQuery(
-//     'products', // Query key
-//     () => api.get('/products'), // Función para obtener los datos
-//     {
-//       staleTime: 60000, // Tiempo de caché en milisegundos (1 minuto)
-//       cacheTime: 300000, // Tiempo de almacenamiento en caché en milisegundos (5 minutos)
-//       onSuccess: (data) => {
-//         // Acciones a realizar cuando la consulta tiene éxito
-//         console.log('Product data fetched successfully:', data);
-//       },
-//       onError: (error) => {
-//         // Acciones a realizar cuando hay un error en la consulta
-//         console.error('Error fetching product data:', error);
-//       },
-//       refetchOnWindowFocus: false, // No realizar automáticamente una nueva consulta al enfocar la ventana
-//     }
-//   );
-// }

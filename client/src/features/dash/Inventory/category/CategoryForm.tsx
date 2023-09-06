@@ -1,13 +1,8 @@
 import { useContext } from 'react';
-import { ButtonName, HandleOnChange, HandleOnClick, SelectedCategory } from '.';
 import { CreateContext } from '../../../../hooks/useContext';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { ButtonName, CategoryFormProps } from './interface.category';
 
-interface CategoryFormProps {
-  selectedCategory: SelectedCategory
-  handleOnChange: HandleOnChange;
-  handleOnClick: HandleOnClick;
-}
 
 function CategoryForm({ selectedCategory, handleOnChange, handleOnClick }: CategoryFormProps) {
   const { dashboard: { state: { inventory: { category }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
@@ -20,14 +15,14 @@ function CategoryForm({ selectedCategory, handleOnChange, handleOnClick }: Categ
               type="text"
               placeholder="Ingresar nueva categoría"
               name='name'
-              value={selectedCategory.name}
+              value={selectedCategory.requestData.name}
               onChange={handleOnChange}
             />
           </div>
           <div className="-button">
             <div>
               <button name={ButtonName.Clean} onClick={handleOnClick}>Limpiar</button>
-              <button name={ButtonName.Save} onClick={handleOnClick}>{selectedCategory._id ? 'Actualizar' : 'Crear'}</button>
+              <button name={ButtonName.Save} onClick={handleOnClick}>{'categoryId' in selectedCategory && selectedCategory.categoryId ? 'Actualizar' : 'Crear'}</button>
             </div>
           </div>
         </>

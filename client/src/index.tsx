@@ -22,14 +22,14 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ReduxProvider store={store}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <ReduxProvider store={store}>
         <BrowserRouter basename='/hilde'>
           <App />
           <ReactQueryDevtools initialIsOpen={false} />
           {/* <ReactQueryDevtools initialIsOpen /> */}
         </BrowserRouter>
-      </QueryClientProvider>
-    </ReduxProvider>
+      </ReduxProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

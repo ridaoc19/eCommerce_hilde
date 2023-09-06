@@ -1,13 +1,7 @@
 import { useContext } from 'react';
-import { ButtonName, HandleOnChange, HandleOnClick, SelectedDepartment } from '.';
 import { CreateContext } from '../../../../hooks/useContext';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
-
-interface DepartmentFormProps {
-  selectedDepartment: SelectedDepartment
-  handleOnChange: HandleOnChange;
-  handleOnClick: HandleOnClick;
-}
+import { ButtonName, DepartmentFormProps } from './interface.department';
 
 function DepartmentForm({ selectedDepartment, handleOnChange, handleOnClick }: DepartmentFormProps) {
   const { dashboard: { state: { inventory: { department }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
@@ -20,14 +14,14 @@ function DepartmentForm({ selectedDepartment, handleOnChange, handleOnClick }: D
               type="text"
               placeholder="Ingresar un nuevo departamento"
               name='name'
-              value={selectedDepartment.name}
+              value={selectedDepartment.requestData.name}
               onChange={handleOnChange}
             />
           </div>
           <div className="-button">
             <div>
               <button name={ButtonName.Clean} onClick={handleOnClick}>Limpiar</button>
-              <button name={ButtonName.Save} onClick={handleOnClick}>{selectedDepartment._id ? 'Actualizar' : 'Crear'}</button>
+              <button name={ButtonName.Save} onClick={handleOnClick}>{selectedDepartment.departmentId ? 'Actualizar' : 'Crear'}</button>
             </div>
           </div>
         </>
