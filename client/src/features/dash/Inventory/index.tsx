@@ -30,7 +30,7 @@ function Inventory() {
   })
 
   let categoryData = data?.products.find(dep => dep._id === department)?.categoriesId
-  // let subcategoryData = data?.products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
+  let subcategoryData = data?.products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
 
 
 
@@ -51,7 +51,7 @@ function Inventory() {
         </div>
         <div className="department">
           <h2>Subcategoría</h2>
-          {category && <Subcategory />}
+          {category && subcategoryData && <Subcategory subcategory={subcategoryData} />}
         </div>
       </div>}
 

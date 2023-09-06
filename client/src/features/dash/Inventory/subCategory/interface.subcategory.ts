@@ -17,7 +17,7 @@ export interface SubcategoryProps {
 
 export interface InitialState {
   subcategoryList: SubcategoryProps['subcategory'];
-  selectedSubcategory: Omit<RequestMap[Route.SubCategoryCreate], 'route'> | Omit<RequestMap[Route.SubCategoryEdit], 'route'> | Omit<RequestMap[Route.SubCategoryDelete], 'route'>;
+  selectedSubcategory: Pick<RequestMap[Route.SubCategoryCreate], 'categoryId'> & Pick<RequestMap[Route.SubCategoryEdit], 'requestData'> & Pick<RequestMap[Route.SubCategoryDelete], 'subcategoryId'>;
   showDeleteModal: boolean;
 }
 
@@ -30,33 +30,34 @@ export interface SubcategoryFormProps {
   handleOnClick: HandleOnClick;
 }
 
+export type SubcategoryListProps = {
+  subcategoryList: SubcategoryProps['subcategory'];
+  handleOnClick: HandleOnClick;
+};
+
+
 type State = 'delete' | 'edit' | 'create'
+
 export const callApiSubcategory = async ({ selectedSubcategory, state }: { selectedSubcategory: InitialState['selectedSubcategory'], state: State }): Promise<MakeProductsRequestReturn> => {
+
+  let response: MakeProductsRequestReturn = { message: "error personal department", products: [] }; // Inicializar con un valor predeterminado
 
   switch (state) {
     case 'create':
-      if ('categoryId' in selectedSubcategory) {
-        const response = await makeProductsRequest(Route.SubCategoryCreate).withOptions({ categoryId: selectedSubcategory.categoryId, requestData: selectedSubcategory.requestData })
-        return response;
-      }
+      response = await makeProductsRequest(Route.SubCategoryCreate).withOptions({ categoryId: selectedSubcategory.categoryId, requestData: selectedSubcategory.requestData })
       break;
+
     case 'edit':
-      if ('subcategoryId' in selectedSubcategory && 'requestData' in selectedSubcategory) {
-        const response = await makeProductsRequest(Route.SubCategoryEdit).withOptions({ subcategoryId: selectedSubcategory.subcategoryId, requestData: selectedSubcategory.requestData })
-        return response;
-      }
+      response = await makeProductsRequest(Route.SubCategoryEdit).withOptions({ subcategoryId: selectedSubcategory.subcategoryId, requestData: selectedSubcategory.requestData })
       break;
+
     case 'delete':
-      if ('subcategoryId' in selectedSubcategory) {
-        const response = await makeProductsRequest(Route.SubCategoryDelete).withOptions({ subcategoryId: selectedSubcategory.subcategoryId })
-        return response;
-      }
+      response = await makeProductsRequest(Route.SubCategoryDelete).withOptions({ subcategoryId: selectedSubcategory.subcategoryId })
       break;
 
     default:
       break;
   }
 
-  // En otros casos, puedes devolver un valor por defecto o lanzar un error si es necesario.
-  return { message: "error personal department", products: [] };
+  return response;
 }
