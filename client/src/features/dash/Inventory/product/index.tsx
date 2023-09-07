@@ -7,6 +7,7 @@ import { IContext } from '../../../../interfaces/hooks/context.interface';
 import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 
 // Función para transformar la especificación
 // function transformSpecification(originalSpecification) {
@@ -41,14 +42,20 @@ const Products = ({ products }: ProductsProps) => {
     if (products) setState(prevState => ({ ...prevState, productsList: products }));
   }, [products, department, category, subcategory]);
 
-  const handleOnChange: HandleOnChange = (event) => {
-    const { name, value } = event.target;
+  const handleOnChange: HandleOnChange = async (event) => {
+    const { name, value, files } = event.target;
 
     if (name === 'images') {
-      const files = event.target.files;
-      if (files && files.length > 0) {
+      try {
+        const formData = new FormData();
+        if (files) {
+          formData.append('image', files[0], `${selectedProduct.requestData.name}.${files[0].type.split('/')[1]}`);
+          const { imageUrl } = await makeImagesRequest(Route.ImagesCreate).withOptions({ requestData: formData })
+          setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: [...prevState.selectedProduct.requestData.images, imageUrl] } } }))
+        }
+      } catch (error) {
+        console.error('Error al cargar la imagen', error);
       }
-
     } else if (name === 'specificationKey' || name === 'specificationValue') {
       const specIndex = parseInt(event.target.dataset.index || '0', 10);
       const specField = name === 'specificationKey' ? 'key' : 'value';

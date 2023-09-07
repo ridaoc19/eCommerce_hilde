@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { CreateContext } from '../../../../hooks/useContext';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
 import { ButtonName, ProductsFormProps } from './interface.products';
@@ -7,20 +7,6 @@ import { ButtonName, ProductsFormProps } from './interface.products';
 
 const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, handleOnChange, handleOnClick }) => {
   const { dashboard: { state: { inventory: { products } } } }: IContext.IContextData = useContext(CreateContext)!;
-
-  useEffect(() => {
-    if (selectedProduct.requestData.images.length === 0) {
-      for (let index = 0; index < 3; index++) {
-        const inputElement = document.getElementById(`input__images-${index}`) as HTMLInputElement | null;
-        if (inputElement) {
-          inputElement.value = '';
-        }
-      }
-    }
-  }, [selectedProduct.requestData.images]);
-
-  console.log(selectedProduct.requestData.specification);
-  
 
   return (
     <div>
@@ -41,7 +27,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, handleOnCh
 
             <div className='specification'>
               {selectedProduct.requestData.specification.map((spec, index) => {
-                
+
                 return (
                   <div key={index}>
                     <input
@@ -71,7 +57,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, handleOnCh
               {selectedProduct.requestData.images.map((image, index) => (
                 <img
                   key={index}
-                  src={image}
+                  src={`${process.env.REACT_APP_URL_API}/${image}`}
                   // src={URL.createObjectURL(image)}
                   width={200}
                   alt={`${index}`}
