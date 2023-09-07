@@ -104,7 +104,7 @@ export type RequestMap = {
   // category
   [Route.CategoryCreate]: {
     route: Route.CategoryCreate;
-    departmentId: IProduct.Department['_id'];
+    departmentId: IProduct.Category['departmentId'];
     requestData: Pick<IProduct.Category, 'name'>;
   };
   [Route.CategoryEdit]: {
@@ -119,7 +119,7 @@ export type RequestMap = {
   // subcategory
   [Route.SubCategoryCreate]: {
     route: Route.SubCategoryCreate;
-    categoryId: IProduct.Category['_id'];
+    categoryId: IProduct.Subcategory['categoryId'];
     requestData: Pick<IProduct.Subcategory, 'name'>;
   };
   [Route.SubCategoryEdit]: {
@@ -137,18 +137,19 @@ export type RequestMap = {
   [Route.ProductRequest]: {
     route: Route.ProductRequest;
   };
-  [Route.ProductDelete]: {
-    route: Route.ProductDelete;
-    productId: string;
-  };
   [Route.ProductCreate]: {
     route: Route.ProductCreate;
-    requestData: any;
+    subcategoryId: IProduct.Product['subcategoryId'];
+    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId'>;
   };
   [Route.ProductEdit]: {
     route: Route.ProductEdit;
-    productId: string;
-    requestData: any;
+    productId: IProduct.Product['_id'];
+    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId'>;
+  };
+  [Route.ProductDelete]: {
+    route: Route.ProductDelete;
+    productId: IProduct.Product['_id'];
   };
 };
 
@@ -195,12 +196,12 @@ const createPayload: Payload<Route> = (params) => {
     // product
     case Route.ProductRequest:
       return { route: `${route}`, requestOptions: { method: 'get', }, };
+    case Route.ProductCreate:
+      return { route: `${route}/${params.subcategoryId}`, requestOptions: { method: 'post', body: JSON.stringify(params.requestData), headers, }, };
+    case Route.ProductEdit:
+      return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', body: JSON.stringify(params.requestData), headers, }, };
     case Route.ProductDelete:
       return { route: `${route}/${params.productId}`, requestOptions: { method: 'delete', }, };
-    case Route.ProductCreate:
-      return { route, requestOptions: { method: 'post', body: params.requestData, headers, }, };
-    case Route.ProductEdit:
-      return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', body: params.requestData, headers, }, };
     default:
       return { route: 'request', requestOptions: { method: 'get' } };
   }

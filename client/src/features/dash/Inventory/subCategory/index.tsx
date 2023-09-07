@@ -42,7 +42,9 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
         const editedSubcategory = subcategoryList?.find(subcat => subcat._id === targetButton.value);
         if (editedSubcategory) {
           let { _id, name } = editedSubcategory;
-          setState(prevState => ({ ...prevState, selectedSubcategory: { ...prevState.selectedSubcategory, subcategoryId: _id, requestData: { name } }, subcategoryList: updatedList }));
+          setState(prevState => ({ ...prevState, 
+            selectedSubcategory: { ...prevState.selectedSubcategory, subcategoryId: _id, requestData: { name } }, 
+            subcategoryList: updatedList }));
         }
         return;
 
