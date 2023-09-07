@@ -55,13 +55,15 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, handleOnCh
             <div className='images'>
               <input id={`input__images-`} className='input__images' type='file' name='images' onChange={handleOnChange} />
               {selectedProduct.requestData.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={`${process.env.REACT_APP_URL_API}/${image}`}
-                  // src={URL.createObjectURL(image)}
-                  width={200}
-                  alt={`${index}`}
-                />
+                <div key={index}>
+                  <img
+                    src={`${process.env.REACT_APP_URL_API}/${image}`}
+                    // src={URL.createObjectURL(image)}
+                    width={200}
+                    alt={`${index}`}
+                  />
+                  <button name={ButtonName.FileDelete} value={image} onClick={handleOnClick}>Eliminar Imagen</button>
+                </div>
               ))}
             </div>
           </div>

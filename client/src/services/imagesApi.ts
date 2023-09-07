@@ -3,7 +3,6 @@ import { IProduct } from "../interfaces/product.interface";
 // Enumeración para las rutas de las solicitudes
 export enum Route {
   ImagesCreate = 'images/create',
-  ImagesEdit = 'images/edit',
   ImagesDelete = 'images/delete',
 }
 
@@ -12,11 +11,6 @@ export type RequestMap = {
   // departamento
   [Route.ImagesCreate]: {
     route: Route.ImagesCreate;
-    requestData: FormData;
-  };
-  [Route.ImagesEdit]: {
-    route: Route.ImagesEdit;
-    imageId: string;
     requestData: FormData;
   };
   [Route.ImagesDelete]: {
@@ -45,8 +39,6 @@ const createPayload: Payload<Route> = (params) => {
   switch (route) {
     case Route.ImagesCreate:
       return { route, requestOptions: { method: 'post', body: params.requestData, }, };
-    case Route.ImagesEdit:
-      return { route: `${route}/${params.imageId}`, requestOptions: { method: 'put', body: params.requestData, }, };
     case Route.ImagesDelete:
       return { route: `${route}/${params.imageId}`, requestOptions: { method: 'delete', }, };
     default:

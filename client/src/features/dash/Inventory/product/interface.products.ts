@@ -13,7 +13,9 @@ export enum ButtonName {
   Confirm = 'confirm',
   Cancel = 'cancel',
   Product = 'product',
-  AddSpecification = 'addSpecification'
+  AddSpecification = 'addSpecification',
+  FileDelete = 'FileDelete',
+  FileEdit = 'FileEdit'
 }
 
 export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void

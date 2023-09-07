@@ -4,10 +4,10 @@ import ModalConfirm from '../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
-import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 
 // Función para transformar la especificación
 // function transformSpecification(originalSpecification) {
@@ -37,9 +37,17 @@ const Products = ({ products }: ProductsProps) => {
   const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
   const [state, setState] = useState<InitialState>(initialState)
   const { productsList, selectedProduct, showDeleteModal } = state;
+  const LSImages: string[] | undefined = localStorage.images ? JSON?.parse(localStorage?.images) : undefined
 
   useEffect(() => {
     if (products) setState(prevState => ({ ...prevState, productsList: products }));
+    //IMAGES
+    if (LSImages && LSImages.length !== selectedProduct.requestData.images.length) {
+      LSImages.forEach((imageId: string) => {
+        makeImagesRequest(Route.ImagesDelete).withOptions({ imageId: imageId.replace("uploads\\", "") })
+      });
+      localStorage.removeItem('images')
+    }
   }, [products, department, category, subcategory]);
 
   const handleOnChange: HandleOnChange = async (event) => {
@@ -51,6 +59,7 @@ const Products = ({ products }: ProductsProps) => {
         if (files) {
           formData.append('image', files[0], `${selectedProduct.requestData.name}.${files[0].type.split('/')[1]}`);
           const { imageUrl } = await makeImagesRequest(Route.ImagesCreate).withOptions({ requestData: formData })
+          localStorage.images = LSImages ? JSON.stringify([...LSImages, imageUrl]) : JSON.stringify([imageUrl])
           setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: [...prevState.selectedProduct.requestData.images, imageUrl] } } }))
         }
       } catch (error) {
@@ -132,6 +141,13 @@ const Products = ({ products }: ProductsProps) => {
 
       case ButtonName.Cancel:
         break;
+
+      case ButtonName.FileDelete:
+        const newImages = selectedProduct.requestData.images.filter(url => url !== targetButton.value)
+        makeImagesRequest(Route.ImagesDelete).withOptions({ imageId: targetButton.value.replace("uploads\\", "") })
+        setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: newImages } } }))
+        localStorage.images = JSON.stringify(newImages)
+        return
 
       default:
         break;
