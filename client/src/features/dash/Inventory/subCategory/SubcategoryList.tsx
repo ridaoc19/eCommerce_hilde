@@ -1,14 +1,9 @@
 import { useContext } from 'react';
-import { ButtonName, HandleOnClick } from ".";
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from "../../../../interfaces/hooks/context.interface";
-import { IProduct } from "../../../../interfaces/product.interface";
+import { ButtonName, SubcategoryListProps } from './interface.subcategory';
 
-type SubcategoryListProps = {
-  subcategoryList: IProduct.Subcategory[];
-  handleOnClick: HandleOnClick;
-};
 
 const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, handleOnClick }) => {
   const { dashboard: { dispatch: dispatchContext, state: { inventory: { subcategory }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;

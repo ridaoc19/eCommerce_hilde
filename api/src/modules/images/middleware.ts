@@ -1,4 +1,5 @@
 import multer from "multer";
+import { v4 as uuidv4 } from 'uuid';
 
 export const uploadImages = () => {
   const storage = multer.diskStorage({
@@ -6,15 +7,11 @@ export const uploadImages = () => {
       cb(null, 'uploads');
     },
     filename: function (req, file, cb) {
-        // const imageName = uuidv4() + req.file.originalname;
-    // req.file.path = `uploads/${imageName}`;
-      cb(null, file.originalname);
+      const imageName = `${uuidv4()}-${file.originalname}`;
+      file.path = `uploads/${imageName}`
+      cb(null, imageName);
+      // cb(null, file.originalname);
     },
-
-    // filename: (req, file, cb) => {
-    //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    //   cb(null, file.fieldname + '-' + uniqueSuffix);
-    // },
   });
 
   const upload = multer({ storage: storage })

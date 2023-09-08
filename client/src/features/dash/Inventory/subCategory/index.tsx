@@ -1,83 +1,72 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useContext, useEffect, useState } from 'react';
 import ModalConfirm from '../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
-import { IProduct, IProductRedux } from '../../../../interfaces/product.interface';
-import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { selectProductsData } from '../../../../redux/reducers/product';
-import SubcategoryList from './SubcategoryList';
 import SubcategoryForm from './SubcategoryForm';
-import { SubcategoryCallProps, subcategoryCall } from '../../../../redux/reducers/product/actions';
+import SubcategoryList from './SubcategoryList';
+import { ButtonName, HandleOnChange, HandleOnClick, InitialState, SubcategoryProps, callApiSubcategory } from './interface.subcategory';
 
-export enum ButtonName {
-  Edit = 'edit',
-  Delete = 'delete',
-  Clean = 'clean',
-  Save = 'save',
-  Add = 'add',
-  Confirm = 'confirm',
-  Cancel = 'cancel'
+export const initialState: InitialState = {
+  subcategoryList: [],
+  selectedSubcategory: { categoryId: '', subcategoryId: '', requestData: { name: "" } },
+  showDeleteModal: false
 }
 
-export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
-export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
-export type SelectedSubcategory = Pick<SubcategoryCallProps, '_id' | 'name'>
-export const initialState: SelectedSubcategory = { _id: "", name: '' }
-
-const Subcategory: React.FC = () => {
-  const dispatchRedux = useAppDispatch();
-  const { products }: IProductRedux.ProductPostsReturn = useAppSelector(selectProductsData);
+const Subcategory = ({ subcategory }: SubcategoryProps) => {
   const { dashboard: { state: { inventory: { department, category } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
-  const [subcategoryList, setSubcategoryList] = useState<IProduct.Subcategory[]>([]);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<SelectedSubcategory>(initialState);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const { _id, name } = selectedSubcategory;
+  const queryClient = useQueryClient();
+  const mutation = useMutation(callApiSubcategory, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
+  const [state, setState] = useState(initialState);
+  const { selectedSubcategory, subcategoryList, showDeleteModal } = state;
 
   useEffect(() => {
-    let subcategory = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
-    if (subcategory) setSubcategoryList(subcategory);
-  }, [products, department, category]);
+    if (subcategory) setState(prevState => ({ ...prevState, subcategoryList: subcategory }));
+  }, [subcategory, department, category]);
 
   const handleOnChange: HandleOnChange = (event) => {
     const { name, value } = event.target;
-    setSelectedSubcategory({ ...selectedSubcategory, [name]: value })
+    setState(prevState => ({ ...prevState, selectedSubcategory: { ...prevState.selectedSubcategory, requestData: { ...prevState.selectedSubcategory.requestData, [name]: value } } }));
+
   }
 
-  const handleOnClick: HandleOnClick = (event) => {
+  const handleOnClick: HandleOnClick = async (event) => {
     event.preventDefault();
     const targetButton = event.target as HTMLButtonElement;
 
     switch (targetButton.name) {
       case ButtonName.Edit:
         emptySubcategory();
-        const updatedList = subcategoryList?.filter(sub => sub._id !== targetButton.value) || [];
-        const editedSubcategory = subcategoryList?.find(sub => sub._id === targetButton.value);
+        const updatedList = subcategoryList?.filter(subcat => subcat._id !== targetButton.value) || [];
+        const editedSubcategory = subcategoryList?.find(subcat => subcat._id === targetButton.value);
         if (editedSubcategory) {
           let { _id, name } = editedSubcategory;
-          setSelectedSubcategory({ _id, name });
-          setSubcategoryList(updatedList);
+          setState(prevState => ({ ...prevState, 
+            selectedSubcategory: { ...prevState.selectedSubcategory, subcategoryId: _id, requestData: { name } }, 
+            subcategoryList: updatedList }));
         }
         return;
 
       case ButtonName.Delete:
         emptySubcategory();
-        setSelectedSubcategory({ ...selectedSubcategory, _id: targetButton.value });
-        setShowDeleteModal(true);
+        setState(prevState => ({ ...prevState, selectedSubcategory: { ...prevState.selectedSubcategory, subcategoryId: targetButton.value }, showDeleteModal: true }));
         return;
 
       case ButtonName.Clean:
-        let subcategory = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
-        if (subcategory) setSubcategoryList(subcategory);
+        if (subcategory) setState(prevState => ({ ...prevState, subcategoryList: subcategory }));
         break;
 
       case ButtonName.Save:
-        if (selectedSubcategory._id.length === 0 && category) dispatchRedux(subcategoryCall({ route: 'create', method: 'post', _id: category, name }))
-        if (selectedSubcategory._id.length > 6) dispatchRedux(subcategoryCall({ route: 'edit', method: 'put', _id, name }))
+        if (selectedSubcategory.subcategoryId.length > 0) {
+          await mutation.mutateAsync({ selectedSubcategory, state: 'edit' })
+        } else if (category) {
+          await mutation.mutateAsync({ selectedSubcategory: { ...selectedSubcategory, categoryId: category }, state: 'create' })
+        }
         break;
 
       case ButtonName.Confirm:
-        dispatchRedux(subcategoryCall({ route: 'delete', method: 'delete', _id, name }))
+        await mutation.mutateAsync({ selectedSubcategory, state: 'delete' });
         break;
 
       case ButtonName.Add:
@@ -91,8 +80,8 @@ const Subcategory: React.FC = () => {
 
     }
     emptySubcategory();
-    setShowDeleteModal(false);
-    setSelectedSubcategory(initialState);
+    setState(prevState => ({ ...prevState, showDeleteModal: false, selectedSubcategory: initialState.selectedSubcategory }));
+
   };
 
   const emptySubcategory = () => {
