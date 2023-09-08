@@ -57,7 +57,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, handleOnCh
               {selectedProduct.requestData.images.map((image, index) => (
                 <div key={index}>
                   <img
-                    src={`${process.env.REACT_APP_URL_API}/${image}`}
+                    src={`${process.env.REACT_APP_SERVER_FILE}/${image}`}
                     // src={URL.createObjectURL(image)}
                     width={200}
                     alt={`${index}`}

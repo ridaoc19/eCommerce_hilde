@@ -63,7 +63,7 @@ export function makeImagesRequest<R extends Route>(route: R): { withOptions: (op
 async function imagesApis<T extends Route>(params: RequestMap[T]): Promise<MakeProductsRequestReturn> {
   try {
     const { route, requestOptions } = createPayload(params);
-    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}`, requestOptions);
+    const responseApi = await fetch(`${process.env.REACT_APP_SERVER_FILE}/${route}`, requestOptions);
     return await responseApi.json();
   } catch (error) {
     if (error instanceof Error) {
