@@ -1,75 +1,84 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useContext, useEffect, useState } from 'react';
 import ModalConfirm from '../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
-import { IProduct, IProductRedux } from '../../../../interfaces/product.interface';
-import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { selectProductsData } from '../../../../redux/reducers/product';
-import { ProductCall, productsCall } from '../../../../redux/reducers/product/actions';
-import ProductDetail, { DataProductDetail } from './ProductDetail';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
+import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
 
-export enum ButtonName {
-  Edit = 'edit',
-  Delete = 'delete',
-  Clean = 'clean',
-  Save = 'save',
-  Add = 'add',
-  Confirm = 'confirm',
-  Cancel = 'cancel',
-  Product = 'product',
-  AddSpecification = 'addSpecification'
+// Función para transformar la especificación
+// function transformSpecification(originalSpecification) {
+//   return originalSpecification.map((item) => {
+//     const key = Object.keys(item)[0];
+//     const value = item[key];
+//     return { key, value };
+//   });
+// }
+
+// Función para manejar los cambios en la especificación
+// function handleSpecificationChange(selectedProduct, specIndex, specField, value) {
+//   const updatedSpecification = [...selectedProduct.requestData.specification];
+//   updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: value };
+//   return updatedSpecification;
+// }
+
+const initialState: InitialState = {
+  productsList: [],
+  selectedProduct: { productId: "", subcategoryId: "", requestData: { name: "", price: "", description: "", specification: [], images: [] } },
+  showDeleteModal: false
 }
 
-export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
-export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
-export type SelectedProducts = ProductCall;
-export const initialState: SelectedProducts = { _id: '', name: '', price: '', description: '', images: [], specification: [], imgDelete: [] }
-
-const Products: React.FC = () => {
-  const dispatchRedux = useAppDispatch();
-  const { products }: IProductRedux.ProductPostsReturn = useAppSelector(selectProductsData);
-  const { dashboard: { state: { inventory: { department, category, subcategory, products: product } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
-  const [productsList, setProductsList] = useState<IProduct.Product[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<SelectedProducts>(initialState);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [productDetail, setProductDetail] = useState<DataProductDetail>({ breadcrumb: ["", "", ""], product: { _id: "", name: "", description: "", images: [], price: "", specification: [], subcategoryId: "" } });
-
+const Products = ({ products }: ProductsProps) => {
+  const { dashboard: { state: { inventory: { department, category, subcategory } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const queryClient = useQueryClient();
+  const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
+  const [state, setState] = useState<InitialState>(initialState)
+  const { productsList, selectedProduct, showDeleteModal } = state;
+  const LSImages: string[] | undefined = localStorage.images ? JSON?.parse(localStorage?.images) : undefined
 
   useEffect(() => {
-    let product = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
-    if (product) setProductsList(product);
+    if (products) setState(prevState => ({ ...prevState, productsList: products }));
+    //IMAGES
+    if (LSImages && LSImages.length !== selectedProduct.requestData.images.length) {
+      LSImages.forEach((imageId: string) => {
+        makeImagesRequest(Route.ImagesDelete).withOptions({ imageId: imageId.replace("uploads\\", "") })
+      });
+      localStorage.removeItem('images')
+    }
   }, [products, department, category, subcategory]);
 
-  const handleOnChange: HandleOnChange = (event) => {
-    const inputName = event.target.name;
+  const handleOnChange: HandleOnChange = async (event) => {
+    const { name, value, files } = event.target;
 
-    if (inputName === 'images') {
-      const files = event.target.files;
-      if (files && files.length > 0) {
-        setSelectedProducts((prevData) => ({ ...prevData, images: [...prevData.images, files[0]] }));
+    if (name === 'images') {
+      try {
+        const formData = new FormData();
+        if (files) {
+          formData.append('image', files[0], `${selectedProduct.requestData.name}.${files[0].type.split('/')[1]}`);
+          const { imageUrl } = await makeImagesRequest(Route.ImagesCreate).withOptions({ requestData: formData })
+          localStorage.images = LSImages ? JSON.stringify([...LSImages, imageUrl]) : JSON.stringify([imageUrl])
+          setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: [...prevState.selectedProduct.requestData.images, imageUrl] } } }))
+        }
+      } catch (error) {
+        console.error('Error al cargar la imagen', error);
       }
-
-    } else if (inputName === 'specificationKey' || inputName === 'specificationValue') {
+    } else if (name === 'specificationKey' || name === 'specificationValue') {
       const specIndex = parseInt(event.target.dataset.index || '0', 10);
-      const specField = inputName === 'specificationKey' ? 'key' : 'value';
-      const updatedSpecification = [...selectedProducts.specification];
-      updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: event.target.value };
-      setSelectedProducts((prevData) => ({ ...prevData, specification: updatedSpecification }));
-
+      const specField = name === 'specificationKey' ? 'key' : 'value';
+      const updatedSpecification = [...selectedProduct.requestData.specification];
+      updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: value };
+      // const updatedSpecification = handleSpecificationChange(selectedProduct, specIndex, specField, value);
+      setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, specification: updatedSpecification } } }))
     } else {
-      setSelectedProducts((prevData) => ({ ...prevData, [inputName]: event.target.value }));
+      setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, [name]: value } } }))
     }
-
-    // const { name, value } = event.target;
-    // setSelectedProducts({ ...selectedProducts, [name]: value })
   }
 
-  const handleOnClick: HandleOnClick = (event) => {
+  const handleOnClick: HandleOnClick = async (event) => {
     event.preventDefault();
-    let { _id, name, price, description, images, specification, imgDelete } = selectedProducts;
     const targetButton = event.target as HTMLButtonElement;
 
     switch (targetButton.name) {
@@ -78,49 +87,53 @@ const Products: React.FC = () => {
         const updatedList = productsList?.filter(prod => prod._id !== targetButton.value) || [];
         const editedProducts = productsList?.find(prod => prod._id === targetButton.value);
         if (editedProducts) {
-          // let { _id, name } = editedProducts;
-          // setSelectedProducts({ _id, name });
-          setProductsList(updatedList);
+          let { _id, name, price, description, specification, images } = editedProducts;
+          // transformSpecification(specification)
+          setState(prevState => ({
+            ...prevState,
+            productsList: updatedList,
+            selectedProduct: {
+              ...prevState.selectedProduct, productId: _id, requestData: {
+                name, price, description,
+                specification: specification.map((item) => {
+                  const [key, value] = Object.entries(item)[0];
+                  return { key, value };
+                }),
+                images
+              }
+            }
+          }));
         }
         return;
 
       case ButtonName.Delete:
         emptyProducts();
-        setSelectedProducts({ ...selectedProducts, _id: targetButton.value });
-        setShowDeleteModal(true);
+        setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, productId: targetButton.value } }));
+        setState(prevState => ({ ...prevState, showDeleteModal: true }));
         return;
 
       case ButtonName.Clean:
-        let product = products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
-        if (product) setProductsList(product);
+        if (products) setState(prevState => ({ ...prevState, productsList: products }));
         break;
 
       case ButtonName.Save:
-        if (selectedProducts._id.length === 0 && subcategory)
-          dispatchRedux(productsCall({ route: 'create', method: 'post', _id: subcategory, name, price, description, images, specification, imgDelete: [] }))
-        if (selectedProducts._id.length > 6)
-          dispatchRedux(productsCall({ route: 'edit', method: 'put', _id, name, price, description, images, specification, imgDelete }))
+        if (selectedProduct.productId) {
+          await mutation.mutateAsync({ selectedProduct, state: 'edit' })
+        } else if (subcategory) {
+          await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory }, state: 'create' })
+        }
         return;
 
       case ButtonName.Confirm:
-        dispatchRedux(productsCall({ route: 'delete', method: 'delete', _id, name, price, description, images, specification, imgDelete }))
+        await mutation.mutateAsync({ selectedProduct, state: 'delete' })
         break;
 
       case ButtonName.Product:
         dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'products', value: targetButton.value } })
-        const filterProductList = productsList.find(prod => prod._id === targetButton.value)!
-        const departmentFilter = products.find(dep => dep._id === department)!
-        const categoryFilter = departmentFilter?.categoriesId.find(cat => cat._id === category)!
-        const subcategoryFilter = categoryFilter?.subcategoriesId.find(sub => sub._id === subcategory)!
-        const dataProductDetail: DataProductDetail = {
-          breadcrumb: [departmentFilter?.name, categoryFilter?.name, subcategoryFilter?.name],
-          product: filterProductList
-        }
-        setProductDetail(dataProductDetail)
         return;
 
       case ButtonName.AddSpecification:
-        setSelectedProducts((prevData) => ({ ...prevData, specification: [...prevData.specification, { key: '', value: '' }] }));
+        setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, specification: [...prevState.selectedProduct.requestData.specification, { key: '', value: '' }] } } }))
         return;
 
       case ButtonName.Add:
@@ -129,13 +142,19 @@ const Products: React.FC = () => {
       case ButtonName.Cancel:
         break;
 
+      case ButtonName.FileDelete:
+        const newImages = selectedProduct.requestData.images.filter(url => url !== targetButton.value)
+        makeImagesRequest(Route.ImagesDelete).withOptions({ imageId: targetButton.value.replace("uploads\\", "") })
+        setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: newImages } } }))
+        localStorage.images = JSON.stringify(newImages)
+        return
+
       default:
         break;
 
     }
     emptyProducts();
-    setShowDeleteModal(false);
-    setSelectedProducts(initialState);
+    setState(prevState => ({ ...prevState, showDeleteModal: false, selectedProduct: initialState.selectedProduct }));
   };
 
   const emptyProducts = () => {
@@ -148,9 +167,9 @@ const Products: React.FC = () => {
         <ProductsList productsList={productsList} handleOnClick={handleOnClick} />
       </div>
       <div>
-        <ProductsForm selectedProducts={selectedProducts} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
+        <ProductsForm selectedProduct={selectedProduct} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
       </div>
-      {product && productDetail && <ProductDetail product={productDetail} />}
+      {/* {product && productDetail && <ProductDetail product={productDetail} />} */}
       {showDeleteModal &&
         <ModalConfirm
           message='¿Estás seguro de eliminar este producto?'

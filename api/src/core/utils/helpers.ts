@@ -1,5 +1,11 @@
 import Department from "../../modules/department/model";
 
+function fetchCount(info: any) {
+  return new Promise<{ data: number }>((resolve) =>
+    setTimeout(() => resolve({ data: info }), 10000)
+  );
+}
+
 export async function products() {
   try {
     const departments = await Department.find()
@@ -13,6 +19,8 @@ export async function products() {
         },
       })
       .exec();
+
+    // await fetchCount(departments)
 
     return departments;
   } catch (error) {

@@ -1,13 +1,8 @@
 import { useContext } from 'react';
-import { ButtonName, HandleOnChange, HandleOnClick, SelectedSubcategory } from '.';
 import { CreateContext } from '../../../../hooks/useContext';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { ButtonName, SubcategoryFormProps } from './interface.subcategory';
 
-interface SubcategoryFormProps {
-  selectedSubcategory: SelectedSubcategory
-  handleOnChange: HandleOnChange;
-  handleOnClick: HandleOnClick;
-}
 
 function SubcategoryForm({ selectedSubcategory, handleOnChange, handleOnClick }: SubcategoryFormProps) {
   const { dashboard: { state: { inventory: { subcategory }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
@@ -20,14 +15,14 @@ function SubcategoryForm({ selectedSubcategory, handleOnChange, handleOnClick }:
               type="text"
               placeholder="Ingresar nueva sub categoría"
               name='name'
-              value={selectedSubcategory.name}
+              value={selectedSubcategory.requestData.name}
               onChange={handleOnChange}
             />
           </div>
           <div className="-button">
             <div>
               <button name={ButtonName.Clean} onClick={handleOnClick}>Limpiar</button>
-              <button name={ButtonName.Save} onClick={handleOnClick}>{selectedSubcategory._id ? 'Actualizar' : 'Crear'}</button>
+              <button name={ButtonName.Save} onClick={handleOnClick}>{selectedSubcategory.subcategoryId ? 'Actualizar' : 'Crear'}</button>
             </div>
           </div>
         </>

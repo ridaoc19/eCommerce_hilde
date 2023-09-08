@@ -1,13 +1,7 @@
 import { useContext } from 'react';
-import { ButtonName, HandleOnClick } from ".";
 import { CreateContext } from '../../../../hooks/useContext';
 import { IContext } from "../../../../interfaces/hooks/context.interface";
-import { IProduct } from "../../../../interfaces/product.interface";
-
-type ProductsListProps = {
-  productsList: IProduct.Product[];
-  handleOnClick: HandleOnClick;
-};
+import { ButtonName, ProductsListProps } from './interface.products';
 
 const ProductsList: React.FC<ProductsListProps> = ({ productsList, handleOnClick }) => {
   const { dashboard: { state: { inventory: { products }, permits: { inventory_product } } } }: IContext.IContextData = useContext(CreateContext)!;

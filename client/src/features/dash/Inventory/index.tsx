@@ -1,15 +1,13 @@
-// import Form from './Form';
-import { useContext, useEffect } from "react";
-import { CreateContext } from "../../../hooks/useContext";
-import { IContext } from "../../../interfaces/hooks/context.interface";
 import { IUser } from "../../../interfaces/user.interface";
-import { useAppDispatch } from "../../../redux/hooks";
-import { productsGet } from "../../../redux/reducers/product/actions";
-import Category from "./category/index";
 import Department from "./department";
+import { useQuery } from '@tanstack/react-query';
+import { Route, makeProductsRequest } from "../../../services/productApi";
+import { IContext } from "../../../interfaces/hooks/context.interface";
+import { CreateContext } from "../../../hooks/useContext";
+import { useContext } from "react";
+import Category from "./category";
 import Subcategory from "./subCategory";
 import Products from "./product";
-// import CrudForm from './department/ejemplo';
 
 export namespace IInventory {
   export type ItemRole = {
@@ -21,35 +19,47 @@ export namespace IInventory {
 }
 
 function Inventory() {
-  const dispatchRedux = useAppDispatch();
+  // const dispatchRedux = useAppDispatch();
   const { dashboard: { state: { inventory: { department, category, subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  // const queryClient = useQueryClient();
+  const { isLoading, isError, error, data } = useQuery({
+    queryKey: ['product'],
+    queryFn: () => makeProductsRequest(Route.ProductRequest).withOptions({}),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  })
 
-  useEffect(() => {
-    dispatchRedux(productsGet({ routes: 'request' }));
-    // eslint-disable-next-line
-  }, []);
+  let categoryData = data?.products.find(dep => dep._id === department)?.categoriesId
+  let subcategoryData = data?.products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
+  let productData = data?.products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
+  // console.log(product, "tiene");
+
 
   return (
     <div>
       {<div className="super_inventory">
         <div className="department">
           <h2>Departamento</h2>
-          <Department />
+          {isLoading
+            ? <div>Cargando Departamentos...</div>
+            : isError
+              ? <div>Hubo erro {JSON.stringify(error)}</div>
+              : <Department department={data?.products} />}
         </div>
         <div className="department">
           <h2>Categoría</h2>
-          {department && <Category />}
+          {department && categoryData && <Category category={categoryData} />}
         </div>
         <div className="department">
           <h2>Subcategoría</h2>
-          {category && <Subcategory />}
+          {category && subcategoryData && <Subcategory subcategory={subcategoryData} />}
         </div>
       </div>}
 
       {<div className="admin_inventory">
         <div className="department">
           <h2>Products</h2>
-          {subcategory && <Products />}
+          {subcategory && productData && <Products products={productData} />}
         </div>
       </div>}
       {/* <CrudForm /> */}
