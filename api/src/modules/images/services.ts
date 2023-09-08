@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import fs from 'fs';
+import fs, { readdirSync } from 'fs';
+import fsExtra from 'fs-extra';
 import { splitString } from "../../core/utils/splitString";
 import path from "path";
 
@@ -58,6 +59,63 @@ export async function imageDelete(req: Request, res: Response) {
     fs.unlinkSync(imagePath)
 
     return res.json({ message: 'Imagen eliminada', imageUrl: "" });
+
+  } catch (error: unknown) {
+    console.log(error)
+    if (error instanceof Error) {
+      res.status(409).json({ error: splitString(error) });
+    } else {
+      res.status(500).json({ error: `Error desconocido: ${error}` });
+    }
+  }
+}
+
+export async function imageRequestAll(req: Request, res: Response) {
+  try {
+    const folderPath = './uploads'; // Cambia esto a la ruta de tu carpeta
+
+    // Obtener el contenido de la carpeta
+    // fs.readdir(folderPath, (err, files) => {
+    //   if (err) {
+    //     console.error('Error al leer la carpeta:', err);
+    //     return;
+    //   }
+
+    //   // Iterar sobre los archivos y eliminar cada uno
+    //   files.forEach((file) => {
+    //     const filePath = path.join(folderPath, file);
+
+    //     // Verificar si el elemento es un archivo
+    //     fs.stat(filePath, (statErr, stats) => {
+    //       if (statErr) {
+    //         console.error(`Error al verificar ${filePath}:`, statErr);
+    //         return;
+    //       }
+
+    //       if (stats.isFile()) {
+    //         // Eliminar el archivo
+    //         fs.unlink(filePath, (unlinkErr) => {
+    //           if (unlinkErr) {
+    //             console.error(`Error al eliminar ${filePath}:`, unlinkErr);
+    //           } else {
+    //             console.log(`Se ha eliminado ${filePath}`);
+    //           }
+    //         });
+    //       }
+    //     });
+    //   });
+
+    // Finalmente, elimina la carpeta vacía
+    //   fsExtra.remove(folderPath, (removeErr) => {
+    //     if (removeErr) {
+    //       console.error(`Error al eliminar la carpeta ${folderPath}:`, removeErr);
+    //     } else {
+    //       console.log(`Se ha eliminado la carpeta ${folderPath} y su contenido.`);
+    //     }
+    //   });
+    // });
+    const data = readdirSync(folderPath)
+    return res.json({ message: 'Imagen editada correctamente', data });
 
   } catch (error: unknown) {
     console.log(error)
