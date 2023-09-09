@@ -2,20 +2,29 @@ import { IProduct } from "../interfaces/product.interface";
 
 // Enumeración para las rutas de las solicitudes
 export enum Route {
+  ImagesCreateAll = 'images/createAll',
   ImagesCreate = 'images/create',
+  ImagesDeleteAll = 'images/deleteAll',
   ImagesDelete = 'images/delete',
 }
 
 // Definición de tipos para las solicitudes basadas en las rutas
 export type RequestMap = {
-  // departamento
+  [Route.ImagesCreateAll]: {
+    route: Route.ImagesCreateAll;
+    requestData: FormData;
+  };
   [Route.ImagesCreate]: {
     route: Route.ImagesCreate;
     requestData: FormData;
   };
   [Route.ImagesDelete]: {
     route: Route.ImagesDelete;
-    imageId: string;
+    requestData: FormData;
+  };
+  [Route.ImagesDeleteAll]: {
+    route: Route.ImagesDeleteAll;
+    requestData: FormData;
   };
 
 };
@@ -34,13 +43,17 @@ type Payload<T extends Route> = (params: RequestMap[T]) => {
 
 const createPayload: Payload<Route> = (params) => {
   // Definición de los encabezados comunes para las solicitudes
-  const { route } = params;
+  const { route, requestData } = params;
 
   switch (route) {
+    case Route.ImagesCreateAll:
+      return { route, requestOptions: { method: 'post', body: requestData }, };
     case Route.ImagesCreate:
-      return { route, requestOptions: { method: 'post', body: params.requestData, }, };
+      return { route, requestOptions: { method: 'post', body: requestData }, };
     case Route.ImagesDelete:
-      return { route: `${route}/${params.imageId}`, requestOptions: { method: 'delete', }, };
+      return { route, requestOptions: { method: 'delete', body: requestData }, };
+    case Route.ImagesDeleteAll:
+      return { route, requestOptions: { method: 'delete', body: requestData }, };
     default:
       return { route: 'request', requestOptions: { method: 'get' } };
   }

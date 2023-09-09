@@ -1,7 +1,7 @@
 import React, { ReactNode, useContext } from 'react';
-import { IContext } from '../../../../interfaces/hooks/context.interface';
-import { CreateContext } from '../../../../hooks/useContext';
-import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
+import { IContext } from '../../../../../interfaces/hooks/context.interface';
+import { CreateContext } from '../../../../../hooks/useContext';
+import { ActionTypeDashboard } from '../../../../../hooks/useContext/dash/reducer';
 
 interface PopupProps {
   children: ReactNode;

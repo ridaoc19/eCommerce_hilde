@@ -7,7 +7,7 @@ import { CreateContext } from "../../../hooks/useContext";
 import { useContext } from "react";
 import Category from "./category";
 import Subcategory from "./subCategory";
-import Products from "./product";
+import Products from "./product/information";
 
 export namespace IInventory {
   export type ItemRole = {
