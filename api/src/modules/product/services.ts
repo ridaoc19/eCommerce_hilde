@@ -12,57 +12,16 @@ function fetchCount(info: any) {
   );
 }
 
-export async function postRegistre(req: Request, res: Response) {
+export async function postCreate(req: Request, res: Response) {
   try {
-    // const { subcategoryId } = req.params;
-    // const product = await Product.create({ ...req.body, subcategoryId: subcategoryId });
+    const { subcategoryId } = req.params;
+    const product = await Product.create({ ...req.body, subcategoryId: subcategoryId });
 
-    // await Subcategory.findByIdAndUpdate(subcategoryId, { $push: { productsId: product._id } });
-
-    // res.status(201).json(product);
-
-    // console.log(req)
-    if (!req.files) {
-      return res.status(400).json({ message: 'No image uploaded' });
-    }
-
-    // const imageName = uuidv4() + req.file.originalname;
-    // req.file.path = `uploads/${imageName}`;
-    // return res.json({ message: 'Image uploaded successfully', imageUrl: req.files });
-    //   const {
-    //     department,
-    //     category,
-    //     subcategory,
-    //     price,
-    //     specification,
-    //     description,
-    //   } = req.body;
-
-    //   let imagePaths: string[] = [];
-    //   if (Array.isArray(req.files)) {
-    //     imagePaths = req.files.map((file: Express.Multer.File) => file.path);
-    //   }
-
-    //   const product = new Product({
-    //     images: imagePaths,
-    //     department,
-    //     category,
-    //     subcategory,
-    //     price,
-    //     specification,
-    //     description,
-    //   });
-
-    // let response =  await product.save();
-
-    //   res.status(201).json({ message: 'Product uploaded successfully', response, imagePaths });
-
-
-
+    await Subcategory.findByIdAndUpdate(subcategoryId, { $push: { productsId: product._id } });
 
     const updatedProducts = await products();
     return res.status(200).json({
-      message: "product",
+      message: "product creado",
       products: updatedProducts,
     });
 

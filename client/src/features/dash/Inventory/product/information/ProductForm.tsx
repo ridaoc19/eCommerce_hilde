@@ -54,18 +54,18 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, temporaryI
 
             <div className='images'>
               <input id={`input__images-`} className='input__images' type='file' name='images' onChange={handleOnChange} />
-              {temporaryImages.length > 0 ? temporaryImages.map((image, index) => (
+              {temporaryImages.get.map((image, index) => (
                 <div key={index}>
                   <img src={URL.createObjectURL(image)} width={200} alt={`${index}`} />
-                  <button name={ButtonName.FileDelete} value={index} onClick={handleOnClick}>Eliminar Imagen</button>
+                  <button name={ButtonName.FileDelete} data-type={'file'} value={index} onClick={handleOnClick}>Eliminar Imagen</button>
                 </div>
-              )) :
-                selectedProduct.requestData.images.map((image, index) => (
-                  <div key={index}>
-                    <img src={`${process.env.REACT_APP_SERVER_FILE}/${image}`} width={200} alt={`${index}`} />
-                    <button name={ButtonName.FileDelete} value={index} onClick={handleOnClick}>Eliminar Imagen</button>
-                  </div>
-                ))}
+              ))}
+              {selectedProduct.requestData.images.map((image, index) => (
+                <div key={index}>
+                  <img src={`${process.env.REACT_APP_SERVER_FILE}/${image}`} width={200} alt={`${index}`} />
+                  <button name={ButtonName.FileDelete} data-type={'url'} value={index} onClick={handleOnClick}>Eliminar Imagen</button>
+                </div>
+              ))}
             </div>
           </div>
           {/* <Form /> */}

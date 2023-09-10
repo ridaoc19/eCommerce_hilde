@@ -9,10 +9,17 @@ import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
 import { Route, makeImagesRequest } from '../../../../../services/imagesApi';
 
+// function tienenLaMismaInformacion({ urlProduct, urlSelectedProduct }: { urlProduct: string[], urlSelectedProduct: string[] }) {
+//   console.log(urlProduct.sort(), urlSelectedProduct.sort())
+//   urlProduct.sort()
+//   urlSelectedProduct.sort()
+//   return JSON.stringify(urlProduct) === JSON.stringify(urlSelectedProduct);
+// }
+
 const initialState: InitialState = {
   productsList: [],
   selectedProduct: { productId: "", subcategoryId: "", requestData: { name: "", price: "", description: "", specification: [], images: [] } },
-  temporaryImages: [],
+  temporaryImages: { get: [], delete: [] },
   showDeleteModal: false
 }
 
@@ -39,7 +46,7 @@ const ProductInfo = ({ products }: ProductsProps) => {
     const { name, value, files } = event.target;
 
     if (name === 'images' && files) {
-      setState((prevState) => ({ ...prevState, temporaryImages: [...prevState.temporaryImages, files[0]], }));
+      setState((prevState) => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, get: [...prevState.temporaryImages.get, files[0]] } }));
       // try {
       // const formData = new FormData();
       // if (files) {
@@ -81,8 +88,7 @@ const ProductInfo = ({ products }: ProductsProps) => {
             selectedProduct: {
               ...prevState.selectedProduct, productId: _id, requestData: {
                 name, price, description,
-                specification: specification.map((item) => {
-                  const [key, value] = Object.entries(item)[0];
+                specification: specification.map(({ key, value }) => {
                   return { key, value };
                 }),
                 images
@@ -104,16 +110,35 @@ const ProductInfo = ({ products }: ProductsProps) => {
 
       case ButtonName.Save:
         if (selectedProduct.productId) {
-          await mutation.mutateAsync({ selectedProduct, state: 'edit' })
+          if (temporaryImages.get.length > 0 || temporaryImages.delete.length > 0) {
+            const form = new FormData();
+            if (temporaryImages.get.length > 0) {
+              temporaryImages.get.forEach((image, _index) => {
+                form.append(`images`, image, `${selectedProduct.requestData.name}.${image.type.split("/")[1]}`);  // Usar el mismo nombre
+              });
+            }
+            if (temporaryImages.delete.length > 0) {
+              temporaryImages.delete.forEach((url, index) => form.append(`url[${index}]`, url));
+            }
+            let responseImages = (await makeImagesRequest(Route.ImagesCreateDelete).withOptions({ requestData: form })).imageUrl
+            console.log(responseImages)
+          }
+          // if (products.map(e => e.)) {
+          //   await mutation.mutateAsync({ selectedProduct, state: 'edit' })
+          // }
+
+          // if () {
+          //   await mutation.mutateAsync({ selectedProduct, state: 'edit' })
+          // }
+
+
         } else if (subcategory) {
           const form = new FormData();
-          temporaryImages.forEach((image, _index) => {
-            form.append(`images`, image, selectedProduct.requestData.name);  // Usar el mismo nombre
+          temporaryImages.get.forEach((image, _index) => {
+            form.append(`images`, image, `${selectedProduct.requestData.name}.${image.type.split("/")[1]}`);  // Usar el mismo nombre
           });
-          let carga = await makeImagesRequest(Route.ImagesCreateAll).withOptions({ requestData: form })
-          console.log(carga);
-
-          // await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory }, state: 'create' })
+          const carga = await makeImagesRequest(Route.ImagesCreate).withOptions({ requestData: form })
+          await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory, requestData: { ...selectedProduct.requestData, images: carga.imageUrl } }, state: 'create' })
         }
         return;
 
@@ -137,12 +162,12 @@ const ProductInfo = ({ products }: ProductsProps) => {
 
       case ButtonName.FileDelete:
         // const imageDelete = im
-        if (temporaryImages.length > 0) {
-          temporaryImages.splice(+targetButton.value, 1)
+        if (targetButton.dataset.type === 'file') {
+          temporaryImages.get.splice(+targetButton.value, 1)
           setState(prevState => ({ ...prevState, temporaryImages }))
-        } else {
-          selectedProduct.requestData.images.splice(+targetButton.value, 1)
-          setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData } } }))
+        } else if (targetButton.dataset.type === 'url') {
+          const urlDelete = selectedProduct.requestData.images.splice(+targetButton.value, 1)
+          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: urlDelete }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData } } }))
 
         }
         // const newImages = selectedProduct.requestData.images.filter(url => url !== targetButton.value)
@@ -156,7 +181,7 @@ const ProductInfo = ({ products }: ProductsProps) => {
 
     }
     emptyProducts();
-    setState(prevState => ({ ...prevState, showDeleteModal: false, temporaryImages: [], selectedProduct: initialState.selectedProduct }));
+    setState(prevState => ({ ...prevState, showDeleteModal: false, temporaryImages: { get: [], delete: [] }, selectedProduct: initialState.selectedProduct }));
   };
 
   const emptyProducts = () => {

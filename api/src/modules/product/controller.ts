@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { uploadImages } from "../images/middleware";
-import { postRegistre, productGet } from "./services";
-import multer from "multer";
-import path from "path";
+import { postCreate, productGet } from "./services";
 
 
 const router = Router();
@@ -21,8 +19,8 @@ const { upload } = uploadImages()
 // const upload = multer({ storage });
 
 // router.post('/create/:subcategoryId', upload.array(`images`), postRegistre);
-// router.post('/registre/:subcategoryId', postRegistre);
-router.post('/create', upload.array('images'), postRegistre);
+router.post('/create/:subcategoryId', postCreate);
+// router.post('/create', postRegistre);
 router.get('/request', productGet);
 
 

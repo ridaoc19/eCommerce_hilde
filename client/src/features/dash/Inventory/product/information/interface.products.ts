@@ -28,7 +28,7 @@ export interface ProductsProps {
 export interface InitialState {
   productsList: ProductsProps['products'];
   selectedProduct: Omit<RequestMap[Route.ProductCreate], 'route'> & Omit<RequestMap[Route.ProductEdit], 'route'>;
-  temporaryImages: File[]
+  temporaryImages: { get: File[], delete: string[] }
   showDeleteModal: boolean;
 }
 

@@ -2,18 +2,13 @@ import { IProduct } from "../interfaces/product.interface";
 
 // Enumeración para las rutas de las solicitudes
 export enum Route {
-  ImagesCreateAll = 'images/createAll',
   ImagesCreate = 'images/create',
-  ImagesDeleteAll = 'images/deleteAll',
   ImagesDelete = 'images/delete',
+  ImagesCreateDelete = 'images/createdelete'
 }
 
 // Definición de tipos para las solicitudes basadas en las rutas
 export type RequestMap = {
-  [Route.ImagesCreateAll]: {
-    route: Route.ImagesCreateAll;
-    requestData: FormData;
-  };
   [Route.ImagesCreate]: {
     route: Route.ImagesCreate;
     requestData: FormData;
@@ -22,8 +17,8 @@ export type RequestMap = {
     route: Route.ImagesDelete;
     requestData: FormData;
   };
-  [Route.ImagesDeleteAll]: {
-    route: Route.ImagesDeleteAll;
+  [Route.ImagesCreateDelete]: {
+    route: Route.ImagesCreateDelete;
     requestData: FormData;
   };
 
@@ -46,21 +41,19 @@ const createPayload: Payload<Route> = (params) => {
   const { route, requestData } = params;
 
   switch (route) {
-    case Route.ImagesCreateAll:
-      return { route, requestOptions: { method: 'post', body: requestData }, };
     case Route.ImagesCreate:
       return { route, requestOptions: { method: 'post', body: requestData }, };
     case Route.ImagesDelete:
       return { route, requestOptions: { method: 'delete', body: requestData }, };
-    case Route.ImagesDeleteAll:
-      return { route, requestOptions: { method: 'delete', body: requestData }, };
+    case Route.ImagesCreateDelete:
+      return { route, requestOptions: { method: 'post', body: requestData }, };
     default:
       return { route: 'request', requestOptions: { method: 'get' } };
   }
 };
 
 // Tipo de retorno para las respuestas de las solicitudes
-export type MakeProductsRequestReturn = { message: string; imageUrl: string };
+export type MakeProductsRequestReturn = { message: string; imageUrl: string[] };
 
 // Función que realiza las solicitudes a la API
 export function makeImagesRequest<R extends Route>(route: R): { withOptions: (options: Omit<RequestMap[R], 'route'>) => Promise<MakeProductsRequestReturn> } {
