@@ -155,8 +155,9 @@ const ProductInfo = ({ products }: ProductsProps) => {
           setState(prevState => ({ ...prevState, temporaryImages }))
         } else if (targetButton.dataset.type === 'url') {
           const urlDelete = selectedProduct.requestData.images[+targetButton.value]
+          console.log(urlDelete)
           const filterImage = selectedProduct.requestData.images.filter(img => img !== urlDelete)
-          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: [...prevState.temporaryImages.delete, ...urlDelete] }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: filterImage } } }))
+          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: [...prevState.temporaryImages.delete, urlDelete] }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: filterImage } } }))
         }
         return
 
