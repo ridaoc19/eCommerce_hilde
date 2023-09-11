@@ -4,10 +4,10 @@ import ModalConfirm from '../../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../../interfaces/hooks/context.interface';
+import { Route, makeImagesRequest } from '../../../../../services/imagesApi';
 import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
-import { Route, makeImagesRequest } from '../../../../../services/imagesApi';
 
 // function tienenLaMismaInformacion({ urlProduct, urlSelectedProduct }: { urlProduct: string[], urlSelectedProduct: string[] }) {
 //   console.log(urlProduct.sort(), urlSelectedProduct.sort())
@@ -33,13 +33,6 @@ const ProductInfo = ({ products }: ProductsProps) => {
 
   useEffect(() => {
     if (products) setState(prevState => ({ ...prevState, productsList: products }));
-    //IMAGES
-    // if (LSImages && LSImages.length !== selectedProduct.requestData.images.length) {
-    //   LSImages.forEach((imageId: string) => {
-    //     makeImagesRequest(Route.ImagesDelete).withOptions({ imageId: imageId.replace("uploads\\", "") })
-    //   });
-    //   localStorage.removeItem('images')
-    // }
   }, [products, department, category, subcategory]);
 
   const handleOnChange: HandleOnChange = async (event) => {
@@ -47,17 +40,6 @@ const ProductInfo = ({ products }: ProductsProps) => {
 
     if (name === 'images' && files) {
       setState((prevState) => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, get: [...prevState.temporaryImages.get, files[0]] } }));
-      // try {
-      // const formData = new FormData();
-      // if (files) {
-      // formData.append('image', files[0], `${selectedProduct.requestData.name}.${files[0].type.split('/')[1]}`);
-      // const { imageUrl } = await makeImagesRequest(Route.ImagesCreate).withOptions({ requestData: formData })
-      // localStorage.images = LSImages ? JSON.stringify([...LSImages, imageUrl]) : JSON.stringify([imageUrl])
-      // setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: [...prevState.selectedProduct.requestData.images, imageUrl] } } }))
-      // }
-      // } catch (error) {
-      //   console.error('Error al cargar la imagen', error);
-      // }
     } else if (name === 'specificationKey' || name === 'specificationValue') {
       const specIndex = parseInt(event.target.dataset.index || '0', 10);
       const specField = name === 'specificationKey' ? 'key' : 'value';
@@ -121,17 +103,13 @@ const ProductInfo = ({ products }: ProductsProps) => {
               temporaryImages.delete.forEach((url, index) => form.append(`url[${index}]`, url));
             }
             let responseImages = (await makeImagesRequest(Route.ImagesCreateDelete).withOptions({ requestData: form })).imageUrl
-            console.log(responseImages)
+            // const temp = [...selectedProduct.requestData.images, ...responseImages]
+            // console.log(temp);
+
+            await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, requestData: { ...selectedProduct.requestData, images: [...selectedProduct.requestData.images, ...responseImages] } }, state: 'edit' })
+          } else {
+            await mutation.mutateAsync({ selectedProduct, state: 'edit' })
           }
-          // if (products.map(e => e.)) {
-          //   await mutation.mutateAsync({ selectedProduct, state: 'edit' })
-          // }
-
-          // if () {
-          //   await mutation.mutateAsync({ selectedProduct, state: 'edit' })
-          // }
-
-
         } else if (subcategory) {
           const form = new FormData();
           temporaryImages.get.forEach((image, _index) => {
@@ -140,9 +118,15 @@ const ProductInfo = ({ products }: ProductsProps) => {
           const carga = await makeImagesRequest(Route.ImagesCreate).withOptions({ requestData: form })
           await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory, requestData: { ...selectedProduct.requestData, images: carga.imageUrl } }, state: 'create' })
         }
-        return;
+        break;
 
       case ButtonName.Confirm:
+        const filterImages = products.find(pro => pro._id === selectedProduct.productId)?.images
+        if (filterImages && filterImages?.length > 0) {
+          const form = new FormData();
+          filterImages.forEach((url, index) => form.append(`url[${index}]`, url));
+          await makeImagesRequest(Route.ImagesDelete).withOptions({ requestData: form })
+        }
         await mutation.mutateAsync({ selectedProduct, state: 'delete' })
         break;
 
@@ -167,13 +151,8 @@ const ProductInfo = ({ products }: ProductsProps) => {
           setState(prevState => ({ ...prevState, temporaryImages }))
         } else if (targetButton.dataset.type === 'url') {
           const urlDelete = selectedProduct.requestData.images.splice(+targetButton.value, 1)
-          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: urlDelete }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData } } }))
-
+          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: [...prevState.temporaryImages.delete, ...urlDelete] }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData } } }))
         }
-        // const newImages = selectedProduct.requestData.images.filter(url => url !== targetButton.value)
-        // makeImagesRequest(Route.ImagesDelete).withOptions({ imageId: targetButton.value.replace("uploads\\", "") })
-        // setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: newImages } } }))
-        // localStorage.images = JSON.stringify(newImages)
         return
 
       default:
