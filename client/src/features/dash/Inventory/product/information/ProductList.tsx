@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { CreateContext } from '../../../../hooks/useContext';
-import { IContext } from "../../../../interfaces/hooks/context.interface";
+import { CreateContext } from '../../../../../hooks/useContext';
+import { IContext } from "../../../../../interfaces/hooks/context.interface";
 import { ButtonName, ProductsListProps } from './interface.products';
 
 const ProductsList: React.FC<ProductsListProps> = ({ productsList, handleOnClick }) => {

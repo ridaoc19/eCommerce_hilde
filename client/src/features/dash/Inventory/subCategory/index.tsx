@@ -7,6 +7,7 @@ import { IContext } from '../../../../interfaces/hooks/context.interface';
 import SubcategoryForm from './SubcategoryForm';
 import SubcategoryList from './SubcategoryList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, SubcategoryProps, callApiSubcategory } from './interface.subcategory';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 
 export const initialState: InitialState = {
   subcategoryList: [],
@@ -42,9 +43,11 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
         const editedSubcategory = subcategoryList?.find(subcat => subcat._id === targetButton.value);
         if (editedSubcategory) {
           let { _id, name } = editedSubcategory;
-          setState(prevState => ({ ...prevState, 
-            selectedSubcategory: { ...prevState.selectedSubcategory, subcategoryId: _id, requestData: { name } }, 
-            subcategoryList: updatedList }));
+          setState(prevState => ({
+            ...prevState,
+            selectedSubcategory: { ...prevState.selectedSubcategory, subcategoryId: _id, requestData: { name } },
+            subcategoryList: updatedList
+          }));
         }
         return;
 
@@ -66,6 +69,12 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
         break;
 
       case ButtonName.Confirm:
+        const filterImages = subcategory.find(pro => pro._id === selectedSubcategory.subcategoryId)?.productsId.flatMap(pro => pro.images)
+        if (filterImages && filterImages?.length > 0) {
+          const form = new FormData();
+          filterImages.forEach((url, index) => form.append(`url[${index}]`, url));
+          await makeImagesRequest(Route.ImagesDelete).withOptions({ requestData: form })
+        }
         await mutation.mutateAsync({ selectedSubcategory, state: 'delete' });
         break;
 

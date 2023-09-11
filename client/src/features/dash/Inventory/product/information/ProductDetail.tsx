@@ -1,5 +1,5 @@
 import React from 'react';
-import { IProduct } from '../../../../interfaces/product.interface';
+import { IProduct } from '../../../../../interfaces/product.interface';
 import ProductPopup from './ProductPopup';
 
 export interface DataProductDetail {

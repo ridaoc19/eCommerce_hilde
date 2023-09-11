@@ -1,5 +1,5 @@
-import { IProduct } from "../../../../interfaces/product.interface";
-import { MakeProductsRequestReturn, RequestMap, Route, makeProductsRequest } from "../../../../services/productApi";
+import { IProduct } from "../../../../../interfaces/product.interface";
+import { MakeProductsRequestReturn, RequestMap, Route, makeProductsRequest } from "../../../../../services/productApi";
 
 
 
@@ -27,12 +27,12 @@ export interface ProductsProps {
 
 export interface InitialState {
   productsList: ProductsProps['products'];
-  selectedProduct: Omit<RequestMap[Route.ProductCreate], 'route'> & Omit<RequestMap[Route.ProductEdit], 'route'>
+  selectedProduct: Omit<RequestMap[Route.ProductCreate], 'route'> & Omit<RequestMap[Route.ProductEdit], 'route'>;
+  temporaryImages: { get: File[], delete: string[] }
   showDeleteModal: boolean;
 }
 
-export interface ProductsFormProps {
-  selectedProduct: InitialState['selectedProduct'];
+export interface ProductsFormProps extends Pick<InitialState, 'selectedProduct' | 'temporaryImages'> {
   handleOnChange: HandleOnChange;
   handleOnClick: HandleOnClick;
 }

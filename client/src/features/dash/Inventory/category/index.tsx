@@ -7,6 +7,7 @@ import { IContext } from '../../../../interfaces/hooks/context.interface';
 import CategoryForm from './CategoryForm';
 import CategoryList from './CategoryList';
 import { ButtonName, CategoryProps, HandleOnChange, HandleOnClick, InitialState, callApiCategory } from './interface.category';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 
 export const initialState: InitialState = {
   categoryList: [],
@@ -66,6 +67,13 @@ const Category = ({ category }: CategoryProps) => {
         break;
 
       case ButtonName.Confirm:
+        const filterImages = category.find(pro => pro._id === selectedCategory.categoryId)?.subcategoriesId
+          .flatMap(pro => pro.productsId).flatMap(img => img.images)
+        if (filterImages && filterImages?.length > 0) {
+          const form = new FormData();
+          filterImages.forEach((url, index) => form.append(`url[${index}]`, url));
+          await makeImagesRequest(Route.ImagesDelete).withOptions({ requestData: form })
+        }
         await mutation.mutateAsync({ selectedCategory, state: 'delete' });
         break;
 

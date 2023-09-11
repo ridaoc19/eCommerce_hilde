@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import { CreateContext } from '../../../../hooks/useContext';
-import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { CreateContext } from '../../../../../hooks/useContext';
+import { IContext } from '../../../../../interfaces/hooks/context.interface';
 import { ButtonName, ProductsFormProps } from './interface.products';
 
 
 
-const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, handleOnChange, handleOnClick }) => {
+const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, temporaryImages, handleOnChange, handleOnClick }) => {
   const { dashboard: { state: { inventory: { products } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
@@ -54,15 +54,16 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, handleOnCh
 
             <div className='images'>
               <input id={`input__images-`} className='input__images' type='file' name='images' onChange={handleOnChange} />
+              {temporaryImages.get.map((image, index) => (
+                <div key={index}>
+                  <img src={URL.createObjectURL(image)} width={200} alt={`${index}`} />
+                  <button name={ButtonName.FileDelete} data-type={'file'} value={index} onClick={handleOnClick}>Eliminar Imagen</button>
+                </div>
+              ))}
               {selectedProduct.requestData.images.map((image, index) => (
                 <div key={index}>
-                  <img
-                    src={`${process.env.REACT_APP_URL_API}/${image}`}
-                    // src={URL.createObjectURL(image)}
-                    width={200}
-                    alt={`${index}`}
-                  />
-                  <button name={ButtonName.FileDelete} value={image} onClick={handleOnClick}>Eliminar Imagen</button>
+                  <img src={`${process.env.REACT_APP_SERVER_FILE}/${image}`} width={200} alt={`${index}`} />
+                  <button name={ButtonName.FileDelete} data-type={'url'} value={index} onClick={handleOnClick}>Eliminar Imagen</button>
                 </div>
               ))}
             </div>
