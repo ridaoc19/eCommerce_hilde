@@ -53,7 +53,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, temporaryI
             </div>
 
             <div className='images'>
-              <input id={`input__images-`} className='input__images' type='file' name='images' onChange={handleOnChange} />
+              <input id={`input__images-`} multiple className='input__images' type='file' name='images' onChange={handleOnChange} />
               {temporaryImages.get.map((image, index) => (
                 <div key={index}>
                   <img src={URL.createObjectURL(image)} width={200} alt={`${index}`} />
