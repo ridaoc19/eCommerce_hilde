@@ -24,22 +24,27 @@ const initialState: InitialState = {
 }
 
 const ProductInfo = ({ products }: ProductsProps) => {
+  const productsCopy = [...products];
   const { dashboard: { state: { inventory: { department, category, subcategory } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
   const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
   const [state, setState] = useState<InitialState>(initialState)
   const { productsList, selectedProduct, temporaryImages, showDeleteModal } = state;
-  // const LSImages: string[] | undefined = localStorage.images ? JSON?.parse(localStorage?.images) : undefined
 
   useEffect(() => {
-    if (products) setState(prevState => ({ ...prevState, productsList: products }));
+    if (products) {
+      setState(prevState => ({ ...prevState, productsList: productsCopy }));
+    }
   }, [products, department, category, subcategory]);
 
   const handleOnChange: HandleOnChange = async (event) => {
     const { name, value, files } = event.target;
 
     if (name === 'images' && files) {
-      setState((prevState) => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, get: [...prevState.temporaryImages.get, files[0]] } }));
+      if (files && files.length > 0) {
+        const fileList = Array.from(files) as File[];
+        setState((prevState) => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, get: [...prevState.temporaryImages.get, ...fileList] } }));
+      }
     } else if (name === 'specificationKey' || name === 'specificationValue') {
       const specIndex = parseInt(event.target.dataset.index || '0', 10);
       const specField = name === 'specificationKey' ? 'key' : 'value';
@@ -82,12 +87,11 @@ const ProductInfo = ({ products }: ProductsProps) => {
 
       case ButtonName.Delete:
         emptyProducts();
-        setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, productId: targetButton.value } }));
-        setState(prevState => ({ ...prevState, showDeleteModal: true }));
+        setState(prevState => ({ ...prevState, showDeleteModal: true, selectedProduct: { ...prevState.selectedProduct, productId: targetButton.value } }));
         return;
 
       case ButtonName.Clean:
-        if (products) setState(prevState => ({ ...prevState, productsList: products }));
+        if (products) setState(prevState => ({ ...prevState, productsList: productsCopy }));
         break;
 
       case ButtonName.Save:
@@ -150,8 +154,9 @@ const ProductInfo = ({ products }: ProductsProps) => {
           temporaryImages.get.splice(+targetButton.value, 1)
           setState(prevState => ({ ...prevState, temporaryImages }))
         } else if (targetButton.dataset.type === 'url') {
-          const urlDelete = selectedProduct.requestData.images.splice(+targetButton.value, 1)
-          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: [...prevState.temporaryImages.delete, ...urlDelete] }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData } } }))
+          const urlDelete = selectedProduct.requestData.images[+targetButton.value]
+          const filterImage = selectedProduct.requestData.images.filter(img => img !== urlDelete)
+          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: [...prevState.temporaryImages.delete, ...urlDelete] }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: filterImage } } }))
         }
         return
 
@@ -161,6 +166,8 @@ const ProductInfo = ({ products }: ProductsProps) => {
     }
     emptyProducts();
     setState(prevState => ({ ...prevState, showDeleteModal: false, temporaryImages: { get: [], delete: [] }, selectedProduct: initialState.selectedProduct }));
+    const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null;
+    if (inputElement) inputElement.value = '';
   };
 
   const emptyProducts = () => {
