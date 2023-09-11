@@ -1,70 +1,45 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext, useEffect, useState } from 'react';
-import ModalConfirm from '../../../../components/common/modalConfirm';
-import { CreateContext } from '../../../../hooks/useContext';
-import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
-import { IContext } from '../../../../interfaces/hooks/context.interface';
-import { Route, makeImagesRequest } from '../../../../services/imagesApi';
+import ModalConfirm from '../../../../../components/common/modalConfirm';
+import { CreateContext } from '../../../../../hooks/useContext';
+import { ActionTypeDashboard } from '../../../../../hooks/useContext/dash/reducer';
+import { IContext } from '../../../../../interfaces/hooks/context.interface';
+import { Route, makeImagesRequest } from '../../../../../services/imagesApi';
 import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
 
-// Función para transformar la especificación
-// function transformSpecification(originalSpecification) {
-//   return originalSpecification.map((item) => {
-//     const key = Object.keys(item)[0];
-//     const value = item[key];
-//     return { key, value };
-//   });
-// }
-
-// Función para manejar los cambios en la especificación
-// function handleSpecificationChange(selectedProduct, specIndex, specField, value) {
-//   const updatedSpecification = [...selectedProduct.requestData.specification];
-//   updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: value };
-//   return updatedSpecification;
+// function tienenLaMismaInformacion({ urlProduct, urlSelectedProduct }: { urlProduct: string[], urlSelectedProduct: string[] }) {
+//   console.log(urlProduct.sort(), urlSelectedProduct.sort())
+//   urlProduct.sort()
+//   urlSelectedProduct.sort()
+//   return JSON.stringify(urlProduct) === JSON.stringify(urlSelectedProduct);
 // }
 
 const initialState: InitialState = {
   productsList: [],
   selectedProduct: { productId: "", subcategoryId: "", requestData: { name: "", price: "", description: "", specification: [], images: [] } },
+  temporaryImages: { get: [], delete: [] },
   showDeleteModal: false
 }
 
-const Products = ({ products }: ProductsProps) => {
+const ProductInfo = ({ products }: ProductsProps) => {
   const { dashboard: { state: { inventory: { department, category, subcategory } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
   const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
   const [state, setState] = useState<InitialState>(initialState)
-  const { productsList, selectedProduct, showDeleteModal } = state;
-  const LSImages: string[] | undefined = localStorage.images ? JSON?.parse(localStorage?.images) : undefined
+  const { productsList, selectedProduct, temporaryImages, showDeleteModal } = state;
+  // const LSImages: string[] | undefined = localStorage.images ? JSON?.parse(localStorage?.images) : undefined
 
   useEffect(() => {
     if (products) setState(prevState => ({ ...prevState, productsList: products }));
-    //IMAGES
-    if (LSImages && LSImages.length !== selectedProduct.requestData.images.length) {
-      LSImages.forEach((imageId: string) => {
-        makeImagesRequest(Route.ImagesDelete).withOptions({ imageId: imageId.replace("uploads\\", "") })
-      });
-      localStorage.removeItem('images')
-    }
   }, [products, department, category, subcategory]);
 
   const handleOnChange: HandleOnChange = async (event) => {
     const { name, value, files } = event.target;
 
-    if (name === 'images') {
-      try {
-        const formData = new FormData();
-        if (files) {
-          formData.append('image', files[0], `${selectedProduct.requestData.name}.${files[0].type.split('/')[1]}`);
-          const { imageUrl } = await makeImagesRequest(Route.ImagesCreate).withOptions({ requestData: formData })
-          localStorage.images = LSImages ? JSON.stringify([...LSImages, imageUrl]) : JSON.stringify([imageUrl])
-          setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: [...prevState.selectedProduct.requestData.images, imageUrl] } } }))
-        }
-      } catch (error) {
-        console.error('Error al cargar la imagen', error);
-      }
+    if (name === 'images' && files) {
+      setState((prevState) => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, get: [...prevState.temporaryImages.get, files[0]] } }));
     } else if (name === 'specificationKey' || name === 'specificationValue') {
       const specIndex = parseInt(event.target.dataset.index || '0', 10);
       const specField = name === 'specificationKey' ? 'key' : 'value';
@@ -95,8 +70,7 @@ const Products = ({ products }: ProductsProps) => {
             selectedProduct: {
               ...prevState.selectedProduct, productId: _id, requestData: {
                 name, price, description,
-                specification: specification.map((item) => {
-                  const [key, value] = Object.entries(item)[0];
+                specification: specification.map(({ key, value }) => {
                   return { key, value };
                 }),
                 images
@@ -118,13 +92,41 @@ const Products = ({ products }: ProductsProps) => {
 
       case ButtonName.Save:
         if (selectedProduct.productId) {
-          await mutation.mutateAsync({ selectedProduct, state: 'edit' })
+          if (temporaryImages.get.length > 0 || temporaryImages.delete.length > 0) {
+            const form = new FormData();
+            if (temporaryImages.get.length > 0) {
+              temporaryImages.get.forEach((image, _index) => {
+                form.append(`images`, image, `${selectedProduct.requestData.name}.${image.type.split("/")[1]}`);  // Usar el mismo nombre
+              });
+            }
+            if (temporaryImages.delete.length > 0) {
+              temporaryImages.delete.forEach((url, index) => form.append(`url[${index}]`, url));
+            }
+            let responseImages = (await makeImagesRequest(Route.ImagesCreateDelete).withOptions({ requestData: form })).imageUrl
+            // const temp = [...selectedProduct.requestData.images, ...responseImages]
+            // console.log(temp);
+
+            await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, requestData: { ...selectedProduct.requestData, images: [...selectedProduct.requestData.images, ...responseImages] } }, state: 'edit' })
+          } else {
+            await mutation.mutateAsync({ selectedProduct, state: 'edit' })
+          }
         } else if (subcategory) {
-          await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory }, state: 'create' })
+          const form = new FormData();
+          temporaryImages.get.forEach((image, _index) => {
+            form.append(`images`, image, `${selectedProduct.requestData.name}.${image.type.split("/")[1]}`);  // Usar el mismo nombre
+          });
+          const carga = await makeImagesRequest(Route.ImagesCreate).withOptions({ requestData: form })
+          await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory, requestData: { ...selectedProduct.requestData, images: carga.imageUrl } }, state: 'create' })
         }
-        return;
+        break;
 
       case ButtonName.Confirm:
+        const filterImages = products.find(pro => pro._id === selectedProduct.productId)?.images
+        if (filterImages && filterImages?.length > 0) {
+          const form = new FormData();
+          filterImages.forEach((url, index) => form.append(`url[${index}]`, url));
+          await makeImagesRequest(Route.ImagesDelete).withOptions({ requestData: form })
+        }
         await mutation.mutateAsync({ selectedProduct, state: 'delete' })
         break;
 
@@ -143,10 +145,14 @@ const Products = ({ products }: ProductsProps) => {
         break;
 
       case ButtonName.FileDelete:
-        const newImages = selectedProduct.requestData.images.filter(url => url !== targetButton.value)
-        makeImagesRequest(Route.ImagesDelete).withOptions({ imageId: targetButton.value.replace("uploads\\", "") })
-        setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: newImages } } }))
-        localStorage.images = JSON.stringify(newImages)
+        // const imageDelete = im
+        if (targetButton.dataset.type === 'file') {
+          temporaryImages.get.splice(+targetButton.value, 1)
+          setState(prevState => ({ ...prevState, temporaryImages }))
+        } else if (targetButton.dataset.type === 'url') {
+          const urlDelete = selectedProduct.requestData.images.splice(+targetButton.value, 1)
+          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: [...prevState.temporaryImages.delete, ...urlDelete] }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData } } }))
+        }
         return
 
       default:
@@ -154,7 +160,7 @@ const Products = ({ products }: ProductsProps) => {
 
     }
     emptyProducts();
-    setState(prevState => ({ ...prevState, showDeleteModal: false, selectedProduct: initialState.selectedProduct }));
+    setState(prevState => ({ ...prevState, showDeleteModal: false, temporaryImages: { get: [], delete: [] }, selectedProduct: initialState.selectedProduct }));
   };
 
   const emptyProducts = () => {
@@ -167,7 +173,7 @@ const Products = ({ products }: ProductsProps) => {
         <ProductsList productsList={productsList} handleOnClick={handleOnClick} />
       </div>
       <div>
-        <ProductsForm selectedProduct={selectedProduct} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
+        <ProductsForm selectedProduct={selectedProduct} temporaryImages={temporaryImages} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
       </div>
       {/* {product && productDetail && <ProductDetail product={productDetail} />} */}
       {showDeleteModal &&
@@ -180,5 +186,5 @@ const Products = ({ products }: ProductsProps) => {
   );
 };
 
-export default Products;
+export default ProductInfo;
 

@@ -4,18 +4,22 @@ import { IProduct } from "../interfaces/product.interface";
 export enum Route {
   ImagesCreate = 'images/create',
   ImagesDelete = 'images/delete',
+  ImagesCreateDelete = 'images/createdelete'
 }
 
 // Definición de tipos para las solicitudes basadas en las rutas
 export type RequestMap = {
-  // departamento
   [Route.ImagesCreate]: {
     route: Route.ImagesCreate;
     requestData: FormData;
   };
   [Route.ImagesDelete]: {
     route: Route.ImagesDelete;
-    imageId: string;
+    requestData: FormData;
+  };
+  [Route.ImagesCreateDelete]: {
+    route: Route.ImagesCreateDelete;
+    requestData: FormData;
   };
 
 };
@@ -34,20 +38,22 @@ type Payload<T extends Route> = (params: RequestMap[T]) => {
 
 const createPayload: Payload<Route> = (params) => {
   // Definición de los encabezados comunes para las solicitudes
-  const { route } = params;
+  const { route, requestData } = params;
 
   switch (route) {
     case Route.ImagesCreate:
-      return { route, requestOptions: { method: 'post', body: params.requestData, }, };
+      return { route, requestOptions: { method: 'post', body: requestData }, };
     case Route.ImagesDelete:
-      return { route: `${route}/${params.imageId}`, requestOptions: { method: 'delete', }, };
+      return { route, requestOptions: { method: 'delete', body: requestData }, };
+    case Route.ImagesCreateDelete:
+      return { route, requestOptions: { method: 'post', body: requestData }, };
     default:
       return { route: 'request', requestOptions: { method: 'get' } };
   }
 };
 
 // Tipo de retorno para las respuestas de las solicitudes
-export type MakeProductsRequestReturn = { message: string; imageUrl: string };
+export type MakeProductsRequestReturn = { message: string; imageUrl: string[] };
 
 // Función que realiza las solicitudes a la API
 export function makeImagesRequest<R extends Route>(route: R): { withOptions: (options: Omit<RequestMap[R], 'route'>) => Promise<MakeProductsRequestReturn> } {
@@ -63,7 +69,7 @@ export function makeImagesRequest<R extends Route>(route: R): { withOptions: (op
 async function imagesApis<T extends Route>(params: RequestMap[T]): Promise<MakeProductsRequestReturn> {
   try {
     const { route, requestOptions } = createPayload(params);
-    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}`, requestOptions);
+    const responseApi = await fetch(`${process.env.REACT_APP_SERVER_FILE}/${route}`, requestOptions);
     return await responseApi.json();
   } catch (error) {
     if (error instanceof Error) {

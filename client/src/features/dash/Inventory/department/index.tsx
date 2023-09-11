@@ -7,6 +7,7 @@ import { IContext } from '../../../../interfaces/hooks/context.interface';
 import DepartmentForm from './DepartmentForm';
 import DepartmentList from './DepartmentList';
 import { ButtonName, DepartmentProps, HandleOnChange, HandleOnClick, InitialState, callApi } from './interface.department';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 
 
 export const initialState: InitialState = {
@@ -61,6 +62,13 @@ const Departments = ({ department }: DepartmentProps) => {
         break;
 
       case ButtonName.Confirm:
+        const filterImages = department.find(pro => pro._id === selectedDepartment.departmentId)?.categoriesId
+          .flatMap(pro => pro.subcategoriesId).flatMap(pro => pro.productsId).flatMap(img => img.images)
+        if (filterImages && filterImages?.length > 0) {
+          const form = new FormData();
+          filterImages.forEach((url, index) => form.append(`url[${index}]`, url));
+          await makeImagesRequest(Route.ImagesDelete).withOptions({ requestData: form })
+        }
         await mutation.mutateAsync(selectedDepartment);
         break;
 
