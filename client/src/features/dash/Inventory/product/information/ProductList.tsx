@@ -4,7 +4,7 @@ import { IContext } from "../../../../../interfaces/hooks/context.interface";
 import { ButtonName, ProductsListProps } from './interface.products';
 
 const ProductsList: React.FC<ProductsListProps> = ({ productsList, handleOnClick }) => {
-  const { dashboard: { state: { inventory: { products }, permits: { inventory_product } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { products_id }, permits: { inventory_product } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -23,7 +23,7 @@ const ProductsList: React.FC<ProductsListProps> = ({ productsList, handleOnClick
           </li>
         ))}
       </ul>
-      {products && inventory_product && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Producto</button>}
+      {products_id && inventory_product && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Producto</button>}
     </div >
   );
 }

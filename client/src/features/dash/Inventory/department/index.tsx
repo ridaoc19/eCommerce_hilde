@@ -40,8 +40,8 @@ const Departments = ({ department }: DepartmentProps) => {
     switch (targetButton.name) {
       case ButtonName.Edit:
         emptyDepartment();
-        const updatedList = departmentList.filter(dept => dept._id !== targetButton.value) || [];
-        const editedDepartment = departmentList.find(dept => dept._id === targetButton.value);
+        const updatedList = department.filter(dept => dept._id !== targetButton.value) || [];
+        const editedDepartment = department.find(dept => dept._id === targetButton.value);
         if (editedDepartment) {
           const { _id, name } = editedDepartment;
           setState(prevState => ({ ...prevState, selectedDepartment: { ...prevState.selectedDepartment, departmentId: _id, requestData: { name } }, departmentList: updatedList }));
@@ -86,7 +86,7 @@ const Departments = ({ department }: DepartmentProps) => {
   };
 
   const emptyDepartment = () => {
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'departmentEmpty', value: "" } })
+    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'departmentEmpty_id', value: "" } })
   }
 
 

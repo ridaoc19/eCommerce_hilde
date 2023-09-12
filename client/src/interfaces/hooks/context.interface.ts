@@ -27,17 +27,17 @@ export namespace IDashReducer {
       password: boolean
     };
     inventory: {
-      department: string | null,
-      category: string | null,
-      subcategory: string | null,
-      products: string | null,
+      department_id: string | null,
+      category_id: string | null,
+      subcategory_id: string | null,
+      products_id: string | null,
     };
     permits: {
       [key in PermitsRoles['id']]: boolean;
     }
   };
 
-  type Name = "department" | "category" | "subcategory" | "products" | "departmentEmpty" | "categoryEmpty" | "subcategoryEmpty" | "productsEmpty"
+  type Name = "department_id" | "category_id" | "subcategory_id" | "products_id" | "departmentEmpty_id" | "categoryEmpty_id" | "subcategoryEmpty_id" | "productsEmpty_id"
   export type SelectAction = {
     type: ActionTypeDashboard;
     payload: { name: null | Name, value: string }

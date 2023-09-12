@@ -5,10 +5,10 @@ import { ButtonName, CategoryFormProps } from './interface.category';
 
 
 function CategoryForm({ selectedCategory, handleOnChange, handleOnClick }: CategoryFormProps) {
-  const { dashboard: { state: { inventory: { category }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { category_id }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
   return (
     <div>
-      {!category && inventory_category && (
+      {!category_id && inventory_category && (
         <>
           <div className='input'>
             <input

@@ -16,7 +16,7 @@ export const initialState: InitialState = {
 }
 
 const Subcategory = ({ subcategory }: SubcategoryProps) => {
-  const { dashboard: { state: { inventory: { department, category } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { inventory: { department_id, category_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
   const mutation = useMutation(callApiSubcategory, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
   const [state, setState] = useState(initialState);
@@ -24,7 +24,7 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
 
   useEffect(() => {
     if (subcategory) setState(prevState => ({ ...prevState, subcategoryList: subcategory }));
-  }, [subcategory, department, category]);
+  }, [subcategory, department_id, category_id]);
 
   const handleOnChange: HandleOnChange = (event) => {
     const { name, value } = event.target;
@@ -39,8 +39,8 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
     switch (targetButton.name) {
       case ButtonName.Edit:
         emptySubcategory();
-        const updatedList = subcategoryList?.filter(subcat => subcat._id !== targetButton.value) || [];
-        const editedSubcategory = subcategoryList?.find(subcat => subcat._id === targetButton.value);
+        const updatedList = subcategory.filter(subcat => subcat._id !== targetButton.value) || [];
+        const editedSubcategory = subcategory.find(subcat => subcat._id === targetButton.value);
         if (editedSubcategory) {
           let { _id, name } = editedSubcategory;
           setState(prevState => ({
@@ -63,8 +63,8 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
       case ButtonName.Save:
         if (selectedSubcategory.subcategoryId.length > 0) {
           await mutation.mutateAsync({ selectedSubcategory, state: 'edit' })
-        } else if (category) {
-          await mutation.mutateAsync({ selectedSubcategory: { ...selectedSubcategory, categoryId: category }, state: 'create' })
+        } else if (category_id) {
+          await mutation.mutateAsync({ selectedSubcategory: { ...selectedSubcategory, categoryId: category_id }, state: 'create' })
         }
         break;
 
@@ -94,7 +94,7 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
   };
 
   const emptySubcategory = () => {
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'subcategoryEmpty', value: "" } })
+    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'subcategoryEmpty_id', value: "" } })
   }
 
   return (
