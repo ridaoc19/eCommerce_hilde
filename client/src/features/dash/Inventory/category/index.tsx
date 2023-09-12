@@ -17,7 +17,7 @@ export const initialState: InitialState = {
 
 const Category = ({ category }: CategoryProps) => {
 
-  const { dashboard: { state: { inventory: { department } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { inventory: { department_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
   const mutation = useMutation(callApiCategory, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
   const [state, setState] = useState(initialState);
@@ -26,7 +26,7 @@ const Category = ({ category }: CategoryProps) => {
 
   useEffect(() => {
     if (category) setState(prevState => ({ ...prevState, categoryList: category }));
-  }, [category, department]);
+  }, [category, department_id]);
 
   const handleOnChange: HandleOnChange = (event) => {
     const { name, value } = event.target;
@@ -61,8 +61,8 @@ const Category = ({ category }: CategoryProps) => {
       case ButtonName.Save:
         if ('categoryId' in selectedCategory && selectedCategory.categoryId.length > 0) {
           await mutation.mutateAsync({ selectedCategory, state: 'edit' })
-        } else if (department) {
-          await mutation.mutateAsync({ selectedCategory: { ...selectedCategory, departmentId: department }, state: 'create' })
+        } else if (department_id) {
+          await mutation.mutateAsync({ selectedCategory: { ...selectedCategory, departmentId: department_id }, state: 'create' })
         }
         break;
 
@@ -93,7 +93,7 @@ const Category = ({ category }: CategoryProps) => {
   };
 
   const emptyCategory = () => {
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'categoryEmpty', value: "" } })
+    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'categoryEmpty_id', value: "" } })
   }
 
   return (

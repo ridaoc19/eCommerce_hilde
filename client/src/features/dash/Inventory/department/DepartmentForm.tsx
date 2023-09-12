@@ -4,10 +4,10 @@ import { IContext } from '../../../../interfaces/hooks/context.interface';
 import { ButtonName, DepartmentFormProps } from './interface.department';
 
 function DepartmentForm({ selectedDepartment, handleOnChange, handleOnClick }: DepartmentFormProps) {
-  const { dashboard: { state: { inventory: { department }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { department_id }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
   return (
     <div>
-      {!department && inventory_department && (
+      {!department_id && inventory_department && (
         <>
           <div className='input'>
             <input

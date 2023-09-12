@@ -18,7 +18,7 @@ const initialState: InitialState = {
 }
 
 const ProductInfo = ({ products }: ProductsProps) => {
-  const { dashboard: { state: { inventory: { department, category, subcategory } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { inventory: { department_id, category_id, subcategory_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
   const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
   const [state, setState] = useState<InitialState>(initialState)
@@ -29,7 +29,7 @@ const ProductInfo = ({ products }: ProductsProps) => {
       setState(prevState => ({ ...prevState, productsList: products }));
     }
     // eslint-disable-next-line
-  }, [products, department, category, subcategory]);
+  }, [products, department_id, category_id, subcategory_id]);
 
   const handleOnChange: HandleOnChange = async (event) => {
     const { name, value, files } = event.target;
@@ -79,9 +79,9 @@ const ProductInfo = ({ products }: ProductsProps) => {
           } else {
             await mutation.mutateAsync({ selectedProduct, state: 'edit' })
           }
-        } else if (subcategory) {
+        } else if (subcategory_id) {
           const responseImages = await imagesAdmin({ toRequest: { file: temporaryImages.get, name: selectedProduct.requestData.name } })
-          await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory, requestData: { ...selectedProduct.requestData, images: responseImages } }, state: 'create' })
+          await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory_id, requestData: { ...selectedProduct.requestData, images: responseImages } }, state: 'create' })
         }
         break;
 
@@ -94,7 +94,7 @@ const ProductInfo = ({ products }: ProductsProps) => {
         break;
 
       case ButtonName.Product:
-        dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'products', value: targetButton.value } })
+        dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'products_id', value: targetButton.value } })
         return;
 
       case ButtonName.AddSpecification:
@@ -129,7 +129,7 @@ const ProductInfo = ({ products }: ProductsProps) => {
   };
 
   const emptyProductsContext = () => { // limpia los id de context
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'productsEmpty', value: "" } })
+    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'productsEmpty_id', value: "" } })
   }
 
   return (

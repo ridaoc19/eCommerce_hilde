@@ -5,7 +5,7 @@ import { IContext } from "../../../../interfaces/hooks/context.interface";
 import { ButtonName, DepartmentListProps } from "./interface.department";
 
 const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { inventory: { department }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { inventory: { department_id }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -18,13 +18,13 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, handleO
                 <button name={ButtonName.Delete} value={dept._id} onClick={handleOnClick}>Delete</button>
               </>
             }
-            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'department', value: dept._id } })}>
+            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'department_id', value: dept._id } })}>
               {dept.name}
             </span>
           </li>
         ))}
       </ul>
-      {department && inventory_department && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
+      {department_id && inventory_department && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
     </div>
   );
 }

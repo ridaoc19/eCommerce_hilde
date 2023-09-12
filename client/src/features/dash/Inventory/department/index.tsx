@@ -86,7 +86,7 @@ const Departments = ({ department }: DepartmentProps) => {
   };
 
   const emptyDepartment = () => {
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'departmentEmpty', value: "" } })
+    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'departmentEmpty_id', value: "" } })
   }
 
 

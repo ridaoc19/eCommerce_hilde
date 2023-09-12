@@ -6,11 +6,11 @@ import { ButtonName, ProductsFormProps } from './interface.products';
 
 
 const ProductsForm: React.FC<ProductsFormProps> = ({ selectedProduct, temporaryImages, handleOnChange, handleOnClick }) => {
-  const { dashboard: { state: { inventory: { products } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { products_id } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
-      {!products && (
+      {!products_id && (
         <>
           <div className='input'>
             <div className='name'>
