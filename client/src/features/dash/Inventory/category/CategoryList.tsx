@@ -5,7 +5,7 @@ import { IContext } from "../../../../interfaces/hooks/context.interface";
 import { ButtonName, CategoryListProps } from "./interface.category";
 
 const CategoryList: React.FC<CategoryListProps> = ({ categoryList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { inventory: { category }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { inventory: { category_id }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -18,13 +18,13 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryList, handleOnClick
                 <button name={ButtonName.Delete} value={cat._id} onClick={handleOnClick}>Delete</button>
               </>
             }
-            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'category', value: cat._id } })}>
+            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'category_id', value: cat._id } })}>
               {cat.name}
             </span>
           </li>
         ))}
       </ul>
-      {category && inventory_category && <button name={ButtonName.Add} onClick={handleOnClick}>Nueva categoría</button>}
+      {category_id && inventory_category && <button name={ButtonName.Add} onClick={handleOnClick}>Nueva categoría</button>}
     </div>
   );
 }

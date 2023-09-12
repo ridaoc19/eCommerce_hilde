@@ -5,10 +5,10 @@ import { ButtonName, SubcategoryFormProps } from './interface.subcategory';
 
 
 function SubcategoryForm({ selectedSubcategory, handleOnChange, handleOnClick }: SubcategoryFormProps) {
-  const { dashboard: { state: { inventory: { subcategory }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { subcategory_id }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
   return (
     <div>
-      {!subcategory && inventory_subcategory && (
+      {!subcategory_id && inventory_subcategory && (
         <>
           <div className='input'>
             <input

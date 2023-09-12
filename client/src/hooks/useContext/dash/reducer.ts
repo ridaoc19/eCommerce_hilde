@@ -16,10 +16,10 @@ const initialState: IDashReducer.AppState = {
     password: false
   },
   inventory: {
-    department: null,
-    category: null,
-    subcategory: null,
-    products: null,
+    department_id: null,
+    category_id: null,
+    subcategory_id: null,
+    products_id: null,
   },
   permits: {
     sidebar_user: false,
@@ -43,22 +43,22 @@ const reducer: IDashReducer.Reducer = (state, action) => {
     case ActionTypeDashboard.SELECT_INVENTORY:
       const { name, value } = action.payload;
       switch (name) {
-        case 'department':
-          return { ...state, inventory: { department: value, category: "", subcategory: "", products: "" } }
-        case 'category':
-          return { ...state, inventory: { ...state.inventory, category: value, subcategory: "", products: "" } }
-        case 'subcategory':
-          return { ...state, inventory: { ...state.inventory, subcategory: value, products: "" } }
-        case 'products':
-          return { ...state, inventory: { ...state.inventory, products: value } }
-        case 'departmentEmpty':
+        case 'department_id':
+          return { ...state, inventory: { department_id: value, category_id: "", subcategory_id: "", products_id: "" } }
+        case 'category_id':
+          return { ...state, inventory: { ...state.inventory, category_id: value, subcategory_id: "", products_id: "" } }
+        case 'subcategory_id':
+          return { ...state, inventory: { ...state.inventory, subcategory_id: value, products_id: "" } }
+        case 'products_id':
+          return { ...state, inventory: { ...state.inventory, products_id: value } }
+        case 'departmentEmpty_id':
           return { ...state, inventory: initialState.inventory }
-        case 'categoryEmpty':
-          return { ...state, inventory: { ...state.inventory, category: "", subcategory: "", products: "" } }
-        case 'subcategoryEmpty':
-          return { ...state, inventory: { ...state.inventory, subcategory: "", products: "" } }
-        case 'productsEmpty':
-          return { ...state, inventory: { ...state.inventory, products: "" } }
+        case 'categoryEmpty_id':
+          return { ...state, inventory: { ...state.inventory, category_id: "", subcategory_id: "", products_id: "" } }
+        case 'subcategoryEmpty_id':
+          return { ...state, inventory: { ...state.inventory, subcategory_id: "", products_id: "" } }
+        case 'productsEmpty_id':
+          return { ...state, inventory: { ...state.inventory, products_id: "" } }
         default:
           return state;
       }

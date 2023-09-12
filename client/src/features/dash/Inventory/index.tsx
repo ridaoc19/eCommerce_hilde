@@ -20,7 +20,7 @@ export namespace IInventory {
 
 function Inventory() {
   // const dispatchRedux = useAppDispatch();
-  const { dashboard: { state: { inventory: { department, category, subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { department_id, category_id, subcategory_id } } } }: IContext.IContextData = useContext(CreateContext)!;
   // const queryClient = useQueryClient();
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ['product'],
@@ -29,9 +29,9 @@ function Inventory() {
     refetchOnMount: false
   })
 
-  let categoryData = data?.products.find(dep => dep._id === department)?.categoriesId
-  let subcategoryData = data?.products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId
-  let productData = data?.products.find(dep => dep._id === department)?.categoriesId.find(cat => cat._id === category)?.subcategoriesId.find(sub => sub._id === subcategory)?.productsId
+  let categoryData = data?.products.find(dep => dep._id === department_id)?.categoriesId
+  let subcategoryData = data?.products.find(dep => dep._id === department_id)?.categoriesId.find(cat => cat._id === category_id)?.subcategoriesId
+  let productData = data?.products.find(dep => dep._id === department_id)?.categoriesId.find(cat => cat._id === category_id)?.subcategoriesId.find(sub => sub._id === subcategory_id)?.productsId
   // console.log(product, "tiene");
 
 
@@ -48,18 +48,18 @@ function Inventory() {
         </div>
         <div className="department">
           <h2>Categoría</h2>
-          {department && categoryData && <Category category={categoryData} />}
+          {department_id && categoryData && <Category category={categoryData} />}
         </div>
         <div className="department">
           <h2>Subcategoría</h2>
-          {category && subcategoryData && <Subcategory subcategory={subcategoryData} />}
+          {category_id && subcategoryData && <Subcategory subcategory={subcategoryData} />}
         </div>
       </div>}
 
       {<div className="admin_inventory">
         <div className="department">
           <h2>Products</h2>
-          {subcategory && productData && <Products products={productData} />}
+          {subcategory_id && productData && <Products products={productData} />}
         </div>
       </div>}
       {/* <CrudForm /> */}

@@ -79,3 +79,27 @@ async function imagesApis<T extends Route>(params: RequestMap[T]): Promise<MakeP
     }
   }
 }
+
+interface ImagesAdmin {
+  toRequest?: {
+    file: File[],
+    name: string
+  },
+  toDelete?: string[]
+}
+
+export async function imagesAdmin({ toRequest = { file: [], name: "image" }, toDelete = [] }: ImagesAdmin) {
+
+  const form = new FormData();
+  if (toRequest && toRequest.file.length > 0) {
+    toRequest.file.forEach((image, _index) => {
+      form.append(`images`, image, `${toRequest.name}.${image.type.split("/")[1]}`);
+    });
+  }
+  if (toDelete && toDelete.length > 0) {
+    toDelete.forEach((url, index) => form.append(`url[${index}]`, url));
+  }
+  const responseImages = (await makeImagesRequest(Route.ImagesCreateDelete).withOptions({ requestData: form })).imageUrl
+  return responseImages;
+
+}

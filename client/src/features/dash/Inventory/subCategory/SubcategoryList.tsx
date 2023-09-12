@@ -6,7 +6,7 @@ import { ButtonName, SubcategoryListProps } from './interface.subcategory';
 
 
 const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { inventory: { subcategory }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { inventory: { subcategory_id }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -20,13 +20,13 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, hand
                 <button name={ButtonName.Delete} value={sub._id} onClick={handleOnClick}>Delete</button>
               </>
             }
-            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'subcategory', value: sub._id } })}>
+            <span onClick={() => dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'subcategory_id', value: sub._id } })}>
               {sub.name}
             </span>
           </li>
         ))}
       </ul>
-      {subcategory && inventory_subcategory && <button name={ButtonName.Add} onClick={handleOnClick}>Nueva Subcategoría</button>}
+      {subcategory_id && inventory_subcategory && <button name={ButtonName.Add} onClick={handleOnClick}>Nueva Subcategoría</button>}
     </div>
   );
 }

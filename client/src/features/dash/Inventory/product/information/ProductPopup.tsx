@@ -11,7 +11,7 @@ const Popup: React.FC<PopupProps> = ({ children }) => {
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
 
   const onClose = () => {
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'productsEmpty', value: "" } })
+    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'productsEmpty_id', value: "" } })
   }
 
   return (
