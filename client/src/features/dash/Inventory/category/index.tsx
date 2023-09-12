@@ -41,8 +41,8 @@ const Category = ({ category }: CategoryProps) => {
     switch (targetButton.name) {
       case ButtonName.Edit:
         emptyCategory();
-        const updatedList = categoryList?.filter(cat => cat._id !== targetButton.value) || [];
-        const editedCategory = categoryList?.find(cat => cat._id === targetButton.value);
+        const updatedList = category.filter(cat => cat._id !== targetButton.value) || [];
+        const editedCategory = category.find(cat => cat._id === targetButton.value);
         if (editedCategory) {
           let { _id, name } = editedCategory;
           setState(prevState => ({ ...prevState, selectedCategory: { ...prevState.selectedCategory, categoryId: _id, requestData: { name } }, categoryList: updatedList }));

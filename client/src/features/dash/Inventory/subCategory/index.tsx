@@ -39,8 +39,8 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
     switch (targetButton.name) {
       case ButtonName.Edit:
         emptySubcategory();
-        const updatedList = subcategoryList?.filter(subcat => subcat._id !== targetButton.value) || [];
-        const editedSubcategory = subcategoryList?.find(subcat => subcat._id === targetButton.value);
+        const updatedList = subcategory.filter(subcat => subcat._id !== targetButton.value) || [];
+        const editedSubcategory = subcategory.find(subcat => subcat._id === targetButton.value);
         if (editedSubcategory) {
           let { _id, name } = editedSubcategory;
           setState(prevState => ({
