@@ -4,10 +4,11 @@ import ModalConfirm from '../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { IProduct } from '../../../../interfaces/product.interface';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 import DepartmentForm from './DepartmentForm';
 import DepartmentList from './DepartmentList';
 import { ButtonName, DepartmentProps, HandleOnChange, HandleOnClick, InitialState, callApi } from './interface.department';
-import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 
 
 export const initialState: InitialState = {
@@ -19,7 +20,7 @@ export const initialState: InitialState = {
 const Departments = ({ department }: DepartmentProps) => {
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
   const queryClient = useQueryClient();
-  const mutation = useMutation(callApi, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
+  const mutation = useMutation(callApi, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
   const [state, setState] = useState(initialState);
   const { selectedDepartment, showDeleteModal, departmentList } = state;
 

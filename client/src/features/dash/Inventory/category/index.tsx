@@ -4,10 +4,11 @@ import ModalConfirm from '../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { IProduct } from '../../../../interfaces/product.interface';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 import CategoryForm from './CategoryForm';
 import CategoryList from './CategoryList';
 import { ButtonName, CategoryProps, HandleOnChange, HandleOnClick, InitialState, callApiCategory } from './interface.category';
-import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 
 export const initialState: InitialState = {
   categoryList: [],
@@ -19,7 +20,7 @@ const Category = ({ category }: CategoryProps) => {
 
   const { dashboard: { state: { inventory: { department_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
-  const mutation = useMutation(callApiCategory, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
+  const mutation = useMutation(callApiCategory, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
   const [state, setState] = useState(initialState);
   const { selectedCategory, categoryList, showDeleteModal } = state;
 

@@ -7,15 +7,19 @@ import ProductPopup from './ProductPopup';
 //   product: IProduct.Product
 // }
 
-interface DataProductDetailProps {
+interface SupplyProductsProps {
+  breadcrumb?: string;
   product: IProduct.Product;
 }
 
-const ProductDetail: React.FC<DataProductDetailProps> = ({ product }) => {
+const SupplyProducts: React.FC<SupplyProductsProps> = ({ product}) => {
+
   return (
     <div>
       <ProductPopup>
         <div className='breadcrumb'>
+          {/* <h4>{breadcrumb}</h4> */}
+          {/* <h4>{getBreadcrumb({ data: products, id: product._id })}</h4> */}
           {/* {product.breadcrumb.map((bread, index) => (
             <span key={index}>{bread}{index < product.breadcrumb.length - 1 && <span>{' > '}</span>}</span>
           ))} */}
@@ -46,4 +50,4 @@ const ProductDetail: React.FC<DataProductDetailProps> = ({ product }) => {
   );
 };
 
-export default ProductDetail;
+export default SupplyProducts;
