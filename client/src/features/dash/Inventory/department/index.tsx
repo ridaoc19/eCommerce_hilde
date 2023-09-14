@@ -3,26 +3,28 @@ import { useContext, useEffect, useState } from 'react';
 import ModalConfirm from '../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
+import useValidations from '../../../../hooks/useValidations';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
 import { IProduct } from '../../../../interfaces/product.interface';
 import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 import DepartmentForm from './DepartmentForm';
 import DepartmentList from './DepartmentList';
-import { ButtonName, DepartmentProps, HandleOnChange, HandleOnClick, InitialState, callApi } from './interface.department';
-
+import { ButtonName, DepartmentProps, HandleOnChange, HandleOnClick, InitialState, callApi, updateChangeDepartment } from './interface.department';
 
 export const initialState: InitialState = {
   departmentList: [],
   selectedDepartment: { departmentId: "", requestData: { name: "" } },
+  validationError: { name: "" },
   showDeleteModal: false
 }
 
 const Departments = ({ department }: DepartmentProps) => {
+  const { getValidationErrors } = useValidations()
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
   const queryClient = useQueryClient();
   const mutation = useMutation(callApi, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
   const [state, setState] = useState(initialState);
-  const { selectedDepartment, showDeleteModal, departmentList } = state;
+  const { selectedDepartment, validationError, showDeleteModal, departmentList } = state;
 
   useEffect(() => {
     if (department) setState(prevState => ({ ...prevState, departmentList: department || [] }));
@@ -30,13 +32,14 @@ const Departments = ({ department }: DepartmentProps) => {
   }, [department]);
 
   const handleOnChange: HandleOnChange = (event) => {
-    const { name, value } = event.target;
-    setState(prevState => ({ ...prevState, selectedDepartment: { ...prevState.selectedDepartment, requestData: { ...prevState.selectedDepartment.requestData, [name]: value } } }));
+    const responseError = getValidationErrors({ fieldName: event.target.name, value: event.target.value })
+    setState(updateChangeDepartment({ state, event, responseError }))
   }
 
   const handleOnClick: HandleOnClick = async (event) => {
     event.preventDefault();
     const targetButton = event.target as HTMLButtonElement;
+    const responseError = getValidationErrors({ fieldName: 'name', value: selectedDepartment.requestData.name })
 
     switch (targetButton.name) {
       case ButtonName.Edit:
@@ -59,6 +62,7 @@ const Departments = ({ department }: DepartmentProps) => {
         break;
 
       case ButtonName.Save:
+        if (responseError.error) return setState(prevState => ({ ...prevState, validationError: { name: responseError.error } }))
         await mutation.mutateAsync(selectedDepartment);
         break;
 
@@ -83,10 +87,10 @@ const Departments = ({ department }: DepartmentProps) => {
         break;
     }
     emptyDepartment();
-    setState(prevState => ({ ...prevState, showDeleteModal: false, selectedDepartment: initialState.selectedDepartment }));
   };
-
+  
   const emptyDepartment = () => {
+    setState(prevState => ({ ...prevState, validationError: initialState.validationError, showDeleteModal: false, selectedDepartment: initialState.selectedDepartment }));
     dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'departmentEmpty_id', value: "" } })
   }
 
@@ -97,7 +101,7 @@ const Departments = ({ department }: DepartmentProps) => {
         <DepartmentList departmentList={departmentList} handleOnClick={handleOnClick} />
       </div>
       <div>
-        <DepartmentForm selectedDepartment={selectedDepartment} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
+        <DepartmentForm selectedDepartment={selectedDepartment} validationError={validationError} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
       </div>
       {showDeleteModal &&
         <ModalConfirm

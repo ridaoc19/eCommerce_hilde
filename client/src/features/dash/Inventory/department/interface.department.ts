@@ -1,6 +1,7 @@
 import React from 'react';
 import { IProduct } from "../../../../interfaces/product.interface";
-import { MakeProductsRequestReturn, Route, makeProductsRequest } from '../../../../services/productApi';
+import { MakeProductsRequestReturn, RequestMap, Route, makeProductsRequest } from '../../../../services/productApi';
+import { ResponseError } from '../../../../hooks/useValidations';
 
 
 export enum ButtonName {
@@ -19,7 +20,8 @@ export interface DepartmentProps {
 
 export interface InitialState {
   departmentList: DepartmentProps['department'];
-  selectedDepartment: { departmentId: string; requestData: { name: string } };
+  selectedDepartment: Pick<RequestMap[Route.DepartmentCreate], 'requestData'> & Pick<RequestMap[Route.DepartmentEdit], 'requestData' | 'departmentId'> & Pick<RequestMap[Route.DepartmentDelete], 'departmentId'>;
+  validationError: { name: string };
   showDeleteModal: boolean;
 }
 
@@ -32,7 +34,8 @@ export type DepartmentListProps = {
 };
 
 export interface DepartmentFormProps {
-  selectedDepartment: InitialState['selectedDepartment']
+  selectedDepartment: InitialState['selectedDepartment'];
+  validationError: InitialState['validationError'];
   handleOnChange: HandleOnChange;
   handleOnClick: HandleOnClick;
 }
@@ -59,3 +62,19 @@ export const callApi = async (selectedDepartment: InitialState['selectedDepartme
   // En otros casos, puedes devolver un valor por defecto o lanzar un error si es necesario.
   return { message: "error personal department", products: [] };
 }
+
+
+
+
+type UpdateChangeDepartment = { state: InitialState, responseError: ResponseError, event: React.ChangeEvent<HTMLInputElement>, }
+
+export const updateChangeDepartment = ({ state, responseError: { error, stop }, event, }: UpdateChangeDepartment) => {
+  const { name, value } = event.target;
+  return {
+    ...state,
+    selectedDepartment: stop
+      ? { ...state.selectedDepartment }
+      : { ...state.selectedDepartment, requestData: { ...state.selectedDepartment.requestData, [name]: value } },
+    validationError: { name: error },
+  };
+};
