@@ -1,14 +1,14 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { StoreContext } from './hooks/useContext';
+import { IProduct } from './interfaces/product.interface';
 import { IUser } from './interfaces/user.interface';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { clearUser, selectUserData, selectUserError } from './redux/reducers/user';
 import { userPosts } from './redux/reducers/user/actions';
 import Routes from './routes';
-import './styles/app/App.scss';
-import { useQuery } from '@tanstack/react-query';
 import { Route, makeProductsRequest } from './services/productApi';
-import { IProduct } from './interfaces/product.interface';
+import './styles/app/App.scss';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -41,7 +41,7 @@ function App() {
   return (
     <div>
       <StoreContext>
-        <div>{isLoading}/{isError}/{JSON.stringify(error)}/{isFetching}</div>
+        <div>{`loading: ${isLoading}/es error: ${isError}/error: ${JSON.stringify(error)}/es fetching: ${isFetching}`}</div>
         <Routes />
       </StoreContext>
     </div>

@@ -1,24 +1,20 @@
 import React from 'react';
 import { IProduct } from '../../../../../interfaces/product.interface';
 import ProductPopup from './ProductPopup';
-
-// export interface DataProductDetail {
-//   // breadcrumb: [IProduct.Department['name'], IProduct.Category['name'], IProduct.Subcategory['name']]
-//   product: IProduct.Product
-// }
+import useProductFilter from '../../../../../hooks/useProductFilter';
 
 interface SupplyProductsProps {
-  breadcrumb?: string;
   product: IProduct.Product;
 }
 
-const SupplyProducts: React.FC<SupplyProductsProps> = ({ product}) => {
+const SupplyProducts: React.FC<SupplyProductsProps> = ({ product }) => {
+  const { findItemById } = useProductFilter()
 
   return (
     <div>
       <ProductPopup>
         <div className='breadcrumb'>
-          {/* <h4>{breadcrumb}</h4> */}
+          <h4>{findItemById({ id: product._id }).breadcrumb}</h4>
           {/* <h4>{getBreadcrumb({ data: products, id: product._id })}</h4> */}
           {/* {product.breadcrumb.map((bread, index) => (
             <span key={index}>{bread}{index < product.breadcrumb.length - 1 && <span>{' > '}</span>}</span>

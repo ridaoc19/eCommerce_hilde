@@ -9,6 +9,7 @@ import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
 import { handleClickEdit } from './tools/functions';
+import { IProduct } from '../../../../../interfaces/product.interface';
 
 
 const initialState: InitialState = {
@@ -21,7 +22,7 @@ const initialState: InitialState = {
 const ProductInfo = ({ products }: ProductsProps) => {
   const { dashboard: { state: { inventory: { department_id, category_id, subcategory_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
-  const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
+  const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
   const [state, setState] = useState<InitialState>(initialState)
   const { productsList, selectedProduct, temporaryImages, showDeleteModal } = state;
 
