@@ -13,22 +13,15 @@ export interface ResponseError { error: string, stop: boolean }
 type GetValidationErrors = (data: { fieldName: string, value: unknown }) => ResponseError;
 
 function useValidations() {
-  // const [count, setCount] = useState(0)
-  // Función para obtener errores de validación
-
   const getValidationErrors: GetValidationErrors = ({ fieldName, value }) => {
-    console.log(value)
     try {
       const schema = validationSchemas[fieldName];
       schema.validateSync(value);
       return { error: '', stop: false };
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
-        // console.log(error.value);
-
-        if (error.type, error.type === 'max') {
-          // setCount(prevState => (prevState + 1))
-          return { error: error.message, stop: true }
+        if (error.type && error.type === 'max') {
+          return { error: error.message, stop: true };
         }
         return { error: error.message, stop: false };
       } else {

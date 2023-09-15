@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import { IProduct } from "../interfaces/product.interface";
 import { useQueryClient } from "@tanstack/react-query";
 import { MakeProductsRequestReturn } from "../services/productApi";
 
-interface ProductFilterState {
-  productsTotal: IProduct.Department[];
-}
+// interface ProductFilterState {
+//   productsTotal: IProduct.Department[];
+// }
 
 export interface ItemType<T> {
   type: string;
@@ -13,19 +13,19 @@ export interface ItemType<T> {
   data: T;
 }
 
-const initialProductFilterState: ProductFilterState = {
-  productsTotal: [],
-}
+// const initialProductFilterState: ProductFilterState = {
+//   productsTotal: [],
+// }
 
 function useProductFilter() {
-  const [productFilterState, setProductFilterState] = useState<ProductFilterState>(initialProductFilterState);
+  // const [productFilterState, setProductFilterState] = useState<ProductFilterState>(initialProductFilterState);
 
   const queryClient = useQueryClient();
   const { products }: MakeProductsRequestReturn = queryClient.getQueryData(IProduct.PRODUCT_NAME_QUERY)!
-  const isLoading = queryClient.isFetching(IProduct.PRODUCT_NAME_QUERY);
-  useEffect(() => {
-    setProductFilterState({ ...productFilterState, productsTotal: products })
-  }, [products, isLoading])
+  // const isLoading = queryClient.isFetching(IProduct.PRODUCT_NAME_QUERY);
+  // useEffect(() => {
+  //   setProductFilterState({ ...productFilterState, productsTotal: products })
+  // }, [products, isLoading])
 
   function findItemById<T>({ id }: { id: string }): ItemType<T> {
     for (const department of products) {
@@ -82,7 +82,7 @@ function useProductFilter() {
 
 
 
-  return { isLoading, findItemById, setProductFilterState };
+  return { findItemById };
 }
 
 export default useProductFilter;

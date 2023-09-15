@@ -42,7 +42,7 @@ function App() {
     <div>
       <StoreContext>
         <div>{`loading: ${isLoading}/es error: ${isError}/error: ${JSON.stringify(error)}/es fetching: ${isFetching}`}</div>
-        <Routes />
+        <Routes isLoading={isLoading} />
       </StoreContext>
     </div>
   );

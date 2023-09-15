@@ -21,6 +21,8 @@ export namespace IContext {
 
 export namespace IDashReducer {
   export type AppState = {
+    isLoadingProduct: boolean,
+    breadcrumb: string,
     component: string,
     account: {
       information: boolean,

@@ -1,7 +1,6 @@
 import React from 'react';
 import { IProduct } from "../../../../interfaces/product.interface";
 import { MakeProductsRequestReturn, RequestMap, Route, makeProductsRequest } from '../../../../services/productApi';
-import { ResponseError } from '../../../../hooks/useValidations';
 
 
 export enum ButtonName {
@@ -30,12 +29,13 @@ export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
 
 export type DepartmentListProps = {
   departmentList: InitialState['departmentList'];
+  isLoading: boolean;
   handleOnClick: HandleOnClick;
 };
 
-export interface DepartmentFormProps {
-  selectedDepartment: InitialState['selectedDepartment'];
-  validationError: InitialState['validationError'];
+export interface DepartmentFormProps extends DepartmentProps {
+  state: InitialState;
+  isLoading: boolean;
   handleOnChange: HandleOnChange;
   handleOnClick: HandleOnClick;
 }
@@ -62,19 +62,3 @@ export const callApi = async (selectedDepartment: InitialState['selectedDepartme
   // En otros casos, puedes devolver un valor por defecto o lanzar un error si es necesario.
   return { message: "error personal department", products: [] };
 }
-
-
-
-
-type UpdateChangeDepartment = { state: InitialState, responseError: ResponseError, event: React.ChangeEvent<HTMLInputElement>, }
-
-export const updateChangeDepartment = ({ state, responseError: { error, stop }, event, }: UpdateChangeDepartment) => {
-  const { name, value } = event.target;
-  return {
-    ...state,
-    selectedDepartment: stop
-      ? { ...state.selectedDepartment }
-      : { ...state.selectedDepartment, requestData: { ...state.selectedDepartment.requestData, [name]: value } },
-    validationError: { name: error },
-  };
-};

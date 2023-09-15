@@ -21,45 +21,50 @@ export namespace IInventory {
 }
 
 function Inventory() {
-  const queryClient = useQueryClient()
-  const { products }: MakeProductsRequestReturn = queryClient.getQueryData(IProduct.PRODUCT_NAME_QUERY)!
-  const isLoading = queryClient.isFetching(IProduct.PRODUCT_NAME_QUERY); // isLoading es true si la consulta está en progreso
-  const { dashboard: { state: { inventory: { department_id, category_id, subcategory_id, products_id } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { isLoadingProduct, breadcrumb, inventory: { department_id, category_id, subcategory_id, products_id } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const queryClient = useQueryClient();
+  const data: MakeProductsRequestReturn | undefined = queryClient.getQueryData(IProduct.PRODUCT_NAME_QUERY);
+  const isLoading = queryClient.isFetching(IProduct.PRODUCT_NAME_QUERY);
 
-  const category = products?.find(dep => dep._id === department_id)?.categoriesId
-  const subcategory = products?.find(dep => dep._id === department_id)?.categoriesId.find(cat => cat._id === category_id)?.subcategoriesId
-  const product = products?.find(dep => dep._id === department_id)?.categoriesId.find(cat => cat._id === category_id)?.subcategoriesId.find(sub => sub._id === subcategory_id)?.productsId
-  const supplyProducts = products?.find(dep => dep._id === department_id)?.categoriesId.find(cat => cat._id === category_id)?.subcategoriesId.find(sub => sub._id === subcategory_id)?.productsId.find(pro => pro._id === products_id)
+  const department = data?.products || []
+  const category = data?.products?.find(dep => dep._id === department_id)?.categoriesId;
+  const subcategory = data?.products?.find(dep => dep._id === department_id)?.categoriesId.find(cat => cat._id === category_id)?.subcategoriesId;
+  const product = data?.products?.find(dep => dep._id === department_id)?.categoriesId.find(cat => cat._id === category_id)?.subcategoriesId.find(sub => sub._id === subcategory_id)?.productsId;
+  const supplyProducts = data?.products?.find(dep => dep._id === department_id)?.categoriesId.find(cat => cat._id === category_id)?.subcategoriesId.find(sub => sub._id === subcategory_id)?.productsId.find(pro => pro._id === products_id);
 
   return (
-    <div>
-      {<div className="super_inventory">
-        <div className="department">
-          <h2>Departamento</h2>
-          {isLoading
-            ? <div>Cargando Departamentos...</div>
-            : <Department department={products} />}
-        </div>
-        <div className="department">
-          <h2>Categoría</h2>
-          {department_id && category && <Category category={category} />}
-          {/* {department_id && category && <Category category={category} />} */}
-        </div>
-        <div className="department">
-          <h2>Subcategoría</h2>
-          {category_id && subcategory && <Subcategory subcategory={subcategory} />}
-        </div>
-      </div>}
+    <>
+      {!!isLoading && !isLoadingProduct && <div>Actualizando Productos...</div>}
+      <h4>{breadcrumb}</h4>
+      {isLoadingProduct
+        ? <div>Cargando Productos...</div>
+        : <div>
+          {<div className="super_inventory">
+            <div className="department">
+              <h2>Departamento</h2>
+              {<Department department={department} />}
+            </div>
+            <div className="department">
+              <h2>Categoría</h2>
+              {department_id && category && <Category category={category} />}
+              {/* {department_id && category && <Category category={category} />} */}
+            </div>
+            <div className="department">
+              <h2>Subcategoría</h2>
+              {category_id && subcategory && <Subcategory subcategory={subcategory} />}
+            </div>
+          </div>}
 
-      {<div className="admin_inventory">
-        <div className="department">
-          <h2>Products</h2>
-          {subcategory_id && product && <Products products={product} />}
-          {products_id && supplyProducts && <SupplyProducts product={supplyProducts} />}
-        </div>
+          {<div className="admin_inventory">
+            <div className="department">
+              <h2>Products</h2>
+              {subcategory_id && product && <Products products={product} />}
+              {products_id && supplyProducts && <SupplyProducts product={supplyProducts} />}
+            </div>
 
-      </div>}
-    </div>
+          </div>}
+        </div>}
+    </>
   );
 }
 
