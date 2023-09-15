@@ -1,6 +1,8 @@
 import { IDashReducer } from "../../../interfaces/hooks/context.interface";
 
 export enum ActionTypeDashboard {
+  IS_LOADING_UPDATE = 'IS_LOADING_UPDATE',
+  BREADCRUMB_UPDATE = 'BREADCRUMB_UPDATE',
   PERMITS_ROLES = 'PERMITS_ROLES',
   SELECT_COMPONENT = "SELECT_COMPONENT",
   ACCOUNT_TOGGLE_INFORMATION = "ACCOUNT_TOGGLE_INFORMATION",
@@ -10,7 +12,9 @@ export enum ActionTypeDashboard {
 }
 
 const initialState: IDashReducer.AppState = {
-  component: "",
+  isLoadingProduct: true,
+  breadcrumb: '',
+  component: '',
   account: {
     information: false,
     password: false
@@ -33,7 +37,12 @@ const initialState: IDashReducer.AppState = {
 };
 
 const reducer: IDashReducer.Reducer = (state, action) => {
+
   switch (action.type) {
+    case ActionTypeDashboard.IS_LOADING_UPDATE:
+      return { ...state, isLoadingProduct: !state.isLoadingProduct }
+    case ActionTypeDashboard.BREADCRUMB_UPDATE:
+      return { ...state, breadcrumb: action.payload.value }
     case ActionTypeDashboard.SELECT_COMPONENT:
       return { ...state, component: action.payload.value };
     case ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION:
