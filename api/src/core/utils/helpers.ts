@@ -20,7 +20,7 @@ export async function products() {
       })
       .exec();
 
-    // await fetchCount(departments)
+    await fetchCount(departments)
 
     return departments;
   } catch (error) {

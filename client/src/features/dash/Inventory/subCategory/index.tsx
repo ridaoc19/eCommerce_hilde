@@ -4,10 +4,11 @@ import ModalConfirm from '../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
+import { IProduct } from '../../../../interfaces/product.interface';
+import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 import SubcategoryForm from './SubcategoryForm';
 import SubcategoryList from './SubcategoryList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, SubcategoryProps, callApiSubcategory } from './interface.subcategory';
-import { Route, makeImagesRequest } from '../../../../services/imagesApi';
 
 export const initialState: InitialState = {
   subcategoryList: [],
@@ -18,7 +19,7 @@ export const initialState: InitialState = {
 const Subcategory = ({ subcategory }: SubcategoryProps) => {
   const { dashboard: { state: { inventory: { department_id, category_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
-  const mutation = useMutation(callApiSubcategory, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
+  const mutation = useMutation(callApiSubcategory, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
   const [state, setState] = useState(initialState);
   const { selectedSubcategory, subcategoryList, showDeleteModal } = state;
 

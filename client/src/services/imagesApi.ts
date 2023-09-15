@@ -53,10 +53,10 @@ const createPayload: Payload<Route> = (params) => {
 };
 
 // Tipo de retorno para las respuestas de las solicitudes
-export type MakeProductsRequestReturn = { message: string; imageUrl: string[] };
+export type MakeImagesRequestReturn = { message: string; imageUrl: string[] };
 
 // Función que realiza las solicitudes a la API
-export function makeImagesRequest<R extends Route>(route: R): { withOptions: (options: Omit<RequestMap[R], 'route'>) => Promise<MakeProductsRequestReturn> } {
+export function makeImagesRequest<R extends Route>(route: R): { withOptions: (options: Omit<RequestMap[R], 'route'>) => Promise<MakeImagesRequestReturn> } {
   return {
     withOptions: async (options: Omit<RequestMap[R], 'route'>) => {
       const requestParams = { route, ...options } as RequestMap[R];
@@ -66,7 +66,7 @@ export function makeImagesRequest<R extends Route>(route: R): { withOptions: (op
 }
 
 // Función que realiza las llamadas a la API
-async function imagesApis<T extends Route>(params: RequestMap[T]): Promise<MakeProductsRequestReturn> {
+async function imagesApis<T extends Route>(params: RequestMap[T]): Promise<MakeImagesRequestReturn> {
   try {
     const { route, requestOptions } = createPayload(params);
     const responseApi = await fetch(`${process.env.REACT_APP_SERVER_FILE}/${route}`, requestOptions);

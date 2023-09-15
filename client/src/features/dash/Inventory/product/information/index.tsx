@@ -9,7 +9,8 @@ import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
 import { handleClickEdit } from './tools/functions';
-import ProductDetail from './ProductDetail';
+import { IProduct } from '../../../../../interfaces/product.interface';
+
 
 const initialState: InitialState = {
   productsList: [],
@@ -19,9 +20,9 @@ const initialState: InitialState = {
 }
 
 const ProductInfo = ({ products }: ProductsProps) => {
-  const { dashboard: { state: { inventory: { department_id, category_id, subcategory_id, products_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { inventory: { department_id, category_id, subcategory_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
-  const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
+  const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
   const [state, setState] = useState<InitialState>(initialState)
   const { productsList, selectedProduct, temporaryImages, showDeleteModal } = state;
 
@@ -133,7 +134,6 @@ const ProductInfo = ({ products }: ProductsProps) => {
     dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'productsEmpty_id', value: "" } })
   }
 
-  const editedProducts = products?.find(prod => prod._id === products_id)
 
   return (
     <div>
@@ -143,7 +143,6 @@ const ProductInfo = ({ products }: ProductsProps) => {
       <div>
         <ProductsForm selectedProduct={selectedProduct} temporaryImages={temporaryImages} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
       </div>
-      {products_id && editedProducts && <ProductDetail product={editedProducts} />}
       {showDeleteModal &&
         <ModalConfirm
           message='¿Estás seguro de eliminar este producto?'

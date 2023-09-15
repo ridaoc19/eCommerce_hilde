@@ -1,26 +1,28 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ModalConfirm from '../../../../components/common/modalConfirm';
-import { CreateContext } from '../../../../hooks/useContext';
-import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
-import { IContext } from '../../../../interfaces/hooks/context.interface';
+import useValidations from '../../../../hooks/useValidations';
+import { IProduct } from '../../../../interfaces/product.interface';
 import DepartmentForm from './DepartmentForm';
 import DepartmentList from './DepartmentList';
 import { ButtonName, DepartmentProps, HandleOnChange, HandleOnClick, InitialState, callApi } from './interface.department';
-import { Route, makeImagesRequest } from '../../../../services/imagesApi';
-
+import useFunctionsDepartment from './useDepartmentFunctions';
 
 export const initialState: InitialState = {
   departmentList: [],
   selectedDepartment: { departmentId: "", requestData: { name: "" } },
+  validationError: { name: "" },
   showDeleteModal: false
 }
 
 const Departments = ({ department }: DepartmentProps) => {
-  const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
+  const { getValidationErrors } = useValidations();
+
+  const { collectFunctions, emptyDepartment } = useFunctionsDepartment({ initialState });
   const queryClient = useQueryClient();
-  const mutation = useMutation(callApi, { onSuccess: () => { queryClient.invalidateQueries(['product']) } });
-  const [state, setState] = useState(initialState);
+  const { mutateAsync, isLoading } = useMutation(callApi, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
+
+  const [state, setState] = useState<InitialState>(initialState);
   const { selectedDepartment, showDeleteModal, departmentList } = state;
 
   useEffect(() => {
@@ -29,28 +31,22 @@ const Departments = ({ department }: DepartmentProps) => {
   }, [department]);
 
   const handleOnChange: HandleOnChange = (event) => {
-    const { name, value } = event.target;
-    setState(prevState => ({ ...prevState, selectedDepartment: { ...prevState.selectedDepartment, requestData: { ...prevState.selectedDepartment.requestData, [name]: value } } }));
+    const responseError = getValidationErrors({ fieldName: event.target.name, value: event.target.value })
+    setState(collectFunctions.updateChangeDepartment({ state, event, responseError }))
   }
 
   const handleOnClick: HandleOnClick = async (event) => {
     event.preventDefault();
     const targetButton = event.target as HTMLButtonElement;
+    const responseError = getValidationErrors({ fieldName: 'name', value: selectedDepartment.requestData.name })
 
     switch (targetButton.name) {
       case ButtonName.Edit:
-        emptyDepartment();
-        const updatedList = department.filter(dept => dept._id !== targetButton.value) || [];
-        const editedDepartment = department.find(dept => dept._id === targetButton.value);
-        if (editedDepartment) {
-          const { _id, name } = editedDepartment;
-          setState(prevState => ({ ...prevState, selectedDepartment: { ...prevState.selectedDepartment, departmentId: _id, requestData: { name } }, departmentList: updatedList }));
-        }
+        setState(collectFunctions.updateClickEdit({ department, state, value: targetButton.value }))
         return;
 
       case ButtonName.Delete:
-        emptyDepartment();
-        setState(prevState => ({ ...prevState, selectedDepartment: { ...prevState.selectedDepartment, departmentId: targetButton.value }, showDeleteModal: true }));
+        setState(collectFunctions.updateClickDelete({ department, state, value: targetButton.value }))
         return;
 
       case ButtonName.Clean:
@@ -58,18 +54,15 @@ const Departments = ({ department }: DepartmentProps) => {
         break;
 
       case ButtonName.Save:
-        await mutation.mutateAsync(selectedDepartment);
-        break;
+        if (responseError.error) return setState(prevState => ({ ...prevState, validationError: { name: responseError.error } }))
+        await mutateAsync(selectedDepartment);
+        setState(prevState => ({ ...prevState, selectedDepartment: initialState.selectedDepartment }))
+        return;
 
       case ButtonName.Confirm:
-        const filterImages = department.find(pro => pro._id === selectedDepartment.departmentId)?.categoriesId
-          .flatMap(pro => pro.subcategoriesId).flatMap(pro => pro.productsId).flatMap(img => img.images)
-        if (filterImages && filterImages?.length > 0) {
-          const form = new FormData();
-          filterImages.forEach((url, index) => form.append(`url[${index}]`, url));
-          await makeImagesRequest(Route.ImagesDelete).withOptions({ requestData: form })
-        }
-        await mutation.mutateAsync(selectedDepartment);
+        setState(prevState => ({ ...prevState, showDeleteModal: false }));
+        collectFunctions.updateClickConfirm({ department, state })
+        await mutateAsync(selectedDepartment);
         break;
 
       // case ButtonName.Add:
@@ -81,26 +74,20 @@ const Departments = ({ department }: DepartmentProps) => {
       default:
         break;
     }
-    emptyDepartment();
-    setState(prevState => ({ ...prevState, showDeleteModal: false, selectedDepartment: initialState.selectedDepartment }));
+    setState(emptyDepartment({ department, state }));
   };
-
-  const emptyDepartment = () => {
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'departmentEmpty_id', value: "" } })
-  }
-
 
   return (
     <div>
       <div>
-        <DepartmentList departmentList={departmentList} handleOnClick={handleOnClick} />
+        <DepartmentList departmentList={departmentList} isLoading={isLoading} handleOnClick={handleOnClick} />
       </div>
       <div>
-        <DepartmentForm selectedDepartment={selectedDepartment} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
+        <DepartmentForm department={department} state={state} isLoading={isLoading} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
       </div>
       {showDeleteModal &&
         <ModalConfirm
-          message='¿Estás seguro de eliminar este departamento?'
+          message={`¿Estás seguro de eliminar '${department.find(nam => nam._id === selectedDepartment.departmentId)?.name}'?`}
           handleOnClick={handleOnClick}
           Confirm={ButtonName.Confirm}
           Cancel={ButtonName.Cancel} />}

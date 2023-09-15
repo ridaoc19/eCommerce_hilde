@@ -1,6 +1,6 @@
 import React from 'react';
 import { IProduct } from "../../../../interfaces/product.interface";
-import { MakeProductsRequestReturn, Route, makeProductsRequest } from '../../../../services/productApi';
+import { MakeProductsRequestReturn, RequestMap, Route, makeProductsRequest } from '../../../../services/productApi';
 
 
 export enum ButtonName {
@@ -19,7 +19,8 @@ export interface DepartmentProps {
 
 export interface InitialState {
   departmentList: DepartmentProps['department'];
-  selectedDepartment: { departmentId: string; requestData: { name: string } };
+  selectedDepartment: Pick<RequestMap[Route.DepartmentCreate], 'requestData'> & Pick<RequestMap[Route.DepartmentEdit], 'requestData' | 'departmentId'> & Pick<RequestMap[Route.DepartmentDelete], 'departmentId'>;
+  validationError: { name: string };
   showDeleteModal: boolean;
 }
 
@@ -28,11 +29,13 @@ export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
 
 export type DepartmentListProps = {
   departmentList: InitialState['departmentList'];
+  isLoading: boolean;
   handleOnClick: HandleOnClick;
 };
 
-export interface DepartmentFormProps {
-  selectedDepartment: InitialState['selectedDepartment']
+export interface DepartmentFormProps extends DepartmentProps {
+  state: InitialState;
+  isLoading: boolean;
   handleOnChange: HandleOnChange;
   handleOnClick: HandleOnClick;
 }

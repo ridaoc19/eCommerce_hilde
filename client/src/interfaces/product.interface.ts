@@ -6,6 +6,8 @@ export namespace IProduct {
   export type Routes = {
     routes: Route
   }
+  export const PRODUCT_NAME_QUERY = ['products']
+
   // type Roles = "super" | "admin" | "edit" | "visitant";
   interface Specification {
     [key: string]: string;
@@ -56,23 +58,23 @@ export namespace IProduct {
 
 // ==============================|| Redux ||============================== //
 export namespace IProductRedux {
-  
+
   export interface InitialState {
     products: ProductPostsReturn; // ProductPostsReturn
     product: IProduct.Product | {};
     loading: boolean;
     error: null | {} | string;
   }
-  
-  
+
+
   // createAsyncThunk
   // export type ProductPostsProps = IProduct.Product;
   export type ProductPostsReturn = { message: string, products: IProduct.Department[] | [] };
-  
+
   // export type DepartmentPostsProps = IProduct.DepartmentData;
   // export type DepartmentPostsReturn = { message: string, products: IProduct.Department[] };
-  
-  
+
+
 
 
 
