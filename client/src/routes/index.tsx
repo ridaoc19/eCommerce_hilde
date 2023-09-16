@@ -11,8 +11,8 @@ export default function Routes({ isLoading }: { isLoading: boolean }) {
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
 
   useEffect(() => {
-    dispatchContext({ type: ActionTypeDashboard.IS_LOADING_UPDATE, payload: { name: null, value: "" } })
-  // eslint-disable-next-line
+    dispatchContext({ type: ActionTypeDashboard.IS_LOADING_UPDATE, payload: { name: null, value: JSON.stringify(isLoading) } })
+    // eslint-disable-next-line
   }, [isLoading])
 
   return useRoutes([...Feature, Auth, Dash])
