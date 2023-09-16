@@ -12,7 +12,7 @@ export enum ActionTypeDashboard {
 }
 
 const initialState: IDashReducer.AppState = {
-  isLoadingProduct: true,
+  isLoadingProduct: false,
   breadcrumb: '',
   component: '',
   account: {
@@ -40,7 +40,7 @@ const reducer: IDashReducer.Reducer = (state, action) => {
 
   switch (action.type) {
     case ActionTypeDashboard.IS_LOADING_UPDATE:
-      return { ...state, isLoadingProduct: !state.isLoadingProduct }
+      return { ...state, isLoadingProduct: JSON.parse(action.payload.value) }
     case ActionTypeDashboard.BREADCRUMB_UPDATE:
       return { ...state, breadcrumb: action.payload.value }
     case ActionTypeDashboard.SELECT_COMPONENT:
