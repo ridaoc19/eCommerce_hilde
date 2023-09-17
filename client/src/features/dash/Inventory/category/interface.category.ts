@@ -17,47 +17,41 @@ export interface CategoryProps {
 
 export interface InitialState {
   categoryList: CategoryProps['category'];
-  selectedCategory: Pick<RequestMap[Route.CategoryCreate], 'departmentId'> & Pick<RequestMap[Route.CategoryEdit], 'requestData'> & Pick<RequestMap[Route.CategoryDelete], 'categoryId'>;
+  selectedCategory: Pick<RequestMap[Route.CategoryCreate], 'departmentId' | 'requestData'> & Pick<RequestMap[Route.CategoryEdit], 'requestData'> & Pick<RequestMap[Route.CategoryDelete], 'categoryId'>;
+  validationError: { name: string };
   showDeleteModal: boolean;
 }
 
 export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
 export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
 
-export interface CategoryFormProps {
-  selectedCategory: InitialState['selectedCategory']
+export type CategoryListProps = {
+  categoryList: CategoryProps['category'];
+  isLoading: boolean;
+  handleOnClick: HandleOnClick;
+};
+
+export interface CategoryFormProps extends CategoryProps {
+  state: InitialState
+  isLoading: boolean;
   handleOnChange: HandleOnChange;
   handleOnClick: HandleOnClick;
 }
 
-export type CategoryListProps = {
-  categoryList: CategoryProps['category'];
-  handleOnClick: HandleOnClick;
-};
-
-type State = 'delete' | 'edit' | 'create'
-export const callApiCategory = async ({ selectedCategory, state }: { selectedCategory: InitialState['selectedCategory'], state: State }): Promise<MakeProductsRequestReturn> => {
+export const callApiCategory = async (selectedCategory: InitialState['selectedCategory']): Promise<MakeProductsRequestReturn> => {
   const { departmentId, categoryId, requestData } = selectedCategory;
-
-  let response: MakeProductsRequestReturn = { message: "error personal department", products: [] };
-
-  switch (state) {
-    case 'create':
-      response = await makeProductsRequest(Route.CategoryCreate).withOptions({ departmentId: departmentId, requestData })
-      break;
-
-    case 'edit':
-      response = await makeProductsRequest(Route.CategoryEdit).withOptions({ categoryId: categoryId, requestData })
-      break;
-
-    case 'delete':
-      response = await makeProductsRequest(Route.CategoryDelete).withOptions({ categoryId: categoryId })
-      break;
-
-    default:
-      break;
+  if (categoryId.length === 0 && requestData.name.length > 0) {
+    const response = await makeProductsRequest(Route.CategoryCreate).withOptions({ departmentId, requestData });
+    return response; // Devolver el resultado de la llamada API
   }
-
+  if (categoryId.length > 6 && requestData.name.length > 0) {
+    const response = await makeProductsRequest(Route.CategoryEdit).withOptions(selectedCategory);
+    return response; // Devolver el resultado de la llamada API
+  }
+  if (categoryId.length > 6 && requestData.name.length === 0) {
+    const response = await makeProductsRequest(Route.CategoryDelete).withOptions({ categoryId })
+    return response;
+  }
   // En otros casos, puedes devolver un valor por defecto o lanzar un error si es necesario.
-  return response
+  return { message: "error personal department", products: [] };
 }
