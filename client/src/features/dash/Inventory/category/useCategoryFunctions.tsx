@@ -62,7 +62,7 @@ function useCategoryFunctions({ initialState }: { initialState: InitialState }) 
         ...state,
         selectedCategory: { ...state.selectedCategory, categoryId: value },
         showDeleteModal: true,
-        departmentList: updatedList
+        categoryList: updatedList
       };
     },
 

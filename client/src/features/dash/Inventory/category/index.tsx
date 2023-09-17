@@ -93,7 +93,7 @@ const Category = ({ category }: CategoryProps) => {
       </div>
       {showDeleteModal &&
         <ModalConfirm
-          message='¿Estás seguro de eliminar este departamento?'
+          message={`¿Estás seguro de eliminar '${category.find(nam => nam._id === selectedCategory.categoryId)?.name}'?`}
           handleOnClick={handleOnClick}
           Confirm={ButtonName.Confirm}
           Cancel={ButtonName.Cancel} />}
