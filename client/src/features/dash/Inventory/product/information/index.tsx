@@ -3,26 +3,30 @@ import { useContext, useEffect, useState } from 'react';
 import ModalConfirm from '../../../../../components/common/modalConfirm';
 import { CreateContext } from '../../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../../hooks/useContext/dash/reducer';
+import useValidations from '../../../../../hooks/useValidations';
 import { IContext } from '../../../../../interfaces/hooks/context.interface';
+import { IProduct } from '../../../../../interfaces/product.interface';
 import { imagesAdmin } from '../../../../../services/imagesApi';
 import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
-import { handleClickEdit } from './tools/functions';
-import { IProduct } from '../../../../../interfaces/product.interface';
-
+import useProductAdd from './useProductAdd';
 
 const initialState: InitialState = {
   productsList: [],
   selectedProduct: { productId: "", subcategoryId: "", requestData: { name: "", price: "", description: "", specification: [], images: [] } },
   temporaryImages: { get: [], delete: [] },
+  validationError: { name: "", price: "", description: "", specification: [], images: [] },
   showDeleteModal: false
 }
 
 const ProductInfo = ({ products }: ProductsProps) => {
+  const { collectFunctions, emptyProduct } = useProductAdd({ initialState })
+  const { getValidationErrors } = useValidations();
+
   const { dashboard: { state: { inventory: { department_id, category_id, subcategory_id } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const queryClient = useQueryClient();
-  const mutation = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
+  const { mutateAsync, isLoading } = useMutation(callApiProduct, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
   const [state, setState] = useState<InitialState>(initialState)
   const { productsList, selectedProduct, temporaryImages, showDeleteModal } = state;
 
@@ -30,7 +34,6 @@ const ProductInfo = ({ products }: ProductsProps) => {
     if (products) {
       setState(prevState => ({ ...prevState, productsList: products }));
     }
-    // eslint-disable-next-line
   }, [products, department_id, category_id, subcategory_id]);
 
   const handleOnChange: HandleOnChange = async (event) => {
@@ -55,44 +58,36 @@ const ProductInfo = ({ products }: ProductsProps) => {
   const handleOnClick: HandleOnClick = async (event) => {
     event.preventDefault();
     const targetButton = event.target as HTMLButtonElement;
+    const { name, value } = event.target as HTMLButtonElement;
+    const responseError = getValidationErrors({ fieldName: 'name', value: selectedProduct.requestData.name })
+    console.log(responseError);
 
-    switch (targetButton.name) {
-
+    switch (name) {
       case ButtonName.Edit:
-        emptyProductsContext();
-        const { response } = handleClickEdit({ products, state, value: targetButton.value })
-        setState(response)
+        setState(collectFunctions.updateClickEdit({ products, state, value }))
         return;
 
       case ButtonName.Delete:
-        emptyProductsContext();
-        setState(prevState => ({ ...prevState, showDeleteModal: true, selectedProduct: { ...prevState.selectedProduct, productId: targetButton.value } }));
+        setState(collectFunctions.updateClickDelete({ products, state, value }))
         return;
-
-      case ButtonName.Clean:
-        if (products) setState(prevState => ({ ...prevState, productsList: products }));
-        break;
 
       case ButtonName.Save:
         if (selectedProduct.productId) {
           if (temporaryImages.get.length > 0 || temporaryImages.delete.length > 0) {
             const responseImages = await imagesAdmin({ toRequest: { file: temporaryImages.get, name: selectedProduct.requestData.name }, toDelete: temporaryImages.delete })
-            await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, requestData: { ...selectedProduct.requestData, images: [...selectedProduct.requestData.images, ...responseImages] } }, state: 'edit' })
+            await mutateAsync({ ...selectedProduct, requestData: { ...selectedProduct.requestData, images: [...selectedProduct.requestData.images, ...responseImages] } })
           } else {
-            await mutation.mutateAsync({ selectedProduct, state: 'edit' })
+            await mutateAsync({ ...selectedProduct })
           }
         } else if (subcategory_id) {
           const responseImages = await imagesAdmin({ toRequest: { file: temporaryImages.get, name: selectedProduct.requestData.name } })
-          await mutation.mutateAsync({ selectedProduct: { ...selectedProduct, subcategoryId: subcategory_id, requestData: { ...selectedProduct.requestData, images: responseImages } }, state: 'create' })
+          await mutateAsync({ ...selectedProduct, subcategoryId: subcategory_id, requestData: { ...selectedProduct.requestData, images: responseImages } })
         }
         break;
 
       case ButtonName.Confirm:
-        const filterImages = products.find(pro => pro._id === selectedProduct.productId)?.images
-        if (filterImages && filterImages?.length > 0) { // si hay string imágenes para eliminar
-          await imagesAdmin({ toDelete: filterImages })
-        }
-        await mutation.mutateAsync({ selectedProduct, state: 'delete' })
+        collectFunctions.updateClickConfirm({ products, state })
+        await mutateAsync({ ...selectedProduct })
         break;
 
       case ButtonName.Product:
@@ -103,49 +98,37 @@ const ProductInfo = ({ products }: ProductsProps) => {
         setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, specification: [...prevState.selectedProduct.requestData.specification, { key: '', value: '' }] } } }))
         return;
 
+      case ButtonName.FileDelete:
+        setState(collectFunctions.updateClickFileDelete({ state, products, event }))
+        return
+
       case ButtonName.Add:
         break;
 
       case ButtonName.Cancel:
         break;
 
-      case ButtonName.FileDelete:
-        if (targetButton.dataset.type === 'file') { // elimina files
-          temporaryImages.get.splice(+targetButton.value, 1)
-          setState(prevState => ({ ...prevState, temporaryImages }))
-        } else if (targetButton.dataset.type === 'url') { //elimina string
-          const urlDelete = selectedProduct.requestData.images[+targetButton.value]
-          const filterImage = selectedProduct.requestData.images.filter(img => img !== urlDelete)
-          setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, delete: [...prevState.temporaryImages.delete, urlDelete] }, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, images: filterImage } } }))
-        }
-        return
+      case ButtonName.Clean:
+        break;
 
       default:
         break;
 
     }
-    emptyProductsContext();
-    setState(prevState => ({ ...prevState, showDeleteModal: false, temporaryImages: { get: [], delete: [] }, selectedProduct: initialState.selectedProduct }));
-    const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
-    if (inputElement) inputElement.value = '';
+    setState(emptyProduct({ products, state }))
   };
-
-  const emptyProductsContext = () => { // limpia los id de context
-    dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'productsEmpty_id', value: "" } })
-  }
-
 
   return (
     <div>
       <div>
-        <ProductsList productsList={productsList} handleOnClick={handleOnClick} />
+        <ProductsList isLoading={isLoading} productsList={productsList} handleOnClick={handleOnClick} />
       </div>
       <div>
-        <ProductsForm selectedProduct={selectedProduct} temporaryImages={temporaryImages} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
+        <ProductsForm state={state} isLoading={isLoading} products={products} temporaryImages={temporaryImages} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />
       </div>
       {showDeleteModal &&
         <ModalConfirm
-          message='¿Estás seguro de eliminar este producto?'
+          message={`¿Estás seguro de eliminar '${products.find(nam => nam._id === selectedProduct.productId)?.name}'?`}
           handleOnClick={handleOnClick}
           Confirm={ButtonName.Confirm}
           Cancel={ButtonName.Cancel} />}

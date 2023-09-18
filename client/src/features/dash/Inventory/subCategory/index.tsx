@@ -118,7 +118,7 @@ const Subcategory = ({ subcategory }: SubcategoryProps) => {
       </div>
       {showDeleteModal &&
         <ModalConfirm
-        message={`¿Estás seguro de eliminar '${subcategory.find(nam => nam._id === selectedSubcategory.subcategoryId)?.name}'?`}
+          message={`¿Estás seguro de eliminar '${subcategory.find(nam => nam._id === selectedSubcategory.subcategoryId)?.name}'?`}
           handleOnClick={handleOnClick}
           Confirm={ButtonName.Confirm}
           Cancel={ButtonName.Cancel} />}
