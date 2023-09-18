@@ -5,7 +5,6 @@ import { IContext } from "../../../../interfaces/hooks/context.interface";
 import { ButtonName, DepartmentListProps } from "./interface.department";
 
 const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, isLoading, handleOnClick }) => {
-  // const { findItemById } = useProductFilter()
   const { dashboard: { dispatch: dispatchContext, state: { inventory: { department_id }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
@@ -21,7 +20,6 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, isLoadi
             }
             <button disabled={isLoading} className='button_link' onClick={() => {
               dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'department_id', value: dept._id } })
-              // dispatchContext({ type: ActionTypeDashboard.BREADCRUMB_UPDATE, payload: { name: null, value: findItemById({ id: dept._id }).breadcrumb } })
             }
             }>
               {dept.name}
@@ -29,7 +27,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departmentList, isLoadi
           </li>
         ))}
       </ul>
-      {department_id && inventory_department && <button name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
+      {department_id && inventory_department && <button disabled={isLoading} name={ButtonName.Add} onClick={handleOnClick}>Nuevo Departamento</button>}
     </div >
   );
 }
