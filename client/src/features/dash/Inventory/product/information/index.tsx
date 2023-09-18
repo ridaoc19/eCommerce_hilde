@@ -6,17 +6,17 @@ import { ActionTypeDashboard } from '../../../../../hooks/useContext/dash/reduce
 import useValidations from '../../../../../hooks/useValidations';
 import { IContext } from '../../../../../interfaces/hooks/context.interface';
 import { IProduct } from '../../../../../interfaces/product.interface';
-import { imagesAdmin } from '../../../../../services/imagesApi';
 import ProductsForm from './ProductForm';
 import ProductsList from './ProductList';
 import { ButtonName, HandleOnChange, HandleOnClick, InitialState, ProductsProps, callApiProduct } from './interface.products';
 import useProductAdd from './useProductAdd';
+import { imagesAdmin } from '../../../../../services/imagesApi';
 
 const initialState: InitialState = {
   productsList: [],
   selectedProduct: { productId: "", subcategoryId: "", requestData: { name: "", price: "", description: "", specification: [], images: [] } },
   temporaryImages: { get: [], delete: [] },
-  validationError: { name: "", price: "", description: "", specification: [], images: [] },
+  validationError: { name: "", price: "", description: "", specification: "", images: "", specificationKey: "", specificationValue: "" },
   showDeleteModal: false
 }
 
@@ -37,30 +37,16 @@ const ProductInfo = ({ products }: ProductsProps) => {
   }, [products, department_id, category_id, subcategory_id]);
 
   const handleOnChange: HandleOnChange = async (event) => {
-    const { name, value, files } = event.target;
+    const { name, value } = event.target;
 
-    if (name === 'images' && files) {
-      if (files && files.length > 0) {
-        const fileList = Array.from(files) as File[];
-        setState((prevState) => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, get: [...prevState.temporaryImages.get, ...fileList] } }));
-      }
-    } else if (name === 'specificationKey' || name === 'specificationValue') {
-      const specIndex = parseInt(event.target.dataset.index || '0', 10);
-      const specField = name === 'specificationKey' ? 'key' : 'value';
-      const updatedSpecification = [...selectedProduct.requestData.specification];
-      updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: value };
-      setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, specification: updatedSpecification } } }))
-    } else {
-      setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, [name]: value } } }))
-    }
+    const responseError = getValidationErrors({ fieldName: name, value })
+    setState(collectFunctions.updateChangeProducts({ state, event, responseError }))
   }
 
   const handleOnClick: HandleOnClick = async (event) => {
     event.preventDefault();
     const targetButton = event.target as HTMLButtonElement;
     const { name, value } = event.target as HTMLButtonElement;
-    const responseError = getValidationErrors({ fieldName: 'name', value: selectedProduct.requestData.name })
-    console.log(responseError);
 
     switch (name) {
       case ButtonName.Edit:
@@ -72,6 +58,18 @@ const ProductInfo = ({ products }: ProductsProps) => {
         return;
 
       case ButtonName.Save:
+        const totalError = Object.entries(selectedProduct.requestData).map(([key, value]) => {
+          const responseError = getValidationErrors({ fieldName: key, value })
+          setState(prevState => ({ ...prevState, validationError: { ...prevState.validationError, [key]: responseError.error } }))
+          return responseError.error
+        }).filter(e => e)
+        // valida images
+        const totalImages = state.temporaryImages.get.length + state.selectedProduct.requestData.images.length;
+        if (totalImages === 0) setState(prevState => ({ ...prevState, validationError: { ...prevState.validationError, images: 'Debes subir al menos una imagen' } }))
+        if (totalImages > 3) setState(prevState => ({ ...prevState, validationError: { ...prevState.validationError, images: 'No puedes subir más de tres imágenes' } }))
+
+        if (totalError.length > 0 || totalImages === 0 || totalImages > 3) return
+        // GUARDA
         if (selectedProduct.productId) {
           if (temporaryImages.get.length > 0 || temporaryImages.delete.length > 0) {
             const responseImages = await imagesAdmin({ toRequest: { file: temporaryImages.get, name: selectedProduct.requestData.name }, toDelete: temporaryImages.delete })

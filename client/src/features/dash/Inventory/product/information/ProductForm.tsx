@@ -44,7 +44,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ products, isLoading, state,
                       value={spec.key}
                       onChange={handleOnChange}
                     />
-                    {/* {validationError.key && <span>{validationError.key}</span>} */}
+                    {validationError.specificationKey && <span>{validationError.specificationKey}</span>}
                     <input
                       type="text"
                       name="specificationValue"
@@ -53,7 +53,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ products, isLoading, state,
                       value={spec.value}
                       onChange={handleOnChange}
                     />
-                    {/* {validationError.value && <span>{validationError.value}</span>} */}
+                    {validationError.specificationValue && <span>{validationError.specificationValue}</span>}
                     <button
                       disabled={isLoading}
                       name={ButtonName.RemoveSpecification}
@@ -65,6 +65,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ products, isLoading, state,
                   </div>
                 )
               })}
+              {validationError.specification && <span>{validationError.specification}</span>}
               <button disabled={isLoading} name={ButtonName.AddSpecification} onClick={handleOnClick}>Agregar especificación</button>
             </div>
 

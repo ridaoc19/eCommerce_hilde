@@ -27,7 +27,7 @@ export interface InitialState {
   productsList: ProductsProps['products'];
   selectedProduct: Omit<RequestMap[Route.ProductCreate], 'route'> & Omit<RequestMap[Route.ProductEdit], 'route'>;
   temporaryImages: { get: File[], delete: string[] };
-  validationError: Omit<IProduct.Product, '_id' | 'subcategoryId'>;
+  validationError: Omit<IProduct.Product, '_id' | 'subcategoryId' | 'specification' | 'images'> & { specification: string, images: string, specificationKey: string, specificationValue: string };
   showDeleteModal: boolean;
 }
 

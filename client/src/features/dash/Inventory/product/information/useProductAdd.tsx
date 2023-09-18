@@ -32,42 +32,56 @@ function useProductAdd({ initialState }: { initialState: InitialState }) {
   }
 
   const collectFunctions = {
-    updateChangeProducts({ state, responseError: { error, stop }, event, }: UpdateChangeProducts) {
+    updateChangeProducts({ state, event, responseError }: UpdateChangeProducts) {
       const { name, value, files } = event.target;
+      const { stop, error } = responseError;
 
       if (name === 'images' && files) {
+
         if (files && files.length > 0) {
+          const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
           const fileList = Array.from(files) as File[];
-          return {
-            ...state, temporaryImages: stop
-              ? { ...state.temporaryImages }
-              : { ...state.temporaryImages, get: [...state.temporaryImages.get, ...fileList] },
-            validationError: { name: error }
-          };
+          const totalImages = fileList.length + state.temporaryImages.get.length
+          if (totalImages > 3) {
+            if (inputElement) inputElement.value = '';
+            return {
+              ...state,
+              validationError: { ...state.validationError, images: 'No puedes subir más de tres imágenes' }
+            }
+          } else {
+
+            return {
+              ...state,
+              validationError: { ...state.validationError, images: '' },
+              temporaryImages: { ...state.temporaryImages, get: [...state.temporaryImages.get, ...fileList] }
+            }
+          }
         }
+
       } else if (name === 'specificationKey' || name === 'specificationValue') {
         const specIndex = parseInt(event.target.dataset.index || '0', 10);
         const specField = name === 'specificationKey' ? 'key' : 'value';
         const updatedSpecification = [...state.selectedProduct.requestData.specification];
         updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: value };
+        const newValidationError = { ...state.validationError, [name]: error };
         return {
           ...state,
           selectedProduct: stop
             ? { ...state.selectedProduct }
             : { ...state.selectedProduct, requestData: { ...state.selectedProduct.requestData, specification: updatedSpecification } },
-          validationError: { name: error }
+          validationError: newValidationError
         }
       } else {
+        const newValidationError = { ...state.validationError, [name]: error };
         return {
           ...state,
           selectedProduct: stop
             ? { ...state.selectedProduct }
             : { ...state.selectedProduct, requestData: { ...state.selectedProduct.requestData, [name]: value } },
-          validationError: { name: error },
+          validationError: newValidationError
         }
       }
-      return state
-
+      return state;
     },
 
     updateClickEdit({ products, state, value }: StateProducts & { value: string }) {
@@ -119,23 +133,6 @@ function useProductAdd({ initialState }: { initialState: InitialState }) {
 
     },
 
-    async updateClickSave({ state, subcategory_id }: StateProducts & { subcategory_id: string }) {
-      const { selectedProduct, temporaryImages } = state;
-
-      if (selectedProduct.productId) {
-        if (temporaryImages.get.length > 0 || temporaryImages.delete.length > 0) {
-          const responseImages = await imagesAdmin({ toRequest: { file: temporaryImages.get, name: selectedProduct.requestData.name }, toDelete: temporaryImages.delete })
-          return { ...selectedProduct, requestData: { ...selectedProduct.requestData, images: [...selectedProduct.requestData.images, ...responseImages] } }
-        } else {
-          return { ...selectedProduct }
-        }
-      } else if (subcategory_id) {
-        const responseImages = await imagesAdmin({ toRequest: { file: temporaryImages.get, name: selectedProduct.requestData.name } })
-        return { ...selectedProduct, subcategoryId: subcategory_id, requestData: { ...selectedProduct.requestData, images: responseImages } }
-      }
-      return state
-    },
-
     updateClickConfirm({ products, state }: StateProducts) {
       const filterImages = products.find(pro => pro._id === state.selectedProduct.productId)?.images || []
       filterImages.length > 0 && imagesAdmin({ toDelete: filterImages })
@@ -144,6 +141,7 @@ function useProductAdd({ initialState }: { initialState: InitialState }) {
     updateClickAddSpecification({ state }: StateProducts) {
       return {
         ...state,
+        validationError: { ...state.validationError, specification: '' },
         selectedProduct: {
           ...state.selectedProduct,
           requestData: {
