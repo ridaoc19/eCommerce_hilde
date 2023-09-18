@@ -21,13 +21,14 @@ function useProductFilter() {
   // const [productFilterState, setProductFilterState] = useState<ProductFilterState>(initialProductFilterState);
 
   const queryClient = useQueryClient();
-  const { products }: MakeProductsRequestReturn = queryClient.getQueryData(IProduct.PRODUCT_NAME_QUERY)!
+  const data: MakeProductsRequestReturn = queryClient.getQueryData(IProduct.PRODUCT_NAME_QUERY)!
   // const isLoading = queryClient.isFetching(IProduct.PRODUCT_NAME_QUERY);
   // useEffect(() => {
   //   setProductFilterState({ ...productFilterState, productsTotal: products })
   // }, [products, isLoading])
 
   function findItemById<T>({ id }: { id: string }): ItemType<T> {
+    const products = data?.products ? data.products : []
     for (const department of products) {
       if (department._id === id) {
         // Si el ID coincide con un departamento

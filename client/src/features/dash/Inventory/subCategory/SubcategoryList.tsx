@@ -5,7 +5,7 @@ import { IContext } from "../../../../interfaces/hooks/context.interface";
 import { ButtonName, SubcategoryListProps } from './interface.subcategory';
 
 
-const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, handleOnClick }) => {
+const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, isLoading, handleOnClick }) => {
   // const { findItemById } = useProductFilter()
   const { dashboard: { dispatch: dispatchContext, state: { inventory: { subcategory_id }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
 
@@ -17,20 +17,20 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, hand
             {
               inventory_subcategory &&
               <>
-                <button name={ButtonName.Edit} value={sub._id} onClick={handleOnClick}>Edit</button>
-                <button name={ButtonName.Delete} value={sub._id} onClick={handleOnClick}>Delete</button>
+                <button disabled={isLoading} name={ButtonName.Edit} value={sub._id} onClick={handleOnClick}>Edit</button>
+                <button disabled={isLoading} name={ButtonName.Delete} value={sub._id} onClick={handleOnClick}>Delete</button>
               </>
             }
-            <span onClick={() => {
+            <button disabled={isLoading} className='button_link' onClick={() => {
               dispatchContext({ type: ActionTypeDashboard.SELECT_INVENTORY, payload: { name: 'subcategory_id', value: sub._id } })
               // dispatchContext({ type: ActionTypeDashboard.BREADCRUMB_UPDATE, payload: { name: null, value: findItemById({ id: sub._id }).breadcrumb } })
             }}>
               {sub.name}
-            </span>
+            </button>
           </li>
         ))}
       </ul>
-      {subcategory_id && inventory_subcategory && <button name={ButtonName.Add} onClick={handleOnClick}>Nueva Subcategoría</button>}
+      {subcategory_id && inventory_subcategory && <button disabled={isLoading} name={ButtonName.Add} onClick={handleOnClick}>Nueva Subcategoría</button>}
     </div>
   );
 }

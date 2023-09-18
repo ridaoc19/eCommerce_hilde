@@ -14,12 +14,10 @@ export enum ButtonName {
   Cancel = 'cancel',
   Product = 'product',
   AddSpecification = 'addSpecification',
+  RemoveSpecification = 'removeSpecification',
   FileDelete = 'FileDelete',
   FileEdit = 'FileEdit'
 }
-
-export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
-export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
 
 export interface ProductsProps {
   products: IProduct.Product[];
@@ -29,21 +27,29 @@ export interface InitialState {
   productsList: ProductsProps['products'];
   selectedProduct: Omit<RequestMap[Route.ProductCreate], 'route'> & Omit<RequestMap[Route.ProductEdit], 'route'>;
   temporaryImages: { get: File[], delete: string[] };
+  validationError: Omit<IProduct.Product, '_id' | 'subcategoryId' | 'specification' | 'images'> & { specification: string, images: string, specificationKey: string, specificationValue: string };
   showDeleteModal: boolean;
 }
 
-export interface ProductsFormProps extends Pick<InitialState, 'selectedProduct' | 'temporaryImages'> {
+export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
+export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
+
+export type ProductsListProps = {
+  productsList: InitialState['productsList'];
+  isLoading: boolean;
+  handleOnClick: HandleOnClick;
+};
+
+export interface ProductsFormProps extends ProductsProps, Pick<InitialState, 'temporaryImages'> {
+  state: InitialState;
+  isLoading: boolean;
   handleOnChange: HandleOnChange;
   handleOnClick: HandleOnClick;
 }
 
-export type ProductsListProps = {
-  productsList: InitialState['productsList'];
-  handleOnClick: HandleOnClick;
-};
 
 type State = 'delete' | 'edit' | 'create'
-export const callApiProduct = async ({ selectedProduct, state }: { selectedProduct: InitialState['selectedProduct'], state: State }): Promise<MakeProductsRequestReturn> => {
+export const callApiProducte = async ({ selectedProduct, state }: { selectedProduct: InitialState['selectedProduct'], state: State }): Promise<MakeProductsRequestReturn> => {
   const { productId, subcategoryId, requestData } = selectedProduct;
 
   let response: MakeProductsRequestReturn = { message: "error personal department", products: [] };
@@ -67,4 +73,22 @@ export const callApiProduct = async ({ selectedProduct, state }: { selectedProdu
 
   // En otros casos, puedes devolver un valor por defecto o lanzar un error si es necesario.
   return response
+}
+
+export const callApiProduct = async (selectedSubcategory: InitialState['selectedProduct']): Promise<MakeProductsRequestReturn> => {
+  const { productId, subcategoryId, requestData } = selectedSubcategory;
+  if (productId.length === 0 && requestData.name.length > 0) {
+    const response = await makeProductsRequest(Route.ProductCreate).withOptions({ subcategoryId, requestData });
+    return response; // Devolver el resultado de la llamada API
+  }
+  if (productId.length > 6 && requestData.name.length > 0) {
+    const response = await makeProductsRequest(Route.ProductEdit).withOptions(selectedSubcategory);
+    return response; // Devolver el resultado de la llamada API
+  }
+  if (productId.length > 6 && requestData.name.length === 0) {
+    const response = await makeProductsRequest(Route.ProductDelete).withOptions({ productId })
+    return response;
+  }
+  // En otros casos, puedes devolver un valor por defecto o lanzar un error si es necesario.
+  return { message: "error personal department", products: [] };
 }
