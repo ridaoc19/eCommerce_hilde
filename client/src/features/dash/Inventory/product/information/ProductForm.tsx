@@ -44,6 +44,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ products, isLoading, state,
                       value={spec.key}
                       onChange={handleOnChange}
                     />
+                    {/* {validationError.key && <span>{validationError.key}</span>} */}
                     <input
                       type="text"
                       name="specificationValue"
@@ -52,6 +53,15 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ products, isLoading, state,
                       value={spec.value}
                       onChange={handleOnChange}
                     />
+                    {/* {validationError.value && <span>{validationError.value}</span>} */}
+                    <button
+                      disabled={isLoading}
+                      name={ButtonName.RemoveSpecification}
+                      data-index={index}
+                      onClick={handleOnClick}
+                    >
+                      Eliminar
+                    </button>
                   </div>
                 )
               })}
@@ -73,6 +83,7 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ products, isLoading, state,
                 </div>
               ))}
             </div>
+            {validationError.images && <span>{validationError.images}</span>}
           </div>
           {/* <Form /> */}
           {isLoading && message}

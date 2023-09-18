@@ -95,7 +95,11 @@ const ProductInfo = ({ products }: ProductsProps) => {
         return;
 
       case ButtonName.AddSpecification:
-        setState(prevState => ({ ...prevState, selectedProduct: { ...prevState.selectedProduct, requestData: { ...prevState.selectedProduct.requestData, specification: [...prevState.selectedProduct.requestData.specification, { key: '', value: '' }] } } }))
+        setState(collectFunctions.updateClickAddSpecification({ products, state }))
+        return;
+
+      case ButtonName.RemoveSpecification:
+        setState(collectFunctions.updateClickRemoveSpecification({ state, products, event }))
         return;
 
       case ButtonName.FileDelete:

@@ -14,6 +14,7 @@ export enum ButtonName {
   Cancel = 'cancel',
   Product = 'product',
   AddSpecification = 'addSpecification',
+  RemoveSpecification = 'removeSpecification',
   FileDelete = 'FileDelete',
   FileEdit = 'FileEdit'
 }

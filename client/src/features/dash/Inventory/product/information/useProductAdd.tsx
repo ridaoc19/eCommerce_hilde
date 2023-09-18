@@ -67,13 +67,7 @@ function useProductAdd({ initialState }: { initialState: InitialState }) {
         }
       }
       return state
-      // return {
-      //   ...state,
-      //   selectedProduct: stop
-      //     ? { ...state.selectedProduct }
-      //     : { ...state.selectedProduct, requestData: { ...state.selectedProduct.requestData, [name]: value } },
-      //   validationError: { name: error },
-      // };
+
     },
 
     updateClickEdit({ products, state, value }: StateProducts & { value: string }) {
@@ -159,6 +153,23 @@ function useProductAdd({ initialState }: { initialState: InitialState }) {
         }
       }
 
+    },
+
+    updateClickRemoveSpecification({ state, event }: StateProducts & { event: React.MouseEvent<HTMLButtonElement> }) {
+      const { selectedProduct } = state;
+      const targetButton2 = event.target as HTMLElement;
+      const specIndexToRemove = parseInt(targetButton2.dataset.index || '0', 10);
+      const updatedSpecification = selectedProduct.requestData.specification.filter((_, index) => index !== specIndexToRemove);
+      return {
+        ...state,
+        selectedProduct: {
+          ...state.selectedProduct,
+          requestData: {
+            ...state.selectedProduct.requestData,
+            specification: updatedSpecification
+          }
+        }
+      };
     },
 
     updateClickFileDelete({ state, event }: StateProducts & { event: React.MouseEvent<HTMLButtonElement> }) {
