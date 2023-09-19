@@ -16,7 +16,7 @@ export namespace IProduct {
     _id: string;
     subcategoryId: string;
     name: string;
-    price: string;
+    brand: string;
     specification: Specification[];
     description: string;
     images: string[];

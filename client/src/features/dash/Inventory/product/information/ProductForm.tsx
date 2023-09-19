@@ -21,9 +21,9 @@ const ProductsForm: React.FC<ProductsFormProps> = ({ products, isLoading, state,
               {validationError.name && <div>{validationError.name}</div>}
             </div>
 
-            <div className='price'>
-              <input type="text" name='price' placeholder='Precio' value={requestData.price} onChange={handleOnChange} />
-              {validationError.price && <div>{validationError.price}</div>}
+            <div className='brand'>
+              <input type="text" name='brand' placeholder='Marca' value={requestData.brand} onChange={handleOnChange} />
+              {validationError.brand && <div>{validationError.brand}</div>}
             </div>
 
             <div className='description'>

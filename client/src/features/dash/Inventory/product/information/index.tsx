@@ -14,9 +14,9 @@ import { imagesAdmin } from '../../../../../services/imagesApi';
 
 const initialState: InitialState = {
   productsList: [],
-  selectedProduct: { productId: "", subcategoryId: "", requestData: { name: "", price: "", description: "", specification: [], images: [] } },
+  selectedProduct: { productId: "", subcategoryId: "", requestData: { name: "", brand: "", description: "", specification: [], images: [] } },
   temporaryImages: { get: [], delete: [] },
-  validationError: { name: "", price: "", description: "", specification: "", images: "", specificationKey: "", specificationValue: "" },
+  validationError: { name: "", brand: "", description: "", specification: "", images: "", specificationKey: "", specificationValue: "" },
   showDeleteModal: false
 }
 

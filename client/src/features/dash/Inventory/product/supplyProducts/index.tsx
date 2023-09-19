@@ -23,8 +23,8 @@ const SupplyProducts: React.FC<SupplyProductsProps> = ({ product }) => {
         <div className='name'>
           <h3>{product.name}</h3>
         </div>
-        <div className='price'>
-          <h4>{product.price}</h4>
+        <div className='brand'>
+          <h4>{product.brand}</h4>
         </div>
         <div className='images'>
           {product.images?.map((img, ind) => (

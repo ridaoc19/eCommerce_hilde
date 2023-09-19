@@ -43,6 +43,10 @@ const productSchemas: { [key: string]: Yup.Schema } = {
   //   .min(1, 'Debes subir al menos una imagen')
   //   .max(3, 'No puedes subir más de tres imágenes')
   //   .required('Este campo es obligatorio'),
+  brand: Yup.string()
+    .min(3, 'Este campo debe tener al menos 3 caracteres')
+    .max(20, 'Este campo debe tener máximo 20 caracteres')
+    .required('Este campo es obligatorio'),
 
 };
 

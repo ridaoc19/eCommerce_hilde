@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 interface IProduct extends Document {
   name: string;
-  price: string;
+  brand: string;
   specification: Record<string, string>[];
   description: string;
   images: string[];
@@ -12,7 +12,7 @@ interface IProduct extends Document {
 
 const productSchema = new Schema<IProduct>({
   name: String,
-  price: String,
+  brand: String,
   specification:[{ type: Schema.Types.Mixed }],
   description: String,
   images: [String],

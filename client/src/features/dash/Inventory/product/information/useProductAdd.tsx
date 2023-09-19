@@ -89,13 +89,13 @@ function useProductAdd({ initialState }: { initialState: InitialState }) {
       const updatedList = products?.filter(prod => prod._id !== value) || [];
       const editedProducts = products?.find(prod => prod._id === value);
       if (editedProducts) {
-        let { _id, name, price, description, specification, images } = editedProducts;
+        let { _id, name, brand, description, specification, images } = editedProducts;
         return {
           ...state,
           productsList: updatedList,
           selectedProduct: {
             ...state.selectedProduct, productId: _id, requestData: {
-              name, price, description,
+              name, brand, description,
               specification: specification.map(({ key, value }) => {
                 return { key, value };
               }),
