@@ -27,7 +27,8 @@ const initialState: IDashReducer.AppState = {
   },
   permits: {
     sidebar_user: false,
-    sidebar_inventory: false,
+    sidebar_newDeptCatSubProdData: false,
+    sidebar_productEntry: false,
     sidebar_otro: false,
     inventory_department: false,
     inventory_category: false,
