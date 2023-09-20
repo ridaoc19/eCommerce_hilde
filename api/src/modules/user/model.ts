@@ -1,4 +1,5 @@
 import { Document, Schema, model } from "mongoose";
+import { IProduct } from "../product/model";
 
 interface IUser extends Document {
   name: string;
@@ -8,6 +9,11 @@ interface IUser extends Document {
   password: string;
   verified: boolean;
   roles: "super" | "admin" | "edit" | "visitant";
+  items: {
+    purchasedProducts: Array<IProduct>;
+    favoriteProducts: Array<IProduct>;
+  };
+  addresses: Array<string>;
 }
 
 const userSchema = new Schema<IUser>(
@@ -42,6 +48,19 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false
     },
+    items: {
+      purchasedProducts: [
+        { type: Schema.Types.ObjectId, ref: 'Product' }
+      ],
+      favoriteProducts: [
+        { type: Schema.Types.ObjectId, ref: 'Product' }
+      ]
+    },
+    addresses: [
+      {
+        type: String
+      }
+    ]
   },
   {
     versionKey: false,

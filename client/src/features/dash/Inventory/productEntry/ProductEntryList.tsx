@@ -53,10 +53,7 @@ function ProductEntryList() {
     // eslint-disable-next-line
   }, [_id])
 
-  useEffect(() => {
-  }, [state.change])
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickFilter = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const { value } = event.target as HTMLFormElement
     setState(prevState => ({ ...prevState, _id: value }))
@@ -73,13 +70,14 @@ function ProductEntryList() {
   return (
     <div>
       <div>
+        <button name='clear' value={''} onClick={handleClickFilter}>limpiar Filtros</button>
         <div>
           <h2>Departamento</h2>
           <input type="text" name="department" value={state.change.department} onChange={handleChange} />
           {department.map(dep => {
             return (
               <div key={dep._id}>
-                <button onClick={handleClick} value={dep._id}>{dep.name}</button>
+                <button name='department' onClick={handleClickFilter} value={dep._id}>{dep.name}</button>
               </div>
             )
           })}
@@ -90,7 +88,7 @@ function ProductEntryList() {
           {category.map(cat => {
             return (
               <div key={cat._id}>
-                <button onClick={handleClick} value={cat._id}>{cat.name}</button>
+                <button name='category' onClick={handleClickFilter} value={cat._id}>{cat.name}</button>
               </div>
             )
           })}
@@ -101,7 +99,7 @@ function ProductEntryList() {
           {subcategory.map(sub => {
             return (
               <div key={sub._id}>
-                <button onClick={handleClick} value={sub._id}>{sub.name}</button>
+                <button name='subcategory' onClick={handleClickFilter} value={sub._id}>{sub.name}</button>
               </div>
             )
           })}
@@ -112,7 +110,7 @@ function ProductEntryList() {
           {product.map(pro => {
             return (
               <div key={pro._id}>
-                <button onClick={handleClick} value={pro._id}>{pro.name}</button>
+                <button name='product' onClick={handleClickFilter} value={pro._id}>{pro.name}</button>
               </div>
             )
           })}
