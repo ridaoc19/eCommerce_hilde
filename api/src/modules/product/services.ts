@@ -95,3 +95,24 @@ export async function productDelete(req: Request, res: Response) {
 }
 
 
+///////// PRODUCT ENTRY //////
+export async function productEntry(req: Request, res: Response) {
+  try {
+    const { productId } = req.params;
+
+    await Product.findByIdAndUpdate(productId, req.body, { new: true });
+
+    const updatedProducts = await products();
+    return res.status(200).json({
+      message: "Variantes ingresadas exitosamente",
+      products: updatedProducts,
+    });
+
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(409).json({ error: splitString(error) });
+    } else {
+      res.status(500).json({ error: `Error desconocido: ${error}` });
+    }
+  }
+}

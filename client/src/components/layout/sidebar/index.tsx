@@ -19,7 +19,8 @@ export namespace ISidebar {
 
 const item: ISidebar.ItemRole[] = [
   { id: 'sidebar_user', value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
-  { id: 'sidebar_inventory', value: "inventory", type: "Inventario", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
+  { id: 'sidebar_newDeptCatSubProdData', value: "newDeptCatSubProdData", type: "Crear Producto", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
+  { id: 'sidebar_productEntry', value: "productEntry", type: "Ingresar Producto", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
   { id: 'sidebar_otro', value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
 ];
 

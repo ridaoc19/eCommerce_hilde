@@ -154,7 +154,8 @@ export namespace IUserOnChange {
 /////////////////////////////////////////////
 export type PermitsRoles = {
   id: 'sidebar_user'
-  | 'sidebar_inventory'
+  | 'sidebar_newDeptCatSubProdData'
+  | 'sidebar_productEntry'
   | 'sidebar_otro'
   | 'inventory_department'
   | 'inventory_category'
@@ -165,7 +166,8 @@ export type PermitsRoles = {
 
 export const permitsRoles: PermitsRoles[] = [
   { id: 'sidebar_user', roles: ["super", "admin", 'edit', 'visitant'] },
-  { id: 'sidebar_inventory', roles: ['super', 'admin', 'edit'] },
+  { id: 'sidebar_newDeptCatSubProdData', roles: ['super', 'admin'] },
+  { id: 'sidebar_productEntry', roles: ['super', 'admin', 'edit'] },
   { id: 'sidebar_otro', roles: ['visitant', "super", 'admin'] },
   { id: 'inventory_department', roles: ['super', 'admin'] },
   { id: 'inventory_category', roles: ['super', 'admin'] },
