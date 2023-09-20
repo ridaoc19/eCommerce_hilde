@@ -38,7 +38,7 @@ interface Product {
   _id: string;
   subcategoryId: string;
   name: string;
-  price: string;
+  brand: string;
   specification: Specification[] | null;
   description: string;
   images: string[] | null;

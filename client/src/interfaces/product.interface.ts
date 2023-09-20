@@ -9,6 +9,15 @@ export namespace IProduct {
   export const PRODUCT_NAME_QUERY = ['products']
 
   // type Roles = "super" | "admin" | "edit" | "visitant";
+
+  interface Variants {
+    size: string;
+    color: string;
+    purchasePrice: number;
+    sellingPrice: number;
+    stock: number;
+  }
+
   interface Specification {
     [key: string]: string;
   }
@@ -16,10 +25,11 @@ export namespace IProduct {
     _id: string;
     subcategoryId: string;
     name: string;
-    price: string;
+    brand: string;
     specification: Specification[];
     description: string;
     images: string[];
+    variants: Variants[];
     // createdAt?: string;
     // updatedAt?: string;
   }
@@ -57,24 +67,22 @@ export namespace IProduct {
 }
 
 // ==============================|| Redux ||============================== //
-export namespace IProductRedux {
+// export namespace IProductRedux {
 
-  export interface InitialState {
-    products: ProductPostsReturn; // ProductPostsReturn
-    product: IProduct.Product | {};
-    loading: boolean;
-    error: null | {} | string;
-  }
-
-
-  // createAsyncThunk
-  // export type ProductPostsProps = IProduct.Product;
-  export type ProductPostsReturn = { message: string, products: IProduct.Department[] | [] };
-
-  // export type DepartmentPostsProps = IProduct.DepartmentData;
-  // export type DepartmentPostsReturn = { message: string, products: IProduct.Department[] };
+//   export interface InitialState {
+//     products: ProductPostsReturn; // ProductPostsReturn
+//     product: IProduct.Product | {};
+//     loading: boolean;
+//     error: null | {} | string;
+//   }
 
 
+//   // createAsyncThunk
+//   // export type ProductPostsProps = IProduct.Product;
+//   export type ProductPostsReturn = { message: string, products: IProduct.Department[] | [] };
+
+//   // export type DepartmentPostsProps = IProduct.DepartmentData;
+//   // export type DepartmentPostsReturn = { message: string, products: IProduct.Department[] };
 
 
 
@@ -87,15 +95,15 @@ export namespace IProductRedux {
 
 
 
-  // =|| Template message error ||= //
-  export interface TemplateMessageReturn {
-    route: IProduct.Routes['routes'];
-    method: IProduct.Method;
-    message: string;
-  }
-  export type TemplateMessageProps = (data: IProduct.Routes) => TemplateMessageReturn
 
 
+//   // =|| Template message error ||= //
+//   // export interface TemplateMessageReturn {
+//   //   route: IProduct.Routes['routes'];
+//   //   method: IProduct.Method;
+//   //   message: string;
+//   // }
+//   // export type TemplateMessageProps = (data: IProduct.Routes) => TemplateMessageReturn
 
 
 
@@ -122,16 +130,18 @@ export namespace IProductRedux {
 
 
 
-  // =|| Api ||= //
-  export interface ProductApi {
-    routes: TemplateMessageReturn["route"]
-    method: TemplateMessageReturn["method"];
-    dataPost: any;
-  }
 
-  export interface DepartmentApi {
-    routes: TemplateMessageReturn["route"]
-    method: TemplateMessageReturn["method"];
-    dataPost: any;
-  }
-}
+
+//   // =|| Api ||= //
+// //   export interface ProductApi {
+// //     routes: TemplateMessageReturn["route"]
+// //     method: TemplateMessageReturn["method"];
+// //     dataPost: any;
+// //   }
+
+// //   export interface DepartmentApi {
+// //     routes: TemplateMessageReturn["route"]
+// //     method: TemplateMessageReturn["method"];
+// //     dataPost: any;
+// //   }
+// }

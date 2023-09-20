@@ -18,6 +18,8 @@ export enum Route {
   ProductDelete = 'product/delete',
   ProductCreate = 'product/create',
   ProductEdit = 'product/edit',
+
+  ProductEntry = 'product/entry',
 }
 
 // Definición de tipos para las solicitudes basadas en las rutas
@@ -75,16 +77,23 @@ export type RequestMap = {
   [Route.ProductCreate]: {
     route: Route.ProductCreate;
     subcategoryId: IProduct.Product['subcategoryId'];
-    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId'>;
+    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId' | 'variants'>;
   };
   [Route.ProductEdit]: {
     route: Route.ProductEdit;
     productId: IProduct.Product['_id'];
-    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId'>;
+    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId' | 'variants'>;
   };
   [Route.ProductDelete]: {
     route: Route.ProductDelete;
     productId: IProduct.Product['_id'];
+  };
+
+  // productEntry
+  [Route.ProductEntry]: {
+    route: Route.ProductEntry;
+    productId: IProduct.Product['_id'];
+    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId'>;
   };
 };
 
@@ -137,6 +146,8 @@ const createPayload: Payload<Route> = (params) => {
       return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', body: JSON.stringify(params.requestData), headers, }, };
     case Route.ProductDelete:
       return { route: `${route}/${params.productId}`, requestOptions: { method: 'delete', }, };
+    case Route.ProductEntry:
+      return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', }, body: JSON.stringify(params.requestData), headers };
     default:
       return { route: 'request', requestOptions: { method: 'get' } };
   }
