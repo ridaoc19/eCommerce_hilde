@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useProductFilter from "../../../../hooks/useProductFilter";
+import useProductFilter, { BreadcrumbItem } from "../../../../hooks/useProductFilter";
 import { IProduct } from "../../../../interfaces/product.interface";
 
 interface NestedData {
@@ -13,7 +13,7 @@ export interface InitialState {
   _id: string;
   intactData: NestedData;
   data: NestedData;
-  breadcrumb: string;
+  breadcrumb: BreadcrumbItem[];
   change: {
     department: string
     category: string
@@ -36,7 +36,7 @@ const initialState: InitialState = {
     subcategory: [],
     product: [],
   },
-  breadcrumb: "",
+  breadcrumb: [],
   change: { department: "", category: "", subcategory: "", product: "" }
 }
 
@@ -117,7 +117,14 @@ function ProductEntryList() {
         </div>
       </div>
       <div>
-        <h4>{breadcrumb}</h4>
+        {breadcrumb.map((item, index) => (
+          <span key={item._id}>
+            <button value={item._id} onClick={handleClickFilter} className='button_link'>
+              {item.name}
+            </button >
+            {index < breadcrumb.length - 1 && ' > '}
+          </span>
+        ))}
       </div>
     </div>
   );

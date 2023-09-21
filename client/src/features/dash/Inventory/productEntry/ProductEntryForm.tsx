@@ -7,7 +7,7 @@ function ProductEntryForm({ product }: { product: IProduct.Product }) {
   return (
     <div>
       <div className='breadcrumb'>
-        <h4>{findItemById({ id: product._id }).breadcrumb}</h4>
+        <h4>{JSON.stringify(findItemById({ id: product._id }).breadcrumb)}</h4>
         {/* <h4>{getBreadcrumb({ data: products, id: product._id })}</h4> */}
         {/* {product.breadcrumb.map((bread, index) => (
             <span key={index}>{bread}{index < product.breadcrumb.length - 1 && <span>{' > '}</span>}</span>
