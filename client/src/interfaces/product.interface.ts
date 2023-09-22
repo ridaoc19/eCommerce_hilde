@@ -10,7 +10,7 @@ export namespace IProduct {
 
   // type Roles = "super" | "admin" | "edit" | "visitant";
 
-  interface Variants {
+  export interface Variants {
     _id?: string;
     size: string;
     color: string;

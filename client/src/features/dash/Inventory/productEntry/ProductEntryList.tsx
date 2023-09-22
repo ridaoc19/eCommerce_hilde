@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import useProductFilter, { BreadcrumbItem } from "../../../../hooks/useProductFilter";
 import { IProduct } from "../../../../interfaces/product.interface";
+import { ProductsListProps } from './interface.ProductEntry';
 
 interface NestedData {
   department: IProduct.Department[]
@@ -40,8 +41,7 @@ const initialState: InitialState = {
   change: { department: "", category: "", subcategory: "", product: "" }
 }
 
-function ProductEntryList() {
-  // function ProductEntryList({ products }: { products: IProduct.Product[] }) {
+function ProductEntryList({ handleOnClick }: ProductsListProps) {
   const [state, setState] = useState<InitialState>(initialState);
   const { _id, breadcrumb, data: { department, category, subcategory, product } } = state;
   const { findItemById } = useProductFilter();
@@ -55,7 +55,8 @@ function ProductEntryList() {
 
   const handleClickFilter = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const { value } = event.target as HTMLFormElement
+    const { name, value } = event.target as HTMLFormElement
+    if (name !== 'product') handleOnClick(event)
     setState(prevState => ({ ...prevState, _id: value }))
   }
 
@@ -70,7 +71,17 @@ function ProductEntryList() {
   return (
     <div>
       <div>
-        <button name='clear' value={''} onClick={handleClickFilter}>limpiar Filtros</button>
+        {/* <button name='clear' value={''} onClick={handleClickFilter}>limpiar Filtros</button> */}
+        <div className='product_entry_breadcrumb'>
+          {breadcrumb.map((item, index) => (
+            <span key={item._id}>
+              <button value={item._id} onClick={handleClickFilter} className='button_link'>
+                {item.name}
+              </button >
+              {index < breadcrumb.length - 1 && ' > '}
+            </span>
+          ))}
+        </div>
         <div>
           <h2>Departamento</h2>
           <input type="text" name="department" value={state.change.department} onChange={handleChange} />
@@ -110,21 +121,14 @@ function ProductEntryList() {
           {product.map(pro => {
             return (
               <div key={pro._id}>
-                <button name='product' onClick={handleClickFilter} value={pro._id}>{pro.name}</button>
+                <button name='product' onClick={(event) => {
+                  handleClickFilter(event)
+                  handleOnClick(event)
+                }} value={pro._id}>{pro.name}</button>
               </div>
             )
           })}
         </div>
-      </div>
-      <div>
-        {breadcrumb.map((item, index) => (
-          <span key={item._id}>
-            <button value={item._id} onClick={handleClickFilter} className='button_link'>
-              {item.name}
-            </button >
-            {index < breadcrumb.length - 1 && ' > '}
-          </span>
-        ))}
       </div>
     </div>
   );

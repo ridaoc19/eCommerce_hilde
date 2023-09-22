@@ -50,7 +50,7 @@ function NewDeptCatSubProdData() {
     const valueInventory = Object.values(inventory).filter(e => e).at(-1) || "";
     setState(findItemById({ id: valueInventory }))
     // eslint-disable-next-line
-  }, [inventory])
+  }, [inventory, isLoading])
 
   return (
     <>

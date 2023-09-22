@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
+import ProductEntryForm from './ProductEntryForm';
 import ProductEntryList from './ProductEntryList';
-
-// interface ProductEntryProps {
-//   product: IProduct.Product;
-// }
+import { HandleOnClick } from './interface.ProductEntry';
 
 const ProductEntry: React.FC = () => {
-  const [] = useState();
-  // const { dashboard: { state: { inventory: { department_id } }, } }: IContext.IContextData = useContext(CreateContext)!
-  // const queryClient = useQueryClient();
-  // const data: MakeProductsRequestReturn | undefined = queryClient.getQueryData(IProduct.PRODUCT_NAME_QUERY);
-  // const isLoading = queryClient.isFetching(IProduct.PRODUCT_NAME_QUERY);
+  const [state, setState] = useState("");
 
-  // console.log(isLoading, products);
+  const handleOnClick: HandleOnClick = (event) => {
+    event.preventDefault();
+    const { value } = event.target as HTMLButtonElement;
+    setState(value)
+  }
 
   return (
     <div>
-      <ProductEntryList />
-      {/* <ProductEntryForm product={product} /> */}
+      <ProductEntryList handleOnClick={handleOnClick} />
+      {state && <ProductEntryForm state={state} />}
     </div>
   );
 };

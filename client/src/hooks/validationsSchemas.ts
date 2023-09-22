@@ -8,7 +8,7 @@ const globalSchemas: { [key: string]: Yup.Schema } = {
     .required('Este campo es obligatorio'),
   description: Yup.string()
     .min(3, 'Este campo debe tener al menos 3 caracteres')
-    .max(600, 'Este campo debe tener máximo 600 caracteres')
+    .max(700, 'Este campo debe tener máximo 700 caracteres')
     .required('Este campo es obligatorio'),
 };
 
