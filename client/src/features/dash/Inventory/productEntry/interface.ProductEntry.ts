@@ -34,8 +34,8 @@ export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement>) => void
 export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement>) => void
 
 export type ProductsListProps = {
-  productsList: InitialState['productsList'];
-  isLoading: boolean;
+  // productsList: InitialState['productsList'];
+  // isLoading: boolean;
   handleOnClick: HandleOnClick;
 };
 
