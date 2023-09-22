@@ -39,10 +39,10 @@ export namespace IDashReducer {
     }
   };
 
-  type Name = "department_id" | "category_id" | "subcategory_id" | "products_id" | "departmentEmpty_id" | "categoryEmpty_id" | "subcategoryEmpty_id" | "productsEmpty_id"
+  export type NameInventory = "department_id" | "category_id" | "subcategory_id" | "products_id" | "departmentEmpty_id" | "categoryEmpty_id" | "subcategoryEmpty_id" | "productsEmpty_id"
   export type SelectAction = {
     type: ActionTypeDashboard;
-    payload: { name: null | Name, value: string }
+    payload: { name: null | NameInventory, value: string }
   };
   export type AppAction = SelectAction;
 

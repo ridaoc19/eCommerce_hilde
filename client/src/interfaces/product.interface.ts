@@ -10,7 +10,8 @@ export namespace IProduct {
 
   // type Roles = "super" | "admin" | "edit" | "visitant";
 
-  interface Variants {
+  export interface Variants {
+    _id?: string;
     size: string;
     color: string;
     purchasePrice: number;
@@ -58,90 +59,4 @@ export namespace IProduct {
     // createdAt?: string;
     // updatedAt?: string;
   }
-
-
-  // export type DepartmentData = any
-  // export type DepartmentData = Pick<Department, '_id' | 'name' | 'routes'>
-
-  /////////////////////////////////
 }
-
-// ==============================|| Redux ||============================== //
-// export namespace IProductRedux {
-
-//   export interface InitialState {
-//     products: ProductPostsReturn; // ProductPostsReturn
-//     product: IProduct.Product | {};
-//     loading: boolean;
-//     error: null | {} | string;
-//   }
-
-
-//   // createAsyncThunk
-//   // export type ProductPostsProps = IProduct.Product;
-//   export type ProductPostsReturn = { message: string, products: IProduct.Department[] | [] };
-
-//   // export type DepartmentPostsProps = IProduct.DepartmentData;
-//   // export type DepartmentPostsReturn = { message: string, products: IProduct.Department[] };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//   // =|| Template message error ||= //
-//   // export interface TemplateMessageReturn {
-//   //   route: IProduct.Routes['routes'];
-//   //   method: IProduct.Method;
-//   //   message: string;
-//   // }
-//   // export type TemplateMessageProps = (data: IProduct.Routes) => TemplateMessageReturn
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//   // =|| Api ||= //
-// //   export interface ProductApi {
-// //     routes: TemplateMessageReturn["route"]
-// //     method: TemplateMessageReturn["method"];
-// //     dataPost: any;
-// //   }
-
-// //   export interface DepartmentApi {
-// //     routes: TemplateMessageReturn["route"]
-// //     method: TemplateMessageReturn["method"];
-// //     dataPost: any;
-// //   }
-// }
