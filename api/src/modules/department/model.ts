@@ -12,7 +12,7 @@ const departmentSchema = new Schema<IDepartment>({
 },
 {
   versionKey: false,
-  timestamps: true
+  timestamps: false
 });
 
 const Department = mongoose.model<IDepartment>('Department', departmentSchema);

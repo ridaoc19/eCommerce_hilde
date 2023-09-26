@@ -93,7 +93,7 @@ export type RequestMap = {
   [Route.ProductEntry]: {
     route: Route.ProductEntry;
     productId: IProduct.Product['_id'];
-    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId'>;
+    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId'> & { _id?: IProduct.Product['_id']; }
   };
 };
 
@@ -147,7 +147,9 @@ const createPayload: Payload<Route> = (params) => {
     case Route.ProductDelete:
       return { route: `${route}/${params.productId}`, requestOptions: { method: 'delete', }, };
     case Route.ProductEntry:
-      return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', }, body: JSON.stringify(params.requestData), headers };
+      console.log(params.requestData);
+      
+      return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', body: JSON.stringify(params.requestData), headers } };
     default:
       return { route: 'request', requestOptions: { method: 'get' } };
   }

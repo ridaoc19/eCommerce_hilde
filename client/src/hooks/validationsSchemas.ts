@@ -47,7 +47,20 @@ const productSchemas: { [key: string]: Yup.Schema } = {
     .min(2, 'Este campo debe tener al menos 2 caracteres')
     .max(50, 'Este campo debe tener máximo 50 caracteres')
     .required('Este campo es obligatorio'),
-
+  color: Yup.string()
+    .required('Este campo es obligatorio'),
+  size: Yup.string()
+    .required('Este campo es obligatorio'),
+  purchasePrice: Yup.number()
+    .min(1, 'El precio de compra debe ser mayor que 0')
+    .max(19999999, 'El precio de compra debe ser menor a 20,000,000')
+    .required('Este campo es obligatorio'),
+  sellingPrice: Yup.number()
+    .min(1, 'El precio de venta debe ser mayor que 0')
+    .max(19999999, 'El precio de venta debe ser menor a 20,000,000')
+    .required('Este campo es obligatorio'),
+  stock: Yup.number()
+    .required('Este campo es obligatorio'),
 };
 
 
@@ -55,3 +68,4 @@ const productSchemas: { [key: string]: Yup.Schema } = {
 const validationSchemas = { ...globalSchemas, ...productSchemas };
 
 export { validationSchemas };
+
