@@ -1,16 +1,16 @@
 import { ButtonName, ProductEntryFormProps, colors } from './interface.ProductEntry';
 
 function ProductEntryForm({ state, handleOnClick, handleOnChange }: ProductEntryFormProps) {
-  const { selectedProduct: { requestData: { variants } }, changeForm } = state;
+  const { selectedProduct: { requestData: { variants, images } }, changeForm } = state;
 
   return (
     <div>
       {/* <ProductEntryFormRender product={product}> */}
-      {/* <div className='images'>
+      <div className='images'>
         {images?.map((img, ind) => (
           <div key={ind}><img src={`${process.env.REACT_APP_SERVER_FILE}/${img}`} alt={ind.toString()} width={'200'} /></div>
         ))}
-      </div> */}
+      </div>
 
 
       <div className='variants'>
