@@ -15,7 +15,7 @@ function App() {
   const errorUser = useAppSelector(selectUserError)
   const user = useAppSelector(selectUserData)
   const token: IUser.UserData['token'] = localStorage?.token
-  const { isLoading, isError, error, isFetching } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: IProduct.PRODUCT_NAME_QUERY,
     queryFn: () => makeProductsRequest(Route.ProductRequest).withOptions({}),
     refetchOnWindowFocus: false,
@@ -41,7 +41,6 @@ function App() {
   return (
     <div>
       <StoreContext>
-        <div>{`loading: ${isLoading}/es error: ${isError}/error: ${JSON.stringify(error)}/es fetching: ${isFetching}`}</div>
         <Routes isLoading={isLoading} />
       </StoreContext>
     </div>

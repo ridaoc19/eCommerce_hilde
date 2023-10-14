@@ -1,7 +1,7 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { IDashReducer } from "../interfaces/hooks/context.interface";
 import { IProduct } from "../interfaces/product.interface";
 import { MakeProductsRequestReturn } from "../services/productApi";
-import { IDashReducer } from "../interfaces/hooks/context.interface";
 
 export interface BreadcrumbItem {
   name: string;
@@ -28,8 +28,18 @@ export interface ItemType<T> {
 }
 
 function useProductFilter() {
-  const queryClient = useQueryClient();
-  const data: MakeProductsRequestReturn = queryClient.getQueryData(IProduct.PRODUCT_NAME_QUERY)!;
+  // const [isFetching, setisFetching] = useState(false)
+  const { data, isFetching } = useQuery<MakeProductsRequestReturn>({
+    queryKey: IProduct.PRODUCT_NAME_QUERY,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
+
+  // useEffect(() => {
+  //   if (fetching){
+  //     set
+  //   }
+  // }, [data, fetching])
 
   function findItemById<T>({ id }: { id: string }): ItemType<T> {
     const products = data?.products ?? [];
@@ -133,7 +143,7 @@ function useProductFilter() {
     };
   }
 
-  return { findItemById };
+  return { findItemById, isFetching };
 }
 
 export default useProductFilter;
