@@ -14,7 +14,7 @@ const categorySchema = new Schema<ICategory>({
 },
 {
   versionKey: false,
-  timestamps: true
+  timestamps: false
 });
 
 const Category = mongoose.model<ICategory>('Category', categorySchema);

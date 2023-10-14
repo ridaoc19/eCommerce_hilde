@@ -1,182 +1,112 @@
-import { useState } from 'react';
-import useProductFilter from "../../../../hooks/useProductFilter";
-import ProductEntryFormRender from "./ProductEntryFormRender";
-import { IProduct } from '../../../../interfaces/product.interface';
+import { ButtonName, ProductEntryFormProps, colors } from './interface.ProductEntry';
 
-function ProductEntryForm({ state }: { state: string }) {
-  const { findItemById } = useProductFilter()
-  const { product } = findItemById({ id: state })
-
-  // Estado para las variantes
-  const [variants, setVariants] = useState<IProduct.Variants[]>(product.variants);
-  const [currentVariant, setCurrentVariant] = useState<IProduct.Variants | null>(null);
-
-  // Estado para nuevos valores de variante
-  const [newVariant, setNewVariant] = useState<IProduct.Variants>({
-    size: '',
-    color: '',
-    purchasePrice: 0,
-    sellingPrice: 0,
-    stock: 0,
-  });
-
-  // Función para agregar una nueva variante
-  const addVariant = () => {
-    if ( newVariant.purchasePrice >= 0 && newVariant.sellingPrice >= 0 && newVariant.stock >= 0) {
-      // if (newVariant.size && newVariant.color && newVariant.purchasePrice >= 0 && newVariant.sellingPrice >= 0 && newVariant.stock >= 0) {
-      setVariants([...variants, newVariant]);
-      setNewVariant({
-        size: '',
-        color: '',
-        purchasePrice: 0,
-        sellingPrice: 0,
-        stock: 0,
-      });
-    }
-  };
-
-  // Función para editar una variante existente
-  const editVariant = () => {
-    if (currentVariant) {
-      const updatedVariants = variants.map((variant) =>
-        variant === currentVariant ? newVariant : variant
-      );
-      setVariants(updatedVariants);
-      setCurrentVariant(null);
-    }
-  };
-
-  // Función para eliminar una variante existente
-  const deleteVariant = () => {
-    if (currentVariant) {
-      const updatedVariants = variants.filter((variant) =>
-        variant !== currentVariant
-      );
-      setVariants(updatedVariants);
-      setCurrentVariant(null);
-    }
-  };
+function ProductEntryForm({ state, handleOnClick, handleOnChange }: ProductEntryFormProps) {
+  const { selectedProduct: { requestData: { variants, images } }, changeForm } = state;
 
   return (
     <div>
-      <ProductEntryFormRender product={product}>
-        <div className='images'>
-          {product.images?.map((img, ind) => (
-            <div key={ind}><img src={`${process.env.REACT_APP_SERVER_FILE}/${img}`} alt={ind.toString()} width={'200'} /></div>
-          ))}
-        </div>
-        <div className="variants">
-          <i>Variantes:</i>
-          {variants.map((variant, index) => (
-            <div key={index}>
-              <span
-                style={{ backgroundColor: variant.color }}
-                onClick={() => setCurrentVariant(variant)}
-              >
-                {variant.size}
-              </span>
-              <span>
-                {variant.purchasePrice} {variant.sellingPrice} {variant.stock}
-              </span>
-            </div>
-          ))}
+      {/* <ProductEntryFormRender product={product}> */}
+      <div className='images'>
+        {images?.map((img, ind) => (
+          <div key={ind}><img src={`${process.env.REACT_APP_SERVER_FILE}/${img}`} alt={ind.toString()} width={'200'} /></div>
+        ))}
+      </div>
+
+
+      <div className='variants'>
+        <div>
+          <ul>
+            <li>
+              <span>Size</span>
+              <span>Color</span>
+              <span>Purchase Price</span>
+              <span>Selling Price</span>
+              <span>Stock</span>
+            </li>
+            {variants.map(({ size, color, purchasePrice, sellingPrice, stock }, index) => (
+              <li key={index}>
+                <span>{size}</span>
+                <span style={{ backgroundColor: color }} >color</span>
+                <span>{purchasePrice}</span>
+                <span>{sellingPrice}</span>
+                <span>{stock}</span>
+                <button name={ButtonName.EditVariant} value={index} onClick={handleOnClick}>Editar</button>
+                <button name={ButtonName.RemoveVariant} value={index} onClick={handleOnClick}>Eliminar</button>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* Formulario de edición de variante */}
-        {currentVariant && (
-          <div className="edit-variant">
-            <h3>Editar Variante</h3>
-            <input
-              type="text"
-              placeholder="Tamaño"
-              value={newVariant.size}
-              onChange={(e) =>
-                setNewVariant({ ...newVariant, size: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Color"
-              value={newVariant.color}
-              onChange={(e) =>
-                setNewVariant({ ...newVariant, color: e.target.value })
-              }
-            />
-            <input
-              type="number"
-              placeholder="Precio de compra"
-              value={newVariant.purchasePrice}
-              onChange={(e) =>
-                setNewVariant({ ...newVariant, purchasePrice: e.target.valueAsNumber })
-              }
-            />
-            <input
-              type="number"
-              placeholder="Precio de venta"
-              value={newVariant.sellingPrice}
-              onChange={(e) =>
-                setNewVariant({ ...newVariant, sellingPrice: e.target.valueAsNumber })
-              }
-            />
-            <input
-              type="number"
-              placeholder="Stock"
-              value={newVariant.stock}
-              onChange={(e) =>
-                setNewVariant({ ...newVariant, stock: e.target.valueAsNumber })
-              }
-            />
-            <button onClick={editVariant}>Guardar Cambios</button>
-            <button onClick={deleteVariant}>Eliminar Variante</button>
-          </div>
-        )}
 
-        {/* Formulario para agregar nueva variante */}
-        <div className="add-variant">
-          <h3>Agregar Variante</h3>
+        {/*                   esto es formulario                     */}
+        <div className='form'>
           <input
             type="text"
+            name="size"
             placeholder="Tamaño"
-            value={newVariant.size}
-            onChange={(e) =>
-              setNewVariant({ ...newVariant, size: e.target.value })
-            }
+            value={changeForm.size}
+            onChange={handleOnChange}
           />
+          {/* {validationError.specificationKey && <span>{validationError.specificationKey}</span>} */}
+          <div>
+            {/* <label htmlFor="colorSelect">Selecciona un color:</label> */}
+            <select id="colorSelect" name="color" value={changeForm.color} onChange={handleOnChange}>
+              <option value="">Seleccione un color</option>
+              {colors.map((colorObj, index) => {
+                return (
+                  <option key={index} value={colorObj.code} style={{ backgroundColor: colorObj.code }}>
+                    {colorObj.name}
+                  </option>
+                );
+              })}
+            </select>
+            {changeForm.color && (
+              <div style={{ backgroundColor: changeForm.color, width: '50px', height: '50px' }}></div>
+            )}
+          </div>
+
+          {/* {validationError.specificationValue && <span>{validationError.specificationValue}</span>} */}
           <input
             type="text"
-            placeholder="Color"
-            value={newVariant.color}
-            onChange={(e) =>
-              setNewVariant({ ...newVariant, color: e.target.value })
-            }
+            name="purchasePrice"
+            placeholder="Precio compra"
+            value={changeForm.purchasePrice.toLocaleString('es-CO', {
+              style: 'currency',
+              currency: 'COP',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })}
+            onChange={handleOnChange}
           />
+          {/* {validationError.specificationValue && <span>{validationError.specificationValue}</span>} */}
+          <input
+            type="text"
+            name="sellingPrice"
+            placeholder="Precio venta"
+            value={changeForm.sellingPrice.toLocaleString('es-CO', {
+              style: 'currency',
+              currency: 'COP',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })}
+            onChange={handleOnChange}
+          />
+          {/* {validationError.specificationValue && <span>{validationError.specificationValue}</span>} */}
           <input
             type="number"
-            placeholder="Precio de compra"
-            value={newVariant.purchasePrice}
-            onChange={(e) =>
-              setNewVariant({ ...newVariant, purchasePrice: e.target.valueAsNumber })
-            }
+            name="stock"
+            placeholder="Cuantos"
+            value={changeForm.stock}
+            onChange={handleOnChange}
           />
-          <input
-            type="number"
-            placeholder="Precio de venta"
-            value={newVariant.sellingPrice}
-            onChange={(e) =>
-              setNewVariant({ ...newVariant, sellingPrice: e.target.valueAsNumber })
-            }
-          />
-          <input
-            type="number"
-            placeholder="Stock"
-            value={newVariant.stock}
-            onChange={(e) =>
-              setNewVariant({ ...newVariant, stock: e.target.valueAsNumber })
-            }
-          />
-          <button onClick={addVariant}>Agregar Variante</button>
+          {/* {validationError.specificationValue && <span>{validationError.specificationValue}</span>} */}
         </div>
-      </ProductEntryFormRender>
+
+        <button name={ButtonName.AddVariant} onClick={handleOnClick}>Agregar especificación</button>
+        <hr />
+        <button name={ButtonName.Clean} onClick={handleOnClick} >Limpiar</button>
+        <button name={ButtonName.Save} onClick={handleOnClick}>Guardar</button>
+      </div>
     </div>
   );
 }
