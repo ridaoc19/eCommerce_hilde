@@ -11,9 +11,11 @@ export namespace ILayout {
 
 
 function Layout({ children }: ILayout.LayoutProps) {
+  const pathname = window.location.pathname === "/hilde"
+  console.log(pathname);
 
   return (
-    <div className='main__layout--container'>
+    <div className={`main__layout--container ${pathname ? 'remove' : 'add'}`}>
       <div className='main__layout--navbar'>
         <Navbar />
       </div>
@@ -22,7 +24,9 @@ function Layout({ children }: ILayout.LayoutProps) {
           <Sidebar />
         </div>}
       <div className='main__layout--children'>
-        {children}
+        <div>
+          {children}
+        </div>
       </div>
       <div className='main__layout--footer'>
         <Footer />
