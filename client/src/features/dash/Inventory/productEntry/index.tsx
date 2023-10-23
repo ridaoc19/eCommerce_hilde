@@ -27,9 +27,9 @@ const initialState: InitialState = {
 const ProductEntry: React.FC = () => {
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation(callApiProductEntry, { onSuccess: () => { queryClient.invalidateQueries(IProduct.PRODUCT_NAME_QUERY) } });
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState<InitialState>(initialState);
   const { getValidationErrors } = useValidations();
-  const { findItemById } = useProductFilter();
+  const { findItemById, isFetching } = useProductFilter();
 
   useEffect(() => {
     let res = findItemById({ id: state._id })
@@ -149,12 +149,11 @@ const ProductEntry: React.FC = () => {
     }
     // setState(emptyCategory({ category, state }))
   };
-
   return (
-    <div>
-      <ProductEntryList handleOnClick={handleOnClick} state={state} handleOnChange={handleOnChange} />
+    <>
+      {!isFetching && state.breadcrumb.length > 0 && <ProductEntryList handleOnClick={handleOnClick} state={state} handleOnChange={handleOnChange} />}
       {state.selectedProduct.productId && <ProductEntryForm state={state} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />}
-    </div>
+    </>
   );
 };
 

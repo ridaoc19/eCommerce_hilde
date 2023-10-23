@@ -12,7 +12,6 @@ export enum ActionTypeDashboard {
 }
 
 const initialState: IDashReducer.AppState = {
-  isLoadingProduct: false,
   breadcrumb: '',
   component: '',
   account: {

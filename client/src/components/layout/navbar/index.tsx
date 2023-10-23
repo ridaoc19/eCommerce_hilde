@@ -7,6 +7,7 @@ import { IContext } from '../../../interfaces/hooks/context.interface';
 import { permitsRoles } from '../../../interfaces/user.interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserData } from '../../../redux/reducers/user';
+import Sidebar from '../sidebar';
 
 
 function Navbar() {
@@ -37,6 +38,9 @@ function Navbar() {
 
   return (
     <div className='component__navbar--container'>
+      <div className='navbar__sidebar--container'>
+        <Sidebar />
+      </div>
       <div className='navbar__cart--container'>
         {Svg({ type: "shop", color: "white" })}
       </div>

@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { CreateContext } from "../../../../hooks/useContext";
+import { ActionTypeDashboard } from "../../../../hooks/useContext/dash/reducer";
 import useProductFilter, { BreadcrumbItem } from "../../../../hooks/useProductFilter";
 import { IContext } from "../../../../interfaces/hooks/context.interface";
 import { IProduct } from '../../../../interfaces/product.interface';
@@ -10,7 +11,6 @@ import Department from "./department";
 import Products from "./product/addProduct";
 import SupplyProducts from './product/supplyProducts';
 import Subcategory from "./subCategory";
-import { ActionTypeDashboard } from "../../../../hooks/useContext/dash/reducer";
 
 export namespace IInventory {
   export type ItemRole = {
@@ -40,7 +40,7 @@ export interface ItemType {
 
 function NewDeptCatSubProdData() {
   const { findItemById } = useProductFilter()
-  const { dashboard: { state: { isLoadingProduct, inventory }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
   const { department_id, category_id, subcategory_id, products_id } = inventory;
   const queryClient = useQueryClient();
   const isLoading = queryClient.isFetching(IProduct.PRODUCT_NAME_QUERY);
@@ -54,8 +54,8 @@ function NewDeptCatSubProdData() {
 
   return (
     <>
-      {!!isLoading && !isLoadingProduct && <div>Actualizando Productos...</div>}
-      {isLoadingProduct || !state.type
+      {!!isLoading && <div>Actualizando Productos...</div>}
+      {!state.type
         ? <div>Cargando Productos...</div>
         : <div>
           <div className="super_breadcrumb">

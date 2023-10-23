@@ -1,11 +1,6 @@
-import React, { MouseEventHandler, useContext, useState } from 'react';
-import Svg from '../../../assets/icons/Svg';
-import { CreateContext } from '../../../hooks/useContext';
-import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
-import { IContext } from '../../../interfaces/hooks/context.interface';
+import { useState } from 'react';
 import { PermitsRoles } from '../../../interfaces/user.interface';
-import { useAppSelector } from '../../../redux/hooks';
-import { selectUserData } from '../../../redux/reducers/user';
+import SidebarHome from './SidebarHome';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -17,61 +12,117 @@ export namespace ISidebar {
   };
 }
 
-const item: ISidebar.ItemRole[] = [
-  { id: 'sidebar_user', value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
-  { id: 'sidebar_newDeptCatSubProdData', value: "newDeptCatSubProdData", type: "Crear Producto", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
-  { id: 'sidebar_productEntry', value: "productEntry", type: "Ingresar Producto", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
-  { id: 'sidebar_otro', value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
-];
+// interface IsOverflowing { _id: string, overrun: boolean }
 
 function Sidebar() {
-  const { dashboard: { state: { component, permits }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
-  const dataUser = useAppSelector(selectUserData)
+  // const [selectedId, setSelectedId] = useState("")
+  // const { findItemById } = useProductFilter();
+  // const department = useMemo(() => findItemById({ id: "" }).department.data, [findItemById]);
+  const [isActive, setIsActive] = useState(false);
+  // const [isOverflowing, setIsOverflowing] = useState<IsOverflowing[]>([]);
+  // const itemsRef = useRef<Map<string, HTMLElement>>(new Map());
 
-  const [expanded, setExpanded] = useState(false);
 
-  const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-    const { name, value } = event.target as HTMLFormElement;
-    switch (name) {
-      case "toggle":
-        return setExpanded(!expanded);
-      case "items":
-        setExpanded(!expanded)
-        return dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: { name: null, value: value } })
-      default:
-        break;
-    }
-  };
+  // const handleOverflowCheck = useCallback((selectedId: string) => {
 
+  //   const current = itemsRef.current!;
+  //   const isVerticalOverflowing: IsOverflowing[] | undefined = department.find(dep => dep._id === selectedId)?.categoriesId.map((item) => {
+  //     const node = current.get(item._id)!;
+  //     const isVertical: boolean = node?.scrollHeight > node?.offsetHeight;
+  //     return { _id: item._id, overrun: isVertical };
+  //   });
+  //   isVerticalOverflowing ? setIsOverflowing(isVerticalOverflowing) : setIsOverflowing(isOverflowing)
+  // }, []);
+
+  // useEffect(() => {
+  //   if (selectedId) {
+  //     handleOverflowCheck(selectedId);
+  //   }
+  // }, [selectedId]);
+
+  // const handleMouseEnter = (depId: string) => {
+  //   setSelectedId(depId);
+  // };
+
+  // const handleMouseLeave = () => {
+  //   setSelectedId("");
+  // };
+
+  // const customHome = (
+  //   <>
+  //     <div className='section__main-department'>
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //       {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name}</div>))}
+  //     </div>
+  //     {selectedId && (
+  //       <div className='section__main-category'>
+  //         {department.find(dep => dep._id === selectedId)?.categoriesId.map((cat) => {
+  //           return (
+  //             <div key={cat._id}>
+  //               <div
+  //                 ref={(node) => node ? itemsRef.current.set(cat._id, node) : itemsRef.current.delete(cat._id)}
+  //                 className='main__category-card'
+  //               >
+  //                 <Link to={""}>{cat.name}</Link>
+  //                 <ul >
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                   {cat.subcategoriesId.map(sub => <li key={sub._id}>{sub.name}</li>)}
+  //                 </ul>
+  //               </div>
+  //               {isOverflowing.find(e => e._id === cat._id)?.overrun && <Link to={''}>Ver mas</Link>}
+  //             </div>
+  //           );
+  //         })}
+  //       </div>
+  //     )}
+  //   </>
+  // );
+  const handleOnClick = () => {
+    document.body.classList.toggle('body-scroll-locked');
+    setIsActive(!isActive);
+  }
   return (
-    <div className={`component__sidebar--container sidebar ${expanded ? 'expanded' : ''}`}>
-
-      {/* <div className="sidebar__header--container">
-        <h2>Sidebar</h2>
-        <button name='toggle' onClick={handleOnClick}>
-          {expanded ? 'Cerrar' : 'Abrir'}
-        </button>
-      </div> */}
-      <div className='sidebar__items--container'>
-        {['item-logo', 'item-text'].map((u, i) => <ul key={i} className={u}>
-          {item.map((e, i) => {
-            if (dataUser?.roles) {
-              return permits[e.id] && (
-                <li key={i}>
-                  {u === "item-logo" ? <button name='toggle' onClick={handleOnClick} className={component === e.value ? `item__select-item` : ""}>
-                    {e.svg}
-                  </button> : <button name='items' value={e.value} onClick={handleOnClick}>{e.type}</button>
-                  }
-                </li>
-              );
-            } else {
-              return <React.Fragment key={i} />;
-            }
-          })}
-        </ul>)}
+    <div className='sidebar__container'>
+      <div className={`sidebar__icon-container ${isActive ? 'is-active' : ''}`} onClick={handleOnClick}>
+        <div className="_layer -top"></div>
+        <div className="_layer -mid"></div>
+        <div className="_layer -bottom"></div>
       </div>
 
-    </div>
+      <div className={`sidebar__content ${isActive ? 'is-active' : ''}`} onClick={handleOnClick}>
+        <div className='sidebar__main'
+          //  onMouseLeave={handleMouseLeave}
+          onClick={(e) => e.stopPropagation()}>
+          {/* <div className='sidebar__header-container'>
+            <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50, color: "white" })}</Link>
+          </div> */}
+          <div className='sidebar__section-container'>
+            <SidebarHome />
+          </div>
+        </div>
+      </div>
+    </div >
   )
 }
 
