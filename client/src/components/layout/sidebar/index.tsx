@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { PermitsRoles } from '../../../interfaces/user.interface';
 import SidebarHome from './SidebarHome';
+import { Link } from 'react-router-dom';
+import Svg from '../../../assets/icons/Svg';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -114,9 +116,9 @@ function Sidebar() {
         <div className='sidebar__main'
           //  onMouseLeave={handleMouseLeave}
           onClick={(e) => e.stopPropagation()}>
-          {/* <div className='sidebar__header-container'>
+          <div className='sidebar__header-container'>
             <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50, color: "white" })}</Link>
-          </div> */}
+          </div>
           <div className='sidebar__section-container'>
             <SidebarHome />
           </div>
