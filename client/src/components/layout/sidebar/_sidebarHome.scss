@@ -1,52 +1,112 @@
-.sidebar__section-container {
-          height               : 100%;
-          background-color     : rgb(248, 204, 146);
-          display              : grid;
-          grid-template-columns: 15rem auto;
+.section__main-left {
+  max-height        : 100vh;
+  display           : grid;
+  grid-template-rows: 4.4rem 1fr 8rem;
+  background-color  : var(--brand-5);
 
-          .section__main-department {
-            overflow-y: auto;
-            display   : grid;
-            padding   : 1rem;
-            gap       : 0.5rem;
+  .main__left-header {
+    height          : 4.4rem;
+    background-color: var(--brand-6);
+    min-width       : 14rem;
+    padding-right   : 1rem;
+    position        : relative;
 
-            >div {
-              padding         : 0.5rem;
-              border-radius   : 0.5rem;
-              background-color: var(--brand-2);
-            }
-          }
+    >div {
+      position: absolute;
+      right   : 2rem;
+      top     : 0.5rem;
+    }
+  }
 
-          .section__main-category {
-            overflow-y              : auto;
-            width                   : 50vw;
-            // display              : grid;
-            // grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-            gap                     : 1rem;
-            padding                 : 1rem;
-            display                 : flex;
-            flex-wrap               : wrap;
+  .main__left-content {
+    background-color: var(--brand-4);
+    overflow-y      : scroll;
+    display         : grid;
+    gap             : 0.5rem;
 
-            >div {
-              background-color  : aliceblue;
-              max-height        : 25rem;
-              overflow          : hidden;
-              padding           : 1rem;
-              flex              : auto;
-              display           : grid;
-              justify-content   : center;
-              grid-template-rows: 1fr 2.5rem;
+    >div {
+      padding        : 0.4rem 1rem;
+      display        : flex;
+      justify-content: space-between;
 
+      &:hover {
+        background-color: var(--neutral-2);
+      }
+    }
+  }
 
-              >.main__category-card {
-                background-color     : var(--brand-5);
-                // height               : 95%;
-                overflow             : hidden;
-                display              : grid;
-                grid-template-rows   : min-content 1fr;
-                // min-width         : 8rem;
-                width                : 8rem;
-              }
-            }
-          }
+  .main__left-footer {
+    background-color: var(--brand-7);
+  }
+}
+
+.section__main-right {
+  max-height: 100vh;
+  padding   : 1rem;
+  overflow-y: auto;
+
+  background-color: var(--brand-4);
+  max-width       : 50vw;
+  width           : 50vw;
+
+  display  : flex;
+  flex-wrap: wrap;
+  gap      : 1rem;
+
+  a {
+    display        : inline-block;
+    color          : var(--font-brand);
+    text-decoration: none;
+
+    &:after {
+      content   : "";
+      display   : block;
+      margin    : auto;
+      height    : 2px;
+      width     : 0px;
+      transition: all .5s;
+    }
+
+    &:hover:after {
+      width     : 100%;
+      background: var(--font-brand);
+    }
+  }
+
+  >.right__card-container {
+    background-color  : var(--brand-2);
+    flex              : auto;
+    display           : grid;
+    justify-content   : center;
+    grid-template-rows: 1fr 1.5rem;
+    gap               : 0.5rem;
+    padding           : 1rem;
+    box-shadow        : 0px 0px 10px rgba(0, 0, 0, 0.131);
+
+    >.right__card-content {
+      // background-color  : var(--brand-5);
+      display           : grid;
+      grid-template-rows: min-content 15rem;
+      gap               : 0.5rem;
+      overflow          : hidden;
+
+      width: 11rem;
+
+      >h3 {
+        margin          : 0;
+        padding         : 0;
+        text-align      : center;
+      }
+
+      >div {
+        display: grid;
+        gap    : 0.3rem;
+
+        >h5 {
+          margin : 0;
+          padding: 0;
         }
+      }
+    }
+  }
+}

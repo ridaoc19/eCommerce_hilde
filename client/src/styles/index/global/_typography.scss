@@ -37,23 +37,23 @@ code {
   overflow: hidden;
 }
 
-a {
-  display        : inline-block;
-  position       : relative;
-  color          : var(--font-brand);
-  text-decoration: none;
+// a {
+//   display        : inline-block;
+//   position       : relative;
+//   color          : var(--font-brand);
+//   text-decoration: none;
 
-  &:after {
-    content   : "";
-    display   : block;
-    margin    : auto;
-    height    : 2px;
-    width     : 0px;
-    transition: all .5s;
-  }
+//   &:after {
+//     content   : "";
+//     display   : block;
+//     margin    : auto;
+//     height    : 2px;
+//     width     : 0px;
+//     transition: all .5s;
+//   }
 
-  &:hover:after {
-    width     : 100%;
-    background: var(--font-brand);
-  }
-}
+//   &:hover:after {
+//     width     : 100%;
+//     background: var(--font-brand);
+//   }
+// }
