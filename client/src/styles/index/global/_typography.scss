@@ -1,3 +1,5 @@
+$base-font-size: 16px; // Tamaño de fuente base
+
 body {
   margin : 0;
   padding: 0;
@@ -6,9 +8,52 @@ body {
     sans-serif;
   -webkit-font-smoothing : antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size              : $base-font-size; // Establecer el tamaño de fuente base
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem; // Reduzca el tamaño de fuente en pantallas más pequeñas
+  }
+
+  @media (min-width: 1200px) {
+    font-size: 1.2rem; // Aumente el tamaño de fuente en pantallas más grandes
+  }
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+  font-size: 1rem; // Tamaño de fuente para el código, basado en el tamaño de fuente base
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem; // Reduzca el tamaño de fuente del código en pantallas más pequeñas
+  }
+
+  @media (min-width: 1200px) {
+    font-size: 1.1rem; // Aumente el tamaño de fuente del código en pantallas más grandes
+  }
 }
+
+.body-scroll-locked {
+  overflow: hidden;
+}
+
+// a {
+//   display        : inline-block;
+//   position       : relative;
+//   color          : var(--font-brand);
+//   text-decoration: none;
+
+//   &:after {
+//     content   : "";
+//     display   : block;
+//     margin    : auto;
+//     height    : 2px;
+//     width     : 0px;
+//     transition: all .5s;
+//   }
+
+//   &:hover:after {
+//     width     : 100%;
+//     background: var(--font-brand);
+//   }
+// }

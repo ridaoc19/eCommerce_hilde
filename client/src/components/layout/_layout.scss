@@ -3,14 +3,14 @@
 @import './footer/footer';
 
 .main__layout--container {
-  display              : grid;
-  min-height           : 100vh;
-  grid-template-columns: 3rem auto;
-  grid-template-rows   : min-content auto min-content;
-  grid-template-areas  :
-    "navbar navbar"
-    "sidebar children"
-    "footer footer";
+  display                 : grid;
+  min-height              : 100vh;
+  grid-template-rows      : min-content 1fr min-content;
+  background-color        : var(--brand-2);
+  grid-template-areas     :
+    "navbar"
+    "children"
+    "footer";
 
   @mixin main_layout($fields_each) {
     grid-area: $fields_each;
@@ -19,14 +19,15 @@
       background-color: var(--brand-6);
     }
 
-    @else if $fields_each==sidebar {
-      position        : relative;
-      background-color: var(--neutral-1);
-    }
-
     @else if $fields_each==children {
-      padding         : 1% 2%;
-      background-color: var(--neutral-2);
+      justify-self    : center;
+      background-color: var(--brand-2);
+
+      >div {
+        height          : 100%;
+        max-width       : 80rem;
+        background-color: antiquewhite;
+      }
     }
 
     @else if $fields_each==footer {
@@ -35,7 +36,6 @@
   }
 
   $fields: navbar,
-  sidebar,
   children,
   footer;
 

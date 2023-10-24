@@ -4,7 +4,7 @@
   cursor       : pointer;
   user-select  : none;
   height       : 2.5rem;
-  border-radius: 12px;
+  border-radius: 0.4rem;
   outline      : none;
 
   @if $type==button_dark {
