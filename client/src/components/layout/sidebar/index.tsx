@@ -1,11 +1,6 @@
-import React, { MouseEventHandler, useContext, useState } from 'react';
-import Svg from '../../../assets/icons/Svg';
-import { CreateContext } from '../../../hooks/useContext';
-import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
-import { IContext } from '../../../interfaces/hooks/context.interface';
+import { useState } from 'react';
 import { PermitsRoles } from '../../../interfaces/user.interface';
-import { useAppSelector } from '../../../redux/hooks';
-import { selectUserData } from '../../../redux/reducers/user';
+import SidebarHome from './SidebarHome';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -17,61 +12,33 @@ export namespace ISidebar {
   };
 }
 
-const item: ISidebar.ItemRole[] = [
-  { id: 'sidebar_user', value: "user", type: "Usuarios", svg: Svg({ type: "user" }), roles: ["super", "admin", 'edit', 'visitant'] },
-  { id: 'sidebar_newDeptCatSubProdData', value: "newDeptCatSubProdData", type: "Crear Producto", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
-  { id: 'sidebar_productEntry', value: "productEntry", type: "Ingresar Producto", svg: Svg({ type: "shop" }), roles: ['super', 'admin'] },
-  { id: 'sidebar_otro', value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
-];
-
 function Sidebar() {
-  const { dashboard: { state: { component, permits }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
-  const dataUser = useAppSelector(selectUserData)
+  const [isActive, setIsActive] = useState(false);
+  const [selectedIdBoolean, setSelectedIdBoolean] = useState(true)
 
-  const [expanded, setExpanded] = useState(false);
-
-  const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-    const { name, value } = event.target as HTMLFormElement;
-    switch (name) {
-      case "toggle":
-        return setExpanded(!expanded);
-      case "items":
-        setExpanded(!expanded)
-        return dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: { name: null, value: value } })
-      default:
-        break;
-    }
-  };
+  const handleOnClick = () => {
+    document.body.classList.toggle('body-scroll-locked');
+    setIsActive(!isActive);
+  }
 
   return (
-    <div className={`component__sidebar--container sidebar ${expanded ? 'expanded' : ''}`}>
-
-      {/* <div className="sidebar__header--container">
-        <h2>Sidebar</h2>
-        <button name='toggle' onClick={handleOnClick}>
-          {expanded ? 'Cerrar' : 'Abrir'}
-        </button>
-      </div> */}
-      <div className='sidebar__items--container'>
-        {['item-logo', 'item-text'].map((u, i) => <ul key={i} className={u}>
-          {item.map((e, i) => {
-            if (dataUser?.roles) {
-              return permits[e.id] && (
-                <li key={i}>
-                  {u === "item-logo" ? <button name='toggle' onClick={handleOnClick} className={component === e.value ? `item__select-item` : ""}>
-                    {e.svg}
-                  </button> : <button name='items' value={e.value} onClick={handleOnClick}>{e.type}</button>
-                  }
-                </li>
-              );
-            } else {
-              return <React.Fragment key={i} />;
-            }
-          })}
-        </ul>)}
+    <div className='sidebar__container'>
+      <div className={`sidebar__icon-container ${isActive ? 'is-active' : ''}`} onClick={handleOnClick}>
+        <div className="_layer -top"></div>
+        <div className="_layer -mid"></div>
+        <div className="_layer -bottom"></div>
       </div>
 
-    </div>
+      <div className={`sidebar__content ${isActive ? 'is-active' : ''}`} onClick={handleOnClick}>
+        <div className='sidebar__main'
+          onMouseLeave={() => setSelectedIdBoolean(false)}
+          onClick={(e) => e.stopPropagation()}>
+          <div className='sidebar__section-container'>
+            <SidebarHome isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} />
+          </div>
+        </div>
+      </div>
+    </div >
   )
 }
 
