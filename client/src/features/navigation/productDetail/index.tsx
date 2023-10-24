@@ -1,28 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 import Breadcrumb from "../../../components/common/breadcrumb/Breadcrumb";
 import useProductFilter from "../../../hooks/useProductFilter";
 
 function ProductDetail() {
   const { id } = useParams();
-  const navigator = useNavigate();
-  const [productId, setProductId] = useState(id || "")
   const { findItemById } = useProductFilter();
-  const resultProduct = useMemo(() => findItemById({ id: productId }), [findItemById])
-  const { type, breadcrumb, product } = resultProduct;
+  const { product } = useMemo(() => findItemById({ id: id || "" }), [findItemById])
 
-  useEffect(() => {
-    setProductId(id || "")
-  }, [id])
-
-  useEffect(() => {
-    // console.log(resultProduct);
-    if (type !== 'product') navigator(`/list-products/${productId}`)
-  }, [type])
   return (
     <div>
       <div className="detail__breadcrumb">
-        <Breadcrumb breadcrumb={breadcrumb} handleClickBreadcrumb={(_id) => setProductId(_id)} />
+        <Breadcrumb />
       </div>
       <div>
         <h2>{product.name}</h2>
