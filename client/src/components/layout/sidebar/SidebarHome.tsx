@@ -46,7 +46,7 @@ function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean, handleOn
           </div>
         </div>
         <div className="main__left-content">
-          {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
+          {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}><Link to={`/list-products/${dep._id}`} onClick={handleOnClick} >{dep.name}</Link> <span>{`>`}</span></div>))}
         </div>
 
         <div className="main__left-footer">

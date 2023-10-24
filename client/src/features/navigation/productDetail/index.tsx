@@ -12,6 +12,10 @@ function ProductDetail() {
   const { type, breadcrumb, product } = resultProduct;
 
   useEffect(() => {
+    setProductId(id || "")
+  }, [id])
+
+  useEffect(() => {
     // console.log(resultProduct);
     if (type !== 'product') navigator(`/list-products/${productId}`)
   }, [type])
