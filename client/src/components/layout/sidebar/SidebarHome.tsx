@@ -5,7 +5,7 @@ import Svg from "../../../assets/icons/Svg";
 
 interface IsOverflowing { _id: string, overrun: boolean }
 
-function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean }: { isActive: boolean, handleOnSelectedId: () => void, selectedIdBoolean: boolean }) {
+function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean, handleOnClick }: { isActive: boolean, handleOnSelectedId: () => void, selectedIdBoolean: boolean, handleOnClick: () => void }) {
   const itemsRef = useRef<Map<string, HTMLElement>>(new Map());
   const { findItemById } = useProductFilter();
   const department = useMemo(() => findItemById({ id: "" }).department.data, [findItemById]);
@@ -36,8 +36,6 @@ function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean }: { isAc
   const handleMouseEnter = (depId: string) => {
     handleOnSelectedId()
     setSelectedId(depId);
-
-
   };
   return (
     <>
@@ -48,20 +46,6 @@ function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean }: { isAc
           </div>
         </div>
         <div className="main__left-content">
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onClick={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
-          {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
           {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}>{dep.name} <span>{`>`}</span></div>))}
         </div>
 
@@ -80,22 +64,13 @@ function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean }: { isAc
             return (
               <div key={cat._id} className="right__card-container">
                 <div className='right__card-content' ref={(node) => node ? itemsRef.current.set(cat._id, node) : itemsRef.current.delete(cat._id)} >
-                  <h3><Link to={cat._id}>{cat.name}</Link></h3>
+                  <h3><Link to={`/list-products/${cat._id}`} onClick={handleOnClick}>{cat.name}</Link></h3>
                   <div >
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={sub._id} >{sub.name}</Link></h5>)}
+                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={`/list-products/${sub._id}`} onClick={handleOnClick} >{sub.name}</Link></h5>)}
                   </div>
                 </div>
                 <div className="right__card-message">
-                  {isOverflowing.find(e => e._id === cat._id)?.overrun && <Link to={''}>Ver mas</Link>}
+                  {isOverflowing.find(e => e._id === cat._id)?.overrun && <Link to={`/list-products/${cat._id}`}>Ver mas</Link>}
                 </div>
               </div>
             );

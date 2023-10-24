@@ -34,7 +34,7 @@ function Sidebar() {
           onMouseLeave={() => setSelectedIdBoolean(false)}
           onClick={(e) => e.stopPropagation()}>
           <div className='sidebar__section-container'>
-            <SidebarHome isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} />
+            <SidebarHome isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
           </div>
         </div>
       </div>
