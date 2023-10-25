@@ -147,7 +147,7 @@ const createPayload: Payload<Route> = (params) => {
     case Route.ProductDelete:
       return { route: `${route}/${params.productId}`, requestOptions: { method: 'delete', }, };
     case Route.ProductEntry:
-      console.log(params.requestData);
+      // console.log(params.requestData);
       
       return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', body: JSON.stringify(params.requestData), headers } };
     default:

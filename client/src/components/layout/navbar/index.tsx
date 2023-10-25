@@ -8,6 +8,7 @@ import { permitsRoles } from '../../../interfaces/user.interface';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { clearUser, selectUserData } from '../../../redux/reducers/user';
 import Sidebar from '../sidebar';
+import Search from '../../common/search/Search';
 
 
 function Navbar() {
@@ -43,6 +44,9 @@ function Navbar() {
       </div>
       <div className='navbar__cart--container'>
         {Svg({ type: "shop", color: "white" })}
+      </div>
+      <div className='navbar__search--container' >
+        <Search />
       </div>
       <div className='navbar__logo--container'>
         <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50, color: "white" })}</Link>

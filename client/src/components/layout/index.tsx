@@ -11,7 +11,7 @@ export namespace ILayout {
 
 function Layout({ children }: ILayout.LayoutProps) {
   const pathname = window.location.pathname === "/hilde"
-  console.log(pathname);
+  // console.log(pathname);
 
   return (
     <div className={`main__layout--container ${pathname ? 'remove' : 'add'}`}>

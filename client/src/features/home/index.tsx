@@ -21,8 +21,9 @@ function Home() {
         <>
           {department.map(({ _id, name, categoriesId }) => {
             const product = categoriesId.flatMap(e => e.subcategoriesId).flatMap(e => e.productsId)
-            const cardData = product.map(({ images, variants, name, brand }) => {
+            const cardData = product.map(({ _id, images, variants, name, brand }) => {
               return {
+                _id,
                 images: images[0],
                 price: variants.map(e => e.sellingPrice),
                 name,
