@@ -6,14 +6,12 @@ function Breadcrumb() {
   const { id } = useParams();
   const navigator = useNavigate();
 
-  // const [productId, setProductId] = useState(id || "")
   const { findItemById } = useProductFilter();
   const { breadcrumb } = useMemo(() => findItemById({ id: id || "" }), [id])
 
   const handleOnclick = ({ _id }: { _id: string }) => {
     
     const type = findItemById({ id: _id }).type
-    console.log(_id, type);
     if (type === 'products All') return navigator(`/`)
     if (type === 'product') return navigator(`/product-detail/${_id}`)
     navigator(`/list-products/${_id}`)

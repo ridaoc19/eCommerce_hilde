@@ -63,7 +63,6 @@ export async function categoryEdit(req: Request, res: Response) {
 export async function categoryDelete(req: Request, res: Response) {
   try {
     const { _id } = req.params;
-    console.log(_id, "id")
     const category = await Category.findByIdAndDelete(_id);
     if (!category) throw new Error("El categoría no existe");
 
