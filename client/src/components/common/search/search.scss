@@ -1,0 +1,68 @@
+.search-container {
+  position: relative;
+
+  a {
+    text-decoration: none;
+  }
+
+  .search-input {}
+
+  .search-list {
+    width           : 100%;
+    background-color: var(--brand-1);
+    position        : absolute;
+
+    >div {
+      display: grid;
+      gap    : 0.5rem;
+      padding: 0.5rem;
+
+
+      // top             : 0;
+      // left            : 0;
+      h4,
+      h5 {
+        margin : 0;
+        padding: 0;
+      }
+
+      .search__card-content {
+        display              : grid;
+        grid-template-columns: 8rem 1fr;
+        gap                  : 0.5rem;
+        background-color     : #fff;
+        padding              : 0.5rem;
+
+
+        .card__images {
+          >img {
+            width: 100%;
+          }
+        }
+
+        .card__content {
+          display           : grid;
+          grid-template-rows: 3.5rem 1fr;
+          gap               : 0.5rem;
+
+          .card__title {
+            color: var(--font-brand);
+          }
+
+          .card__utils {
+            h5 {
+              color: var(--font-dark);
+
+            }
+
+            display              : grid;
+            grid-template-columns: 8rem 1fr;
+          }
+        }
+
+
+      }
+    }
+  }
+
+}

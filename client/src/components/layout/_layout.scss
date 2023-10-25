@@ -3,11 +3,11 @@
 @import './footer/footer';
 
 .main__layout--container {
-  display                 : grid;
-  min-height              : 100vh;
-  grid-template-rows      : min-content 1fr min-content;
-  background-color        : var(--brand-2);
-  grid-template-areas     :
+  display           : grid;
+  min-height        : 100vh;
+  grid-template-rows: min-content 1fr min-content;
+  background-color  : var(--brand-2);
+  grid-template-areas:
     "navbar"
     "children"
     "footer";
@@ -20,13 +20,19 @@
     }
 
     @else if $fields_each==children {
-      justify-self    : center;
       background-color: var(--brand-2);
+      display         : grid;
+      justify-content : center;
+      width           : 100%;
+
 
       >div {
         height          : 100%;
-        max-width       : 80rem;
         background-color: antiquewhite;
+
+        @media (min-width: 1200px) {
+          width: 80rem;
+        }
       }
     }
 

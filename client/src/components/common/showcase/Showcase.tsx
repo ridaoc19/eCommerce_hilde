@@ -14,9 +14,9 @@ function Showcase({ title, cardData }: ShowcaseProps) {
         <h2>{title}</h2>
       </div>
       <div className="showcase__main">
-        {cardData.map(({ brand, images, name, price }, index) => {
+        {cardData.map(({_id, brand, images, name, price }, index) => {
           return (
-            <Card key={index} images={images} price={price} name={name} brand={brand} />
+            <Card key={index} _id={_id} images={images} price={price} name={name} brand={brand} />
           )
         })}
       </div>

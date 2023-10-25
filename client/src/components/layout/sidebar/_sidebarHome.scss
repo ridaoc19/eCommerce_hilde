@@ -23,6 +23,7 @@
     overflow-y      : scroll;
     display         : grid;
     gap             : 0.5rem;
+    grid-auto-rows  : min-content;
 
     >div {
       padding        : 0.4rem 1rem;
@@ -42,12 +43,12 @@
 
 .section__main-right {
   max-height: 100vh;
-  padding   : 1rem;
+  padding   : 1rem 1rem 1rem 0.3rem;
   overflow-y: auto;
 
   background-color: var(--brand-4);
-  max-width       : 50vw;
-  width           : 50vw;
+  max-width       : 45vw;
+  width           : 45vw;
 
   display  : flex;
   flex-wrap: wrap;
@@ -90,17 +91,18 @@
       gap               : 0.5rem;
       overflow          : hidden;
 
-      width: 11rem;
+      width: 12rem;
 
       >h3 {
-        margin          : 0;
-        padding         : 0;
-        text-align      : center;
+        margin    : 0;
+        padding   : 0;
+        text-align: center;
       }
 
       >div {
-        display: grid;
-        gap    : 0.3rem;
+        display       : grid;
+        gap           : 0.3rem;
+        grid-auto-rows: min-content;
 
         >h5 {
           margin : 0;
