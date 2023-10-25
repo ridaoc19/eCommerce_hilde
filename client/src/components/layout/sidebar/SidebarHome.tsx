@@ -58,6 +58,7 @@ function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean, handleOn
         </div>
 
       </div>
+      
       {selectedId && (
         <div className='section__main-right'>
           {department.find(dep => dep._id === selectedId)?.categoriesId.map((cat) => {

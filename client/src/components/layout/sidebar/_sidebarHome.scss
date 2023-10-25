@@ -20,7 +20,7 @@
 
   .main__left-content {
     background-color: var(--brand-4);
-    overflow-y      : scroll;
+    overflow-y      : auto;
     display         : grid;
     gap             : 0.5rem;
     grid-auto-rows  : min-content;
