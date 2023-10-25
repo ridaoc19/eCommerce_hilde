@@ -15,6 +15,9 @@ function Home() {
     }
     // eslint-disable-next-line
   }, [isFetching])
+
+return <div>hola</div>
+
   return (
     <>
       {isFetching ? <div>Cargando productos</div> :
