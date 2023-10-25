@@ -16,7 +16,7 @@ function Home() {
     // eslint-disable-next-line
   }, [isFetching])
 
-return <div>hola</div>
+// return <div>hola</div>
 
   return (
     <>
