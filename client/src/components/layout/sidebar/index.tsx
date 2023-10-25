@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PermitsRoles } from '../../../interfaces/user.interface';
 import SidebarHome from './SidebarHome';
+import SidebarAdmin from './SidebarAdmin';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -34,7 +35,10 @@ function Sidebar() {
           onMouseLeave={() => setSelectedIdBoolean(false)}
           onClick={(e) => e.stopPropagation()}>
           <div className='sidebar__section-container'>
-            <SidebarHome isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
+            {window.location.pathname === "/hilde/dashboard"
+              ? <SidebarAdmin handleOnClick={handleOnClick} />
+              : <SidebarHome isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
+            }
           </div>
         </div>
       </div>
