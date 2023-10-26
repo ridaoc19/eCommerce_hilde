@@ -1,9 +1,7 @@
-import { IUserComponents } from "../../../../interfaces/user.interface";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/reducers/user";
 
-function Success({ change }: Pick<IUserComponents.FormProps, 'change'>) {
-  console.log(change, "tiene");
+function Success() {
 
   const dataUser = useAppSelector(selectUserData);
 
