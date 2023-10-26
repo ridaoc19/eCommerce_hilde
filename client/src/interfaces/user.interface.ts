@@ -1,7 +1,7 @@
 
 // ==============================|| User ||============================== //
 export namespace IUser {
-  type Routes = "registre" | "login" | "token" | "change" | "reset" | "account" | "";
+  type Routes = "registre" | "login" | "token" | "change" | "reset" | "account" | "verify" | "";
   type Roles = "super" | "admin" | "edit" | "visitant";
 
   export interface UserData {
@@ -14,6 +14,7 @@ export namespace IUser {
     token: string | undefined;
     routes: Routes;
     verified: boolean;
+    verifiedEmail: boolean;
     roles: Roles;
     components: string;
     // oldPassword: string;
@@ -30,6 +31,8 @@ export namespace IUser {
 
   export type InformationData = Pick<IUser.UserData, '_id' | 'name' | 'lastName' | 'email' | 'phone' | 'components'> & Partial<Pick<IUser.UserData, 'routes'>>;
   export type PasswordData = Pick<IUser.UserData, '_id' | 'password' | 'components'> & Partial<Pick<IUser.UserData, 'routes'>>;
+  export type tokenEmail = {tokenEmail:  string} & Partial<Pick<IUser.UserData, 'routes'>>;
+
 }
 
 // ==============================|| Redux ||============================== //
@@ -40,7 +43,7 @@ export namespace IUserRedux {
     error: null | {} | string;
   }
 
-  export type UserPostsProps = IUser.LoginData | IUser.RegistreData | IUser.passChangeData | IUser.resetData | IUser.tokenData | IUser.InformationData | IUser.PasswordData;
+  export type UserPostsProps = IUser.LoginData | IUser.RegistreData | IUser.passChangeData | IUser.resetData | IUser.tokenData | IUser.InformationData | IUser.PasswordData | IUser.tokenEmail;
 
   export interface TemplateMessageReturn {
     routes: IUser.UserData["routes"];

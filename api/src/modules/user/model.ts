@@ -8,6 +8,7 @@ interface IUser extends Document {
   phone: string;
   password: string;
   verified: boolean;
+  verifiedEmail: boolean;
   roles: "super" | "admin" | "edit" | "visitant";
   items: {
     purchasedProducts: Array<IProduct>;
@@ -48,6 +49,10 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false
     },
+    verifiedEmail: {
+      type: Boolean,
+      default: true
+    },
     items: {
       purchasedProducts: [
         { type: Schema.Types.ObjectId, ref: 'Product' }
@@ -68,3 +73,7 @@ const userSchema = new Schema<IUser>(
   })
 
 export const User = model<IUser>('User', userSchema);
+
+
+
+// {  name,  lastName,  email, phone,  password,  verified,  verifiedEmail,  roles,  items,  addresses}

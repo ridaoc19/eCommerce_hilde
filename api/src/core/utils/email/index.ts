@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import { User } from '../../../modules/user/interface';
 import { templateRegistre } from './template';
 
-export async function sendEmail({ name, email, password, type }: Pick<User.Content, 'name' | 'email' | 'password' | 'type'>) {
+export async function sendEmail({ name, email, password, type, tokenEmail }: Pick<User.Content, 'name' | 'email' | 'password' | 'type'> & { tokenEmail?: string }) {
 
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
@@ -14,7 +14,7 @@ export async function sendEmail({ name, email, password, type }: Pick<User.Conte
     },
   });
 
-  const { subject, html }: { subject: string, html: string } = templateRegistre({ name, password, type })
+  const { subject, html }: { subject: string, html: string } = templateRegistre({tokenEmail , name, password, type })
 
   const mailOptions = {
     from: process.env.EMAIL_SEND_FROM,
