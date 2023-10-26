@@ -21,7 +21,7 @@ function Form({ handleOnChange, change, errorBack, status }: IUserComponents.For
   return (
     <div className="dashboard__user-form--container">
       <div className="dashboard__user-form--content">
-        {status === "success" && <Success />}
+        {status === "success" && <Success change={change} />}
 
         <main>
 

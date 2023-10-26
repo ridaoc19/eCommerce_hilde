@@ -25,6 +25,9 @@ function Login() {
     if (loadingUser) return setStatus("loading")
     if (dataUser instanceof Object && !loadingUser && !errorBack && !localStorage.token) {
       if (dataUser?.verified) {
+        if (!dataUser.verifiedEmail) {
+          return setStatus('form')
+        }
         setStatus("success")
         setTimeout(() => {
           return navigate('/')

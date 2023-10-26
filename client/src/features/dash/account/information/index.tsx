@@ -4,22 +4,24 @@ import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import useUserOnChange from '../../../../hooks/useUserOnChange';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
 import { IUserComponents, IUserOnChange } from '../../../../interfaces/user.interface';
-import { useAppSelector } from '../../../../redux/hooks';
-import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { clearUser, selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
 import Form from './Form';
 import Render from './Render';
 
 
 function Information() {
+  const dispatchRedux = useAppDispatch();
   const dataUser = useAppSelector(selectUserData)!
   const initialState: IUserOnChange.UseUserOnChange = {
     name: { change: dataUser?.name, message: "" },
     lastName: { change: dataUser?.lastName, message: "" },
     email: { change: dataUser?.email, message: "" },
+    previousEmail: { change: dataUser?.email, message: "" },
     phone: { change: dataUser?.phone, message: "" },
     _id: { change: dataUser?._id, message: "" },
   }
-  const { dashboard: { state: { account: { password, information } }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { account: { password, information } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const { change, handleOnChange, handleErrorOnBack } = useUserOnChange(initialState)
   const errorBack = useAppSelector(selectUserError)
   const loadingUser = useAppSelector(selectUserLoading)
@@ -34,14 +36,19 @@ function Information() {
       setStatus("success")
       setTimeout(() => {
         setStatus("form")
-        dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: {name: null, value: ""} })
+        dispatchContext({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: { name: null, value: "" } })
+        if (!dataUser.verifiedEmail) {
+          localStorage.removeItem("token");
+          dispatchRedux(clearUser());
+          dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
+        }
       }, 10000);
     }
     // eslint-disable-next-line
   }, [loadingUser, dataUser, errorBack])
 
   const handleOnClick = () => {
-    dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: {name: null, value: ""} })
+    dispatchContext({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: { name: null, value: "" } })
   }
 
   return (
