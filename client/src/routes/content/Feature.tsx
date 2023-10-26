@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import Layout from '../../components/layout';
 import Loadable from '../_tools/Loadable';
 import Ensayo from '../../features/Ensayo';
+import VerifyEmail from '../../features/dash/account/verifyEmail/VerifyEmail';
 
 
 function NotFoundPage() {
@@ -26,6 +27,10 @@ const Feature = [
   {
     path: '/product-detail/:id',
     element: <Layout><ProductDetail /></Layout>
+  },
+  {
+    path: '/verify/:id',
+    element: <VerifyEmail />
   },
   {
     path: 'ensayo',

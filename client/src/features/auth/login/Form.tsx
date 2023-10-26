@@ -1,19 +1,30 @@
-import { MouseEventHandler } from 'react';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Svg from '../../../assets/icons/Svg';
 import Spinner from '../../../components/common/spinner';
 import UserInput from '../../../components/common/userInput/UserInput';
 import { IUser, IUserComponents } from '../../../interfaces/user.interface';
-import { useAppDispatch } from '../../../redux/hooks';
-import { clearUser } from '../../../redux/reducers/user';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { clearUser, selectUserData } from '../../../redux/reducers/user';
 import { userPosts } from '../../../redux/reducers/user/actions';
 import { userValidationClick } from '../../../utils/validations/userValidation';
 import Success from './Success';
 
 function Form({ change, handleOnChange, status, errorBack }: IUserComponents.FormProps) {
+  const [errorValidateEmail, setErrorValidateEmail] = useState("");
   const { email, password } = change
+  const dataUser = useAppSelector(selectUserData)
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (dataUser && !dataUser?.verifiedEmail) {
+      setErrorValidateEmail(`${dataUser.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${dataUser.email}`)
+      setTimeout(() => {
+        setErrorValidateEmail("")
+      }, 10000);
+    }
+  }, [dataUser?.verifiedEmail])
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const id = (event.target as HTMLFormElement).id.split("--")[1];
@@ -65,6 +76,7 @@ function Form({ change, handleOnChange, status, errorBack }: IUserComponents.For
 
           <div className="form__error-back--content">
             {typeof errorBack === "string" && status === "error" && <div dangerouslySetInnerHTML={{ __html: errorBack }}></div>}
+            {errorValidateEmail && <div>{errorValidateEmail}</div>}
           </div>
 
           <div className="form__button--content">

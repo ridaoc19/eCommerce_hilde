@@ -56,6 +56,15 @@ export const templateMessage: IUserRedux.TemplateMessageProps = ({ routes }) => 
       <p>Si tienes alguna pregunta o necesitas asistencia, por favor, contáctanos a través de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a> y estaremos encantados de ayudarte.</p>
       ` }
 
+      case 'verify':
+        return{
+          routes,
+          message: `
+      <p>No se pudo validar el correo electrónico</p>
+      <p>Lamentablemente, hemos encontrado un problema al procesar tu solicitud en este momento.</p>
+      <p>Si tienes alguna pregunta o necesitas asistencia, por favor, contáctanos a través de <a href="mailto:hilde.ecommerce@outlook.com"}>hilde.ecommerce@outlook.com</a> y estaremos encantados de ayudarte.</p>
+      `        }
+
     default:
       return { routes: "", message: "" }
   }
