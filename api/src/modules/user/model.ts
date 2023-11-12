@@ -1,7 +1,7 @@
 import { Document, Schema, model } from "mongoose";
 import { IProduct } from "../product/model";
 
-interface IUser extends Document {
+export interface IUser extends Document {
   name: string;
   lastName: string;
   email: string;

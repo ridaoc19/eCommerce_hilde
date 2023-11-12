@@ -64,8 +64,10 @@
         >div {
             >div {
                 >span {
-                    color    : var(--error-6);
-                    font-size: small;
+                    display: block;
+                    color     : var(--error-6);
+                    text-align: center;
+                    font-size : small;
                 }
             }
         }

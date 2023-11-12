@@ -14,7 +14,7 @@ export async function sendEmail({ name, email, password, type, tokenEmail }: Pic
     },
   });
 
-  const { subject, html }: { subject: string, html: string } = templateRegistre({tokenEmail , name, password, type })
+  const { subject, html }: { subject: string, html: string } = templateRegistre({ tokenEmail, name, password, type })
 
   const mailOptions = {
     from: process.env.EMAIL_SEND_FROM,
@@ -24,7 +24,7 @@ export async function sendEmail({ name, email, password, type, tokenEmail }: Pic
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions);
     // console.log('Email sent:', info.response);
     return true
   } catch (error: unknown) {

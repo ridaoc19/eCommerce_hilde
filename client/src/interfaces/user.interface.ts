@@ -1,6 +1,8 @@
+import { IProduct } from "./product.interface";
 
 // ==============================|| User ||============================== //
 export namespace IUser {
+  export const PRODUCT_NAME_QUERY = ['user']
   type Routes = "registre" | "login" | "token" | "change" | "reset" | "account" | "verify" | "";
   type Roles = "super" | "admin" | "edit" | "visitant";
 
@@ -11,11 +13,17 @@ export namespace IUser {
     email: string;
     phone: string;
     password: string;
-    token: string | undefined;
-    routes: Routes;
     verified: boolean;
     verifiedEmail: boolean;
     roles: Roles;
+    items: {
+      purchasedProducts: Array<IProduct.Variants['_id']>;
+      favoriteProducts: Array<IProduct.Variants['_id']>;
+    };
+    addresses: Array<string>;
+
+    routes: Routes;
+    token: string | undefined;
     components: string;
     // oldPassword: string;
     // newPassword: string;
@@ -31,7 +39,7 @@ export namespace IUser {
 
   export type InformationData = Pick<IUser.UserData, '_id' | 'name' | 'lastName' | 'email' | 'phone' | 'components'> & Partial<Pick<IUser.UserData, 'routes'>>;
   export type PasswordData = Pick<IUser.UserData, '_id' | 'password' | 'components'> & Partial<Pick<IUser.UserData, 'routes'>>;
-  export type tokenEmail = {tokenEmail:  string} & Partial<Pick<IUser.UserData, 'routes'>>;
+  export type tokenEmail = { tokenEmail: string } & Partial<Pick<IUser.UserData, 'routes'>>;
 
 }
 

@@ -6,11 +6,11 @@ import Subcategory from "../subcategory/model";
 import Department from "./model";
 import { products } from "../../core/utils/helpers";
 
-function fetchCount(info: any) {
-  return new Promise<{ data: number }>((resolve) =>
-    setTimeout(() => resolve({ data: info }), 8000)
-  );
-}
+// function fetchCount(info: any) {
+//   return new Promise<{ data: number }>((resolve) =>
+//     setTimeout(() => resolve({ data: info }), 8000)
+//   );
+// }
 
 export async function departmentGet(req: Request, res: Response) {
   try {
@@ -31,7 +31,7 @@ export async function departmentPost(req: Request, res: Response) {
     const { name } = req.body;
     await Department.create({ name });
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Departamento Departamento exitosamente",
       products: updatedProducts,
     });
@@ -54,7 +54,7 @@ export async function departmentPut(req: Request, res: Response) {
     await Department.findByIdAndUpdate(_id, { name }, { new: true });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Departamento Editado exitosamente",
       products: updatedProducts,
     });
@@ -94,7 +94,7 @@ export async function departmentDelete(req: Request, res: Response) {
     });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Eliminación en cascada exitosa",
       products: updatedProducts,
     });

@@ -4,16 +4,16 @@ import { splitString } from "../../core/utils/splitString";
 import Subcategory from "../subcategory/model";
 import Product from "./model";
 
-function fetchCount(info: any) {
-  return new Promise<{ data: number }>((resolve) =>
-    setTimeout(() => resolve({ data: info }), 8000)
-  );
-}
+// function fetchCount(info: any) {
+//   return new Promise<{ data: number }>((resolve) =>
+//     setTimeout(() => resolve({ data: info }), 8000)
+//   );
+// }
 
-export async function productGet(req: Request, res: Response) {
+export async function productGet(_req: Request, res: Response) {
   try {
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Productos completo",
       products: updatedProducts,
     });
@@ -35,7 +35,7 @@ export async function postCreate(req: Request, res: Response) {
     await Subcategory.findByIdAndUpdate(subcategoryId, { $push: { productsId: product._id } });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "product creado",
       products: updatedProducts,
     });
@@ -57,7 +57,7 @@ export async function productEdit(req: Request, res: Response) {
     await Product.findByIdAndUpdate(productId, req.body, { new: true });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Productos Editados exitosamente",
       products: updatedProducts,
     });
@@ -81,7 +81,7 @@ export async function productDelete(req: Request, res: Response) {
     await Subcategory.findByIdAndUpdate(product.subcategoryId, { $pull: { productsId: productsId } });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Eliminación subcategory en cascada exitosa",
       products: updatedProducts,
     });
@@ -103,7 +103,7 @@ export async function productEntry(req: Request, res: Response) {
     await Product.findByIdAndUpdate(productId, req.body, { new: true });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Variantes ingresadas exitosamente",
       products: updatedProducts,
     });

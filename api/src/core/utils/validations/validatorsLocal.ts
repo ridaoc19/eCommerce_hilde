@@ -1,0 +1,36 @@
+import { Request } from 'express';
+import * as yup from 'yup';
+import { Errors } from '../enums';
+
+type ValidateLocal = (data: { req: Request, validationSchemas: yup.AnyObject }) => Promise<Errors>
+
+export const validatorsLocal: ValidateLocal = async ({ req, validationSchemas }) => {
+  const requestBody: Record<string, unknown> = req.body;
+  const fieldsToValidate: string[] = Object.keys(requestBody);
+
+  const errorResponse: Errors = [];
+
+  const validateField = async (field: string, fieldValue: unknown) => {
+    try {
+      const validationSchema = validationSchemas[field];
+
+      if (!validationSchema) return;
+
+      // Pasamos el cuerpo completo de la solicitud al test
+      await validationSchema.validate(fieldValue, { context: { reqBody: requestBody } });
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        errorResponse.push({ field, message: error.message });
+      } else {
+        console.error(error);
+      }
+    }
+  };
+
+  for (const field of fieldsToValidate) {
+    const fieldValue = requestBody[field];
+    await validateField(field, fieldValue);
+  }
+
+  return errorResponse;
+};
