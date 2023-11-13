@@ -20,7 +20,7 @@ export const userApi = async ({ routes, dataPost }: IUserRedux.UserApi) => {
 /////////////////////////////////////////
 // export type Success = { status: "success"; field: string; message: string, data: IUser.UserData }
 export type Error = {
-  status_code: 400;
+  status_code: number;
   status: string;
   errors: Array<{
     field: string | 'general';
@@ -41,19 +41,34 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
   const method = parts[0];
   const route = parts[1];
 
-  const fetchOptions: RequestInit = {
-    method: method,
-    headers: { 'Content-Type': 'application/json' }
-  };
-  if (method !== Method.Get && data.requestData) fetchOptions.body = JSON.stringify(data.requestData);
+  try {
+    const fetchOptions: RequestInit = {
+      method: method,
+      headers: { 'Content-Type': 'application/json' }
+    };
+    if (method !== Method.Get && data.requestData) fetchOptions.body = JSON.stringify(data.requestData);
 
-  const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}`, fetchOptions)
-  const resJson = await responseApi.json();
+    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}`, fetchOptions)
+    const resJson = await responseApi.json();
 
-  if (!responseApi.ok) {
-    throw resJson;
-  } else {
-    return resJson;
+    if (!responseApi.ok) {
+      throw resJson;
+    } else {
+      return resJson;
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw {
+        status_code: 500,
+        status: "internal_server_error",
+        errors: [{
+          field: 'general',
+          message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor".`
+        }]
+      }
+    } else {
+      throw error
+    }
   }
 }
 

@@ -22,7 +22,7 @@ function useMutationUser() {
     },
   });
 
-  const fetchUser = {
+  const fetchUserMutation = {
     fetch<T extends RouteUser>(route: T): { options: (options: Omit<RequestMapUser[T], 'route' | 'method'>) => void } {
       return {
         options: async (options: Omit<RequestMapUser[T], 'route' | 'method'>) => {
@@ -40,7 +40,7 @@ function useMutationUser() {
   }
 
 
-  return { fetchUser, statusUser: { dataUser, isLoadingUser, isSuccessUser, errorUser, isErrorUser } };
+  return { fetchUserMutation, statusUserMutation: { dataUser, isLoadingUser, isSuccessUser, errorUser, isErrorUser } };
 }
 
 export default useMutationUser;

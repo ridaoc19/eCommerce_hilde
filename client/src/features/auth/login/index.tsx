@@ -26,7 +26,7 @@ const initialStateLogin: InitialStateLogin = {
 function Login() {
   const { getValidationErrors } = useValidations();
   // const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
-  const fetchUser = useMutationUser();
+  const { fetchUserMutation, statusUserMutation } = useMutationUser();
   const [stateLogin, setStateLogin] = useState<InitialStateLogin>(initialStateLogin);
   // const navigate = useNavigate()
   // const errorBack = useAppSelector(selectUserError)
@@ -35,15 +35,15 @@ function Login() {
   // const [status, setStatus] = useState<IUserComponents.Status>("form");
 
   useEffect(() => {
-    if (fetchUser.statusUser.errorUser) {
-      fetchUser.statusUser.errorUser.errors.forEach(({ field, message }) => {
+    if (statusUserMutation.errorUser) {
+      statusUserMutation.errorUser.errors.forEach(({ field, message }) => {
         if (message) {
           setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, [field]: message } }))
         }
       })
     }
-    // console.log(fetchUser, "todo");
-  }, [fetchUser.statusUser.isErrorUser])
+    console.log(statusUserMutation, "todo");
+  }, [statusUserMutation.isErrorUser])
 
   // useEffect(() => {
   // if (errorBack instanceof Object) handleErrorOnBack()
@@ -87,8 +87,8 @@ function Login() {
 
     // switch (id) {
     //   case "login":
-    fetchUser.fetchUser.fetch(RouteUser.Login).options({ requestData: stateLogin.change })
-    // fetchUser?.fetchQueryUser(RouteUser.Login).options({ requestData: initialStateLogin })
+    fetchUserMutation.fetch(RouteUser.Login).options({ requestData: stateLogin.change })
+    // fetchUserMutation?.fetchQueryUser(RouteUser.Login).options({ requestData: initialStateLogin })
     //     return;
     //   case "reset":
     //     navigate('/reset');
@@ -107,13 +107,13 @@ function Login() {
 
   return (
     <div>
-      <button onClick={() => fetchUser.fetchUser.removeFetch()}>eliminar data</button>
-      <button onClick={() => fetchUser.fetchUser.removeError()}>reset error</button>
+      <button onClick={() => fetchUserMutation.removeFetch()}>eliminar data</button>
+      <button onClick={() => fetchUserMutation.removeError()}>reset error</button>
       <Form
         handleChangeLogin={handleChangeLogin}
         handleClickLogin={handleClickLogin}
         stateLogin={stateLogin}
-        statusUser={fetchUser.statusUser} />
+        statusUserMutation={statusUserMutation} />
     </div>
   )
 }

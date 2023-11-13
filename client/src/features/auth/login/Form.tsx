@@ -12,7 +12,7 @@ interface FormLoginProps {
   handleChangeLogin: HandleChangeText;
   stateLogin: InitialStateLogin;
   handleClickLogin: HandleClick;
-  statusUser: {
+  statusUserMutation: {
     dataUser: MakeUserRequestReturn | undefined;
     isLoadingUser: boolean;
     isSuccessUser: boolean;
@@ -22,11 +22,11 @@ interface FormLoginProps {
 }
 
 
-function Form({ handleChangeLogin, stateLogin: { change, error }, handleClickLogin, statusUser }: FormLoginProps) {
+function Form({ handleChangeLogin, stateLogin: { change, error }, handleClickLogin, statusUserMutation }: FormLoginProps) {
   const { email, password } = change;
   const [errorValidateEmail, setErrorValidateEmail] = useState("");
   const dataUser = useAppSelector(selectUserData)
-
+  console.log(errorValidateEmail)
   useEffect(() => {
     if (dataUser && !dataUser?.verifiedEmail) {
       setErrorValidateEmail(`${dataUser.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${dataUser.email}`)
@@ -90,8 +90,14 @@ function Form({ handleChangeLogin, stateLogin: { change, error }, handleClickLog
           </div>
 
           <div className="form__error-back--content">
-            {statusUser.isErrorUser && <div>{typeof statusUser.errorUser === "string" && statusUser.errorUser}</div>}
-            {errorValidateEmail && <div>{errorValidateEmail}</div>}
+            {/* {statusUserMutation.isErrorUser && <div>{typeof statusUserMutation.errorUser === "string" && statusUserMutation.errorUser}</div>} */}
+            {statusUserMutation.errorUser?.errors.some(e => e.field === 'general') &&
+              <ul>
+                {statusUserMutation.errorUser?.errors.filter(e => e.field === 'general').map((e, i) => (
+                  <span key={i}>{e.message}</span>
+                ))}
+              </ul>
+            }
           </div>
 
           <div className="form__button--content">

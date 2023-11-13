@@ -1,14 +1,14 @@
 .login__form--container {
-  min-height       : 100vh;
+  min-height      : 100vh;
   // width        : 100vw;
-  display      : grid;
-  place-content: center;
+  display         : grid;
+  place-content   : center;
 
   .login__form--content {
     display  : grid;
     gap      : 0.5rem;
     max-width: 18rem;
-    margin: 2rem 0;
+    margin   : 2rem 0;
 
     header {
       display    : grid;
@@ -33,14 +33,15 @@
       }
 
       .form__error-back--content {
-        p {
-          text-align: center;
-          color     : var(--error-6);
+        ul {
+          margin : 0;
+          padding: 0;
 
           span {
-            color      : var(--error-7);
-            font-weight: bold;
-            font-style : italic;
+            display   : block;
+            text-align: justify;
+            color     : var(--error-6);
+            font-size : small;
           }
         }
       }
@@ -60,12 +61,12 @@
 
 .spinner {
   animation: rotate 2s linear infinite;
-  
+
   & .path {
     stroke-linecap: round;
-    animation: dash 1.5s ease-in-out infinite;
+    animation     : dash 1.5s ease-in-out infinite;
   }
-  
+
 }
 
 @keyframes rotate {
@@ -76,15 +77,17 @@
 
 @keyframes dash {
   0% {
-    stroke-dasharray: 1, 150;
+    stroke-dasharray : 1, 150;
     stroke-dashoffset: 0;
   }
+
   50% {
-    stroke-dasharray: 90, 150;
+    stroke-dasharray : 90, 150;
     stroke-dashoffset: -35;
   }
+
   100% {
-    stroke-dasharray: 90, 150;
+    stroke-dasharray : 90, 150;
     stroke-dashoffset: -124;
   }
 }
