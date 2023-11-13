@@ -25,7 +25,7 @@ export const validatorsMiddlewareGlobal = async (req: Request, res: Response, ne
   const requestBody: Record<string, unknown> = req.body;
   const fieldsToValidate: string[] = Object.keys(requestBody);
 
-  const errorResponse: MapStatusCode[StatusHTTP.badRequest_400] = {
+  const errorResponse: MapStatusCode<string>[StatusHTTP.badRequest_400] = {
     status: StatusHTTP.badRequest_400,
     status_code: 400,
     errors: []

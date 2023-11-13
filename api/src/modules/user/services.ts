@@ -1,19 +1,56 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
-import { comparePassword, generateHashPassword } from "../../core/auth/bcryptUtils";
+import { generateHashPassword } from "../../core/auth/bcryptUtils";
 import { generateToken, generateTokenEmail, verifyToken, verifyTokenEmail } from "../../core/auth/jwtUtils";
 import { sendEmail } from "../../core/utils/email";
+import { StatusHTTP } from "../../core/utils/enums";
+import { successHandler } from "../../core/utils/send/successHandler";
 import { splitString } from "../../core/utils/splitString";
 import { User } from "./model";
 import { userCreatedVerified } from "./tools/userCreatedVerified";
-import { userResetVerified } from "./tools/userResetVerified";
 import { userEmailVerified } from "./tools/userEmailVerified";
+import { userResetVerified } from "./tools/userResetVerified";
+import { errorHandlerCatch } from "../../core/utils/send/errorHandler";
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
     setTimeout(() => resolve({ data: info }), 8000)
   );
 }
+
+export async function postLogin(req: Request, res: Response) {
+  try {
+    const responseUserDB = await User.findOne({ email: req.body.email });
+
+    let token = "";
+
+    if (responseUserDB && responseUserDB.verified) {
+      token = generateToken({ _id: responseUserDB._id });
+    }
+
+    successHandler<StatusHTTP.success_200>({
+      dataDB: responseUserDB!,
+      filterAdd: [{ key: 'token', value: token }],
+      filterDelete: ['password'],
+      res,
+      json: {
+        status_code: 200,
+        status: StatusHTTP.success_200,
+        field: 'login',
+        message: 'Inicio de sesión exitoso'
+      }
+    })
+
+
+  } catch (error: unknown) {
+    errorHandlerCatch({ res, error })
+  }
+}
+
+
+
+
+
 
 export async function postRegistre(req: Request, res: Response) {
   try {
@@ -42,60 +79,6 @@ export async function postRegistre(req: Request, res: Response) {
     }
   }
 }
-
-export async function postLogin(req: Request, res: Response) {
-  try {
-    const { email: emailFront, password } = req.body;
-
-    const userDB = await User.findOne({ email: emailFront });
-
-    if (!userDB) {
-      // Cambiando el código de estado y el mensaje de error para indicar un recurso no encontrado
-      res.status(404).json({
-        status: 'not_found',
-        message: `Lo sentimos, el usuario (${emailFront}) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.`,
-      });
-      return;
-    }
-
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
-
-    // await fetchCount({ _id, name });
-
-    const validatePass = await comparePassword(password, userDB.password);
-
-    if (!validatePass) {
-      // Cambiando el código de estado y el mensaje de error para indicar una solicitud incorrecta
-      res.status(400).json({
-        status: 'bad_request',
-        message: `Lo sentimos, por favor verifique que haya ingresado correctamente sus credenciales.`,
-      });
-      return;
-    }
-
-    let token = null;
-
-    if (userDB.verified) {
-      token = generateToken({ _id });
-    }
-
-    res.status(200).json({
-      status: 'success',
-      message: 'Inicio de sesión exitoso',
-      data: { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses, token },
-    });
-
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      // Cambiando el código de estado y el mensaje de error para indicar un error interno del servidor
-      res.status(500).json({ status: 'internal_server_error', message: error.message });
-    } else {
-      // Cambiando el código de estado y el mensaje de error para indicar un error desconocido
-      res.status(500).json({ status: 'internal_server_error', error: `Error desconocido: ${error}` });
-    }
-  }
-}
-
 
 export async function postLoginToken(req: Request, res: Response) {
   try {

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import * as yup from 'yup';
 import { comparePassword } from '../../../core/auth/bcryptUtils';
 import { StatusHTTP } from '../../../core/utils/enums';
-import { errorHandlerArray } from '../../../core/utils/errorHandler';
+import { errorHandlerArray } from '../../../core/utils/send/errorHandler';
 import { validatorsLocal } from "../../../core/utils/validations/validatorsLocal";
 import { User } from '../model';
 
@@ -21,7 +21,6 @@ const schemaLogin: { [key: string]: yup.Schema } = ({
     }),
   password: yup.string()
     .test('is-password', async function (password, ctx) {
-
       const reqBody = ctx.options?.context?.reqBody;
       const userDB = await User.findOne({ email: reqBody?.email as string });
 

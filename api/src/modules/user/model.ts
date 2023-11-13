@@ -1,6 +1,23 @@
 import { Document, Schema, model } from "mongoose";
 import { IProduct } from "../product/model";
 
+export interface IUsers {
+  _id: string;
+  name: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  verified: boolean;
+  verifiedEmail: boolean;
+  roles: "super" | "admin" | "edit" | "visitant";
+  items: {
+    purchasedProducts: Array<IProduct>;
+    favoriteProducts: Array<IProduct>;
+  };
+  addresses: Array<string>;
+}
+
 export interface IUser extends Document {
   name: string;
   lastName: string;
