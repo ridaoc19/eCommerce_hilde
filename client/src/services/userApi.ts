@@ -33,7 +33,7 @@ export type MakeUserRequestReturn = {
   status: string;
   status_code: number;
   message: string;
-  data: IUser.UserData[];
+  data: IUser.UserData;
 };
 
 async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]): Promise<MakeUserRequestReturn> {
@@ -54,7 +54,7 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
     if (!responseApi.ok) {
       throw resJson;
     } else {
-      return resJson;
+      return {...resJson};
     }
   } catch (error) {
     if (error instanceof Error) {

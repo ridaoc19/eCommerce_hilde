@@ -4,13 +4,17 @@ import useValidations from "../../../hooks/useValidations";
 import { HandleChangeText, HandleClick } from "../../../interfaces/global.interface";
 import { IUser } from "../../../interfaces/user.interface";
 import { RouteUser } from "../../../services/userRequest";
+import { clearUserError } from "../../../utils/userReusableFunctions";
 import Form from "./Form";
+import Success from "./Success";
+import { useNavigate } from "react-router-dom";
 
-// const initialState: IUserOnChange.UseUserOnChange = {
-//   email: { change: "", message: "" },
-//   password: { change: "", message: "" },
-// }
-
+export enum LoginButtonName {
+  Reset = 'reset',
+  Login = 'login',
+  Registre = 'registre',
+  Back = 'back',
+}
 export interface InitialStateLogin {
   change: Pick<IUser.UserData, 'email' | 'password'>
   error: Pick<IUser.UserData, 'email' | 'password'>
@@ -19,54 +23,38 @@ export interface InitialStateLogin {
 const initialStateLogin: InitialStateLogin = {
   change: { email: "", password: "" },
   error: { email: "", password: "" }
-
 }
-
 
 function Login() {
   const { getValidationErrors } = useValidations();
-  // const { change, handleOnChange, handleErrorOnBack } = useOnChange(initialState)
   const { fetchUserMutation, statusUserMutation } = useMutationUser();
+  const { dataUser, isSuccessUser } = statusUserMutation;
   const [stateLogin, setStateLogin] = useState<InitialStateLogin>(initialStateLogin);
-  // const navigate = useNavigate()
-  // const errorBack = useAppSelector(selectUserError)
-  // const loadingUser = useAppSelector(selectUserLoading)
-  // const dataUser = useAppSelector(selectUserData)
-  // const [status, setStatus] = useState<IUserComponents.Status>("form");
+  const [success, setSuccess] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (statusUserMutation.errorUser) {
-      statusUserMutation.errorUser.errors.forEach(({ field, message }) => {
-        if (message) {
-          setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, [field]: message } }))
+    if (dataUser) {
+      if (dataUser.verified) {
+        if (!dataUser.verifiedEmail) {
+          setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, email: `${dataUser.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${dataUser.email}` } }))
+        } else {
+          setSuccess(true)
+          localStorage.token = dataUser.token;
         }
-      })
+        setTimeout(() => {
+          setSuccess(false)
+          return navigate('/')
+        }, 10000);
+      } else {
+        return navigate('/change');
+      }
     }
-    console.log(statusUserMutation, "todo");
-  }, [statusUserMutation.isErrorUser])
-
-  // useEffect(() => {
-  // if (errorBack instanceof Object) handleErrorOnBack()
-  // if (errorBack) return setStatus("error")
-  // if (loadingUser) return setStatus("loading")
-  //   if (dataUser instanceof Object && !loadingUser && !errorBack && !localStorage.token) {
-  //     if (dataUser?.verified) {
-  //       if (!dataUser.verifiedEmail) {
-  //         // return setStatus('form')
-  //       }
-  //       // setStatus("success")
-  //       setTimeout(() => {
-  //         return navigate('/')
-  //       }, 10000);
-  //       localStorage.token = dataUser.token;
-  //     } else {
-  //       return navigate('/change');
-  //     }
-  //   }
-  //   // eslint-disable-next-line
-  // }, [loadingUser, dataUser, errorBack])
+    // eslint-disable-next-line
+  }, [isSuccessUser])
 
   const handleChangeLogin: HandleChangeText = ({ target: { name, value } }) => {
+    clearUserError(() => fetchUserMutation.removeError(), (state) => setStateLogin(state), initialStateLogin, stateLogin)
     const { error, stop } = getValidationErrors({ fieldName: name, value })
     if (stop) {
       return setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
@@ -79,41 +67,37 @@ function Login() {
     }))
   }
 
-  const handleClickLogin: HandleClick = ({ target }) => {
-    console.log(target);
+  const handleClickLogin: HandleClick = (event) => {
 
-    // const id = (event.target as HTMLFormElement).id.split("--")[1];
-    // event.preventDefault();
+    const id = (event.target as HTMLFormElement).id.split("--")[1];
+    event.preventDefault();
 
-    // switch (id) {
-    //   case "login":
-    fetchUserMutation.fetch(RouteUser.Login).options({ requestData: stateLogin.change })
-    // fetchUserMutation?.fetchQueryUser(RouteUser.Login).options({ requestData: initialStateLogin })
-    //     return;
-    //   case "reset":
-    //     navigate('/reset');
-    //     break;
-    //   case "registre":
-    //     navigate('/registre');
-    //     break;
-    //   case "back":
-    //     navigate('/');
-    //     break;
-    //   default:
-    //     break;;
-    // }
-    // dispatch(clearUser());
+    switch (id) {
+      case "login":
+        fetchUserMutation.fetch(RouteUser.Login).options({ requestData: stateLogin.change })
+        return;
+      case "reset":
+        navigate('/reset');
+        break;
+      case "registre":
+        navigate('/registre');
+        break;
+      case "back":
+        navigate('/');
+        break;
+      default:
+        break;;
+    }
   };
 
   return (
     <div>
-      <button onClick={() => fetchUserMutation.removeFetch()}>eliminar data</button>
-      <button onClick={() => fetchUserMutation.removeError()}>reset error</button>
+      {success && <Success />}
       <Form
         handleChangeLogin={handleChangeLogin}
         handleClickLogin={handleClickLogin}
         stateLogin={stateLogin}
-        statusUserMutation={statusUserMutation} />
+        statusUserMutations={statusUserMutation} />
     </div>
   )
 }

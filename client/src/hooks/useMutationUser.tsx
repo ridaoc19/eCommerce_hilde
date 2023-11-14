@@ -5,7 +5,7 @@ import { RequestMapUser, RouteUser } from "../services/userRequest";
 
 function useMutationUser() {
   const queryClient = useQueryClient();
-  const { mutate, reset, isLoading: isLoadingUser, data: dataUser, error: errorUser, isSuccess: isSuccessUser, isError: isErrorUser } = useMutation({
+  const { mutate, reset, isLoading: isLoadingUser, data, error: errorUser, isSuccess: isSuccessUser, isError: isErrorUser } = useMutation({
     mutationFn: ({ route, options }: { route: RouteUser, options: Omit<RequestMapUser[RouteUser], 'route' | 'method'> }) => {
       const requestData = userRequest(route).options(options);
       return requestData;
@@ -40,7 +40,7 @@ function useMutationUser() {
   }
 
 
-  return { fetchUserMutation, statusUserMutation: { dataUser, isLoadingUser, isSuccessUser, errorUser, isErrorUser } };
+  return { fetchUserMutation, statusUserMutation: { dataUser: data?.data, dataSuccess: data, isLoadingUser, isSuccessUser, errorUser, isErrorUser } };
 }
 
 export default useMutationUser;
