@@ -23,7 +23,7 @@ export namespace IUser {
     addresses: Array<string>;
 
     routes: Routes;
-    token: string | undefined;
+    token: string;
     components: string;
     // oldPassword: string;
     // newPassword: string;

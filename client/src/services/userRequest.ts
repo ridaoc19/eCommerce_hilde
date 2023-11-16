@@ -3,8 +3,8 @@ import { IUser } from "../interfaces/user.interface";
 
 export enum RouteUser {
   Login = 'post|user/login',
-  Token = 'user/token',
-  Reset = 'user/reset',
+  Token = 'post|user/token',
+  Reset = 'post|user/reset',
   // Registre = 'user/registre',
   // Change = 'user/change',
   // Account = 'user/account',
@@ -20,7 +20,7 @@ export type RequestMapUser = {
   [RouteUser.Token]: {
     route: RouteUser.Token;
     method: Method.Get;
-    requestData: IUser.UserData['token'];
+    requestData: Pick<IUser.UserData, 'token'>;
   };
   [RouteUser.Reset]: {
     route: RouteUser.Reset;

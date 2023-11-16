@@ -9,7 +9,7 @@ router.use(validatorsMiddlewareGlobal)
 
 router.post('/registre', postRegistre)
 router.post('/login', middlewareLogin, postLogin)
-router.post('/token', postLoginToken)
+router.post('/token', middlewareLogin, postLoginToken)
 router.post('/change', postPassChange)
 router.post('/reset', postReset)
 router.post('/account', postAccount)

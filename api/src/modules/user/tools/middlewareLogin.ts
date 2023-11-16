@@ -5,35 +5,54 @@ import { StatusHTTP } from '../../../core/utils/enums';
 import { errorHandlerArray } from '../../../core/utils/send/errorHandler';
 import { validatorsLocal } from "../../../core/utils/validations/validatorsLocal";
 import { User } from '../model';
+import { verifyToken } from '../../../core/auth/jwtUtils';
 
 
 
 const schemaLogin: { [key: string]: yup.Schema } = ({
-  email: yup.string()
-    .test('is-email', async function (value, ctx) {
-      const userDB = await User.findOne({ email: value });
+  email: yup.string().test('is-email', async function (value, ctx) {
+    const userDB = await User.findOne({ email: value });
 
-      if (!userDB) {
-        return ctx.createError({ message: `Lo sentimos, el usuario (${value}) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.` });
-      } else {
-        return true;
-      }
-    }),
-  password: yup.string()
-    .test('is-password', async function (password, ctx) {
-      const reqBody = ctx.options?.context?.reqBody;
-      const userDB = await User.findOne({ email: reqBody?.email as string });
+    if (!userDB) {
+      return ctx.createError({ message: `Lo sentimos, el usuario (${value}) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.` });
+    } else {
+      return true;
+    }
+  }),
+  password: yup.string().test('is-password', async function (password, ctx) {
+    const reqBody = ctx.options?.context?.reqBody;
+    const userDB = await User.findOne({ email: reqBody?.email as string });
 
-      if (!userDB) return true;
+    if (!userDB) return true;
 
-      const validatePass = await comparePassword(password!, userDB.password);
+    const validatePass = await comparePassword(password!, userDB.password);
 
-      if (!validatePass) {
-        return ctx.createError({ message: `Lo sentimos, la contraseña no es válida.` });
-      } else {
-        return true;
-      }
-    }),
+    if (!validatePass) {
+      return ctx.createError({ message: `Lo sentimos, la contraseña no es válida.` });
+    } else {
+      return true;
+    }
+  }),
+  token: yup.string().test('is-password', async function (token, ctx) {
+    if (!token) return true
+
+    const decoded = verifyToken(token);
+    if (decoded?.token) {
+      return ctx.createError({
+        message: 'Tu sesión ha expirado. Por favor, inicia sesión de nuevo.',
+      });
+    }
+
+    const userDB = await User.findById({ _id: decoded._id });
+
+    if (!userDB) {
+      return ctx.createError({
+        message: 'Error al iniciar sesión. Por favor, inicia sesión de nuevo.',
+      });
+    }
+
+    return true
+  }),
 });
 
 export async function middlewareLogin(req: Request, res: Response, next: NextFunction) {

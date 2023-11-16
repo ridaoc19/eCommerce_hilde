@@ -18,6 +18,10 @@ const validationSchemas: { [key: string]: yup.Schema } = ({
     .required('La contraseña es requerida')
     .min(6, 'La contraseña debe tener al menos 6 caracteres')
     .max(15, 'La contraseña debe tener máximo 15 caracteres'),
+  token: yup.string()
+    .required('No has iniciado de sesión en días anteriores')
+    // .min(6, 'La contraseña debe tener al menos 6 caracteres')
+    // .max(15, 'La contraseña debe tener máximo 15 caracteres'),
 });
 
 

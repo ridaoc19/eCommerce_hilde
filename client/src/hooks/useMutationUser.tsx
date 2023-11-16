@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "../interfaces/user.interface";
-import { userRequest, Error } from "../services/userApi";
+import { userRequest, Error, MakeUserRequestReturn } from "../services/userApi";
 import { RequestMapUser, RouteUser } from "../services/userRequest";
 
 function useMutationUser() {
@@ -35,8 +35,11 @@ function useMutationUser() {
     },
     removeError() {
       reset()
+    },
+    getQueryUser() {
+      const data = queryClient.getQueryData<MakeUserRequestReturn | undefined>(IUser.PRODUCT_NAME_QUERY);
+      return { dataUser: data?.data || null }
     }
-
   }
 
 

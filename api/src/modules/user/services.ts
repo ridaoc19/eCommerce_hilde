@@ -47,6 +47,30 @@ export async function postLogin(req: Request, res: Response) {
   }
 }
 
+export async function postLoginToken(req: Request, res: Response) {
+  try {
+    const decoded = verifyToken(req.body.token);
+    const responseDB = await User.findById({ _id: decoded._id })
+    const dataDB =  responseDB!
+    // await fetchCount({ _id, name })
+
+    successHandler<StatusHTTP.success_200>({
+      dataDB, filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'token',
+        status_code: 200,
+        status: StatusHTTP.success_200,
+        message: 'Inicio sesión exitoso con token'
+      }
+    })
+
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(409).json({ error: splitString(error) });
+    } else {
+      res.status(500).json({ error: `Error desconocido: ${error}` });
+    }
+  }
+}
 
 
 
@@ -80,24 +104,6 @@ export async function postRegistre(req: Request, res: Response) {
   }
 }
 
-export async function postLoginToken(req: Request, res: Response) {
-  try {
-    const decoded = verifyToken(req.body.token);
-    if (decoded?.token) throw new Error(`errorString: Invalid token`)
-    const userDB = await User.findById({ _id: decoded._id })
-    if (!userDB) throw new Error(`errorString: Invalid User`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
-    // await fetchCount({ _id, name })
-
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
-  }
-}
 
 export async function postReset(req: Request, res: Response) {
   try {
