@@ -51,7 +51,7 @@ export async function postLoginToken(req: Request, res: Response) {
   try {
     const decoded = verifyToken(req.body.token);
     const responseDB = await User.findById({ _id: decoded._id })
-    const dataDB =  responseDB!
+    const dataDB = responseDB!
     // await fetchCount({ _id, name })
 
     successHandler<StatusHTTP.success_200>({
@@ -72,37 +72,35 @@ export async function postLoginToken(req: Request, res: Response) {
   }
 }
 
-
-
-
-
 export async function postRegistre(req: Request, res: Response) {
   try {
     const temporaryPassword: string = uuidv4().split("-", 1)[0];
     const password = await generateHashPassword(temporaryPassword)
-    const userDB = await User.create({ name: req.body.name, lastName: req.body.lastName, email: req.body.email, phone: req.body.phone, password, verified: false })
-    if (!userDB) throw new Error(`errorString: se presento un inconveniente al realizar el registro`)
+    const userDB = await User.create(Object.assign(req.body, { password, verified: false }))
+    if (!userDB) throw new Error(`se presento un inconveniente al realizar el registro`)
     await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
-    const { _id, name, email, verified } = userDB;
 
-    const responseEmail: boolean = await sendEmail({ name, email, password: temporaryPassword, type: 'registre' })
-    if (!responseEmail) throw new Error(`errorString: ${name} se presento un inconveniente al enviar la contraseña al correo ${email}`)
+    const responseEmail: boolean = await sendEmail({ name: userDB.name, email: userDB.email, password: temporaryPassword, type: 'registre' })
+    if (!responseEmail) throw new Error(`${userDB.name} se presento un inconveniente al enviar la contraseña al correo ${userDB.email}`)
 
-    userCreatedVerified({ _id })
+    userCreatedVerified({ _id: userDB._id })
       .catch(error => {
         console.error('Ocurrió un error:', error);
       });
 
-    res.status(200).json({ _id, name, email, verified })
+    successHandler({
+      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res,
+      json: { field: 'registre', message: 'registro exitoso', status: StatusHTTP.success_200, status_code: 200 },
+    })
 
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    errorHandlerCatch({ res, error })
   }
 }
+
+
+
+
 
 
 export async function postReset(req: Request, res: Response) {

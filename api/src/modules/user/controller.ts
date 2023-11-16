@@ -7,7 +7,7 @@ const router = Router();
 
 router.use(validatorsMiddlewareGlobal)
 
-router.post('/registre', postRegistre)
+router.post('/registre', middlewareLogin, postRegistre)
 router.post('/login', middlewareLogin, postLogin)
 router.post('/token', middlewareLogin, postLoginToken)
 router.post('/change', postPassChange)

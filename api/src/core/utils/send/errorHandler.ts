@@ -6,11 +6,11 @@ export const errorHandlerCatch = ({ res, error }:
 
   if (error instanceof Error) {
     res
-      .status(500)
+      .status(400)
       .json({
-        status_code: 500,
-        status: StatusHTTP.internalServerError_500,
-        errors: []
+        status_code: 400,
+        status: StatusHTTP.badRequest_400,
+        errors: [{ field: 'general', message: error.message }]
       });
   } else {
     res

@@ -17,7 +17,9 @@ export const validatorsLocal: ValidateLocal = async ({ req, validationSchemas })
       if (!validationSchema) return;
 
       // Pasamos el cuerpo completo de la solicitud al test
-      await validationSchema.validate(fieldValue, { context: { reqBody: requestBody } });
+      const pathWithoutSlashAndExtras = req.path.match(/^\/([^\/]+)/);
+      const capturedPart = pathWithoutSlashAndExtras ? pathWithoutSlashAndExtras[1] : null;
+      await validationSchema.validate(fieldValue, { context: { reqBody: requestBody, route: capturedPart } });
     } catch (error) {
       if (error instanceof yup.ValidationError) {
         errorResponse.push({ field, message: error.message });

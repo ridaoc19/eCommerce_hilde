@@ -52,7 +52,6 @@ const userSchema = new Schema<IUser>(
     phone: {
       type: String,
       required: [true, 'El teléfono es obligatorio.<^'],
-      unique: true,
     },
     password: {
       type: String,
