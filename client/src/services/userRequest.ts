@@ -34,7 +34,7 @@ export type RequestMapUser = {
   };
   [RouteUser.Reset]: {
     route: RouteUser.Reset;
-    method: Method.Put;
-    requestData: Pick<IUser.UserData, 'name' | 'lastName' | 'phone'>;
+    method: Method.Post;
+    requestData: Pick<IUser.UserData, 'email'>;
   };
 };

@@ -1,5 +1,5 @@
 
-import { RouteUser, useEffect, Spinner, Success, UserInput, clearUserError, useMutationUser, useNavigate, useState, useValidations, InitialStateRegistre, initialStateRegistre, HandleChangeText, HandleClick, RegistreButtonName } from './index';
+import { RouteUser, Svg, useEffect, Spinner, Success, UserInput, clearUserError, useMutationUser, useNavigate, useState, useValidations, InitialStateRegistre, initialStateRegistre, HandleChangeText, HandleClick, RegistreButtonName } from './index';
 
 function Registre() {
   const navigate = useNavigate()
@@ -33,6 +33,7 @@ function Registre() {
           <div className="registre__form--content">
 
             <header className="form__header--content">
+              {Svg({ type: "logo", height: 80, width: 80, color: "#F6851F" })}
               <h2>Regístrate</h2>
               <p>Ingresa tus datos personales para crear tu cuenta</p>
             </header>

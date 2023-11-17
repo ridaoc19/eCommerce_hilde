@@ -187,6 +187,7 @@ export type StatusHTTPSuccess = StatusHTTP.success_200
   | StatusHTTP.created_201
   | StatusHTTP.updated_200
   | StatusHTTP.deleted_200
+  | StatusHTTP.noContent_204
 
 export type StatusHTTPError = StatusHTTP.badRequest_400
   | StatusHTTP.unauthorized_401

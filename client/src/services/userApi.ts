@@ -50,7 +50,7 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
 
     const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}`, fetchOptions)
     const resJson = await responseApi.json();
-
+console.log(resJson)
     if (!responseApi.ok) {
       throw resJson;
     } else {

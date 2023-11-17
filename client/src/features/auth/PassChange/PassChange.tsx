@@ -1,5 +1,5 @@
 
-import { RouteUser, useEffect, Spinner, Success, UserInput, clearUserError, useMutationUser, useNavigate, useState, useValidations, InitialStateChange, HandleChangeText, HandleClick, ChangeButtonName } from './index';
+import { RouteUser, Svg, useEffect, Spinner, Success, UserInput, clearUserError, useMutationUser, useNavigate, useState, useValidations, InitialStateChange, HandleChangeText, HandleClick, ChangeButtonName } from './index';
 
 function PassChange() {
   const navigate = useNavigate()
@@ -40,6 +40,7 @@ function PassChange() {
           <div className="pass-change__form--content">
 
             <header className="form__header--content">
+              {Svg({ type: "logo", height: 80, width: 80, color: "#F6851F" })}
               <h2>Cambio de Contraseña</h2>
               <p>Cambia tu contraseña para acceder a tu cuenta</p>
             </header>

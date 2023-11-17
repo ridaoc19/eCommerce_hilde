@@ -11,7 +11,7 @@ router.post('/registre', middlewareLogin, postRegistre)
 router.post('/login', middlewareLogin, postLogin)
 router.post('/token', middlewareLogin, postLoginToken)
 router.post('/change', middlewareLogin, postPassChange)
-router.post('/reset', postReset)
+router.post('/reset', middlewareLogin, postReset)
 router.post('/account', postAccount)
 router.post('/verify', postVerifyEmail)
 
