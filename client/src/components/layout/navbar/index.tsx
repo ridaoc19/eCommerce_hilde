@@ -3,39 +3,37 @@ import { Link } from 'react-router-dom';
 import Svg from '../../../assets/icons/Svg';
 import { CreateContext } from '../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
+import useMutationUser from '../../../hooks/useMutationUser';
 import { IContext } from '../../../interfaces/hooks/context.interface';
 import { permitsRoles } from '../../../interfaces/user.interface';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { clearUser, selectUserData } from '../../../redux/reducers/user';
-import Sidebar from '../sidebar';
 import Search from '../../common/search/Search';
+import Sidebar from '../sidebar';
 
 
 function Navbar() {
-  const dispatch = useAppDispatch();
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
-
-  const user = useAppSelector(selectUserData)
+  const { fetchUserMutation: { removeFetch, getQueryUser } } = useMutationUser()
+  const { dataUser } = getQueryUser()
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     localStorage.removeItem("token");
-    dispatch(clearUser());
+    removeFetch()
     dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
   }
 
   useEffect(() => {
-    if (user instanceof Object) {
-      if (user?.verified) {
+    if (dataUser) {
+      if (dataUser.verified) {
         permitsRoles.forEach(acc => {
-          if (acc.roles.some(r => r.includes(user.roles))) {
+          if (acc.roles.some(r => r.includes(dataUser.roles))) {
             dispatchContext({ type: ActionTypeDashboard.PERMITS_ROLES, payload: { name: null, value: acc.id } })
           }
         });
       }
     }
     // eslint-disable-next-line
-  }, [user])
+  }, [dataUser])
 
   return (
     <div className='component__navbar--container'>
@@ -53,11 +51,11 @@ function Navbar() {
       </div>
       <div className='navbar__login--container'>
         <Link to={'/login'}>{Svg({ type: 'user', color: "white" })}</Link>
-        {user?.name &&
+        {dataUser?.name &&
           <>
             <button onClick={handleOnClick}>cerrar sesión</button>
             <Link to={'/dashboard'}>dashboard</Link>
-            <span>{user?.name}</span>
+            <span>{dataUser.name}</span>
           </>}
       </div>
     </div>

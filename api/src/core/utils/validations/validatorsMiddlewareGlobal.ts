@@ -2,30 +2,39 @@ import { NextFunction, Request, Response } from 'express';
 import * as yup from 'yup';
 import { MapStatusCode, StatusHTTP } from '../enums';
 
-const validationSchemas: { [key: string]: yup.Schema } = ({
-  name: yup.string()
-    .min(2, 'Este campo debe tener al menos 2 caracteres')
-    .max(50, 'Este campo debe tener máximo 50 caracteres')
-    .required('Este campo es obligatorio'),
-  description: yup.string()
-    .min(3, 'Este campo debe tener al menos 3 caracteres')
-    .max(700, 'Este campo debe tener máximo 700 caracteres')
-    .required('Este campo es obligatorio'),
+const validationSchemas: { [key: string]: yup.Schema } = {
   email: yup.string()
-    .email('El correo electrónico no es válido')
-    .required('El correo electrónico es requerido'),
+    .required('El correo electrónico es obligatorio')
+    .email('Ingrese un correo electrónico válido'),
   password: yup.string()
-    .required('La contraseña es requerida')
+    .required('La contraseña es obligatoria')
     .min(6, 'La contraseña debe tener al menos 6 caracteres')
-    .max(15, 'La contraseña debe tener máximo 15 caracteres'),
-});
+    .max(15, 'La contraseña debe tener como máximo 15 caracteres'),
+  token: yup.string()
+    .required('Por favor inicie sesión nuevamente'),
+  name: yup.string()
+    .required('El nombre es obligatorio')
+    .min(2, 'Ingrese al menos 2 caracteres para el nombre')
+    .max(30, 'Ingrese máximo 30 caracteres para el nombre'),
+  lastName: yup.string()
+    .required('El apellido es obligatorio')
+    .min(2, 'Ingrese al menos 2 caracteres para el apellido')
+    .max(30, 'Ingrese máximo 30 caracteres para el apellido'),
+  phone: yup.string()
+    .required('El número telefónico es obligatorio')
+    .min(7, 'Ingrese al menos 7 dígitos para el número telefónico')
+    .max(15, 'Ingrese máximo 15 dígitos para el número telefónico')
+    .matches(/^[0-9]+$/, 'Ingrese solo números para el número telefónico'),
+  newPassword: yup.string()
+};
+
 
 
 export const validatorsMiddlewareGlobal = async (req: Request, res: Response, next: NextFunction) => {
   const requestBody: Record<string, unknown> = req.body;
   const fieldsToValidate: string[] = Object.keys(requestBody);
 
-  const errorResponse: MapStatusCode[StatusHTTP.badRequest_400] = {
+  const errorResponse: MapStatusCode<string>[StatusHTTP.badRequest_400] = {
     status: StatusHTTP.badRequest_400,
     status_code: 400,
     errors: []

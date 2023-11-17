@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
-import { comparePassword, generateHashPassword } from "../../core/auth/bcryptUtils";
+import { generateHashPassword } from "../../core/auth/bcryptUtils";
 import { generateToken, generateTokenEmail, verifyToken, verifyTokenEmail } from "../../core/auth/jwtUtils";
 import { sendEmail } from "../../core/utils/email";
+import { StatusHTTP } from "../../core/utils/enums";
+import { successHandler } from "../../core/utils/send/successHandler";
 import { splitString } from "../../core/utils/splitString";
 import { User } from "./model";
 import { userCreatedVerified } from "./tools/userCreatedVerified";
-import { userResetVerified } from "./tools/userResetVerified";
 import { userEmailVerified } from "./tools/userEmailVerified";
+import { userResetVerified } from "./tools/userResetVerified";
+import { errorHandlerCatch } from "../../core/utils/send/errorHandler";
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
@@ -15,98 +18,51 @@ function fetchCount(info: any) {
   );
 }
 
-export async function postRegistre(req: Request, res: Response) {
-  try {
-    const temporaryPassword: string = uuidv4().split("-", 1)[0];
-    const password = await generateHashPassword(temporaryPassword)
-    const userDB = await User.create({ name: req.body.name, lastName: req.body.lastName, email: req.body.email, phone: req.body.phone, password, verified: false })
-    if (!userDB) throw new Error(`errorString: se presento un inconveniente al realizar el registro`)
-    await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
-    const { _id, name, email, verified } = userDB;
-
-    const responseEmail: boolean = await sendEmail({ name, email, password: temporaryPassword, type: 'registre' })
-    if (!responseEmail) throw new Error(`errorString: ${name} se presento un inconveniente al enviar la contraseña al correo ${email}`)
-
-    userCreatedVerified({ _id })
-      .catch(error => {
-        console.error('Ocurrió un error:', error);
-      });
-
-    res.status(200).json({ _id, name, email, verified })
-
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
-  }
-}
-
 export async function postLogin(req: Request, res: Response) {
   try {
-    const { email: emailFront, password } = req.body;
+    const responseUserDB = await User.findOne({ email: req.body.email });
 
-    const userDB = await User.findOne({ email: emailFront });
+    let token = "";
 
-    if (!userDB) {
-      // Cambiando el código de estado y el mensaje de error para indicar un recurso no encontrado
-      res.status(404).json({
-        status: 'not_found',
-        message: `Lo sentimos, el usuario (${emailFront}) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.`,
-      });
-      return;
+    if (responseUserDB && responseUserDB.verified) {
+      token = generateToken({ _id: responseUserDB._id });
     }
 
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
+    successHandler<StatusHTTP.success_200>({
+      dataDB: responseUserDB!,
+      filterAdd: [{ key: 'token', value: token }],
+      filterDelete: ['password'],
+      res,
+      json: {
+        status_code: 200,
+        status: StatusHTTP.success_200,
+        field: 'login',
+        message: 'Inicio de sesión exitoso'
+      }
+    })
 
-    // await fetchCount({ _id, name });
-
-    const validatePass = await comparePassword(password, userDB.password);
-
-    if (!validatePass) {
-      // Cambiando el código de estado y el mensaje de error para indicar una solicitud incorrecta
-      res.status(400).json({
-        status: 'bad_request',
-        message: `Lo sentimos, por favor verifique que haya ingresado correctamente sus credenciales.`,
-      });
-      return;
-    }
-
-    let token = null;
-
-    if (userDB.verified) {
-      token = generateToken({ _id });
-    }
-
-    res.status(200).json({
-      status: 'success',
-      message: 'Inicio de sesión exitoso',
-      data: { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses, token },
-    });
 
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      // Cambiando el código de estado y el mensaje de error para indicar un error interno del servidor
-      res.status(500).json({ status: 'internal_server_error', message: error.message });
-    } else {
-      // Cambiando el código de estado y el mensaje de error para indicar un error desconocido
-      res.status(500).json({ status: 'internal_server_error', error: `Error desconocido: ${error}` });
-    }
+    errorHandlerCatch({ res, error })
   }
 }
-
 
 export async function postLoginToken(req: Request, res: Response) {
   try {
     const decoded = verifyToken(req.body.token);
-    if (decoded?.token) throw new Error(`errorString: Invalid token`)
-    const userDB = await User.findById({ _id: decoded._id })
-    if (!userDB) throw new Error(`errorString: Invalid User`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
+    const responseDB = await User.findById({ _id: decoded._id })
+    const dataDB = responseDB!
     // await fetchCount({ _id, name })
 
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
+    successHandler<StatusHTTP.success_200>({
+      dataDB, filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'token',
+        status_code: 200,
+        status: StatusHTTP.success_200,
+        message: 'Inicio sesión exitoso con token'
+      }
+    })
+
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(409).json({ error: splitString(error) });
@@ -115,6 +71,59 @@ export async function postLoginToken(req: Request, res: Response) {
     }
   }
 }
+
+export async function postRegistre(req: Request, res: Response) {
+  try {
+    const temporaryPassword: string = uuidv4().split("-", 1)[0];
+    const password = await generateHashPassword(temporaryPassword)
+    const userDB = await User.create(Object.assign(req.body, { password, verified: false }))
+    if (!userDB) throw new Error(`se presento un inconveniente al realizar el registro`)
+    await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
+
+    const responseEmail: boolean = await sendEmail({ name: userDB.name, email: userDB.email, password: temporaryPassword, type: 'registre' })
+    if (!responseEmail) throw new Error(`${userDB.name} se presento un inconveniente al enviar la contraseña al correo ${userDB.email}`)
+
+    userCreatedVerified({ _id: userDB._id })
+      .catch(error => {
+        console.error('Ocurrió un error:', error);
+      });
+
+    successHandler({
+      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res,
+      json: { field: 'registre', message: 'registro exitoso', status: StatusHTTP.success_200, status_code: 200 },
+    })
+
+  } catch (error: unknown) {
+    errorHandlerCatch({ res, error })
+  }
+}
+
+export async function postPassChange(req: Request, res: Response) {
+  try {
+    const { email, password: temporaryPassword } = req.body;
+
+    const password = await generateHashPassword(temporaryPassword)
+
+    const userDB = await User.findOneAndUpdate({ email }, { password, verified: true }, { new: true })
+    if (!userDB) throw new Error(`Se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
+    await fetchCount({})
+
+    successHandler({
+      res, dataDB: userDB, filterAdd: [], filterDelete: ['password'], json: {
+        field: 'change',
+        message: 'Cambio de contraseña fue exitoso',
+        status: StatusHTTP.updated_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
+  }
+}
+
+
+
+
 
 export async function postReset(req: Request, res: Response) {
   try {
@@ -147,26 +156,6 @@ export async function postReset(req: Request, res: Response) {
   }
 }
 
-export async function postPassChange(req: Request, res: Response) {
-  try {
-    const { _id: idFront, password: temporaryPassword } = req.body;
-
-    const password = await generateHashPassword(temporaryPassword)
-
-    const userDB = await User.findByIdAndUpdate({ _id: idFront }, { password, verified: true }, { new: true })
-    if (!userDB) throw new Error(`errorString: Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
-    await fetchCount({})
-
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
-  }
-}
 
 export async function postAccount(req: Request, res: Response) {
   try {
