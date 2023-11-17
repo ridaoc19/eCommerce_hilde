@@ -4,9 +4,9 @@ import { IUser } from "../interfaces/user.interface";
 export enum RouteUser {
   Login = 'post|user/login',
   Token = 'post|user/token',
-  Reset = 'post|user/reset',
   Registre = 'post|user/registre',
-  // Change = 'user/change',
+  Change = 'post|user/change',
+  Reset = 'post|user/reset',
   // Account = 'user/account',
   // Verify = 'user/verify',
 }
@@ -26,6 +26,11 @@ export type RequestMapUser = {
     route: RouteUser.Registre;
     method: Method.Post;
     requestData: Pick<IUser.UserData, 'name' | 'lastName' | 'email' | 'phone'>;
+  };
+  [RouteUser.Change]: {
+    route: RouteUser.Change;
+    method: Method.Post;
+    requestData: Pick<IUser.UserData, 'email'> & { password: string, newPassword: string };
   };
   [RouteUser.Reset]: {
     route: RouteUser.Reset;

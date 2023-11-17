@@ -21,7 +21,7 @@ const schemaLogin: { [key: string]: yup.Schema } = ({
 
       case 'registre':
         if (userDB?.email === options.reqBody.email) return ctx.createError({ message: `Lo sentimos, el correo electrónico (${email}) ya se encuentra registrado. Por favor, verifique que ha ingresado correctamente el correo con el que desea registrarse` });
-          break;
+        break;
 
       default:
         break;
@@ -30,18 +30,25 @@ const schemaLogin: { [key: string]: yup.Schema } = ({
     return true;
   }),
   password: yup.string().test('is-password', async function (password, ctx) {
-    const reqBody = ctx.options?.context?.reqBody;
-    const userDB = await User.findOne({ email: reqBody?.email as string });
-
+    const options = ctx.options?.context
+    const userDB = await User.findOne({ email: options?.reqBody?.email as string });
     if (!userDB) return true;
 
-    const validatePass = await comparePassword(password!, userDB.password);
+    switch (options?.route) {
+      case 'login':
+        const validatePass = await comparePassword(password!, userDB.password);
+        if (!validatePass) return ctx.createError({ message: `Lo sentimos, la contraseña no es válida.` });
+        break;
 
-    if (!validatePass) {
-      return ctx.createError({ message: `Lo sentimos, la contraseña no es válida.` });
-    } else {
-      return true;
+      case 'change':
+        const validatePassChange = await comparePassword(password!, userDB.password);
+        if (validatePassChange) return ctx.createError({ message: `Lo sentimos, la contraseña no puede ser igual a la anterior.` });
+        break;
+
+      default:
+        break;
     }
+    return true;
   }),
   token: yup.string().test('is-password', async function (token, ctx) {
     if (!token) return true
@@ -61,6 +68,11 @@ const schemaLogin: { [key: string]: yup.Schema } = ({
       });
     }
 
+    return true
+  }),
+  newPassword: yup.string().test('is-password', async function (newPassword, ctx) {
+    const options = ctx.options?.context
+    if (newPassword !== options?.reqBody?.password) return ctx.createError({ message: `las contraseñas deben coincidir.` });
     return true
   }),
 });

@@ -35,7 +35,8 @@ function Form({ handleChangeLogin, stateLogin: { change, error }, handleClickLog
             {(Object.keys(change) as (keyof InitialStateLogin['change'])[]).map((item) => (
               <UserInput
                 key={item}
-                svg={{ type: item }}
+                svg={{ type: item === 'password' ? 'padlock' : item }}
+                svgTwo={{ type: item === 'password' ? "eye" : "" }}
                 styleClass={`login--${item}`}
                 errorMessage={error[item] || errorUser?.errors.find(e => e.field === item)?.message}
                 input={{ type: item, placeholder: item === 'email' ? "Correo electrónico" : "Contraseña", value: change[item], handleOnChange: handleChangeLogin, name: item }}

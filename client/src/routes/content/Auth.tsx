@@ -4,7 +4,7 @@ import ProtectedAuth from '../_tools/ProtectedAuth';
 
 const Login = Loadable(lazy(() => import('../../features/auth/login')))
 const Registre = Loadable(lazy(() => import('../../features/auth/registre')))
-// const PassChange = Loadable(lazy(() => import('../../features/auth/PassChange')))
+const PassChange = Loadable(lazy(() => import('../../features/auth/PassChange')))
 // const Reset = Loadable(lazy(() => import('../../features/auth/reset')))
 
 const Auth = {
@@ -19,13 +19,13 @@ const Auth = {
       path: "/registre",
       element: <Registre />,
     },
+    {
+      path: "/change",
+      element: <PassChange />,
+    },
     // {
     //   path: "/reset",
     //   element: <Reset />,
-    // },
-    // {
-    //   path: "/change",
-    //   element: <PassChange />,
     // },
   ],
 };

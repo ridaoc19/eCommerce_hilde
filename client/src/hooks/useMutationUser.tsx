@@ -14,7 +14,7 @@ function useMutationUser() {
       return error
     },
     onSuccess(data, { route }) {
-      if (route === RouteUser.Login || route === RouteUser.Token || route === RouteUser.Registre) {
+      if (route === RouteUser.Login || route === RouteUser.Token || route === RouteUser.Registre || route === RouteUser.Change) {
         queryClient.setQueryData(IUser.PRODUCT_NAME_QUERY, data)
       } else {
         queryClient.invalidateQueries(IUser.PRODUCT_NAME_QUERY)

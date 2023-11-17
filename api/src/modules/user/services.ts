@@ -98,6 +98,28 @@ export async function postRegistre(req: Request, res: Response) {
   }
 }
 
+export async function postPassChange(req: Request, res: Response) {
+  try {
+    const { email, password: temporaryPassword } = req.body;
+
+    const password = await generateHashPassword(temporaryPassword)
+
+    const userDB = await User.findOneAndUpdate({ email }, { password, verified: true }, { new: true })
+    if (!userDB) throw new Error(`Se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
+    await fetchCount({})
+
+    successHandler({
+      res, dataDB: userDB, filterAdd: [], filterDelete: ['password'], json: {
+        field: 'change',
+        message: 'Cambio de contraseña fue exitoso',
+        status: StatusHTTP.updated_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
+  }
+}
 
 
 
@@ -134,26 +156,6 @@ export async function postReset(req: Request, res: Response) {
   }
 }
 
-export async function postPassChange(req: Request, res: Response) {
-  try {
-    const { _id: idFront, password: temporaryPassword } = req.body;
-
-    const password = await generateHashPassword(temporaryPassword)
-
-    const userDB = await User.findByIdAndUpdate({ _id: idFront }, { password, verified: true }, { new: true })
-    if (!userDB) throw new Error(`errorString: Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
-    await fetchCount({})
-
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
-  }
-}
 
 export async function postAccount(req: Request, res: Response) {
   try {
