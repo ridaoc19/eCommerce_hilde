@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAppSelector } from '../../redux/hooks';
-import { selectUserData } from '../../redux/reducers/user';
+import useMutationUser from "../../hooks/useMutationUser";
 
 function ProtectedRouteDash() {
-  const userData = useAppSelector(selectUserData);
+  const { fetchUserMutation: { getQueryUser } } = useMutationUser();
+  const { dataUser } = getQueryUser()
 
-  if (userData) {
+  if (dataUser) {
     return <Outlet />
   } else {
     return <Navigate to={"/"} />
