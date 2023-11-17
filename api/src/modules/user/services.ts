@@ -121,21 +121,15 @@ export async function postPassChange(req: Request, res: Response) {
   }
 }
 
-
-
-
-
 export async function postReset(req: Request, res: Response) {
   try {
     const userDB = await User.findOne({ email: req.body.email })
-    if (!userDB) throw new Error(`errorString: Lo sentimos, el usuario (${req.body.email}) no está registrado. Por favor, verifique que ha ingresado correctamente su correo electrónico o regístrese para crear una nueva cuenta.`)
-
     const temporaryPassword: string = uuidv4().split("-", 1)[0];
     const password = await generateHashPassword(temporaryPassword)
 
-    const userUpdateDB = await User.findByIdAndUpdate(userDB._id, { password, verified: false }, { new: true })
-    if (!userUpdateDB) throw new Error(`errorString: Lamentablemente, se produjo un problema al restablecer la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userUpdateDB;
+    const userUpdateDB = await User.findByIdAndUpdate(userDB!._id, { password, verified: false }, { new: true })
+    if (!userUpdateDB) throw new Error(`Se produjo un problema al restablecer la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
+    const { _id, name, email } = userUpdateDB;
     await fetchCount({ _id, name }) ///////////
 
     const responseEmail: boolean = await sendEmail({ name, email, password: temporaryPassword, type: "reset" })
@@ -146,15 +140,23 @@ export async function postReset(req: Request, res: Response) {
         console.error('Ocurrió un error:', error);
       });
 
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
+    successHandler({
+      dataDB: userUpdateDB, filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'reset',
+        message: 'Restablecimiento de contraseña exitoso',
+        status: StatusHTTP.success_200,
+        status_code: 200
+      }
+    })
+
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    errorHandlerCatch({ error, res })
   }
 }
+
+
+
+
 
 
 export async function postAccount(req: Request, res: Response) {

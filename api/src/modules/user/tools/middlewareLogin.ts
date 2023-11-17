@@ -19,6 +19,10 @@ const schemaLogin: { [key: string]: yup.Schema } = ({
         if (!userDB) return ctx.createError({ message: `Lo sentimos, el usuario (${email}) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.` });
         break;
 
+      case 'reset':
+        if (!userDB) return ctx.createError({ message: `Lo sentimos, el usuario (${email}) no está registrado. Por favor, verifique que ha ingresado correctamente su correo electrónico o regístrese para crear una cuenta.` });
+        break;
+
       case 'registre':
         if (userDB?.email === options.reqBody.email) return ctx.createError({ message: `Lo sentimos, el correo electrónico (${email}) ya se encuentra registrado. Por favor, verifique que ha ingresado correctamente el correo con el que desea registrarse` });
         break;
