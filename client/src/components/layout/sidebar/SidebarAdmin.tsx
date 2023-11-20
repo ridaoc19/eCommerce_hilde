@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 import Svg from '../../../assets/icons/Svg';
 import { CreateContext } from '../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
+import useMutationUser from '../../../hooks/useMutationUser';
 import { IContext } from '../../../interfaces/hooks/context.interface';
 import { PermitsRoles } from '../../../interfaces/user.interface';
-import { useAppSelector } from '../../../redux/hooks';
-import { selectUserData } from '../../../redux/reducers/user';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -27,7 +26,8 @@ const item: ISidebar.ItemRole[] = [
 
 function SidebarAdmin({ handleOnClick }: { handleOnClick: () => void }) {
   const { dashboard: { state: { permits }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
-  const dataUser = useAppSelector(selectUserData)
+  const { fetchUserMutation: { getQueryUser } } = useMutationUser();
+  const { dataUser } = getQueryUser()
 
   return (
     <div className='section__main-left'>

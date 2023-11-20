@@ -1,9 +1,9 @@
 import Svg from '../../../../assets/icons/Svg';
-import { useAppSelector } from '../../../../redux/hooks';
-import { selectUserData } from '../../../../redux/reducers/user';
+import { useMutationUser } from '../../../auth/login';
 
 function Render() {
-  const dataUser = useAppSelector(selectUserData)
+  const { fetchUserMutation: { getQueryUser } } = useMutationUser();
+  const { dataUser } = getQueryUser()
 
   return (
     <div>

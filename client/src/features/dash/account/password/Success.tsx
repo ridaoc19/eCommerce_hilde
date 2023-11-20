@@ -1,8 +1,8 @@
-import { useAppSelector } from "../../../../redux/hooks";
-import { selectUserData } from "../../../../redux/reducers/user";
+import { useMutationUser } from "../../../auth/login";
 
 function Success() {
-  const dataUser = useAppSelector(selectUserData);
+  const { fetchUserMutation: { getQueryUser } } = useMutationUser();
+  const { dataUser } = getQueryUser()
 
   return (
     <div className="account__success--container">

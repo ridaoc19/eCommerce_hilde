@@ -10,7 +10,7 @@ import './styles/app/App.scss';
 
 function App() {
   const token: IUser.UserData['token'] = localStorage?.token || ""
-  useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } });
+  useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } }, !!token);
   const { isSuccess } = useQuery({
     queryKey: IProduct.PRODUCT_NAME_QUERY,
     queryFn: () => makeProductsRequest(Route.ProductRequest).withOptions({}),

@@ -1,18 +1,18 @@
 import { Router } from "express";
-import { validatorsMiddlewareGlobal } from "../../core/utils/validations/validatorsMiddlewareGlobal";
-import { postAccount, postLogin, postLoginToken, postPassChange, postRegistre, postReset, postVerifyEmail } from "./services";
+import { postAccountInfo, postAccountPass, postLogin, postLoginToken, postPassChange, postRegistre, postReset, postVerifyEmail } from "./services";
 import { middlewareLogin } from "./tools/middlewareLogin";
 
 const router = Router();
 
-router.use(validatorsMiddlewareGlobal)
+router.use(middlewareLogin)
 
-router.post('/registre', middlewareLogin, postRegistre)
-router.post('/login', middlewareLogin, postLogin)
-router.post('/token', middlewareLogin, postLoginToken)
-router.post('/change', middlewareLogin, postPassChange)
-router.post('/reset', middlewareLogin, postReset)
-router.post('/account', postAccount)
+router.post('/registre', postRegistre)
+router.post('/login', postLogin)
+router.post('/token', postLoginToken)
+router.post('/change', postPassChange)
+router.post('/reset', postReset)
+router.post('/accountInfo', postAccountInfo)
+router.post('/accountPass', postAccountPass)
 router.post('/verify', postVerifyEmail)
 
 

@@ -2,12 +2,10 @@
 
 .sidebar__container {
 
-  // height: 10rem;
   .sidebar__icon-container {
     position              : absolute;
     left                  : 1%;
     top                   : 0;
-    // height             : 1rem;
     margin                : 1.4rem;
     -webkit-transform     : translate3d(0, 0, 0);
     transform             : translate3d(0, 0, 0);
@@ -68,15 +66,10 @@
   }
 
   .sidebar__content {
-    // background-color: var(--brand-9);
     background-color      : rgba(0, 0, 0, 0.5);
     position              : fixed;
     top                   : 0;
     left                  : 0;
-    // right              : 0;
-    // bottom             : 0;
-    // max-height      : 100vh;
-    // overflow-y      : auto;
     transform             : translate3d(0px, -100%, 0px);
     transition            : transform 0.35s cubic-bezier(0.05, 1.04, 0.72, 0.98) 0s;
     width                 : 100%;
@@ -91,26 +84,9 @@
       .sidebar__main {
         cursor                  : default;
         background-color        : antiquewhite;
-        // display              : grid;
-        // grid-template-columns: 1fr;
-        // grid-template-rows   : 1fr;
         width                   : min-content;
-        // height          : 100vh;
-        // position: relative;
-
-        // .sidebar__header-container {
-        // height             : 4.8rem;
-        // background-color   : var(--brand-6);
-        // // position        : sticky;
-        // // top             : 0;
-        // // left            : 0;
-        // display            : grid;
-        // place-content      : center;
-        // min-width          : 14rem;
-        // }
 
         .sidebar__section-container {
-          // height               : 80%;
           background-color     : rgb(248, 204, 146);
           height               : 100vh;
           display              : grid;
@@ -118,49 +94,5 @@
         }
       }
     }
-
-    // ul {
-    //   margin : 0;
-    //   padding: 0;
-    //   display: grid;
-    //   gap    : 2rem;
-
-    //   >li {
-    //     font-size      : 1rem;
-    //     height         : 3em;
-    //     display        : flex;
-    //     align-items    : center;
-    //     justify-content: center;
-
-    //     >button {
-    //       width: 10rem;
-    //     }
-    //   }
-
-    //   .sidebar_header-container {
-    //     justify-content : space-between;
-    //     background-color: var(--container-color);
-    //     height          : 4rem;
-
-    //     >.-button {
-    //       width: 4.5rem;
-    //     }
-
-    //     >.-link {
-    //       display              : grid;
-    //       grid-template-columns: repeat(2, 1fr);
-    //       align-content        : center;
-    //       gap                  : 20%;
-
-    //       a {
-    //         width: min-content;
-    //       }
-    //     }
-
-    //     >.-theme {
-    //       width: 4rem;
-    //     }
-    //   }
-    // }
   }
 }

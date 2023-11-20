@@ -1,16 +1,21 @@
 import { useParams } from "react-router-dom";
-import { IUser } from "../../../../interfaces/user.interface";
-import { useAppDispatch } from "../../../../redux/hooks";
-import { userPosts } from "../../../../redux/reducers/user/actions";
+import { RouteUser, useMutationUser } from "../../../auth/login";
+
 
 function VerifyEmail() {
   const { id } = useParams();
-  const dispatch = useAppDispatch()
+  const { fetchUserMutation: { fetch }, statusUserMutation: { dataSuccess, errorUser, isErrorUser, isLoadingUser } } = useMutationUser();
 
   return (
     <div>
+      {isLoadingUser && <div>Cargando...</div>}
+      {dataSuccess && <p>{dataSuccess.message}</p>}
       <h2>Valida el correo electrónico</h2>
-      <button onClick={() => { dispatch(userPosts({ tokenEmail: id, routes: 'verify' } as IUser.tokenEmail)) }}>Validar</button>
+      <button onClick={() => {
+        fetch(RouteUser.Verify).options({ requestData: { tokenEmail: id || "" } })
+        // dispatch(userPosts({ tokenEmail: id, routes: 'verify' } as IUser.tokenEmail)) 
+      }}>Validar</button>
+      {isErrorUser && errorUser?.errors[0].message}
     </div>
   );
 }

@@ -77,7 +77,7 @@ function Reset() {
                   id={`button__reset--${item}`}
                   onClick={handleClickReset}
                   className={item === ResetButtonName.Back ? 'button_light' : 'button_dark'}
-                  disabled={isLoadingUser || isErrorUser} >
+                  disabled={isLoadingUser || item === ResetButtonName.Save && isErrorUser} >
                   {item === ResetButtonName.Save ? (<>{isLoadingUser ? <Spinner /> : 'Restablecer Contraseña'}</>) : (<>{'Volver'}</>)}
                 </button>
               ))}

@@ -77,7 +77,7 @@ function PassChange() {
                     id={`button__change--${item}`}
                     onClick={handleClickChange}
                     className={item === ChangeButtonName.Back ? 'button_light' : 'button_dark'}
-                    disabled={isLoadingUser || isErrorUser} >
+                    disabled={isLoadingUser || ChangeButtonName.Save && isErrorUser} >
                     {item === ChangeButtonName.Save ? (<>{isLoadingUser ? <Spinner /> : 'Cambiar contraseña'}</>) : (<>{'Volver'}</>)}
                   </button>
                 ))}

@@ -70,7 +70,7 @@ function Registre() {
                     id={`button__registre--${item}`}
                     onClick={handleClickRegistre}
                     className={item === RegistreButtonName.Back ? 'button_light' : 'button_dark'}
-                    disabled={isLoadingUser || isErrorUser} >
+                    disabled={isLoadingUser || RegistreButtonName.Save && isErrorUser} >
                     {item === RegistreButtonName.Save ? (<>{isLoadingUser ? <Spinner /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>)}
                   </button>
                 ))}

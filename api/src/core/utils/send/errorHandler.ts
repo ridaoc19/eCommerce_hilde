@@ -3,8 +3,7 @@ import { MapStatusCode, StatusHTTP, StatusHTTPError } from "../enums";
 
 export const errorHandlerCatch = ({ res, error }:
   { res: Response, error: unknown }) => {
-
-  if (error instanceof Error) {
+    if (error instanceof Error) {
     res
       .status(400)
       .json({

@@ -13,6 +13,8 @@ function Login() {
       if (dataUser.verified) {
         if (!dataUser.verifiedEmail) {
           setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, email: `${dataUser.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${dataUser.email}` } }))
+          fetchUserMutation.removeFetch()
+          localStorage.removeItem("token");
         } else {
           setSuccess(true)
           localStorage.token = dataUser.token;
@@ -107,7 +109,7 @@ function Login() {
                   id={`button__login--${item}`}
                   onClick={handleClickLogin}
                   className={item === LoginButtonName.Reset ? "button_link" : item === LoginButtonName.Back ? 'button_light' : 'button_dark'}
-                  disabled={statusUserMutation.isLoadingUser || statusUserMutation.isErrorUser} >
+                  disabled={statusUserMutation.isLoadingUser || item === LoginButtonName.Login && statusUserMutation.isErrorUser} >
                   {item === LoginButtonName.Login ? (<>{statusUserMutation.isLoadingUser ? <Spinner /> : 'Iniciar Sesión'}</>)
                     : (<>{item === LoginButtonName.Reset ? 'Restablecer' : item === LoginButtonName.Registre ? 'Crear Cuenta' : 'Volver'}</>)}
                 </button>

@@ -1,6 +1,32 @@
 import React from 'react';
+
+export type SvgType =
+  | "user" |"name" | "lastName"
+  | "delete"
+  | "filter"
+  | "increase"
+  | "decrement"
+  | "close"
+  | "shop"
+  | "search"
+  | "openEye"
+  | "closedEye"
+  | "notifications"
+  | "logo"
+  | "padlock"
+  | "email" | "newEmail"
+  | "arrowLeft"
+  | "arrowRight"
+  | "arrowTop"
+  | "arrowBottom"
+  | "update"
+  | "success"
+  | "spinner"
+  | "home"
+  | "phone";
+
 interface Props {
-  type: string,
+  type: SvgType,
   width?: number,
   height?: number,
   color?: string
@@ -10,7 +36,7 @@ interface Props {
 const Svg: React.FC<Props> = ({ type, width = 24, height = 24, color = "#292D32" }) => {
   switch (type) {
 
-    case "user":
+    case "user":case "name":case "lastName":
       return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M20.5899 22C20.5899 18.13 16.7399 15 11.9999 15C7.25991 15 3.40991 18.13 3.40991 22" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -110,7 +136,7 @@ const Svg: React.FC<Props> = ({ type, width = 24, height = 24, color = "#292D32"
         <path d="M14.5 11C15.3284 11 16 10.3284 16 9.5C16 8.67157 15.3284 8 14.5 8C13.6716 8 13 8.67157 13 9.5C13 10.3284 13.6716 11 14.5 11Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
 
-    case "email":
+    case "email": case "newEmail":
       return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M17 20.5H7C4 20.5 2 19 2 15.5V8.5C2 5 4 3.5 7 3.5H17C20 3.5 22 5 22 8.5V15.5C22 19 20 20.5 17 20.5Z" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M17 9L13.87 11.5C12.84 12.32 11.15 12.32 10.12 11.5L7 9" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
@@ -161,14 +187,14 @@ const Svg: React.FC<Props> = ({ type, width = 24, height = 24, color = "#292D32"
 
     case "home":
       return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M2 22H22" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M2.94995 22L2.99995 9.96999C2.99995 9.35999 3.28995 8.78004 3.76995 8.40004L10.77 2.95003C11.49 2.39003 12.4999 2.39003 13.2299 2.95003L20.23 8.39003C20.72 8.77003 21 9.34999 21 9.96999V22" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"/>
-      <path d="M13 17H11C10.17 17 9.5 17.67 9.5 18.5V22H14.5V18.5C14.5 17.67 13.83 17 13 17Z" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"/>
-      <path d="M9.5 13.75H7.5C6.95 13.75 6.5 13.3 6.5 12.75V11.25C6.5 10.7 6.95 10.25 7.5 10.25H9.5C10.05 10.25 10.5 10.7 10.5 11.25V12.75C10.5 13.3 10.05 13.75 9.5 13.75Z" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"/>
-      <path d="M16.5 13.75H14.5C13.95 13.75 13.5 13.3 13.5 12.75V11.25C13.5 10.7 13.95 10.25 14.5 10.25H16.5C17.05 10.25 17.5 10.7 17.5 11.25V12.75C17.5 13.3 17.05 13.75 16.5 13.75Z" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"/>
-      <path d="M19.0001 7L18.9701 4H14.5701" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 22H22" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M2.94995 22L2.99995 9.96999C2.99995 9.35999 3.28995 8.78004 3.76995 8.40004L10.77 2.95003C11.49 2.39003 12.4999 2.39003 13.2299 2.95003L20.23 8.39003C20.72 8.77003 21 9.34999 21 9.96999V22" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" />
+        <path d="M13 17H11C10.17 17 9.5 17.67 9.5 18.5V22H14.5V18.5C14.5 17.67 13.83 17 13 17Z" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" />
+        <path d="M9.5 13.75H7.5C6.95 13.75 6.5 13.3 6.5 12.75V11.25C6.5 10.7 6.95 10.25 7.5 10.25H9.5C10.05 10.25 10.5 10.7 10.5 11.25V12.75C10.5 13.3 10.05 13.75 9.5 13.75Z" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" />
+        <path d="M16.5 13.75H14.5C13.95 13.75 13.5 13.3 13.5 12.75V11.25C13.5 10.7 13.95 10.25 14.5 10.25H16.5C17.05 10.25 17.5 10.7 17.5 11.25V12.75C17.5 13.3 17.05 13.75 16.5 13.75Z" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" />
+        <path d="M19.0001 7L18.9701 4H14.5701" stroke={color} stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
-      
+
 
 
     default:
