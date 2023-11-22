@@ -32,6 +32,8 @@ const validationSchemas: { [key: string]: yup.Schema } = {
     .email('Ingrese un nuevo correo electrónico válido'),
   tokenEmail: yup.string()
     .required('Existe un problema en la validación del correo, solicita nuevamente el cambio de correo electrónico o después de 10 minutos de la solicitud se cancela el cambio de correo'),
+  roles: yup.string()
+    .required('Debe seleccionar uno de los roles aceptados')
 };
 
 

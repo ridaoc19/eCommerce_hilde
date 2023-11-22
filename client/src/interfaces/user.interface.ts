@@ -2,8 +2,9 @@ import { IProduct } from "./product.interface";
 
 // ==============================|| User ||============================== //
 export namespace IUser {
-  export const PRODUCT_NAME_QUERY = ['user']
-  type Roles = "super" | "admin" | "edit" | "visitant";
+  export const USER_NAME_QUERY = ['user']
+  export const USER_NAME_QUERY_ALL = ['users']
+  type Roles = "super" | "admin" | "edit" | "visitant" | "";
 
   export interface UserData {
     _id: string;
@@ -33,10 +34,14 @@ export type PermitsRoles = {
   | 'inventory_category'
   | 'inventory_subcategory'
   | 'inventory_product'
+  | 'super' | 'admin' | 'edit'
   roles: IUser.UserData["roles"][]; // Aquí indicamos que roles es un array de roles permitidos
 }
 
 export const permitsRoles: PermitsRoles[] = [
+  { id: 'super', roles: ["super", "admin", 'edit', 'visitant'] },
+  { id: 'admin', roles: ["admin", 'edit', 'visitant'] },
+  { id: 'edit', roles: ['edit', 'visitant'] },
   { id: 'sidebar_user', roles: ["super", "admin", 'edit', 'visitant'] },
   { id: 'sidebar_newDeptCatSubProdData', roles: ['super', 'admin'] },
   { id: 'sidebar_productEntry', roles: ['super', 'admin', 'edit'] },

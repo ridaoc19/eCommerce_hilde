@@ -18,36 +18,36 @@ export interface InitialStateAccountInfo {
 function Information() {
   const navigate = useNavigate()
   const { dashboard: { state: { account: { password, information } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
-  const { fetchUserMutation: { fetch, removeError, getQueryUser, removeFetch }, statusUserMutation: { dataSuccess, errorUser, isErrorUser, isLoadingUser, isSuccessUser } } = useMutationUser();
-  const { dataUser } = getQueryUser()
+  const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  const { userData, userQueryData } = getUserQueryData()
   const { getValidationErrors } = useValidations();
   const [success, setSuccess] = useState(false)
 
   const initialStateAccountInfo: InitialStateAccountInfo = {
-    change: { _id: dataUser?._id || "", name: dataUser?.name || "", lastName: dataUser?.lastName || "", email: dataUser?.email || "", newEmail: dataUser?.email || "", phone: dataUser?.phone || "" },
+    change: { _id: userData?._id || "", name: userData?.name || "", lastName: userData?.lastName || "", email: userData?.email || "", newEmail: userData?.email || "", phone: userData?.phone || "" },
     error: { _id: "", name: "", lastName: "", email: "", newEmail: "", phone: "" },
   }
   const [stateAccountInfo, setStateAccountInfo] = useState<InitialStateAccountInfo>(initialStateAccountInfo);
 
   useEffect(() => {
 
-    if (dataSuccess?.field === "accountInfo") {
+    if (userQueryData?.field === "accountInfo") {
       setSuccess(true)
     }
     setTimeout(() => {
       setSuccess(false)
       dispatchContext({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_INFORMATION, payload: { name: null, value: "" } })
-      if (!dataUser?.verifiedEmail) {
+      if (!userData?.verifiedEmail) {
         localStorage.removeItem("token");
-        removeFetch()
-        dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
+        tools.removeQuery()
+        // dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
         navigate('/')
       }
     }, 10000);
-  }, [isSuccessUser])
+  }, [status.isUserSuccess])
 
   const handleChangeAccountInfo: HandleChangeText = ({ target: { name, value } }) => {
-    clearUserError(() => removeError(), (state) => setStateAccountInfo(state), initialStateAccountInfo, stateAccountInfo)
+    clearUserError(() => tools.resetError(), (state) => setStateAccountInfo(state), initialStateAccountInfo, stateAccountInfo)
     const { error, stop } = getValidationErrors({ fieldName: name, value })
     if (stop) return setStateAccountInfo(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
     setStateAccountInfo(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
@@ -57,7 +57,7 @@ function Information() {
     event.preventDefault();
     const id = (event.target as HTMLFormElement).id.split("--")[1] as AccountInfoButtonName;
     if (id === AccountInfoButtonName.Save) {
-      fetch(RouteUser.AccountInfo).options({ requestData: stateAccountInfo.change })
+      tools.fetch(RouteUser.AccountInfo).options({ requestData: stateAccountInfo.change })
     }
   }
 
@@ -71,7 +71,7 @@ function Information() {
       <div>
         <h4>Información personal</h4>
         <button className='button_light' onClick={handleOnClick}
-          disabled={password || isLoadingUser}
+          disabled={password || status.isLoadingUser}
         >Editar</button>
       </div>
 
@@ -90,7 +90,7 @@ function Information() {
                       key={item}
                       svg={{ type: item }}
                       styleClass={`login__account-info--${item}`}
-                      errorMessage={stateAccountInfo.error[item] || errorUser?.errors.find(e => e.field === item)?.message}
+                      errorMessage={stateAccountInfo.error[item] || status.userError?.errors.find(e => e.field === item)?.message}
                       input={{ type: item, placeholder: item === 'name' ? 'Nombres' : item === 'lastName' ? 'Apellidos' : item === 'newEmail' ? 'Ingrese su nuevo correo' : 'Teléfono', value: stateAccountInfo.change[item], handleOnChange: handleChangeAccountInfo, name: item }}
                     />
                   ))}
@@ -98,9 +98,9 @@ function Information() {
                 </div>
 
                 <div className="form__error-back--content">
-                  {errorUser?.errors.some(e => e.field === 'general') &&
+                  {status.userError?.errors.some(e => e.field === 'general') &&
                     <ul>
-                      {errorUser?.errors.filter(e => e.field === 'general').map((e, i) => (
+                      {status.userError?.errors.filter(e => e.field === 'general').map((e, i) => (
                         <span key={i}>{e.message}</span>
                       ))}
                     </ul>
@@ -108,7 +108,7 @@ function Information() {
                 </div>
 
                 <div className="form__button--content">
-                  <button id='button__dashboard--save' onClick={handleClickAccountInfo} className="button_dark" disabled={isLoadingUser || isErrorUser} >{isLoadingUser ? <Spinner /> : "Editar Usuario"}</button>
+                  <button id='button__information--save' onClick={handleClickAccountInfo} className="button_dark" disabled={status.isLoadingUser || status.isUserError} >{status.isLoadingUser ? <Spinner /> : "Editar Usuario"}</button>
                 </div>
               </main>
             </div>

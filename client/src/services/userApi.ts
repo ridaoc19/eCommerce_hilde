@@ -17,7 +17,7 @@ export type MakeUserRequestReturn = {
   status: string;
   status_code: number;
   message: string;
-  data: IUser.UserData;
+  data: IUser.UserData[];
 };
 
 async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]): Promise<MakeUserRequestReturn> {
@@ -30,9 +30,9 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
       method: method,
       headers: { 'Content-Type': 'application/json' }
     };
-    if (method !== Method.Get && data.requestData) fetchOptions.body = JSON.stringify(data.requestData);
+    if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
 
-    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}`, fetchOptions)
+    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'routeId' in data ? data.routeId : ""}`, fetchOptions)
     const resJson = await responseApi.json();
 
     if (!responseApi.ok) {

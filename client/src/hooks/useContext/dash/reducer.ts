@@ -25,6 +25,9 @@ const initialState: IDashReducer.AppState = {
     products_id: null,
   },
   permits: {
+    super: false,
+    admin: false,
+    edit: false,
     sidebar_user: false,
     sidebar_newDeptCatSubProdData: false,
     sidebar_productEntry: false,

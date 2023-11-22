@@ -4,18 +4,19 @@ import { RouteUser, useMutationUser } from "../../../auth/login";
 
 function VerifyEmail() {
   const { id } = useParams();
-  const { fetchUserMutation: { fetch }, statusUserMutation: { dataSuccess, errorUser, isErrorUser, isLoadingUser } } = useMutationUser();
+  const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  const { userQueryData, isFetchingUser } = getUserQueryData()
 
   return (
     <div>
-      {isLoadingUser && <div>Cargando...</div>}
-      {dataSuccess && <p>{dataSuccess.message}</p>}
+      {isFetchingUser && <div>Cargando...</div>}
+      {userQueryData && <p>{userQueryData.message}</p>}
       <h2>Valida el correo electrónico</h2>
       <button onClick={() => {
-        fetch(RouteUser.Verify).options({ requestData: { tokenEmail: id || "" } })
+        tools.fetch(RouteUser.Verify).options({ requestData: { tokenEmail: id || "" } })
         // dispatch(userPosts({ tokenEmail: id, routes: 'verify' } as IUser.tokenEmail)) 
       }}>Validar</button>
-      {isErrorUser && errorUser?.errors[0].message}
+      {status.isUserError && status.userError?.errors[0].message}
     </div>
   );
 }

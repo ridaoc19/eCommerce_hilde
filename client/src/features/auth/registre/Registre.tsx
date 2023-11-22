@@ -4,16 +4,17 @@ import { RouteUser, Svg, useEffect, Spinner, Success, UserInput, clearUserError,
 function Registre() {
   const navigate = useNavigate()
   const { getValidationErrors } = useValidations();
-  const { fetchUserMutation: { fetch, removeError }, statusUserMutation: { errorUser, isErrorUser, isLoadingUser, isSuccessUser, dataUser } } = useMutationUser();
+  const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  const { userData } = getUserQueryData()
   const [stateRegistre, setStateRegistre] = useState<InitialStateRegistre>(initialStateRegistre);
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    if (dataUser) setSuccess(true)
-  }, [isSuccessUser])
+    if (userData) setSuccess(true)
+  }, [status.isUserSuccess])
 
   const handleChangeRegistre: HandleChangeText = ({ target: { name, value } }) => {
-    clearUserError(() => removeError(), (state) => setStateRegistre(state), initialStateRegistre, stateRegistre)
+    clearUserError(() => tools.resetError(), (state) => setStateRegistre(state), initialStateRegistre, stateRegistre)
     const { error, stop } = getValidationErrors({ fieldName: name, value })
     if (stop) return setStateRegistre(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
     setStateRegistre(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
@@ -23,7 +24,7 @@ function Registre() {
     event.preventDefault();
     const id = (event.target as HTMLFormElement).id.split("--")[1] as RegistreButtonName;
     if (id === RegistreButtonName.Back) return navigate('/');
-    fetch(RouteUser.Registre).options({ requestData: stateRegistre.change })
+    tools.fetch(RouteUser.Registre).options({ requestData: stateRegistre.change })
   };
 
   return (
@@ -46,7 +47,7 @@ function Registre() {
                     key={item}
                     svg={{ type: item === 'name' || item === 'lastName' ? 'user' : item }}
                     styleClass={`login--${item}`}
-                    errorMessage={stateRegistre.error[item] || errorUser?.errors.find(e => e.field === item)?.message}
+                    errorMessage={stateRegistre.error[item] || status.userError?.errors.find(e => e.field === item)?.message}
                     input={{ type: item, placeholder: item === 'name' ? 'Nombres' : item === 'lastName' ? 'Apellidos' : item === 'email' ? 'Correo Electrónico' : 'Teléfono', value: stateRegistre.change[item], handleOnChange: handleChangeRegistre, name: item }}
                   />
                 ))}
@@ -54,9 +55,9 @@ function Registre() {
               </div>
 
               <div className="form__error-back--content">
-                {errorUser?.errors.some(e => e.field === 'general') &&
+                {status.userError?.errors.some(e => e.field === 'general') &&
                   <ul>
-                    {errorUser?.errors.filter(e => e.field === 'general').map((e, i) => (
+                    {status.userError?.errors.filter(e => e.field === 'general').map((e, i) => (
                       <span key={i}>{e.message}</span>
                     ))}
                   </ul>
@@ -70,8 +71,8 @@ function Registre() {
                     id={`button__registre--${item}`}
                     onClick={handleClickRegistre}
                     className={item === RegistreButtonName.Back ? 'button_light' : 'button_dark'}
-                    disabled={isLoadingUser || RegistreButtonName.Save && isErrorUser} >
-                    {item === RegistreButtonName.Save ? (<>{isLoadingUser ? <Spinner /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>)}
+                    disabled={status.isLoadingUser || RegistreButtonName.Save && status.isUserError} >
+                    {item === RegistreButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>)}
                   </button>
                 ))}
               </div>

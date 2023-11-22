@@ -9,6 +9,9 @@ export enum RouteUser {
   Reset = 'post|user/reset',
   AccountInfo = 'post|user/accountInfo',
   AccountPass = 'post|user/accountPass',
+  AccountAdminPut = 'put|user/accountAdmin',
+  AccountAdminDelete = 'delete|user/accountAdmin',
+  AccountAdminGet = 'get|user/accountAdmin',
   Verify = 'post|user/verify',
 }
 
@@ -47,6 +50,20 @@ export type RequestMapUser = {
     route: RouteUser.AccountPass;
     method: Method.Post;
     requestData: Pick<IUser.UserData, '_id'> & { password: string, newPassword: string };
+  };
+  [RouteUser.AccountAdminGet]: {
+    route: RouteUser.AccountAdminGet;
+    method: Method.Get;
+  };
+  [RouteUser.AccountAdminPut]: {
+    route: RouteUser.AccountAdminPut;
+    method: Method.Put;
+    requestData: Pick<IUser.UserData, '_id' | 'roles'>;
+  };
+  [RouteUser.AccountAdminDelete]: {
+    route: RouteUser.AccountAdminDelete;
+    method: Method.Delete;
+    routeId: string
   };
   [RouteUser.Verify]: {
     route: RouteUser.Verify;

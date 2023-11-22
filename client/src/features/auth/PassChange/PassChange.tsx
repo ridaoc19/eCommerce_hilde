@@ -4,23 +4,23 @@ import { RouteUser, Svg, useEffect, Spinner, Success, UserInput, clearUserError,
 function PassChange() {
   const navigate = useNavigate()
   const { getValidationErrors } = useValidations();
-  const { fetchUserMutation: { fetch, removeError, getQueryUser }, statusUserMutation: { errorUser, isErrorUser, isLoadingUser, isSuccessUser } } = useMutationUser();
-  const { dataUser } = getQueryUser()
+  const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  const { userData } = getUserQueryData();
 
   const initialStateChange: InitialStateChange = {
-    change: { email: dataUser?.email || "", password: "", newPassword: "" },
+    change: { email: userData?.email || "", password: "", newPassword: "" },
     error: { email: "", password: "", newPassword: "" },
   }
   const [stateChange, setStateChange] = useState<InitialStateChange>(initialStateChange);
   const [success, setSuccess] = useState(false)
-  console.log(dataUser)
+
   useEffect(() => {
-    if (!dataUser) return navigate('/login')
-    if (dataUser?.verified) setSuccess(true)
-  }, [isSuccessUser])
+    if (!userData) return navigate('/login')
+    if (userData?.verified) setSuccess(true)
+  }, [status.isUserSuccess])
 
   const handleChangeChange: HandleChangeText = ({ target: { name, value } }) => {
-    clearUserError(() => removeError(), (state) => setStateChange(state), initialStateChange, stateChange)
+    clearUserError(() => tools.resetError(), (state) => setStateChange(state), initialStateChange, stateChange)
     const { error, stop } = getValidationErrors({ fieldName: name, value })
     if (stop) return setStateChange(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
     setStateChange(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
@@ -30,7 +30,7 @@ function PassChange() {
     event.preventDefault();
     const id = (event.target as HTMLFormElement).id.split("--")[1] as ChangeButtonName;
     if (id === ChangeButtonName.Back) return navigate('/login');
-    fetch(RouteUser.Change).options({ requestData: stateChange.change })
+    tools.fetch(RouteUser.Change).options({ requestData: stateChange.change })
   };
 
   return (
@@ -54,16 +54,16 @@ function PassChange() {
                     svg={{ type: "padlock" }}
                     svgTwo={{ type: "eye" }}
                     styleClass={`login__change--${item}`}
-                    errorMessage={stateChange.error[item] || errorUser?.errors.find(e => e.field === item)?.message}
+                    errorMessage={stateChange.error[item] || status.userError?.errors.find(e => e.field === item)?.message}
                     input={{ type: 'password', placeholder: item === 'password' ? 'Contraseña' : 'Confirmar contraseña', value: stateChange.change[item], handleOnChange: handleChangeChange, name: item }}
                   />
                 ))}
               </div>
 
               <div className="form__error-back--content">
-                {errorUser?.errors.some(e => e.field === 'general') &&
+                {status.userError?.errors.some(e => e.field === 'general') &&
                   <ul>
-                    {errorUser?.errors.filter(e => e.field === 'general').map((e, i) => (
+                    {status.userError?.errors.filter(e => e.field === 'general').map((e, i) => (
                       <span key={i}>{e.message}</span>
                     ))}
                   </ul>
@@ -77,8 +77,8 @@ function PassChange() {
                     id={`button__change--${item}`}
                     onClick={handleClickChange}
                     className={item === ChangeButtonName.Back ? 'button_light' : 'button_dark'}
-                    disabled={isLoadingUser || ChangeButtonName.Save && isErrorUser} >
-                    {item === ChangeButtonName.Save ? (<>{isLoadingUser ? <Spinner /> : 'Cambiar contraseña'}</>) : (<>{'Volver'}</>)}
+                    disabled={status.isLoadingUser || ChangeButtonName.Save && status.isUserError} >
+                    {item === ChangeButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Cambiar contraseña'}</>) : (<>{'Volver'}</>)}
                   </button>
                 ))}
               </div>

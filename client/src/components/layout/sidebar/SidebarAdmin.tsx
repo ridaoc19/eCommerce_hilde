@@ -26,8 +26,8 @@ const item: ISidebar.ItemRole[] = [
 
 function SidebarAdmin({ handleOnClick }: { handleOnClick: () => void }) {
   const { dashboard: { state: { permits }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
-  const { fetchUserMutation: { getQueryUser } } = useMutationUser();
-  const { dataUser } = getQueryUser()
+  const { data: { getUserQueryData } } = useMutationUser();
+  const { userData } = getUserQueryData()
 
   return (
     <div className='section__main-left'>
@@ -38,7 +38,7 @@ function SidebarAdmin({ handleOnClick }: { handleOnClick: () => void }) {
       </div>
       <div className='main__left-content'>
         {item.map((e, i) => {
-          if (dataUser?.roles) {
+          if (userData?.roles) {
             return permits[e.id] && (
               <div key={i} onClick={() => {
                 dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: { name: null, value: e.value } })

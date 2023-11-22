@@ -29,7 +29,7 @@ export async function postLogin(req: Request, res: Response) {
     }
 
     successHandler<StatusHTTP.success_200>({
-      dataDB: responseUserDB!,
+      dataDB: [responseUserDB!],
       filterAdd: [{ key: 'token', value: token }],
       filterDelete: ['password'],
       res,
@@ -55,7 +55,7 @@ export async function postLoginToken(req: Request, res: Response) {
     // await fetchCount({ _id, name })
 
     successHandler<StatusHTTP.success_200>({
-      dataDB, filterAdd: [], filterDelete: ['password'], res, json: {
+      dataDB: [dataDB], filterAdd: [], filterDelete: ['password'], res, json: {
         field: 'token',
         status_code: 200,
         status: StatusHTTP.success_200,
@@ -99,7 +99,7 @@ export async function postRegistre(req: Request, res: Response) {
       });
 
     successHandler({
-      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res,
+      dataDB: [userDB], filterAdd: [], filterDelete: ['password'], res,
       json: { field: 'registre', message: 'registro exitoso', status: StatusHTTP.success_200, status_code: 200 },
     })
 
@@ -119,7 +119,7 @@ export async function postPassChange(req: Request, res: Response) {
     await fetchCount({})
 
     successHandler({
-      res, dataDB: userDB, filterAdd: [], filterDelete: ['password'], json: {
+      res, dataDB: [userDB], filterAdd: [], filterDelete: ['password'], json: {
         field: 'change',
         message: 'Cambio de contraseña fue exitoso',
         status: StatusHTTP.updated_200,
@@ -161,7 +161,7 @@ export async function postReset(req: Request, res: Response) {
       });
 
     successHandler({
-      dataDB: userUpdateDB, filterAdd: [], filterDelete: ['password'], res, json: {
+      dataDB: [userUpdateDB], filterAdd: [], filterDelete: ['password'], res, json: {
         field: 'reset',
         message: 'Restablecimiento de contraseña exitoso',
         status: StatusHTTP.success_200,
@@ -205,7 +205,7 @@ export async function postAccountInfo(req: Request, res: Response) {
     await fetchCount({})
 
     successHandler({
-      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res, json: {
+      dataDB: [userDB], filterAdd: [], filterDelete: ['password'], res, json: {
         field: 'accountInfo',
         message: 'Se actualizo la información con éxito',
         status: StatusHTTP.updated_200,
@@ -225,7 +225,7 @@ export async function postAccountPass(req: Request, res: Response) {
     if (!userDB) throw new Error(`Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
     await fetchCount({})
     successHandler({
-      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res, json: {
+      dataDB: [userDB], filterAdd: [], filterDelete: ['password'], res, json: {
         field: 'accountPass',
         message: 'contraseña cambiada con éxito',
         status: StatusHTTP.updated_200,
@@ -237,7 +237,6 @@ export async function postAccountPass(req: Request, res: Response) {
   }
 }
 
-
 export async function postVerifyEmail(req: Request, res: Response) {
   try {
     const decoded: { _id: string, email: string, token?: boolean } = verifyTokenEmail(req.body.tokenEmail);
@@ -245,10 +244,42 @@ export async function postVerifyEmail(req: Request, res: Response) {
     const userDB = await User.findByIdAndUpdate({ _id: decoded._id }, { email: decoded.email, verifiedEmail: true }, { new: true })
     if (!userDB) throw new Error(`Se produjo un error al validar el nuevo correo electrónico, por favor solicita el cambio de correo nuevamente`)
     successHandler({
-      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res, json: {
+      dataDB: [userDB], filterAdd: [], filterDelete: ['password'], res, json: {
         field: 'verifyEmail',
         message: 'Se valido el correo electrónico con éxito',
         status: StatusHTTP.success_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
+  }
+}
+
+export async function getAccountAdmin(_req: Request, res: Response) {
+  try {
+    const dataUserAll = await User.find()
+    if (!dataUserAll) return errorHandlerRes({ status: StatusHTTP.notFound_404, status_code: 404, res, errors: [{ field: 'accountAdmin', message: "Fallo el envió de usuarios" }] })
+    successHandler({ dataDB: dataUserAll, filterAdd: [], filterDelete: ['password'], res, json: { field: 'accountAdmin', status: StatusHTTP.success_200, status_code: 200, message: "Se envío todos los usuarios" } })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
+  }
+}
+
+export async function putAccountAdmin(req: Request, res: Response) {
+  try {
+    let { _id, roles } = req.body;
+
+    await User.findByIdAndUpdate(_id, { roles }, { new: true })
+    const userDB = await User.find()
+    if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
+    await fetchCount({})
+
+    successHandler({
+      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'accountInfo',
+        message: 'Se actualizo la información del admin con éxito',
+        status: StatusHTTP.updated_200,
         status_code: 200
       }
     })

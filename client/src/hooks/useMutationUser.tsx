@@ -5,46 +5,76 @@ import { RequestMapUser, RouteUser } from "../services/userRequest";
 
 function useMutationUser() {
   const queryClient = useQueryClient();
-  const { mutate, reset, isLoading: isLoadingUser, data, error: errorUser, isSuccess: isSuccessUser, isError: isErrorUser } = useMutation({
+
+  const {
+    mutate: executeUserMutation,
+    reset: resetUserMutation,
+    isLoading: isLoadingUser,
+    error: userError,
+    isSuccess: isUserSuccess,
+    isError: isUserError,
+  } = useMutation({
     mutationFn: ({ route, options }: { route: RouteUser, options: Omit<RequestMapUser[RouteUser], 'route' | 'method'> }) => {
       const requestData = userRequest(route).options(options);
       return requestData;
     },
     onError(error: Error) {
-      return error
+      return error;
     },
-    onSuccess(data) {
-      // { route }
-      // if (route === RouteUser.Login || route === RouteUser.Reset || route === RouteUser.Token || route === RouteUser.Registre || route === RouteUser.Change) {
-      queryClient.setQueryData(IUser.PRODUCT_NAME_QUERY, data)
-      // } else {
-      //   queryClient.invalidateQueries(IUser.PRODUCT_NAME_QUERY)
-      // }
+    onSuccess(data, { route }) {
+      if (route === RouteUser.AccountAdminGet) {
+        // Lógica adicional en caso de éxito
+      }
+
+      const queryKey = route === RouteUser.AccountAdminGet ? IUser.USER_NAME_QUERY_ALL : IUser.USER_NAME_QUERY;
+      queryClient.setQueryData(queryKey, data);
     },
   });
 
-  const fetchUserMutation = {
+  const dataSection = {
+    getUserQueryData() {
+      const isFetchingUser = queryClient.isFetching(IUser.USER_NAME_QUERY)
+      const userQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>(IUser.USER_NAME_QUERY);
+      return { userData: userQueryData?.data[0] || null, userQueryData, isFetchingUser: !!isFetchingUser };
+    },
+    getAllUserQueryData() {
+      const isFetchingAllUser = queryClient.isFetching(IUser.USER_NAME_QUERY_ALL)
+      const allUserQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>(IUser.USER_NAME_QUERY_ALL);
+      return { allUserData: allUserQueryData?.data || null, allUserQueryData, isFetchingAllUser: !!isFetchingAllUser };
+    },
+  };
+
+  const statusSection = {
+    isLoadingUser,
+    isUserSuccess,
+    userError,
+    isUserError,
+  };
+
+  const toolsSection = {
     fetch<T extends RouteUser>(route: T): { options: (options: Omit<RequestMapUser[T], 'route' | 'method'>) => void } {
       return {
         options: async (options: Omit<RequestMapUser[T], 'route' | 'method'>) => {
-          mutate({ route, options })
+          executeUserMutation({ route, options });
         },
       };
     },
-    removeFetch() {
-      queryClient.removeQueries(IUser.PRODUCT_NAME_QUERY)
+    removeAllQueries() {
+      queryClient.removeQueries(IUser.USER_NAME_QUERY_ALL);
     },
-    removeError() {
-      reset()
+    removeQuery() {
+      queryClient.removeQueries(IUser.USER_NAME_QUERY);
     },
-    getQueryUser() {
-      const data = queryClient.getQueryData<MakeUserRequestReturn | undefined>(IUser.PRODUCT_NAME_QUERY);
-      return { dataUser: data?.data || null }
-    }
+    resetError() {
+      resetUserMutation();
+    },
   }
 
-
-  return { fetchUserMutation, statusUserMutation: { dataUser: data?.data, dataSuccess: data, isLoadingUser, isSuccessUser, errorUser, isErrorUser } };
+  return {
+    data: dataSection,
+    status: statusSection,
+    tools: toolsSection,
+  };
 }
 
 export default useMutationUser;
