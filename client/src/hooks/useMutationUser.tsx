@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "../interfaces/user.interface";
-import { userRequest, Error, MakeUserRequestReturn } from "../services/userApi";
+import { Error, MakeUserRequestReturn, userRequest } from "../services/userApi";
 import { RequestMapUser, RouteUser } from "../services/userRequest";
 
 function useMutationUser() {
@@ -22,24 +22,25 @@ function useMutationUser() {
       return error;
     },
     onSuccess(data, { route }) {
-      if (route === RouteUser.AccountAdminGet) {
-        // Lógica adicional en caso de éxito
+      if (route === RouteUser.AccountAdminGet || route === RouteUser.AccountAdminDelete || route === RouteUser.AccountAdminPut) {
+        console.log(route, "entro muchos")
+        queryClient.invalidateQueries([IUser.QUERY_KEY_USER.MultipleUsers])
+      } else {
+        console.log(route, "entro uno")
+        queryClient.setQueryData([IUser.QUERY_KEY_USER.SingleUser], data);
       }
-
-      const queryKey = route === RouteUser.AccountAdminGet ? IUser.USER_NAME_QUERY_ALL : IUser.USER_NAME_QUERY;
-      queryClient.setQueryData(queryKey, data);
     },
   });
 
   const dataSection = {
     getUserQueryData() {
-      const isFetchingUser = queryClient.isFetching(IUser.USER_NAME_QUERY)
-      const userQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>(IUser.USER_NAME_QUERY);
+      const isFetchingUser = queryClient.isFetching([IUser.QUERY_KEY_USER.SingleUser])
+      const userQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>([IUser.QUERY_KEY_USER.SingleUser]);
       return { userData: userQueryData?.data[0] || null, userQueryData, isFetchingUser: !!isFetchingUser };
     },
     getAllUserQueryData() {
-      const isFetchingAllUser = queryClient.isFetching(IUser.USER_NAME_QUERY_ALL)
-      const allUserQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>(IUser.USER_NAME_QUERY_ALL);
+      const isFetchingAllUser = queryClient.isFetching([IUser.QUERY_KEY_USER.MultipleUsers])
+      const allUserQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>([IUser.QUERY_KEY_USER.MultipleUsers]);
       return { allUserData: allUserQueryData?.data || null, allUserQueryData, isFetchingAllUser: !!isFetchingAllUser };
     },
   };
@@ -60,10 +61,10 @@ function useMutationUser() {
       };
     },
     removeAllQueries() {
-      queryClient.removeQueries(IUser.USER_NAME_QUERY_ALL);
+      queryClient.removeQueries([IUser.QUERY_KEY_USER.MultipleUsers]);
     },
     removeQuery() {
-      queryClient.removeQueries(IUser.USER_NAME_QUERY);
+      queryClient.removeQueries([IUser.QUERY_KEY_USER.SingleUser]);
     },
     resetError() {
       resetUserMutation();

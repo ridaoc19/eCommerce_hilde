@@ -260,7 +260,7 @@ export async function getAccountAdmin(_req: Request, res: Response) {
   try {
     const dataUserAll = await User.find()
     if (!dataUserAll) return errorHandlerRes({ status: StatusHTTP.notFound_404, status_code: 404, res, errors: [{ field: 'accountAdmin', message: "Fallo el envió de usuarios" }] })
-    successHandler({ dataDB: dataUserAll, filterAdd: [], filterDelete: ['password'], res, json: { field: 'accountAdmin', status: StatusHTTP.success_200, status_code: 200, message: "Se envío todos los usuarios" } })
+    successHandler({ dataDB: dataUserAll, filterAdd: [], filterDelete: ['password'], res, json: { field: 'accountAdminGet', status: StatusHTTP.success_200, status_code: 200, message: "Se envío todos los usuarios" } })
   } catch (error) {
     errorHandlerCatch({ error, res })
   }
@@ -277,7 +277,7 @@ export async function putAccountAdmin(req: Request, res: Response) {
 
     successHandler({
       dataDB: userDB, filterAdd: [], filterDelete: ['password'], res, json: {
-        field: 'accountInfo',
+        field: 'accountAdminPut',
         message: 'Se actualizo la información del admin con éxito',
         status: StatusHTTP.updated_200,
         status_code: 200
@@ -288,4 +288,24 @@ export async function putAccountAdmin(req: Request, res: Response) {
   }
 }
 
+export async function deleteAccountAdmin(req: Request, res: Response) {
+  try {
+    let { _id } = req.params;
+    await User.findByIdAndDelete(_id)
+    const userDB = await User.find()
+    if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
+    await fetchCount({})
+
+    successHandler({
+      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'accountAdminDelete',
+        message: 'Se elimino el usuario con éxito',
+        status: StatusHTTP.success_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
+  }
+}
 

@@ -2,8 +2,11 @@ import { IProduct } from "./product.interface";
 
 // ==============================|| User ||============================== //
 export namespace IUser {
-  export const USER_NAME_QUERY = ['user']
-  export const USER_NAME_QUERY_ALL = ['users']
+
+  export enum QUERY_KEY_USER {
+    SingleUser = 'user',
+    MultipleUsers = 'users'
+  }
   type Roles = "super" | "admin" | "edit" | "visitant" | "";
 
   export interface UserData {

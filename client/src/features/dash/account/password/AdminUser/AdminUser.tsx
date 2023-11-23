@@ -99,8 +99,8 @@ function AdminUser() {
 
       <div className="form__button--content">
         <button id='button__user-admin--save' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError || !stateUserAdmin.change.roles || stateUserAdmin.change.roles === dataSuccess?.data.find(u => u._id === stateUserAdmin.change._id)?.roles} >{status.isLoadingUser ? <Spinner /> : "Actualizar"}</button>
-        <button id='button__user-admin--empty' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError} >{status.isLoadingUser ? <Spinner /> : "Limpiar"}</button>
-        <button id='button__user-admin--delete' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError} >{status.isLoadingUser ? <Spinner /> : "Eliminar Usuario"}</button>
+        <button id='button__user-admin--empty' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError} >{"Limpiar"}</button>
+        <button id='button__user-admin--delete' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError || !stateUserAdmin.change._id} >{status.isLoadingUser ? <Spinner /> : "Eliminar Usuario"}</button>
       </div>
     </div>
   );
