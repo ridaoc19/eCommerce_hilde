@@ -1,41 +1,40 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import useUserOnChange from "../../../hooks/useUserOnChange";
-import { IUserComponents, IUserOnChange } from "../../../interfaces/user.interface";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { clearUser, selectUserData, selectUserError, selectUserLoading } from "../../../redux/reducers/user";
-import Form from "./Form";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Svg from "../../../assets/icons/Svg";
+import Spinner from '../../../components/common/spinner';
+import UserInput from '../../../components/common/userInput/UserInput';
+import useMutationUser from '../../../hooks/useMutationUser';
+import useValidations from '../../../hooks/useValidations';
+import { HandleChangeText, HandleClick } from '../../../interfaces/global.interface';
+import { RequestMapUser, RouteUser } from '../../../services/userRequest';
+import { clearUserError } from '../../../utils/userReusableFunctions';
+import Reset from './Reset';
+import Success from './Success';
 
-const initialState: IUserOnChange.UseUserOnChange = {
-  email: { change: "", message: "" },
+
+export enum ResetButtonName {
+  Save = 'save',
+  Back = 'back',
+}
+interface InitialStateReset {
+  change: RequestMapUser[RouteUser.Reset]['requestData']
+  error: RequestMapUser[RouteUser.Reset]['requestData']
 }
 
-function Reset() {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { change, handleOnChange, handleErrorOnBack } = useUserOnChange(initialState)
-  const errorBack = useAppSelector(selectUserError)
-  const loadingUser = useAppSelector(selectUserLoading)
-  const dataUser = useAppSelector(selectUserData)
-  const [status, setStatus] = useState<IUserComponents.Status>("form");
-
-  useEffect(() => {
-    if (errorBack instanceof Object) handleErrorOnBack()
-    if (errorBack) return setStatus("error")
-    if (loadingUser) return setStatus("loading")
-    if (dataUser instanceof Object && !loadingUser && !errorBack && !dataUser?.verified) {
-      setStatus("success")
-      setTimeout(() => {
-        dispatch(clearUser());
-        return navigate('/login')
-      }, 10000);
-    }
-    // eslint-disable-next-line
-  }, [loadingUser, dataUser, errorBack])
-
-
-  return <Form change={change} handleOnChange={handleOnChange} status={status} errorBack={errorBack} />
+const initialStateReset: InitialStateReset = {
+  change: { email: "" },
+  error: { email: "" }
 }
+
+export type {
+  HandleChangeText,
+  HandleClick,
+  InitialStateReset
+};
+
+  export {
+    RouteUser, Spinner, Success,
+    Svg, UserInput, clearUserError, initialStateReset, useEffect, useMutationUser, useNavigate, useState, useValidations
+  };
 
 export default Reset;
-

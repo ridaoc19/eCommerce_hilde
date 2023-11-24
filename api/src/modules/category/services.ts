@@ -6,11 +6,11 @@ import Product from "../product/model";
 import Subcategory from "../subcategory/model";
 import Category from "./model";
 
-function fetchCount(info: any) {
-  return new Promise<{ data: number }>((resolve) =>
-    setTimeout(() => resolve({ data: info }), 8000)
-  );
-}
+// function fetchCount(info: any) {
+//   return new Promise<{ data: number }>((resolve) =>
+//     setTimeout(() => resolve({ data: info }), 8000)
+//   );
+// }
 
 export async function categoryCreate(req: Request, res: Response) {
   try {
@@ -22,7 +22,7 @@ export async function categoryCreate(req: Request, res: Response) {
     await Department.findByIdAndUpdate(departmentId, { $push: { categoriesId: category._id } });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Creación categoría exitosa",
       products: updatedProducts,
     });
@@ -46,7 +46,7 @@ export async function categoryEdit(req: Request, res: Response) {
     await Category.findByIdAndUpdate(_id, { name }, { new: true });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Categoría Editada exitosamente",
       products: updatedProducts,
     });
@@ -82,7 +82,7 @@ export async function categoryDelete(req: Request, res: Response) {
     }
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Eliminación categoría en cascada exitosa",
       products: updatedProducts,
     });

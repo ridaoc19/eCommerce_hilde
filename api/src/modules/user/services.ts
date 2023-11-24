@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
-import { comparePassword, generateHashPassword } from "../../core/auth/bcryptUtils";
+import { generateHashPassword } from "../../core/auth/bcryptUtils";
 import { generateToken, generateTokenEmail, verifyToken, verifyTokenEmail } from "../../core/auth/jwtUtils";
 import { sendEmail } from "../../core/utils/email";
+import { StatusHTTP } from "../../core/utils/enums";
+import { errorHandlerCatch, errorHandlerRes } from "../../core/utils/send/errorHandler";
+import { successHandler } from "../../core/utils/send/successHandler";
 import { splitString } from "../../core/utils/splitString";
 import { User } from "./model";
 import { userCreatedVerified } from "./tools/userCreatedVerified";
-import { userResetVerified } from "./tools/userResetVerified";
 import { userEmailVerified } from "./tools/userEmailVerified";
+import { userResetVerified } from "./tools/userResetVerified";
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
@@ -15,193 +18,294 @@ function fetchCount(info: any) {
   );
 }
 
-export async function postRegistre(req: Request, res: Response) {
-  try {
-    const temporaryPassword: string = uuidv4().split("-", 1)[0];
-    const password = await generateHashPassword(temporaryPassword)
-    const userDB = await User.create({ name: req.body.name, lastName: req.body.lastName, email: req.body.email, phone: req.body.phone, password, verified: false })
-    if (!userDB) throw new Error(`errorString: se presento un inconveniente al realizar el registro`)
-    const user = await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
-    const { _id, name, email, verified } = userDB;
-
-    const responseEmail: boolean = await sendEmail({ name, email, password: temporaryPassword, type: 'registre' })
-    if (!responseEmail) throw new Error(`errorString: ${name} se presento un inconveniente al enviar la contraseña al correo ${email}`)
-
-    userCreatedVerified({ _id })
-      .catch(error => {
-        console.error('Ocurrió un error:', error);
-      });
-
-    res.status(200).json({ _id, name, email, verified })
-
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
-  }
-}
-
 export async function postLogin(req: Request, res: Response) {
   try {
-    const { email: emailFront, password } = req.body;
+    const responseUserDB = await User.findOne({ email: req.body.email });
 
-    const userDB = await User.findOne({ email: emailFront })
-    if (!userDB) throw new Error(`errorString: Lo sentimos, el usuario (${emailFront}) no está registrado. Por favor, verifique que ha ingresado correctamente sus credenciales o regístrese para crear una nueva cuenta.`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
+    let token = "";
 
-    // const user = await fetchCount({ _id, name })
-
-
-    const validatePass = await comparePassword(password, userDB.password)
-    if (!validatePass) throw new Error(`errorString: Lo sentimos, por favor verifique que haya ingresado correctamente sus credenciales.`)
-
-    let token = null
-    if (userDB.verified) {
-      token = generateToken({ _id })
+    if (responseUserDB && responseUserDB.verified) {
+      token = generateToken({ _id: responseUserDB._id });
     }
 
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses, token })
+    successHandler<StatusHTTP.success_200>({
+      dataDB: [responseUserDB!],
+      filterAdd: [{ key: 'token', value: token }],
+      filterDelete: ['password'],
+      res,
+      json: {
+        status_code: 200,
+        status: StatusHTTP.success_200,
+        field: 'login',
+        message: 'Inicio de sesión exitoso'
+      }
+    })
+
 
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    errorHandlerCatch({ res, error })
   }
 }
 
 export async function postLoginToken(req: Request, res: Response) {
   try {
     const decoded = verifyToken(req.body.token);
-    if (decoded?.token) throw new Error(`errorString: Invalid token`)
-    const userDB = await User.findById({ _id: decoded._id })
-    if (!userDB) throw new Error(`errorString: Invalid User`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
-    // const user = await fetchCount({ _id, name })
+    const responseDB = await User.findById({ _id: decoded._id })
+    const dataDB = responseDB!
+    // await fetchCount({ _id, name })
 
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
+    successHandler<StatusHTTP.success_200>({
+      dataDB: [dataDB], filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'token',
+        status_code: 200,
+        status: StatusHTTP.success_200,
+        message: 'Inicio sesión exitoso con token'
+      }
+    })
+
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(409).json({ error: splitString(error) });
     } else {
       res.status(500).json({ error: `Error desconocido: ${error}` });
     }
+  }
+}
+
+export async function postRegistre(req: Request, res: Response) {
+  try {
+    const temporaryPassword: string = uuidv4().split("-", 1)[0];
+    const password = await generateHashPassword(temporaryPassword)
+    const userDB = await User.create(Object.assign(req.body, { password, verified: false }))
+    if (!userDB) throw new Error(`se presento un inconveniente al realizar el registro`)
+    await fetchCount({ _id: userDB._id, name: userDB.name, lastName: userDB.lastName, email: userDB.email })
+
+    const responseEmail: boolean = await sendEmail({ name: userDB.name, email: userDB.email, password: temporaryPassword, type: 'registre' })
+    if (!responseEmail) return errorHandlerRes<StatusHTTP.badRequest_400>({
+      status: StatusHTTP.badRequest_400,
+      status_code: 400,
+      errors: [{ field: 'general', message: `${userDB.name} se presento un inconveniente al enviar la contraseña al correo ${userDB.email}` }],
+      res
+    })
+
+    userCreatedVerified({ _id: userDB._id })
+      .catch(_error => {
+        return errorHandlerRes<StatusHTTP.badRequest_400>({
+          status: StatusHTTP.badRequest_400,
+          status_code: 400,
+          errors: [{ field: 'general', message: `${userDB.name} se presento un inconveniente al enviar los recordatorios de cambio contraseña` }],
+          res
+        })
+      });
+
+    successHandler({
+      dataDB: [userDB], filterAdd: [], filterDelete: ['password'], res,
+      json: { field: 'registre', message: 'registro exitoso', status: StatusHTTP.success_200, status_code: 200 },
+    })
+
+  } catch (error: unknown) {
+    errorHandlerCatch({ res, error })
+  }
+}
+
+export async function postPassChange(req: Request, res: Response) {
+  try {
+    const { email, password: temporaryPassword } = req.body;
+
+    const password = await generateHashPassword(temporaryPassword)
+
+    const userDB = await User.findOneAndUpdate({ email }, { password, verified: true }, { new: true })
+    if (!userDB) throw new Error(`Se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
+    await fetchCount({})
+
+    successHandler({
+      res, dataDB: [userDB], filterAdd: [], filterDelete: ['password'], json: {
+        field: 'change',
+        message: 'Cambio de contraseña fue exitoso',
+        status: StatusHTTP.updated_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
   }
 }
 
 export async function postReset(req: Request, res: Response) {
   try {
     const userDB = await User.findOne({ email: req.body.email })
-    if (!userDB) throw new Error(`errorString: Lo sentimos, el usuario (${req.body.email}) no está registrado. Por favor, verifique que ha ingresado correctamente su correo electrónico o regístrese para crear una nueva cuenta.`)
-
     const temporaryPassword: string = uuidv4().split("-", 1)[0];
     const password = await generateHashPassword(temporaryPassword)
 
-    const userUpdateDB = await User.findByIdAndUpdate(userDB._id, { password, verified: false }, { new: true })
-    if (!userUpdateDB) throw new Error(`errorString: Lamentablemente, se produjo un problema al restablecer la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userUpdateDB;
-    const user = await fetchCount({ _id, name }) ///////////
+    const userUpdateDB = await User.findByIdAndUpdate(userDB!._id, { password, verified: false }, { new: true })
+    if (!userUpdateDB) throw new Error(`Se produjo un problema al restablecer la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
+    const { _id, name, email } = userUpdateDB;
+    await fetchCount({ _id, name }) ///////////
 
     const responseEmail: boolean = await sendEmail({ name, email, password: temporaryPassword, type: "reset" })
-    if (!responseEmail) throw new Error(`errorEmail: ${name} se presento un inconveniente al enviar la contraseña al correo ${email}`)
+    if (!responseEmail) return errorHandlerRes<StatusHTTP.badRequest_400>({
+      status: StatusHTTP.badRequest_400,
+      status_code: 400,
+      errors: [{ field: 'general', message: `${name} se presento un inconveniente al enviar la contraseña al correo ${email}` }],
+      res
+    })
 
-    userResetVerified({ _id })
-      .catch(error => {
-        console.error('Ocurrió un error:', error);
+    userResetVerified({ _id, res })
+      .catch(_error => {
+        return errorHandlerRes<StatusHTTP.badRequest_400>({
+          status: StatusHTTP.badRequest_400,
+          status_code: 400,
+          errors: [{ field: 'general', message: `${name} se presento un inconveniente al enviar los recordatorios cambio de contraseña` }],
+          res
+        })
       });
 
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
-  }
-}
-
-export async function postPassChange(req: Request, res: Response) {
-  try {
-    const { _id: idFront, password: temporaryPassword } = req.body;
-
-    const password = await generateHashPassword(temporaryPassword)
-
-    const userDB = await User.findByIdAndUpdate({ _id: idFront }, { password, verified: true }, { new: true })
-    if (!userDB) throw new Error(`errorString: Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
-    const user = await fetchCount({})
-
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
-  }
-}
-
-export async function postAccount(req: Request, res: Response) {
-  try {
-    if (req.body.components === "information") { // cambia información
-      let { _id: _idF, name: nameF, lastName: lastNameF, email: emailF, previousEmail, phone: phoneF, components } = req.body;
-
-      let verifiedEmailUpdate = true
-      // enviar mensaje para validar correo 
-      if (emailF !== previousEmail) {
-        let token = generateTokenEmail({ _id: _idF, email: emailF })
-        const responseEmail: boolean = await sendEmail({ tokenEmail: token, name: nameF, email: emailF, type: 'validateEmail' })
-        if (!responseEmail) throw new Error(`errorEmail: ${nameF} se presento un inconveniente al enviar el enlace para cambiar el correo ${emailF}`)
-        userEmailVerified({ _id: _idF, newEmail: emailF })
-          .catch(error => {
-            console.error('Ocurrió un error:', error);
-          });
-        verifiedEmailUpdate = false
+    successHandler({
+      dataDB: [userUpdateDB], filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'reset',
+        message: 'Restablecimiento de contraseña exitoso',
+        status: StatusHTTP.success_200,
+        status_code: 200
       }
-      const userDB = await User.findByIdAndUpdate(_idF, { name: nameF, lastName: lastNameF, phone: phoneF, verifiedEmail: verifiedEmailUpdate }, { new: true })
-      if (!userDB) throw new Error(`errorString: se presento un inconveniente al realizar el registro`)
-      const { _id, name, lastName, email, phone, password, verified, verifiedEmail, roles, items, addresses } = userDB;
-      const user = await fetchCount({})
-      res.status(200).json({ _id, name, lastName, email, phone, password, verified, verifiedEmail, roles, items, addresses, components })
+    })
 
-    } else if (req.body.components === "password") { // restablece contraseña
-      let { _id: _idF, password: temporaryPassword, components } = req.body;
-      const password = await generateHashPassword(temporaryPassword)
-      const userDB = await User.findByIdAndUpdate({ _id: _idF }, { password, verified: true }, { new: true })
-      if (!userDB) throw new Error(`errorString: Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
-      const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
-      const user = await fetchCount({})
-      res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses, components })
-    }
   } catch (error: unknown) {
-    console.log(error)
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
+    errorHandlerCatch({ error, res })
+  }
+}
+
+export async function postAccountInfo(req: Request, res: Response) {
+  try {
+    let { _id, name, lastName, email, newEmail, phone } = req.body;
+
+    let verifiedEmailUpdate = true
+    // enviar mensaje para validar correo 
+    if (newEmail !== email) {
+      let token = generateTokenEmail({ _id, email: newEmail })
+      const responseEmail: boolean = await sendEmail({ tokenEmail: token, name, email: newEmail, type: 'validateEmail' })
+      if (!responseEmail) return errorHandlerRes<StatusHTTP.badRequest_400>({
+        status: StatusHTTP.badRequest_400,
+        status_code: 400,
+        errors: [{ field: 'general', message: `${name} se presento un inconveniente al enviar el enlace para cambiar el correo ${newEmail}` }],
+        res
+      })
+      userEmailVerified({ _id, newEmail, res })
+        .catch(_error => {
+          return errorHandlerRes<StatusHTTP.badRequest_400>({
+            status: StatusHTTP.badRequest_400,
+            status_code: 400,
+            errors: [{ field: 'general', message: `${name} se presento un inconveniente al enviar los recordatorios de cambio correo` }],
+            res
+          })
+        });
+      verifiedEmailUpdate = false
     }
+    const userDB = await User.findByIdAndUpdate(_id, { name, lastName, phone, verifiedEmail: verifiedEmailUpdate }, { new: true })
+    if (!userDB) throw new Error(`Se presento un inconveniente al realizar el registro`)
+    await fetchCount({})
+
+    successHandler({
+      dataDB: [userDB], filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'accountInfo',
+        message: 'Se actualizo la información con éxito',
+        status: StatusHTTP.updated_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
+  }
+}
+
+export async function postAccountPass(req: Request, res: Response) {
+  try {
+    let { _id, newPassword: temporaryPassword } = req.body;
+    const password = await generateHashPassword(temporaryPassword)
+    const userDB = await User.findByIdAndUpdate({ _id }, { password, verified: true }, { new: true })
+    if (!userDB) throw new Error(`Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
+    await fetchCount({})
+    successHandler({
+      dataDB: [userDB], filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'accountPass',
+        message: 'contraseña cambiada con éxito',
+        status: StatusHTTP.updated_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
   }
 }
 
 export async function postVerifyEmail(req: Request, res: Response) {
   try {
     const decoded: { _id: string, email: string, token?: boolean } = verifyTokenEmail(req.body.tokenEmail);
-    if (decoded?.token) throw new Error(`errorString: Invalid token Email`)
 
     const userDB = await User.findByIdAndUpdate({ _id: decoded._id }, { email: decoded.email, verifiedEmail: true }, { new: true })
-    if (!userDB) throw new Error(`errorString: Invalid User`)
-    const { _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses } = userDB;
-    res.status(200).json({ _id, name, lastName, email, phone, verified, verifiedEmail, roles, items, addresses })
+    if (!userDB) throw new Error(`Se produjo un error al validar el nuevo correo electrónico, por favor solicita el cambio de correo nuevamente`)
+    successHandler({
+      dataDB: [userDB], filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'verifyEmail',
+        message: 'Se valido el correo electrónico con éxito',
+        status: StatusHTTP.success_200,
+        status_code: 200
+      }
+    })
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    errorHandlerCatch({ error, res })
   }
 }
 
+export async function getAccountAdmin(_req: Request, res: Response) {
+  try {
+    const dataUserAll = await User.find()
+    if (!dataUserAll) return errorHandlerRes({ status: StatusHTTP.notFound_404, status_code: 404, res, errors: [{ field: 'accountAdmin', message: "Fallo el envió de usuarios" }] })
+    successHandler({ dataDB: dataUserAll, filterAdd: [], filterDelete: ['password'], res, json: { field: 'accountAdminGet', status: StatusHTTP.success_200, status_code: 200, message: "Se envío todos los usuarios" } })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
+  }
+}
+
+export async function putAccountAdmin(req: Request, res: Response) {
+  try {
+    let { _id, roles } = req.body;
+
+    await User.findByIdAndUpdate(_id, { roles }, { new: true })
+    const userDB = await User.find()
+    if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
+    await fetchCount({})
+
+    successHandler({
+      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'accountAdminPut',
+        message: 'Se actualizo la información del admin con éxito',
+        status: StatusHTTP.updated_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
+  }
+}
+
+export async function deleteAccountAdmin(req: Request, res: Response) {
+  try {
+    let { _id } = req.params;
+    await User.findByIdAndDelete(_id)
+    const userDB = await User.find()
+    if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
+    await fetchCount({})
+
+    successHandler({
+      dataDB: userDB, filterAdd: [], filterDelete: ['password'], res, json: {
+        field: 'accountAdminDelete',
+        message: 'Se elimino el usuario con éxito',
+        status: StatusHTTP.success_200,
+        status_code: 200
+      }
+    })
+  } catch (error: unknown) {
+    errorHandlerCatch({ error, res })
+  }
+}
 

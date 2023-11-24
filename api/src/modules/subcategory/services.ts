@@ -5,11 +5,11 @@ import Category from "../category/model";
 import Product from "../product/model";
 import Subcategory from "./model";
 
-function fetchCount(info: any) {
-  return new Promise<{ data: number }>((resolve) =>
-    setTimeout(() => resolve({ data: info }), 8000)
-  );
-}
+// function fetchCount(info: any) {
+//   return new Promise<{ data: number }>((resolve) =>
+//     setTimeout(() => resolve({ data: info }), 8000)
+//   );
+// }
 
 export async function subcategoryCreate(req: Request, res: Response) {
   try {
@@ -20,7 +20,7 @@ export async function subcategoryCreate(req: Request, res: Response) {
     await Category.findByIdAndUpdate(categoryId, { $push: { subcategoriesId: subcategory._id } });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Creación subcategories exitosa",
       products: updatedProducts,
     });
@@ -45,7 +45,7 @@ export async function subcategoryEdit(req: Request, res: Response) {
     await Subcategory.findByIdAndUpdate(_id, { name }, { new: true });
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Subcategories Editada exitosamente",
       products: updatedProducts,
     });
@@ -76,7 +76,7 @@ export async function subcategoryDelete(req: Request, res: Response) {
     }
 
     const updatedProducts = await products();
-    return res.status(200).json({
+    res.status(200).json({
       message: "Eliminación subcategory en cascada exitosa",
       products: updatedProducts,
     });

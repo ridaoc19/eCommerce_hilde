@@ -25,14 +25,10 @@ const initialState: IDashReducer.AppState = {
     products_id: null,
   },
   permits: {
-    sidebar_user: false,
-    sidebar_newDeptCatSubProdData: false,
-    sidebar_productEntry: false,
-    sidebar_otro: false,
-    inventory_department: false,
-    inventory_category: false,
-    inventory_subcategory: false,
-    inventory_product: false
+    super: false,
+    admin: false,
+    edit: false,
+    visitant: false,
   }
 };
 
@@ -79,28 +75,6 @@ const reducer: IDashReducer.Reducer = (state, action) => {
       return state;
   }
 };
-
-// Función para manejar las actualizaciones en inventory
-// const handleInventoryUpdate = (state: IDashReducer.AppState, payload: string | { name: string; value: string }): IDashReducer.AppState => {
-//   switch (typeof payload) {
-//     case 'string':
-//       return state; // Mantener el estado actual si el payload es solo un string
-
-//     case 'object':
-//       if ('name' in payload) {
-//         const { name, value } = payload;
-//         return {
-//           ...state,
-//           inventory: { ...state.inventory, [name]: value },
-//         };
-//       }
-//       return state; // Mantener el estado actual si el objeto no tiene la propiedad 'name'
-
-//     default:
-//       return state; // Mantener el estado actual si el payload no es ni string ni objeto
-//   }
-// };
-
 
 export { initialState, reducer };
 

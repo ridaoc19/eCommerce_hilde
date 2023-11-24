@@ -1,11 +1,14 @@
 // import React, { useContext } from 'react';
+import { useContext } from 'react';
+import { CreateContext } from '../../../hooks/useContext';
+import { IContext } from '../../../interfaces/hooks/context.interface';
 import Information from './information';
 import Password from './password';
-// import { CreateContext } from '../../../components/hooks/useContext';
-// import { IContextData } from '../../../interfaces/context.interface';
+import AdminUser from './password/AdminUser/AdminUser';
 
 function Account() {
-  // const { dashboard: { dispatch } }: IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { permits: { admin } } } }: IContext.IContextData = useContext(CreateContext)!
+
   return (
     <div>
       <header className="user-form__header--content">
@@ -13,6 +16,7 @@ function Account() {
       </header>
       <Information />
       <Password />
+      {admin && <AdminUser />}
     </div>
   );
 }

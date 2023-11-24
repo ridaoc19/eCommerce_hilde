@@ -1,5 +1,7 @@
+import { Response } from "express";
 import { sendEmail } from "../../../core/utils/email";
 import { User } from "../model";
+import { errorHandlerCatch } from "../../../core/utils/send/errorHandler";
 
 function stopExecutionTemporarily() {
   return new Promise(resolve => {
@@ -7,30 +9,31 @@ function stopExecutionTemporarily() {
   });
 }
 
-export async function userEmailVerified({ _id, newEmail }: { _id: string, newEmail: string }) {
+export async function userEmailVerified({ _id, newEmail, res }: { _id: string, newEmail: string, res: Response }) {
 
   try {
     await stopExecutionTemporarily();
     const userDBOne = await User.findById(_id)
-    if (!userDBOne) throw new Error(`errorString: se presento un inconveniente uno</p>`)
+    if (!userDBOne) throw new Error(`se presento un inconveniente al solicitar información del usuario`)
 
     if (userDBOne?.email !== newEmail) {
       const responseEmailOne: boolean = await sendEmail({ name: userDBOne.name, email: newEmail, type: 'firstNotificationEmail' })
-      if (!responseEmailOne) throw new Error(`errorString: error en el primer correo`)
+      if (!responseEmailOne) throw new Error(`error en enviar el primer correo`)
     } else if (userDBOne?.email === newEmail) return
 
     await stopExecutionTemporarily();
     const userDBTwo = await User.findById(_id)
-    if (!userDBTwo) throw new Error(`errorString: se presento un inconveniente dos</p>`)
+    if (!userDBTwo) throw new Error(`se presento un inconveniente al solicitar información del usuario en la segunda notificación`)
     await User.findByIdAndUpdate(_id, { verifiedEmail: true })
 
     if (userDBTwo?.email !== newEmail) {
       const responseEmailTwo: boolean = await sendEmail({ name: userDBTwo.name, email: newEmail, type: 'secondNotificationEmail' })
-      if (!responseEmailTwo) throw new Error(`errorString: dos  correo`)
+      console.log(responseEmailTwo)
+      if (!responseEmailTwo) throw new Error(`Error al enviar el segundo correo`)
     } else if (userDBTwo?.email === newEmail) return
 
   } catch (error) {
-    console.log("hubo un error", error)
+    errorHandlerCatch({ error, res })
   }
 
 }

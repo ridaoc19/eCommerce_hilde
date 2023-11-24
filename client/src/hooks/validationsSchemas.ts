@@ -10,6 +10,17 @@ const globalSchemas: { [key: string]: Yup.Schema } = {
     .min(3, 'Este campo debe tener al menos 3 caracteres')
     .max(700, 'Este campo debe tener máximo 700 caracteres')
     .required('Este campo es obligatorio'),
+  email: Yup.string()
+    .email('El correo electrónico no es válido')
+    .required('El correo electrónico es requerido'),
+  password: Yup.string()
+    .required('La contraseña es requerida')
+    .min(6, 'La contraseña debe tener al menos 6 caracteres')
+    .max(15, 'La contraseña debe tener máximo 15 caracteres')
+  // .matches(
+  //   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+  //   'La contraseña debe contener al menos una letra, un número y un carácter especial (@$!%*?&)'
+  // ),
 };
 
 
@@ -63,9 +74,13 @@ const productSchemas: { [key: string]: Yup.Schema } = {
     .required('Este campo es obligatorio'),
 };
 
+const userSchemas: { [key: string]: Yup.Schema } = {
+
+}
 
 
-const validationSchemas = { ...globalSchemas, ...productSchemas };
+
+const validationSchemas = { ...globalSchemas, ...productSchemas, ...userSchemas };
 
 export { validationSchemas };
 

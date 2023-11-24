@@ -33,14 +33,15 @@
       }
 
       .form__error-back--content {
-        p {
-          text-align: center;
-          color     : var(--error-6);
+        ul {
+          margin : 0;
+          padding: 0;
 
           span {
-            color      : var(--error-7);
-            font-weight: bold;
-            font-style : italic;
+            display   : block;
+            text-align: justify;
+            color     : var(--error-6);
+            font-size : small;
           }
         }
       }

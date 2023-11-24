@@ -20,12 +20,12 @@ const Auth = {
       element: <Registre />,
     },
     {
-      path: "/reset",
-      element: <Reset />,
-    },
-    {
       path: "/change",
       element: <PassChange />,
+    },
+    {
+      path: "/reset",
+      element: <Reset />,
     },
   ],
 };
