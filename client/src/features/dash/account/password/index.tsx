@@ -4,7 +4,6 @@ import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
 import { RequestMapUser, RouteUser } from '../../../../services/userRequest';
 import { HandleChangeText, HandleClick, clearUserError, useMutationUser, useNavigate, useValidations } from '../../../auth/login';
-import AdminUser from './AdminUser/AdminUser';
 import FormAccountPass from './FormAccountPass';
 import Render from './Render';
 
@@ -18,7 +17,7 @@ export interface InitialStateAccountPass {
 
 function Information() {
   const navigate = useNavigate()
-  const { dashboard: { state: { account: { password, information }, permits: { admin } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { dashboard: { state: { account: { password, information } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
   const { tools, data: { getUserQueryData }, status } = useMutationUser();
   const { userData, userQueryData } = getUserQueryData()
   const { getValidationErrors } = useValidations();
@@ -85,7 +84,6 @@ function Information() {
             handleChangeAccountPass={handleChangeAccountPass}
             handleClickAccountPass={handleClickAccountPass} />
         }
-        {admin && <AdminUser />}
       </main>
     </>
   );

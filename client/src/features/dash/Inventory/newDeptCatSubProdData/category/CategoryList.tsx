@@ -5,14 +5,14 @@ import { IContext } from "../../../../../interfaces/hooks/context.interface";
 import { ButtonName, CategoryListProps } from "./interface.category";
 
 const CategoryList: React.FC<CategoryListProps> = ({ categoryList, isLoading, handleOnClick }) => {
-  const { dashboard: { dispatch: dispatchContext, state: { inventory: { category_id }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { inventory: { category_id }, permits: { admin } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
       <ul>
         {categoryList?.map((cat, index) => (
           <li key={index}>
-            {inventory_category &&
+            {admin &&
               <>
                 <button disabled={isLoading} name={ButtonName.Edit} value={cat._id} onClick={handleOnClick}>Edit</button>
                 <button disabled={isLoading} name={ButtonName.Delete} value={cat._id} onClick={handleOnClick}>Delete</button>
@@ -26,7 +26,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryList, isLoading, ha
           </li>
         ))}
       </ul>
-      {category_id && inventory_category && <button disabled={isLoading} name={ButtonName.Add} onClick={handleOnClick}>Nueva categoría</button>}
+      {category_id && admin && <button disabled={isLoading} name={ButtonName.Add} onClick={handleOnClick}>Nueva categoría</button>}
     </div>
   );
 }

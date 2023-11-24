@@ -4,7 +4,7 @@ import { IContext } from '../../../../../interfaces/hooks/context.interface';
 import { ButtonName, DepartmentFormProps } from './interface.department';
 
 function DepartmentForm({ department, state, isLoading, handleOnChange, handleOnClick }: DepartmentFormProps) {
-  const { dashboard: { state: { inventory: { department_id }, permits: { inventory_department } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { department_id }, permits: { admin } } } }: IContext.IContextData = useContext(CreateContext)!;
   const { selectedDepartment: { departmentId, requestData: { name } }, validationError } = state;
 
   let message = `Actualizando '${department.find(nam => nam._id === departmentId)?.name}' por '${name}'...`
@@ -13,7 +13,7 @@ function DepartmentForm({ department, state, isLoading, handleOnChange, handleOn
 
   return (
     <div>
-      {!department_id && inventory_department && (
+      {!department_id && admin && (
         <>
           <div className='input'>
             <input
