@@ -12,28 +12,28 @@ import Sidebar from '../sidebar';
 
 function Navbar() {
   const { dashboard: { dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!;
-  const { fetchUserMutation: { removeFetch, getQueryUser } } = useMutationUser()
-  const { dataUser } = getQueryUser()
+  const { data: { getUserQueryData }, tools: { removeQuery } } = useMutationUser()
+  const { userData, isFetchingUser } = getUserQueryData()
 
   const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     localStorage.removeItem("token");
-    removeFetch()
+    removeQuery()
     dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
   }
 
   useEffect(() => {
-    if (dataUser) {
-      if (dataUser.verified) {
+    if (userData) {
+      if (userData.verified) {
         permitsRoles.forEach(acc => {
-          if (acc.roles.some(r => r.includes(dataUser.roles))) {
+          if (acc.roles.some(r => r.includes(userData.roles))) {
             dispatchContext({ type: ActionTypeDashboard.PERMITS_ROLES, payload: { name: null, value: acc.id } })
           }
         });
       }
     }
     // eslint-disable-next-line
-  }, [dataUser])
+  }, [isFetchingUser])
 
   return (
     <div className='component__navbar--container'>
@@ -51,11 +51,11 @@ function Navbar() {
       </div>
       <div className='navbar__login--container'>
         <Link to={'/login'}>{Svg({ type: 'user', color: "white" })}</Link>
-        {dataUser?.name &&
+        {userData?.name &&
           <>
             <button onClick={handleOnClick}>cerrar sesión</button>
             <Link to={'/dashboard'}>dashboard</Link>
-            <span>{dataUser.name}</span>
+            <span>{userData.name}</span>
           </>}
       </div>
     </div>

@@ -5,7 +5,7 @@ import { ButtonName, SubcategoryFormProps } from './interface.subcategory';
 
 
 function SubcategoryForm({ subcategory, state, isLoading, handleOnChange, handleOnClick }: SubcategoryFormProps) {
-  const { dashboard: { state: { inventory: { subcategory_id }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { subcategory_id }, permits: { admin } } } }: IContext.IContextData = useContext(CreateContext)!;
   const { selectedSubcategory: { subcategoryId, requestData: { name } }, validationError } = state;
 
   let message = `Actualizando '${subcategory.find(nam => nam._id === subcategoryId)?.name}' por '${name}'...`
@@ -14,7 +14,7 @@ function SubcategoryForm({ subcategory, state, isLoading, handleOnChange, handle
 
   return (
     <div>
-      {!subcategory_id && inventory_subcategory && (
+      {!subcategory_id && admin && (
         <>
           <div className='input'>
             <input

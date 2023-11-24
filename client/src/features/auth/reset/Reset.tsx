@@ -4,23 +4,24 @@ import { HandleChangeText, Svg, HandleClick, InitialStateReset, ResetButtonName,
 function Reset() {
   const navigate = useNavigate()
   const { getValidationErrors } = useValidations();
-  const { fetchUserMutation: { fetch, removeError, removeFetch }, statusUserMutation: { errorUser, isErrorUser, isLoadingUser, isSuccessUser, dataUser } } = useMutationUser();
+  const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  const { userData } = getUserQueryData();
   const [stateReset, setStateReset] = useState<InitialStateReset>(initialStateReset);
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    if (dataUser) {
+    if (userData) {
       setSuccess(true)
       setTimeout(() => {
-        removeFetch()
+        tools.removeQuery()
         return navigate('/login')
       }, 10000);
     }
     // eslint-disable-next-line
-  }, [isSuccessUser])
+  }, [status.isUserSuccess])
 
   const handleChangeReset: HandleChangeText = ({ target: { name, value } }) => {
-    clearUserError(() => removeError(), (state) => setStateReset(state), initialStateReset, stateReset)
+    clearUserError(() => tools.resetError(), (state) => setStateReset(state), initialStateReset, stateReset)
     const { error, stop } = getValidationErrors({ fieldName: name, value })
     if (stop) return setStateReset(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
     setStateReset(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
@@ -30,7 +31,7 @@ function Reset() {
     event.preventDefault();
     const id = (event.target as HTMLFormElement).id.split("--")[1] as ResetButtonName;
     if (id === ResetButtonName.Back) return navigate('/login');
-    fetch(RouteUser.Reset).options({ requestData: stateReset.change })
+    tools.fetch(RouteUser.Reset).options({ requestData: stateReset.change })
   };
 
   return (
@@ -53,7 +54,7 @@ function Reset() {
                   key={item}
                   svg={{ type: item }}
                   styleClass={`login__reset--${item}`}
-                  errorMessage={stateReset.error[item] || errorUser?.errors.find(e => e.field === item)?.message}
+                  errorMessage={stateReset.error[item] || status.userError?.errors.find(e => e.field === item)?.message}
                   input={{ type: item, placeholder: 'Correo electrónico', value: stateReset.change[item], handleOnChange: handleChangeReset, name: item }}
                 />
               ))}
@@ -61,9 +62,9 @@ function Reset() {
             </div>
 
             <div className="form__error-back--content">
-              {errorUser?.errors.some(e => e.field === 'general') &&
+              {status.userError?.errors.some(e => e.field === 'general') &&
                 <ul>
-                  {errorUser?.errors.filter(e => e.field === 'general').map((e, i) => (
+                  {status.userError?.errors.filter(e => e.field === 'general').map((e, i) => (
                     <span key={i}>{e.message}</span>
                   ))}
                 </ul>
@@ -77,8 +78,8 @@ function Reset() {
                   id={`button__reset--${item}`}
                   onClick={handleClickReset}
                   className={item === ResetButtonName.Back ? 'button_light' : 'button_dark'}
-                  disabled={isLoadingUser || isErrorUser} >
-                  {item === ResetButtonName.Save ? (<>{isLoadingUser ? <Spinner /> : 'Restablecer Contraseña'}</>) : (<>{'Volver'}</>)}
+                  disabled={status.isLoadingUser || item === ResetButtonName.Save && status.isUserError} >
+                  {item === ResetButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Restablecer Contraseña'}</>) : (<>{'Volver'}</>)}
                 </button>
               ))}
             </div>

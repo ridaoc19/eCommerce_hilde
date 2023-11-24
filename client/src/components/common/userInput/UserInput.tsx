@@ -1,10 +1,10 @@
 import { MouseEvent, useState } from "react";
-import Svg from "../../../assets/icons/Svg";
+import Svg, { SvgType } from "../../../assets/icons/Svg";
 import { HandleChangeText } from "../../../interfaces/global.interface";
 
 export interface InputProps {
   svg?: {
-    type: string;
+    type: SvgType;
     height?: number;
     width?: number;
     color?: string;
@@ -41,7 +41,7 @@ function UserInput({ svg, svgTwo, styleClass, errorMessage, input }: InputProps)
           <span className={`input__svg--${styleClass}`}>
             {svg &&
               Svg({
-                type: svg.type,
+                type: svg.type as SvgType,
                 height: svg.height || 16,
                 width: svg.width || 16,
                 color: errorMessage ? "#DB2424" : svg.color ? svg.color : "#848FAC",
@@ -60,7 +60,7 @@ function UserInput({ svg, svgTwo, styleClass, errorMessage, input }: InputProps)
           >
             {svgTwo &&
               Svg({
-                type: svgTwo.type !== "eye" ? svgTwo.type : toggle ? "openEye" : "closedEye",
+                type: svgTwo.type !== "eye" ? svgTwo.type as SvgType : toggle ? "openEye" : "closedEye",
                 height: svgTwo.height || 16,
                 width: svgTwo.width || 16,
                 color: errorMessage ? "#DB2424" : svgTwo.color ? svgTwo.color : "#848FAC",

@@ -4,7 +4,7 @@ import { IContext } from "../../../../../../interfaces/hooks/context.interface";
 import { ButtonName, ProductsListProps } from './interface.products';
 
 const ProductsList: React.FC<ProductsListProps> = ({ productsList, isLoading, handleOnClick }) => {
-  const { dashboard: { state: { inventory: { products_id }, permits: { inventory_product } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { products_id }, permits: { edit } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -12,7 +12,7 @@ const ProductsList: React.FC<ProductsListProps> = ({ productsList, isLoading, ha
         {productsList?.map((prod, index) => (
           <li key={index}>
             {
-              inventory_product &&
+              edit &&
               <>
                 <button disabled={isLoading} name={ButtonName.Edit} value={prod._id} onClick={handleOnClick}>Edit</button>
                 <button disabled={isLoading} name={ButtonName.Delete} value={prod._id} onClick={handleOnClick}>Delete</button>
@@ -23,7 +23,7 @@ const ProductsList: React.FC<ProductsListProps> = ({ productsList, isLoading, ha
           </li>
         ))}
       </ul>
-      {products_id && inventory_product && <button disabled={isLoading} name={ButtonName.Add} onClick={handleOnClick}>Nuevo Producto</button>}
+      {products_id && edit && <button disabled={isLoading} name={ButtonName.Add} onClick={handleOnClick}>Nuevo Producto</button>}
     </div >
   );
 }

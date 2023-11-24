@@ -7,7 +7,7 @@ import { ButtonName, SubcategoryListProps } from './interface.subcategory';
 
 const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, isLoading, handleOnClick }) => {
   // const { findItemById } = useProductFilter()
-  const { dashboard: { dispatch: dispatchContext, state: { inventory: { subcategory_id }, permits: { inventory_subcategory } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { dispatch: dispatchContext, state: { inventory: { subcategory_id }, permits: { admin } } } }: IContext.IContextData = useContext(CreateContext)!;
 
   return (
     <div>
@@ -15,7 +15,7 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, isLo
         {subcategoryList?.map((sub, index) => (
           <li key={index}>
             {
-              inventory_subcategory &&
+              admin &&
               <>
                 <button disabled={isLoading} name={ButtonName.Edit} value={sub._id} onClick={handleOnClick}>Edit</button>
                 <button disabled={isLoading} name={ButtonName.Delete} value={sub._id} onClick={handleOnClick}>Delete</button>
@@ -30,7 +30,7 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({ subcategoryList, isLo
           </li>
         ))}
       </ul>
-      {subcategory_id && inventory_subcategory && <button disabled={isLoading} name={ButtonName.Add} onClick={handleOnClick}>Nueva Subcategoría</button>}
+      {subcategory_id && admin && <button disabled={isLoading} name={ButtonName.Add} onClick={handleOnClick}>Nueva Subcategoría</button>}
     </div>
   );
 }

@@ -2,20 +2,23 @@ import { RouteUser, Svg, useEffect, Spinner, Success, UserInput, clearUserError,
 
 function Login() {
   const { getValidationErrors } = useValidations();
-  const { fetchUserMutation, statusUserMutation } = useMutationUser();
-  const { dataUser, isSuccessUser } = statusUserMutation;
+  const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  const { userData } = getUserQueryData()
+  // const { userData, isSuccessUser } = statusUserMutation;
   const [stateLogin, setStateLogin] = useState<InitialStateLogin>(initialStateLogin);
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (dataUser) {
-      if (dataUser.verified) {
-        if (!dataUser.verifiedEmail) {
-          setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, email: `${dataUser.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${dataUser.email}` } }))
+    if (userData) {
+      if (userData.verified) {
+        if (!userData.verifiedEmail) {
+          setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, email: `${userData.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${userData.email}` } }))
+          tools.removeQuery()
+          localStorage.removeItem("token");
         } else {
           setSuccess(true)
-          localStorage.token = dataUser.token;
+          localStorage.token = userData.token;
         }
         setTimeout(() => {
           setSuccess(false)
@@ -26,10 +29,10 @@ function Login() {
       }
     }
     // eslint-disable-next-line
-  }, [isSuccessUser])
+  }, [status.isUserSuccess])
 
   const handleChangeLogin: HandleChangeText = ({ target: { name, value } }) => {
-    clearUserError(() => fetchUserMutation.removeError(), (state) => setStateLogin(state), initialStateLogin, stateLogin)
+    clearUserError(() => tools.resetError(), (state) => setStateLogin(state), initialStateLogin, stateLogin)
     const { error, stop } = getValidationErrors({ fieldName: name, value })
     if (stop) {
       return setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
@@ -48,7 +51,7 @@ function Login() {
 
     switch (id) {
       case "login":
-        fetchUserMutation.fetch(RouteUser.Login).options({ requestData: stateLogin.change })
+        tools.fetch(RouteUser.Login).options({ requestData: stateLogin.change })
         return;
       case "reset":
         navigate('/reset');
@@ -84,16 +87,16 @@ function Login() {
                   svg={{ type: item === 'password' ? 'padlock' : item }}
                   svgTwo={{ type: item === 'password' ? "eye" : "" }}
                   styleClass={`login--${item}`}
-                  errorMessage={stateLogin.error[item] || statusUserMutation.errorUser?.errors.find(e => e.field === item)?.message}
+                  errorMessage={stateLogin.error[item] || status.userError?.errors.find(e => e.field === item)?.message}
                   input={{ type: item, placeholder: item === 'email' ? "Correo electrónico" : "Contraseña", value: stateLogin.change[item], handleOnChange: handleChangeLogin, name: item }}
                 />
               ))}
             </div>
 
             <div className="form__error-back--content">
-              {statusUserMutation.errorUser?.errors.some(e => e.field === 'general') &&
+              {status.userError?.errors.some(e => e.field === 'general') &&
                 <ul>
-                  {statusUserMutation.errorUser?.errors.filter(e => e.field === 'general').map((e, i) => (
+                  {status.userError?.errors.filter(e => e.field === 'general').map((e, i) => (
                     <span key={i}>{e.message}</span>
                   ))}
                 </ul>
@@ -107,8 +110,8 @@ function Login() {
                   id={`button__login--${item}`}
                   onClick={handleClickLogin}
                   className={item === LoginButtonName.Reset ? "button_link" : item === LoginButtonName.Back ? 'button_light' : 'button_dark'}
-                  disabled={statusUserMutation.isLoadingUser || statusUserMutation.isErrorUser} >
-                  {item === LoginButtonName.Login ? (<>{statusUserMutation.isLoadingUser ? <Spinner /> : 'Iniciar Sesión'}</>)
+                  disabled={status.isLoadingUser || item === LoginButtonName.Login && status.isUserError} >
+                  {item === LoginButtonName.Login ? (<>{status.isLoadingUser ? <Spinner /> : 'Iniciar Sesión'}</>)
                     : (<>{item === LoginButtonName.Reset ? 'Restablecer' : item === LoginButtonName.Registre ? 'Crear Cuenta' : 'Volver'}</>)}
                 </button>
               ))}

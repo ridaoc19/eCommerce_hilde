@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import { MapStatusCode, StatusHTTP } from '../enums';
 
 const validationSchemas: { [key: string]: yup.Schema } = {
+  _id: yup.string(),
   email: yup.string()
     .required('El correo electrónico es obligatorio')
     .email('Ingrese un correo electrónico válido'),
@@ -25,7 +26,14 @@ const validationSchemas: { [key: string]: yup.Schema } = {
     .min(7, 'Ingrese al menos 7 dígitos para el número telefónico')
     .max(15, 'Ingrese máximo 15 dígitos para el número telefónico')
     .matches(/^[0-9]+$/, 'Ingrese solo números para el número telefónico'),
-  newPassword: yup.string()
+  newPassword: yup.string(),
+  newEmail: yup.string()
+    .required('El nuevo correo electrónico es obligatorio')
+    .email('Ingrese un nuevo correo electrónico válido'),
+  tokenEmail: yup.string()
+    .required('Existe un problema en la validación del correo, solicita nuevamente el cambio de correo electrónico o después de 10 minutos de la solicitud se cancela el cambio de correo'),
+  roles: yup.string()
+    .required('Debe seleccionar uno de los roles aceptados')
 };
 
 

@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import * as yup from 'yup';
 import { comparePassword } from '../../../core/auth/bcryptUtils';
+import { verifyToken, verifyTokenEmail } from '../../../core/auth/jwtUtils';
 import { StatusHTTP } from '../../../core/utils/enums';
 import { errorHandlerArray } from '../../../core/utils/send/errorHandler';
 import { validatorsLocal } from "../../../core/utils/validations/validatorsLocal";
 import { User } from '../model';
-import { verifyToken } from '../../../core/auth/jwtUtils';
 
 
 
@@ -54,7 +54,7 @@ const schemaLogin: { [key: string]: yup.Schema } = ({
     }
     return true;
   }),
-  token: yup.string().test('is-password', async function (token, ctx) {
+  token: yup.string().test('is-token', async function (token, ctx) {
     if (!token) return true
 
     const decoded = verifyToken(token);
@@ -74,9 +74,18 @@ const schemaLogin: { [key: string]: yup.Schema } = ({
 
     return true
   }),
-  newPassword: yup.string().test('is-password', async function (newPassword, ctx) {
+  newPassword: yup.string().test('is-newPassword', async function (newPassword, ctx) {
     const options = ctx.options?.context
     if (newPassword !== options?.reqBody?.password) return ctx.createError({ message: `las contraseñas deben coincidir.` });
+    return true
+  }),
+  tokenEmail: yup.string().test('is-tokenEmail', async function (tokenEmail, ctx) {
+    if (!tokenEmail) return true
+
+    const decoded = verifyTokenEmail(tokenEmail);
+    if (decoded?.token) {
+      return ctx.createError({ message: 'La validación no fue exitosa, por favor solicita el cambio de correo nuevamente', });
+    }
     return true
   }),
 });

@@ -1,61 +1,93 @@
 import { useContext, useEffect, useState } from 'react';
 import { CreateContext } from '../../../../hooks/useContext';
 import { ActionTypeDashboard } from '../../../../hooks/useContext/dash/reducer';
-import useUserOnChange from '../../../../hooks/useUserOnChange';
 import { IContext } from '../../../../interfaces/hooks/context.interface';
-import { IUserComponents, IUserOnChange } from '../../../../interfaces/user.interface';
-import { useAppSelector } from '../../../../redux/hooks';
-import { selectUserData, selectUserError, selectUserLoading } from '../../../../redux/reducers/user';
-import Form from './Form';
+import { RequestMapUser, RouteUser } from '../../../../services/userRequest';
+import { HandleChangeText, HandleClick, clearUserError, useMutationUser, useNavigate, useValidations } from '../../../auth/login';
+import FormAccountPass from './FormAccountPass';
 import Render from './Render';
 
-function Password() {
-  const dataUser = useAppSelector(selectUserData)!
-  const initialState: IUserOnChange.UseUserOnChange = {
-    password: { change: "", message: "" },
-    confirmPassword: { change: "", message: "" },
-    _id: { change: dataUser._id, message: "" },
+export enum AccountPassButtonName {
+  Save = 'save',
+}
+export interface InitialStateAccountPass {
+  change: RequestMapUser[RouteUser.AccountPass]['requestData']
+  error: RequestMapUser[RouteUser.AccountPass]['requestData']
+}
+
+function Information() {
+  const navigate = useNavigate()
+  const { dashboard: { state: { account: { password, information } }, dispatch: dispatchContext } }: IContext.IContextData = useContext(CreateContext)!
+  const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  const { userData, userQueryData } = getUserQueryData()
+  const { getValidationErrors } = useValidations();
+  const [success, setSuccess] = useState(false)
+
+  const initialStateAccountPass: InitialStateAccountPass = {
+    change: { _id: userData?._id || "", password: "", newPassword: "" },
+    error: { _id: "", password: "", newPassword: "" },
   }
-  const { dashboard: { state: { account: { information, password } }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
-  const { change, handleOnChange, handleErrorOnBack } = useUserOnChange(initialState)
-  const errorBack = useAppSelector(selectUserError)
-  const loadingUser = useAppSelector(selectUserLoading)
-  const [status, setStatus] = useState<IUserComponents.Status>("form");
+  const [stateAccountPass, setStateAccountPass] = useState<InitialStateAccountPass>(initialStateAccountPass);
 
   useEffect(() => {
-    if (information) return
-    if (errorBack instanceof Object) handleErrorOnBack()
-    if (errorBack) return setStatus("error")
-    if (loadingUser) return setStatus("loading")
-    if (dataUser instanceof Object && !loadingUser && !errorBack && dataUser?.components === "password") {
-      setStatus("success")
-      setTimeout(() => {
-        setStatus("form")
-        dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_PASSWORD, payload: { name: null, value: "" } })
-      }, 10000);
+
+    if (userQueryData?.field === "accountPass") {
+      setSuccess(true)
     }
-    // eslint-disable-next-line
-  }, [loadingUser, dataUser, errorBack])
+    setTimeout(() => {
+      setSuccess(false)
+      dispatchContext({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_PASSWORD, payload: { name: null, value: "" } })
+      if (!userData?.verifiedEmail) {
+        localStorage.removeItem("token");
+        tools.removeQuery()
+        dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
+        navigate('/')
+      }
+    }, 10000);
+  }, [status.isUserSuccess])
+
+  const handleChangeAccountPass: HandleChangeText = ({ target: { name, value } }) => {
+    clearUserError(() => tools.resetError(), (state) => setStateAccountPass(state), initialStateAccountPass, stateAccountPass)
+    const { error, stop } = getValidationErrors({ fieldName: name, value })
+    if (stop) return setStateAccountPass(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
+    setStateAccountPass(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
+  }
+
+  const handleClickAccountPass: HandleClick = (event) => {
+    event.preventDefault();
+    const id = (event.target as HTMLFormElement).id.split("--")[1] as AccountPassButtonName;
+    if (id === AccountPassButtonName.Save) {
+      tools.fetch(RouteUser.AccountPass).options({ requestData: stateAccountPass.change })
+    }
+  }
+
 
   const handleOnClick = () => {
-    dispatch({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_PASSWORD, payload: { name: null, value: "" } })
+    dispatchContext({ type: ActionTypeDashboard.ACCOUNT_TOGGLE_PASSWORD, payload: { name: null, value: "" } })
   }
 
   return (
     <>
       <div>
         <h4>Cambio de contraseña</h4>
-        <button className='button_light' onClick={handleOnClick} disabled={information || status === "loading" || status === "success"}>Editar</button>
+        <button className='button_light' onClick={handleOnClick} disabled={information || status.isLoadingUser}>Editar</button>
       </div>
 
       <main>
-        {password
-          ? <Form change={change} handleOnChange={handleOnChange} status={status} errorBack={errorBack} />
-          : <Render />}
+        {!password ? <Render /> :
+          <FormAccountPass
+            success={success}
+            errorUser={status.userError}
+            isErrorUser={status.isUserError}
+            isLoadingUser={status.isLoadingUser}
+            stateAccountPass={stateAccountPass}
+            handleChangeAccountPass={handleChangeAccountPass}
+            handleClickAccountPass={handleClickAccountPass} />
+        }
       </main>
     </>
   );
 }
 
-export default Password;
+export default Information;
 

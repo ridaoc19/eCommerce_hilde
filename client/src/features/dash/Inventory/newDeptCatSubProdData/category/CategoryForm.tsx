@@ -5,7 +5,7 @@ import { ButtonName, CategoryFormProps } from './interface.category';
 
 
 function CategoryForm({ category, state, isLoading, handleOnChange, handleOnClick }: CategoryFormProps) {
-  const { dashboard: { state: { inventory: { category_id }, permits: { inventory_category } } } }: IContext.IContextData = useContext(CreateContext)!;
+  const { dashboard: { state: { inventory: { category_id }, permits: { admin } } } }: IContext.IContextData = useContext(CreateContext)!;
   const { selectedCategory: { categoryId, requestData: { name } }, validationError } = state;
 
   let message = `Actualizando '${category.find(nam => nam._id === categoryId)?.name}' por '${name}'...`
@@ -14,7 +14,7 @@ function CategoryForm({ category, state, isLoading, handleOnChange, handleOnClic
 
   return (
     <div>
-      {!category_id && inventory_category && (
+      {!category_id && admin && (
         <>
           <div className='input'>
             <input

@@ -25,14 +25,18 @@ const initialState: IDashReducer.AppState = {
     products_id: null,
   },
   permits: {
-    sidebar_user: false,
-    sidebar_newDeptCatSubProdData: false,
-    sidebar_productEntry: false,
-    sidebar_otro: false,
-    inventory_department: false,
-    inventory_category: false,
-    inventory_subcategory: false,
-    inventory_product: false
+    super: false,
+    admin: false,
+    edit: false,
+    visitant: false,
+    // sidebar_user: false,
+    // sidebar_newDeptCatSubProdData: false,
+    // sidebar_productEntry: false,
+    // sidebar_otro: false,
+    // inventory_department: false,
+    // inventory_category: false,
+    // inventory_subcategory: false,
+    // inventory_product: false
   }
 };
 
