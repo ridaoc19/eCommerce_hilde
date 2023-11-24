@@ -2,7 +2,6 @@ import { Method } from "../interfaces/global.interface";
 import { IUser } from "../interfaces/user.interface";
 import { RequestMapUser, RouteUser } from "./userRequest";
 
-// export type Success = { status: "success"; field: string; message: string, data: IUser.UserData }
 export type Error = {
   status_code: number;
   status: string;
@@ -41,18 +40,15 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
       return { ...resJson };
     }
   } catch (error) {
-    if (error instanceof Error) {
-      throw {
-        status_code: 500,
-        status: "internal_server_error",
-        errors: [{
-          field: 'general',
-          message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front".`
-        }]
-      }
-    } else {
-      throw error
-    }
+    // eslint-disable-next-line
+    throw ({
+      status_code: 500,
+      status: "internal_server_error",
+      errors: [{
+        field: 'general',
+        message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front".`
+      }]
+    })
   }
 }
 
