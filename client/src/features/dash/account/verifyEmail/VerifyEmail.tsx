@@ -14,7 +14,6 @@ function VerifyEmail() {
       <h2>Valida el correo electrónico</h2>
       <button onClick={() => {
         tools.fetch(RouteUser.Verify).options({ requestData: { tokenEmail: id || "" } })
-        // dispatch(userPosts({ tokenEmail: id, routes: 'verify' } as IUser.tokenEmail)) 
       }}>Validar</button>
       {status.isUserError && status.userError?.errors[0].message}
     </div>

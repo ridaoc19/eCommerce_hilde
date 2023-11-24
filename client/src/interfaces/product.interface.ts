@@ -1,5 +1,3 @@
-
-// ==============================|| Product ||============================== //
 export namespace IProduct {
   type Route = "request" | "create" | "edit" | "delete" | "";
   export type Method = "get" | "post" | "put" | "delete";
@@ -7,8 +5,6 @@ export namespace IProduct {
     routes: Route
   }
   export const PRODUCT_NAME_QUERY = ['products']
-
-  // type Roles = "super" | "admin" | "edit" | "visitant";
 
   export interface Variants {
     _id?: string;
@@ -31,16 +27,12 @@ export namespace IProduct {
     description: string;
     images: string[];
     variants: Variants[];
-    // createdAt?: string;
-    // updatedAt?: string;
   }
   export interface Subcategory {
     _id: string;
     name: string;
     productsId: Product[];
     categoryId: string;
-    // createdAt?: string;
-    // updatedAt?: string;
   }
 
   export interface Category {
@@ -48,15 +40,11 @@ export namespace IProduct {
     name: string;
     subcategoriesId: Subcategory[];
     departmentId: string;
-    // createdAt?: string;
-    // updatedAt?: string;
   }
 
   export interface Department {
     _id: string;
     name: string;
     categoriesId: Category[];
-    // createdAt?: string;
-    // updatedAt?: string;
   }
 }

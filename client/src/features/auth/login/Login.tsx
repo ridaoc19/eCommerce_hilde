@@ -4,7 +4,6 @@ function Login() {
   const { getValidationErrors } = useValidations();
   const { tools, data: { getUserQueryData }, status } = useMutationUser();
   const { userData } = getUserQueryData()
-  // const { userData, isSuccessUser } = statusUserMutation;
   const [stateLogin, setStateLogin] = useState<InitialStateLogin>(initialStateLogin);
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
