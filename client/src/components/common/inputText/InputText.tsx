@@ -2,7 +2,7 @@ import './inputText.scss'
 
 export interface InputTextProps {
   placeholder: string;
-  handleChange: (data: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
+  handleChange: (data: React.ChangeEvent<HTMLInputElement>) => void;
   value: string | number;
   name: string;
 }

@@ -1,12 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
 import { IDashReducer } from "../interfaces/hooks/context.interface";
 import { IProduct } from "../interfaces/product.interface";
-import { MakeProductsRequestReturn } from "../services/productApi";
+import { RouteProduct } from "../services/productRequest";
+import useQueryProduct from "./useQueryProduct";
 
 export interface BreadcrumbItem {
   name: string;
   _id: string;
   contextName: IDashReducer.NameInventory;
+  name_id: 'department' | 'category' | 'subcategory' | 'product' | ''
 }
 
 export interface ItemType<T> {
@@ -28,19 +29,15 @@ export interface ItemType<T> {
 }
 
 function useProductFilter() {
-  const { data, isFetching } = useQuery<MakeProductsRequestReturn>({
-    queryKey: IProduct.PRODUCT_NAME_QUERY,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false
-  });
+  const { isLoadingProduct, isFetchingProduct, dataProduct } = useQueryProduct({ route: RouteProduct.ProductRequest, options: {}, enabled: true })
 
   function findItemById<T>({ id }: { id: string }): ItemType<T> {
-    const products = data?.products ?? [];
-    const breadcrumb: BreadcrumbItem[] = [{ name: "Home", _id: "", contextName: 'departmentEmpty_id' },];
+    const products = dataProduct ?? [];
+    const breadcrumb: BreadcrumbItem[] = [{ name: "Home", _id: "", contextName: 'departmentEmpty_id', name_id: '' },];
 
     for (const department of products) {
       if (department._id === id) {
-        breadcrumb.push({ name: department.name, _id: department._id, contextName: 'department_id' });
+        breadcrumb.push({ name: department.name, _id: department._id, contextName: 'department_id', name_id: 'department' });
         return {
           type: "department",
           department: { ...department, data: [department] },
@@ -55,8 +52,8 @@ function useProductFilter() {
       for (const category of department.categoriesId) {
         if (category._id === id) {
           breadcrumb.push(
-            { name: department.name, _id: department._id, contextName: 'department_id' },
-            { name: category.name, _id: category._id, contextName: 'category_id' },
+            { name: department.name, _id: department._id, contextName: 'department_id', name_id: 'department' },
+            { name: category.name, _id: category._id, contextName: 'category_id', name_id: 'category' },
           );
           return {
             type: "category",
@@ -72,9 +69,9 @@ function useProductFilter() {
         for (const subcategory of category.subcategoriesId) {
           if (subcategory._id === id) {
             breadcrumb.push(
-              { name: department.name, _id: department._id, contextName: 'department_id' },
-              { name: category.name, _id: category._id, contextName: 'category_id' },
-              { name: subcategory.name, _id: subcategory._id, contextName: 'subcategory_id' },
+              { name: department.name, _id: department._id, contextName: 'department_id', name_id: 'department' },
+              { name: category.name, _id: category._id, contextName: 'category_id', name_id: 'category' },
+              { name: subcategory.name, _id: subcategory._id, contextName: 'subcategory_id', name_id: 'subcategory' },
 
             );
             return {
@@ -91,10 +88,10 @@ function useProductFilter() {
           for (const product of subcategory.productsId) {
             if (product._id === id || product.variants.some(variant => variant._id === id)) {
               breadcrumb.push(
-                { name: department.name, _id: department._id, contextName: 'department_id' },
-                { name: category.name, _id: category._id, contextName: 'category_id' },
-                { name: subcategory.name, _id: subcategory._id, contextName: 'subcategory_id' },
-                { name: product.name, _id: product._id, contextName: 'products_id' }
+                { name: department.name, _id: department._id, contextName: 'department_id', name_id: 'department' },
+                { name: category.name, _id: category._id, contextName: 'category_id', name_id: 'category' },
+                { name: subcategory.name, _id: subcategory._id, contextName: 'subcategory_id', name_id: 'subcategory' },
+                { name: product.name, _id: product._id, contextName: 'products_id', name_id: 'product' }
               );
               const { variants } = product;
               if (product._id === id) {
@@ -136,7 +133,7 @@ function useProductFilter() {
     };
   }
 
-  return { findItemById, isFetching };
+  return { findItemById, isFetching: isFetchingProduct, isLoadingProduct };
 }
 
 export default useProductFilter;

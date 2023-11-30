@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { StatusHTTP } from "../../core/utils/enums";
 import { products } from "../../core/utils/helpers";
-import { splitString } from "../../core/utils/splitString";
+import { errorHandlerCatch } from "../../core/utils/send/errorHandler";
+import { successHandler } from "../../core/utils/send/successHandler";
 import Department from "../department/model";
 import Product from "../product/model";
 import Subcategory from "../subcategory/model";
@@ -22,18 +24,16 @@ export async function categoryCreate(req: Request, res: Response) {
     await Department.findByIdAndUpdate(departmentId, { $push: { categoriesId: category._id } });
 
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Creación categoría exitosa",
-      products: updatedProducts,
-    });
-
-  } catch (error: unknown) {
-    console.log(error)
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'category-create',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Se creo categoría exitosamente'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
 
@@ -46,17 +46,16 @@ export async function categoryEdit(req: Request, res: Response) {
     await Category.findByIdAndUpdate(_id, { name }, { new: true });
 
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Categoría Editada exitosamente",
-      products: updatedProducts,
-    });
-
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'category-edit',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Se edito categoría exitosamente'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
 
@@ -82,17 +81,16 @@ export async function categoryDelete(req: Request, res: Response) {
     }
 
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Eliminación categoría en cascada exitosa",
-      products: updatedProducts,
-    });
-  } catch (error: unknown) {
-    console.log(error)
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'category-delete',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Se elimino categoría exitosamente'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
 

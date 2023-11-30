@@ -16,6 +16,7 @@ function ProtectedRouteDash() {
       localStorage.removeItem("token");
       tools.removeQuery()
     }
+    // eslint-disable-next-line
   }, [isFetchingUser])
 
   if (!userData?.verifiedEmail) {
