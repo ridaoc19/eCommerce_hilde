@@ -23,6 +23,8 @@ export interface InputProps {
     value: string;
     handleOnChange: HandleChangeText | any
     name: string;
+    dataset_extra?: string;
+    dataset_index?: string;
   };
 }
 
@@ -53,6 +55,8 @@ function UserInput({ svg, svgTwo, styleClass, errorMessage, input }: InputProps)
             value={input.value}
             onChange={(event) => input.handleOnChange(event)}
             name={input.name}
+            data-extra={input.dataset_extra}
+            data-index={input.dataset_index}
           />
           <span
             className={`input__svgTwo--${styleClass}`}

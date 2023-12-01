@@ -1,13 +1,13 @@
 import React from 'react';
+import { IProduct } from '../../../../interfaces/product.interface';
 import { RouteProduct } from '../../../../services/productRequest';
 import { HandleClick, Spinner, UserInput } from '../../../auth/login';
 import Breadcrumb from './Breadcrumb';
 import useStateProductCreation, { ButtonName, InitialState, NestedData, initialState } from './useStateProductCreation';
-import { IProduct } from '../../../../interfaces/product.interface';
 
 
 const ProductCreation: React.FC = () => {
-  const { state, setState, handleOnChange, findItemById, status, tools } = useStateProductCreation();
+  const { state, setState, handleOnChange, handleOnChangeProduct, findItemById, status, tools } = useStateProductCreation();
 
   const handleOnClick: HandleClick = async (event) => {
     event.preventDefault();
@@ -40,20 +40,18 @@ const ProductCreation: React.FC = () => {
         return;
 
       case ButtonName.EditUpdate:
-        const id = dataset._id!
-        const name = dataset.name!
+        const id = dataset._id!;
+        const changeListKey = Object.keys(initialState.changeList[valueKey]);
+        const resultFound = Object.entries(findItemById({ id: id })[valueKey]);
 
-        const resChangeList = Object.entries(state.changeList).reduce((acc, [key]) => {
-          if (key === valueKey) {
-            return {
-              ...acc, [key]: valueKey !== 'product' ? { _id: id, [valueKey]: name } :
-                { _id: id, [valueKey]: name }
-            }
-          } else
-            return { ...acc, [key]: { _id: "", [valueKey]: "" } }
-        }, {})
+        const objectUpdate = resultFound.reduce((acc, [key, value]) => {
+          if (changeListKey.includes(key)) {
+            return { ...acc, [key]: value };
+          }
+          return acc;
+        }, {});
 
-        setState((prevState) => ({ ...prevState, changeList: resChangeList as InitialState['changeList'], select: { ...prevState.select, [valueKey]: 'edit' } }));
+        setState({ ...state, changeList: { ...state.changeList, [valueKey]: objectUpdate }, select: { ...state.select, [valueKey]: 'edit' } })
         return
 
       case ButtonName.Edit:
@@ -94,17 +92,52 @@ const ProductCreation: React.FC = () => {
         return
 
       case ButtonName.FilterProduct:
-        setState(prevState => ({ ...prevState, _id: value, selectedProduct: { ...prevState.selectedProduct, productId: "" } }))
+        setState(prevState => ({ ...prevState, _id: value, }))
+        // setState(prevState => ({ ...prevState, _id: value, selectedProduct: { ...prevState.selectedProduct, productId: "" } }))
         return
 
       case ButtonName.FilterOpenForm:
+        console.log(findItemById({ id: value }).product)
+
         setState(prevState => ({ ...prevState, _id: value, selectedProduct: { ...prevState.selectedProduct, productId: value, requestData: findItemById({ id: value }).product } }))
+        return
+
+      case ButtonName.AddSpecification:
+        setState({
+          ...state, changeList: {
+            ...state.changeList, product: {
+              ...state.changeList.product, specification: [...state.changeList.product.specification, { key: '', value: '' }]
+            }
+          }
+        })
+        return;
+
+      case ButtonName.RemoveSpecification:
+        const { changeList: { product } } = state;
+        const targetButton2 = event.target as HTMLElement;
+        const specIndexToRemove = parseInt(targetButton2.dataset.index || '0', 10);
+        const updatedSpecification = product.specification.filter((_, index) => index !== specIndexToRemove);
+        setState(prevState => ({ ...prevState, changeList: { ...prevState.changeList, product: { ...prevState.changeList.product, specification: updatedSpecification } } }))
+        return;
+
+      case ButtonName.FileDelete:
+        const { temporaryImages, changeList } = state;
+        if (dataset.type === 'file') { // elimina files
+          temporaryImages.get.splice(+value, 1)
+          return setState({ ...state, temporaryImages })
+        } else if (dataset.type === 'url') { //elimina string
+          const urlDelete = changeList.product.images[+value]
+          const filterImage = changeList.product.images.filter(img => img !== urlDelete)
+          return setState({ ...state, temporaryImages: { ...state.temporaryImages, delete: [...state.temporaryImages.delete, urlDelete] }, changeList: { ...state.changeList, product: { ...state.changeList.product, images: filterImage } } })
+        }
         return
 
       default:
         break;
 
     }
+
+
     // setState(emptyCategory({ category, state }))
   };
 
@@ -138,39 +171,39 @@ const ProductCreation: React.FC = () => {
 
               <div className="section-list__search">
                 {!state.breadcrumb.some(item => item.name_id.includes(nameKey)) && <UserInput
-                  input={{ name, handleOnChange, placeholder, value: stateChangeListValue[nameKey] as string || "" }}
+                  input={{ type: name, name, handleOnChange, placeholder, value: stateChangeListValue[nameKey] as string || "" }}
                   styleClass='product-creation-input'
                   errorMessage=''
                 />}
                 {true && nameKey === 'product' &&
                   <div className='form-product-important-todo'>
-                    <div className='name'>
-                      <input type="text" name='name' placeholder='Nombre' value={state.selectedProduct.requestData.name} onChange={handleOnChange} />
-                      {/* {validationError.name && <div>{validationError.name}</div>} */}
+
+                    <div className='brand-description'>
+                      {(Object.keys(state.changeList.product).filter(key => ['brand', 'description'].includes(key)) as (keyof Pick<InitialState['changeList']['product'], 'brand' | 'description'>)[]).map((name) => (
+                        <UserInput
+                          key={name}
+                          // svg={{ type: name }}
+                          styleClass={`product-creation__form--${name}`}
+                          errorMessage={""}
+                          input={{ type: "text", name, dataset_extra: name, placeholder: name === 'brand' ? 'Samsung' : 'Descripción del producto', value: state.changeList.product[name], handleOnChange: handleOnChangeProduct }}
+                        />
+                      ))}
                     </div>
 
-                    <div className='brand'>
-                      <input type="text" name='brand' placeholder='Marca' value={state.selectedProduct.requestData.brand} onChange={handleOnChange} />
-                      {/* {validationError.brand && <div>{validationError.brand}</div>} */}
-                    </div>
-
-                    <div className='description'>
-                      <input type="text" name='description' placeholder='Descripción' value={state.selectedProduct.requestData.description} onChange={handleOnChange} />
-                      {/* {validationError.description && <div>{validationError.description}</div>} */}
-                    </div>
 
                     <div className='specification'>
-                      {state.selectedProduct.requestData.specification.map((spec, index) => {
-
+                      {state.changeList.product.specification.map((spec, index) => {
                         return (
                           <div key={index}>
+
+
                             <input
                               type="text"
                               name="specificationKey"
                               placeholder="clave"
                               data-index={index}
                               value={spec.key}
-                              onChange={handleOnChange}
+                              onChange={handleOnChangeProduct}
                             />
                             {/* {validationError.specificationKey && <span>{validationError.specificationKey}</span>} */}
                             <input
@@ -179,12 +212,12 @@ const ProductCreation: React.FC = () => {
                               placeholder="valor"
                               data-index={index}
                               value={spec.value}
-                              onChange={handleOnChange}
+                              onChange={handleOnChangeProduct}
                             />
                             {/* {validationError.specificationValue && <span>{validationError.specificationValue}</span>} */}
                             <button
                               // disabled={isLoading}
-                              // name={ButtonName.RemoveSpecification}
+                              name={ButtonName.RemoveSpecification}
                               data-index={index}
                               onClick={handleOnClick}
                             >
@@ -193,22 +226,22 @@ const ProductCreation: React.FC = () => {
                           </div>
                         )
                       })}
-                      {/* {validationError.specification && <span>{validationError.specification}</span>} */}
-                      {/* <button disabled={isLoading} name={ButtonName.AddSpecification} onClick={handleOnClick}>Agregar especificación</button> */}
+                      <button disabled={false} name={ButtonName.AddSpecification} onClick={handleOnClick}>Agregar especificación</button>
                     </div>
 
+
                     <div className='images'>
-                      <input id={`input__images-`} multiple className='input__images' type='file' name='images' onChange={handleOnChange} />
+                      <input id={`input__images-`} multiple className='input__images' type='file' name='images' onChange={handleOnChangeProduct} />
                       {state.temporaryImages.get.map((image, index) => (
                         <div key={index}>
                           <img src={URL.createObjectURL(image)} width={200} alt={`${index}`} />
-                          {/* <button disabled={isLoading} name={ButtonName.FileDelete} data-type={'file'} value={index} onClick={handleOnClick}>Eliminar Imagen</button> */}
+                          <button disabled={false} name={ButtonName.FileDelete} data-type={'file'} value={index} onClick={handleOnClick}>Eliminar Imagen</button>
                         </div>
                       ))}
-                      {state.selectedProduct.requestData.images.map((image, index) => (
+                      {state.changeList.product.images.map((image, index) => (
                         <div key={index}>
                           <img src={`${process.env.REACT_APP_SERVER_FILE}/${image}`} width={200} alt={`${index}`} />
-                          {/* <button disabled={isLoading} name={ButtonName.FileDelete} data-type={'url'} value={index} onClick={handleOnClick}>Eliminar Imagen</button> */}
+                          <button disabled={false} name={ButtonName.FileDelete} data-type={'url'} value={index} onClick={handleOnClick}>Eliminar Imagen</button>
                         </div>
                       ))}
                     </div>

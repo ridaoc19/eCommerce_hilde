@@ -17,6 +17,9 @@ export enum ButtonName {
   Cancel = 'cancel',
   FilterProduct = 'filterProduct',
   FilterOpenForm = 'filterOpenForm',
+  RemoveSpecification = 'removeSpecification',
+  AddSpecification = 'addSpecification',
+  FileDelete = 'fileDelete'
 }
 
 export interface NestedData {
@@ -127,14 +130,12 @@ function useStateProductCreation() {
     }, {}) as InitialState['data']
 
     const resChangeList = Object.entries(state.changeList).reduce((acc, [key, values]) => {
-      console.log(values)
       if (key === name) {
-        return { ...acc, [key]: isEdit ? {...values, _id: values._id, [key]: value } : {...values, _id: "", [key]: value } }
+        return { ...acc, [key]: isEdit ? { ...values, _id: values._id, [key]: value } : { ...values, _id: "", [key]: value } }
       } else
-      return { ...acc, [key]: {...values, _id: values._id, [key]: "" } }
+        return { ...acc, [key]: { ...values, _id: values._id, [key]: "" } }
     }, {})
-    console.log(refilter ,resChangeList)
-    
+
     const resSelect = Object.entries(state.select).reduce((acc, [key, values]) => {
       const isPreviousElementFilled = (() => {
         switch (name) {
@@ -166,7 +167,82 @@ function useStateProductCreation() {
 
   };
 
-  return { state, setState, isFetching, handleOnChange, findItemById, tools, status };
+
+  const handleOnChangeProduct: HandleChangeText = (event) => {
+    const { name, value, files } = event.target;
+
+    // const { name, value, files } = event.target;
+    // const { stop, error } = responseError;
+
+    // if (name === 'images' && files) {
+
+    if (files && files.length > 0) {
+      // const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
+      const fileList = Array.from(files) as File[];
+      // const totalImages = fileList.length + state.temporaryImages.get.length
+      setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, get: [...state.temporaryImages.get, ...fileList] } }))
+
+      // if (totalImages > 3) {
+      //   if (inputElement) inputElement.value = '';
+      //   return {
+      //     ...state,
+      //     validationError: { ...state.validationError, images: 'No puedes subir más de tres imágenes' }
+      //   }
+      // } else {
+
+      // setState(prevState=>({
+      // ...prevState,
+
+      // validationError: { ...state.validationError, images: '' },
+      // temporaryImages: { ...state.temporaryImages, get: [...state.temporaryImages.get, ...fileList] }))
+      // }
+      // }
+    }
+
+    // }
+    else if (name === 'specificationKey' || name === 'specificationValue') {
+      const specIndex = parseInt(event.target.dataset.index || '0', 10);
+      const specField = name === 'specificationKey' ? 'key' : 'value';
+      const updatedSpecification = [...state.changeList.product.specification];
+      updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: value };
+
+      setState(prevState => ({
+        ...prevState, changeList: {
+          ...prevState.changeList, product:
+            { ...prevState.changeList.product, specification: updatedSpecification }
+        }
+      }))
+      //   const newValidationError = { ...state.validationError, [name]: error };
+      //   return {
+      //     ...state,
+      //     selectedProduct: stop
+      //       ? { ...state.selectedProduct }
+      //       : { ...state.selectedProduct, requestData: { ...state.selectedProduct.requestData, specification: updatedSpecification } },
+      //     validationError: newValidationError
+      //   }
+    }
+    else {
+      setState(prevState => ({
+        ...prevState, changeList: {
+          ...prevState.changeList, product:
+            { ...prevState.changeList.product, [name]: value }
+        }
+      }))
+      //   const newValidationError = { ...state.validationError, [name]: error };
+      //   return {
+      //     ...state,
+      //     selectedProduct: stop
+      //       ? { ...state.selectedProduct }
+      //       : { ...state.selectedProduct, requestData: { ...state.selectedProduct.requestData, [name]: value } },
+      //     validationError: newValidationError
+      // }
+    }
+    // return state;
+
+
+  }
+
+  return { state, setState, isFetching, handleOnChange, findItemById, tools, status, handleOnChangeProduct };
 }
 
 export default useStateProductCreation;
