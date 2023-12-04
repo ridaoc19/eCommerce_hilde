@@ -31,8 +31,8 @@ export async function departmentGet(req: Request, res: Response) {
 
 export async function departmentPost(req: Request, res: Response) {
   try {
-    const { name } = req.body;
-    await Department.create({ name });
+    const { department } = req.body;
+    await Department.create({ department });
     const updatedProducts = await products();
     fetchCount(updatedProducts)
     successHandler({
@@ -51,10 +51,10 @@ export async function departmentPost(req: Request, res: Response) {
 
 export async function departmentPut(req: Request, res: Response) {
   try {
-    const { name } = req.body;
+    const { department } = req.body;
     const { _id } = req.params;
 
-    await Department.findByIdAndUpdate(_id, { name }, { new: true });
+    await Department.findByIdAndUpdate(_id, { department }, { new: true });
 
     const updatedProducts = await products();
    

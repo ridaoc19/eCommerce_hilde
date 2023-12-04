@@ -67,13 +67,13 @@ export type RequestMapProduct = {
   // departamento
   [RouteProduct.DepartmentCreate]: {
     route: RouteProduct.DepartmentCreate;
-    requestData: Pick<IProduct.Department, 'name'>;
+    requestData: Pick<IProduct.Department, 'department'>;
   };
   [RouteProduct.DepartmentEdit]: {
     route: RouteProduct.DepartmentEdit;
     // departmentId: IProduct.Department['_id'];
     paramId: IProduct.Department['_id'];
-    requestData: Pick<IProduct.Department, 'name'>;
+    requestData: Pick<IProduct.Department, 'department'>;
   };
   [RouteProduct.DepartmentDelete]: {
     route: RouteProduct.DepartmentDelete;
@@ -85,13 +85,13 @@ export type RequestMapProduct = {
     route: RouteProduct.CategoryCreate;
     // departmentId: IProduct.Category['departmentId'];
     paramId: IProduct.Category['departmentId'];
-    requestData: Pick<IProduct.Category, 'name'>;
+    requestData: Pick<IProduct.Category, 'category'>;
   };
   [RouteProduct.CategoryEdit]: {
     route: RouteProduct.CategoryEdit;
     // categoryId: IProduct.Category['_id'];
     paramId: IProduct.Category['_id'];
-    requestData: Pick<IProduct.Category, 'name'>;
+    requestData: Pick<IProduct.Category, 'category'>;
   };
   [RouteProduct.CategoryDelete]: {
     route: RouteProduct.CategoryDelete;
@@ -103,13 +103,13 @@ export type RequestMapProduct = {
     route: RouteProduct.SubCategoryCreate;
     // categoryId: IProduct.Subcategory['categoryId'];
     paramId: IProduct.Subcategory['categoryId'];
-    requestData: Pick<IProduct.Subcategory, 'name'>;
+    requestData: Pick<IProduct.Subcategory, 'subcategory'>;
   };
   [RouteProduct.SubCategoryEdit]: {
     route: RouteProduct.SubCategoryEdit;
     // subcategoryId: IProduct.Subcategory['_id'];
     paramId: IProduct.Subcategory['_id'];
-    requestData: Pick<IProduct.Subcategory, 'name'>;
+    requestData: Pick<IProduct.Subcategory, 'subcategory'>;
   };
   [RouteProduct.SubCategoryDelete]: {
     route: RouteProduct.SubCategoryDelete;

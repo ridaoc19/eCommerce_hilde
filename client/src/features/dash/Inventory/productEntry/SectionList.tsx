@@ -27,14 +27,15 @@ function SectionList({ state, handleOnChange, handleOnClick }: ProductsListProps
                 </div>
 
                 <div className="section-list__list">
-                  {data[nameKey].map(({ _id, name }) => (
-                    <div key={_id}>
+                  {data[nameKey].map((item) => (
+                    // {data[nameKey].map(({ _id, name }) => (
+                    <div key={item._id}>
                       <button
                         name={nameKey === 'product' ? ButtonName.FilterOpenForm : ButtonName.FilterProduct}
                         onClick={handleOnClick}
-                        value={_id}
+                        value={item._id}
                       >
-                        {name}
+                        {'department' in item ? item.department : 'category' in item ? item.category : 'subcategory' in item ? item.subcategory : 'product' in item ? item.product : ""}
                       </button>
                     </div>
                   )

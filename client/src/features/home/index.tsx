@@ -19,18 +19,18 @@ function Home() {
     <>
       {isLoadingProduct ? <div>Cargando productos</div> :
         <>
-          {department.map(({ _id, name, categoriesId }) => {
+          {department.map(({ _id,  categoriesId, department }) => {
             const product = categoriesId.flatMap(e => e.subcategoriesId).flatMap(e => e.productsId)
-            const cardData = product.map(({ _id, images, variants, name, brand }) => {
+            const cardData = product.map(({ _id, images, variants, brand, product }) => {
               return {
                 _id,
                 images: images[0],
                 price: variants.map(e => e.sellingPrice),
-                name,
+                product,
                 brand
               }
             })
-            return <Showcase key={_id} title={name} cardData={cardData} />
+            return <Showcase key={_id} title={department} cardData={cardData} />
           })}
         </>
       }

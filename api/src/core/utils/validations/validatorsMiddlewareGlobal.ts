@@ -33,7 +33,40 @@ const validationSchemas: { [key: string]: yup.Schema } = {
   tokenEmail: yup.string()
     .required('Existe un problema en la validación del correo, solicita nuevamente el cambio de correo electrónico o después de 10 minutos de la solicitud se cancela el cambio de correo'),
   roles: yup.string()
-    .required('Debe seleccionar uno de los roles aceptados')
+    .required('Debe seleccionar uno de los roles aceptados'),
+  department: yup.string()
+    .required('Debe ingresar un Departamento')
+    .min(2, 'Ingrese al menos 2 caracteres para el Departamento')
+    .max(30, 'Ingrese máximo 30 caracteres para el Departamento'),
+  category: yup.string()
+    .required('Debe ingresar un Departamento')
+    .min(2, 'Ingrese al menos 2 caracteres para el Categoría')
+    .max(30, 'Ingrese máximo 30 caracteres para el Categoría'),
+  subcategory: yup.string()
+    .required('Debe ingresar un Departamento')
+    .min(2, 'Ingrese al menos 2 caracteres para el Subcategorías')
+    .max(30, 'Ingrese máximo 30 caracteres para el Subcategorías'),
+  product: yup.string()
+    .required('Debe ingresar un Departamento')
+    .min(2, 'Ingrese al menos 2 caracteres para el Producto')
+    .max(30, 'Ingrese máximo 30 caracteres para el Producto'),
+  brand: yup.string()
+    .required('Debe ingresar un Departamento')
+    .min(2, 'Ingrese al menos 2 caracteres para el Marca')
+    .max(30, 'Ingrese máximo 30 caracteres para el Marca'),
+  description: yup.string()
+    .required('Debe ingresar un Departamento')
+    .min(2, 'Ingrese al menos 2 caracteres para el Descripción')
+    .max(30, 'Ingrese máximo 30 caracteres para el Descripción'),
+  specification: yup.array().of(yup.object({
+    key: yup.string().required('La titulo es requerida'),
+    value: yup.string().required('El descripción es requerido'),
+  }))
+    .required('La especificación es requerida'),
+  images: yup.array().of(yup.string())
+    // .required('Debe ingresar un conjunto de imágenes')
+    // .min(1, 'Ingrese al menos 1 imagen')
+    // .max(4, 'Ingrese máximo 4 imágenes'),
 };
 
 

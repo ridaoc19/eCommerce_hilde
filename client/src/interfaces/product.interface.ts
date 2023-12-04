@@ -25,7 +25,7 @@ export namespace IProduct {
   export interface Product {
     _id: string;
     subcategoryId: string;
-    name: string;
+    product: string;
     brand: string;
     specification: Specification[];
     description: string;
@@ -34,21 +34,21 @@ export namespace IProduct {
   }
   export interface Subcategory {
     _id: string;
-    name: string;
+    subcategory: string;
     productsId: Product[];
     categoryId: string;
   }
 
   export interface Category {
     _id: string;
-    name: string;
+    category: string;
     subcategoriesId: Subcategory[];
     departmentId: string;
   }
 
   export interface Department {
     _id: string;
-    name: string;
+    department: string;
     categoriesId: Category[];
   }
 }

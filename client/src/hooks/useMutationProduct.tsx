@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RequestMapProduct, RouteProduct } from "../services/productRequest";
-import { MakeProductRequestReturn, productRequest } from "../services/productApi";
+import { MakeProductRequestReturn, productRequest, Error } from "../services/productApi";
 import { IProduct } from "../interfaces/product.interface";
 
 function useMutationProduct() {

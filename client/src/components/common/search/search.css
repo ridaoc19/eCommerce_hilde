@@ -1,0 +1,46 @@
+.search-container {
+  position: relative;
+}
+.search-container a {
+  text-decoration: none;
+}
+.search-container .search-list {
+  width: 100%;
+  background-color: var(--brand-1);
+  position: absolute;
+}
+.search-container .search-list > div {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+.search-container .search-list > div h4,
+.search-container .search-list > div h5 {
+  margin: 0;
+  padding: 0;
+}
+.search-container .search-list > div .search__card-content {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 0.5rem;
+  background-color: #fff;
+  padding: 0.5rem;
+}
+.search-container .search-list > div .search__card-content .card__images > img {
+  width: 100%;
+}
+.search-container .search-list > div .search__card-content .card__content {
+  display: grid;
+  grid-template-rows: 3.5rem 1fr;
+  gap: 0.5rem;
+}
+.search-container .search-list > div .search__card-content .card__content .card__title {
+  color: var(--font-brand);
+}
+.search-container .search-list > div .search__card-content .card__content .card__utils {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+}
+.search-container .search-list > div .search__card-content .card__content .card__utils h5 {
+  color: var(--font-dark);
+}/*# sourceMappingURL=search.css.map */

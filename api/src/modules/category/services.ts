@@ -16,12 +16,12 @@ import Category from "./model";
 
 export async function categoryCreate(req: Request, res: Response) {
   try {
-    const { name } = req.body;
+    const { category } = req.body;
     const { departmentId } = req.params;
 
-    const category = await Category.create({ name, departmentId: departmentId });
+    const categoryResponse = await Category.create({ category, departmentId: departmentId });
 
-    await Department.findByIdAndUpdate(departmentId, { $push: { categoriesId: category._id } });
+    await Department.findByIdAndUpdate(departmentId, { $push: { categoriesId: categoryResponse._id } });
 
     const updatedProducts = await products();
     successHandler({
@@ -40,10 +40,10 @@ export async function categoryCreate(req: Request, res: Response) {
 
 export async function categoryEdit(req: Request, res: Response) {
   try {
-    const { name } = req.body;
+    const { category } = req.body;
     const { _id } = req.params;
 
-    await Category.findByIdAndUpdate(_id, { name }, { new: true });
+    await Category.findByIdAndUpdate(_id, { category }, { new: true });
 
     const updatedProducts = await products();
     successHandler({

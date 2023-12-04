@@ -16,10 +16,10 @@ import Subcategory from "./model";
 export async function subcategoryCreate(req: Request, res: Response) {
   try {
     const { categoryId } = req.params;
-    const { name } = req.body;
-    const subcategory = await Subcategory.create({ name, categoryId: categoryId });
+    const { subcategory } = req.body;
+    const subcategoryResponse = await Subcategory.create({ subcategory, categoryId: categoryId });
 
-    await Category.findByIdAndUpdate(categoryId, { $push: { subcategoriesId: subcategory._id } });
+    await Category.findByIdAndUpdate(categoryId, { $push: { subcategoriesId: subcategoryResponse._id } });
 
     const updatedProducts = await products();
     successHandler({
@@ -37,10 +37,10 @@ export async function subcategoryCreate(req: Request, res: Response) {
 
 export async function subcategoryEdit(req: Request, res: Response) {
   try {
-    const { name } = req.body;
+    const { subcategory } = req.body;
     const { _id } = req.params;
 
-    await Subcategory.findByIdAndUpdate(_id, { name }, { new: true });
+    await Subcategory.findByIdAndUpdate(_id, { subcategory }, { new: true });
 
     const updatedProducts = await products();
     successHandler({

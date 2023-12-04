@@ -21,9 +21,9 @@ function ListProducts() {
         <Breadcrumb />
       </div>
       <div className="list-product__card">
-        {product.data.map(({ _id, name, brand, images, variants }) => {
+        {product.data.map(({ _id, product, brand, images, variants }) => {
           return (
-            <Card key={_id} _id={_id} name={name} brand={brand} images={images[0]} price={variants.map(pri => pri.sellingPrice)} />
+            <Card key={_id} _id={_id} product={product} brand={brand} images={images[0]} price={variants.map(pri => pri.sellingPrice)} />
           )
         })}
       </div>

@@ -29,12 +29,12 @@ export type RequestMap = {
   // departamento
   [Route.DepartmentCreate]: {
     route: Route.DepartmentCreate;
-    requestData: Pick<IProduct.Department, 'name'>;
+    requestData: Pick<IProduct.Department, 'department'>;
   };
   [Route.DepartmentEdit]: {
     route: Route.DepartmentEdit;
     departmentId: IProduct.Department['_id'];
-    requestData: Pick<IProduct.Department, 'name'>;
+    requestData: Pick<IProduct.Department, 'department'>;
   };
   [Route.DepartmentDelete]: {
     route: Route.DepartmentDelete;
@@ -44,12 +44,12 @@ export type RequestMap = {
   [Route.CategoryCreate]: {
     route: Route.CategoryCreate;
     departmentId: IProduct.Category['departmentId'];
-    requestData: Pick<IProduct.Category, 'name'>;
+    requestData: Pick<IProduct.Category, 'category'>;
   };
   [Route.CategoryEdit]: {
     route: Route.CategoryEdit;
     categoryId: IProduct.Category['_id'];
-    requestData: Pick<IProduct.Category, 'name'>;
+    requestData: Pick<IProduct.Category, 'category'>;
   };
   [Route.CategoryDelete]: {
     route: Route.CategoryDelete;
@@ -59,12 +59,12 @@ export type RequestMap = {
   [Route.SubCategoryCreate]: {
     route: Route.SubCategoryCreate;
     categoryId: IProduct.Subcategory['categoryId'];
-    requestData: Pick<IProduct.Subcategory, 'name'>;
+    requestData: Pick<IProduct.Subcategory, 'subcategory'>;
   };
   [Route.SubCategoryEdit]: {
     route: Route.SubCategoryEdit;
     subcategoryId: IProduct.Subcategory['_id'];
-    requestData: Pick<IProduct.Subcategory, 'name'>;
+    requestData: Pick<IProduct.Subcategory, 'subcategory'>;
   };
   [Route.SubCategoryDelete]: {
     route: Route.SubCategoryDelete;
@@ -230,14 +230,18 @@ async function apiProduct<R extends keyof RequestMapProduct>(data: RequestMapPro
     }
   } catch (error) {
     // eslint-disable-next-line
-    throw ({
-      status_code: 500,
-      status: "internal_server_error",
-      errors: [{
-        field: 'general',
-        message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front".`
-      }]
-    })
+    if (error instanceof Error) {
+      throw ({
+        status_code: 500,
+        status: "internal_server_error",
+        errors: [{
+          field: 'general',
+          message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front".`
+        }]
+      })
+    } else {
+      throw error
+    }
   }
 }
 

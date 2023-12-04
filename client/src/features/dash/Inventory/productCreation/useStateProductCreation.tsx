@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import useMutationProduct from "../../../../hooks/useMutationProduct";
 import useProductFilter, { BreadcrumbItem } from "../../../../hooks/useProductFilter";
+import { HandleChangeText, HandleChangeTextArea } from "../../../../interfaces/global.interface";
 import { IProduct } from "../../../../interfaces/product.interface";
-import { RequestMap, Route } from "../../../../services/productApi";
-import { HandleChangeText } from "../../../auth/login";
 import { RequestMapProduct, RouteProduct } from "../../../../services/productRequest";
 
 export enum ButtonName {
@@ -12,11 +11,11 @@ export enum ButtonName {
   Delete = 'delete',
   Clean = 'clean',
   Save = 'save',
-  Add = 'add',
-  Confirm = 'confirm',
-  Cancel = 'cancel',
+  // Add = 'add',
+  // Confirm = 'confirm',
+  // Cancel = 'cancel',
   FilterProduct = 'filterProduct',
-  FilterOpenForm = 'filterOpenForm',
+  // FilterOpenForm = 'filterOpenForm',
   RemoveSpecification = 'removeSpecification',
   AddSpecification = 'addSpecification',
   FileDelete = 'fileDelete'
@@ -47,9 +46,19 @@ export interface InitialState {
     product: Omit<RequestMapProduct[RouteProduct.ProductCreate]['requestData'], 'name'> & { product: string, _id: string }
     // product: { product: string, _id: string }
   }
+  error: {
+    department: string,
+    category: string,
+    subcategory: string,
+    product: string,
+    brand: string,
+    description: string,
+    images: string,
+    specification: string
+  }
   // changeForm: IProduct.Variants
   temporaryImages: { get: File[], delete: string[] };
-  selectedProduct: Omit<RequestMap[Route.ProductEntry], 'route'>;
+  // selectedProduct: Omit<RequestMap[Route.ProductEntry], 'route'>;
 }
 
 export const initialState: InitialState = {
@@ -79,8 +88,17 @@ export const initialState: InitialState = {
     subcategory: { _id: "", subcategory: "" },
     product: { _id: "", product: "", brand: "", description: "", images: [], specification: [] }
   },
+  error: {
+    department: "",
+    category: "",
+    subcategory: "",
+    product: "",
+    brand: "",
+    description: "",
+    images: "",
+    specification: ""
+  },
   temporaryImages: { get: [], delete: [] },
-  selectedProduct: { productId: "", requestData: { _id: "", name: "", brand: "", description: "", specification: [], images: [], variants: [] } },
 }
 
 function useStateProductCreation() {
@@ -115,6 +133,7 @@ function useStateProductCreation() {
   const handleOnChange: HandleChangeText = (event) => {
     const name = event.target.name as keyof InitialState['changeList'];
     const { value } = event.target;
+    tools.resetError()
 
     // const stateChangeListValue = Object.fromEntries(Object.entries(state.changeList[name]).filter(([keys]) => keys === name))
 
@@ -125,7 +144,7 @@ function useStateProductCreation() {
       return {
         ...acc,
         [key]: key !== name ? valueInt
-          : valueInt.filter((d: { name: string }) => d.name.toString().toLowerCase().includes(value.toLowerCase()))
+          : valueInt.filter((d: Record<keyof InitialState['changeList'], string>) => d[name].toString().toLowerCase().includes(value.toLowerCase()))
       }
     }, {}) as InitialState['data']
 
@@ -170,7 +189,7 @@ function useStateProductCreation() {
 
   const handleOnChangeProduct: HandleChangeText = (event) => {
     const { name, value, files } = event.target;
-
+    tools.resetError()
     // const { name, value, files } = event.target;
     // const { stop, error } = responseError;
 
@@ -242,7 +261,17 @@ function useStateProductCreation() {
 
   }
 
-  return { state, setState, isFetching, handleOnChange, findItemById, tools, status, handleOnChangeProduct };
+  const handleOnChangeTextArea: HandleChangeTextArea = (event) => {
+    const { name, value } = event.target
+    setState(prevState => ({
+      ...prevState, changeList: {
+        ...prevState.changeList, product:
+          { ...prevState.changeList.product, [name]: value }
+      }
+    }))
+  }
+
+  return { state, setState, isFetching, handleOnChange, findItemById, tools, status, handleOnChangeProduct, handleOnChangeTextArea };
 }
 
 export default useStateProductCreation;
