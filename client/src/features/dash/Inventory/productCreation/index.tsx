@@ -358,6 +358,8 @@ const ProductCreation: React.FC = () => {
               </div>
               <div className="section-list__list">
                 {state.data[nameKey].map((item) => {
+                  const filter = state.breadcrumb.map(e => e.name_id).at(-1)
+                  const validateButton = filter === "" ? 'department' : filter === "department" ? 'category' : filter === 'category' ? 'subcategory' : 'product'
                   return (
                     <div key={item._id} style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <button
@@ -369,8 +371,11 @@ const ProductCreation: React.FC = () => {
                         {'department' in item ? item.department : 'category' in item ? item.category : 'subcategory' in item ? item.subcategory : 'product' in item ? item.product : ""}
                       </button>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button name={ButtonName.EditUpdate} value={nameKey} data-_id={item._id} data-name={name} onClick={handleOnClick}>Edit</button>
-                        <button name={ButtonName.Delete} value={nameKey} data-_id={item._id} onClick={handleOnClick}>{'Delete'}</button>
+                        {validateButton === nameKey && <>
+                          <button name={ButtonName.EditUpdate} value={nameKey} data-_id={item._id} data-name={name} onClick={handleOnClick}>Edit</button>
+                          <button name={ButtonName.Delete} value={nameKey} data-_id={item._id} onClick={handleOnClick}>{'Delete'}</button>
+                        </>
+                        }
                       </div>
                     </div>
                   )

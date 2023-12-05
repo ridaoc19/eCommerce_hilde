@@ -115,6 +115,7 @@ function useStateProductCreation() {
       setState(prevState => ({
         ...prevState,
         breadcrumb: res.breadcrumb,
+        select: initialState.select,
         data: updateData,
         intactData: updateData,
         changeList: {
@@ -157,20 +158,9 @@ function useStateProductCreation() {
     }, {})
 
     const resSelect = Object.entries(state.select).reduce((acc, [key, values]) => {
-      const isPreviousElementFilled = (() => {
-        switch (name) {
-          case 'category':
-            return state.changeList.department._id !== '';
-          case 'subcategory':
-            return state.changeList.category._id !== '';
-          case 'product':
-            return state.changeList.subcategory._id !== '';
-          default:
-            return true; // Para 'department' y otros casos no especificados
-        }
-      })
 
-      const updateCreate = state.select[name] !== 'edit' && refilter[name].length === 0 && isPreviousElementFilled()
+
+      const updateCreate = state.select[name] !== 'edit' && refilter[name].length === 0 && isPreviousElementFilled({ name, state })
       if (key === name) {
         return { ...acc, [key]: isEdit ? values : updateCreate ? 'create' : "" }
         // return { ...acc, [key]: updateCreate ? 'create' :  state.select[name] === 'edit' ? value: "" }
@@ -276,3 +266,19 @@ function useStateProductCreation() {
 }
 
 export default useStateProductCreation;
+
+
+
+
+export const isPreviousElementFilled = (({ name, state }: { name: keyof InitialState['changeList'], state: InitialState }) => {
+  switch (name) {
+    case 'category':
+      return state.changeList.department._id !== '';
+    case 'subcategory':
+      return state.changeList.category._id !== '';
+    case 'product':
+      return state.changeList.subcategory._id !== '';
+    default:
+      return true; // Para 'department' y otros casos no especificados
+  }
+})
