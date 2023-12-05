@@ -155,15 +155,26 @@ const ProductCreation: React.FC = () => {
         const _id = dataset._id!
         switch (valueKey) {
           case 'department':
+            const departmentFilterImages = state.intactData.department.find(pro => pro._id === _id)
+              ?.categoriesId.flatMap(pro => pro.subcategoriesId)
+              .flatMap(pro => pro.productsId).flatMap(img => img.images) || []
+            departmentFilterImages.length > 0 && imagesAdmin({ toDelete: departmentFilterImages })
             tools.fetch(RouteProduct.DepartmentDelete).options({ paramId: _id })
             break;
           case 'category':
+            const categoryFilterImages = state.intactData.category.find(pro => pro._id === _id)?.subcategoriesId
+              .flatMap(pro => pro.productsId).flatMap(img => img.images) || []
+            categoryFilterImages.length > 0 && imagesAdmin({ toDelete: categoryFilterImages })
             tools.fetch(RouteProduct.CategoryDelete).options({ paramId: _id })
             break
           case 'subcategory':
+            const subcategoryFilterImages = state.intactData.subcategory.find(pro => pro._id === _id)?.productsId.flatMap(pro => pro.images) || []
+            subcategoryFilterImages.length > 0 && imagesAdmin({ toDelete: subcategoryFilterImages })
             tools.fetch(RouteProduct.SubCategoryDelete).options({ paramId: _id })
             break
           case 'product':
+            const productFilterImages = state.intactData.product.find(pro => pro._id === _id)?.images || []
+            productFilterImages.length > 0 && imagesAdmin({ toDelete: productFilterImages })
             tools.fetch(RouteProduct.ProductDelete).options({ paramId: _id })
             break
           default:

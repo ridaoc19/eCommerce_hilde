@@ -123,6 +123,7 @@ function useStateProductCreation() {
           subcategory: { _id: res.breadcrumb.find(e => e.name_id === 'subcategory')?._id || "", subcategory: "" },
           product: { _id: res.breadcrumb.find(e => e.name_id === 'product')?._id || "", product: "", brand: "", description: "", images: [], specification: [] },
         },
+        temporaryImages: initialState.temporaryImages
       }));
     }
     // eslint-disable-next-line
