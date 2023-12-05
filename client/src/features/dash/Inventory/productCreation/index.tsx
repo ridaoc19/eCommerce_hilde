@@ -15,10 +15,10 @@ const ProductCreation: React.FC = () => {
     const { name, value, dataset } = event.target as HTMLButtonElement;
     const valueKey = value as keyof InitialState['changeList']
 
-    // if (name !== ButtonName.FileDelete && name !== ButtonName.RemoveSpecification) {
-    //   setState(prevState => ({ ...prevState, temporaryImages: initialState.temporaryImages, select: initialState.select, data: prevState.intactData, changeList: initialState.changeList }))
-    tools.resetError()
-    // }
+    if (name !== ButtonName.FileDelete && name !== ButtonName.RemoveSpecification) {
+      setState(prevState => ({ ...prevState, error: initialState.error, temporaryImages: initialState.temporaryImages }))
+      tools.resetError()
+    }
 
     // const responseError = getValidationErrors({ fieldName: 'name', value: selectedCategory.requestData.name })
     switch (name) {
@@ -148,7 +148,6 @@ const ProductCreation: React.FC = () => {
           default:
             break;
         }
-        setState(initialState)
         return
 
       case ButtonName.Delete:
@@ -207,6 +206,9 @@ const ProductCreation: React.FC = () => {
         return;
 
       case ButtonName.FileDelete:
+        const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
+        if (inputElement) inputElement.value = '';
+
         const { temporaryImages, changeList } = state;
         if (dataset.type === 'file') { // elimina files
           temporaryImages.get.splice(+value, 1)
@@ -265,7 +267,6 @@ const ProductCreation: React.FC = () => {
                   input={{ type: name, name, handleOnChange, placeholder, value: stateChangeListValue[nameKey] as string || "" }}
                   styleClass='product-creation-input'
                   errorMessage={state.error[nameKey] || status.productError?.errors.find(e => e.field === name)?.message}
-                // errorMessage={status.userError?.errors.find(e => e.field === item)?.message}
                 />}
                 {true && nameKey === 'product' &&
                   <div className='form-product-important-todo'>
@@ -307,7 +308,6 @@ const ProductCreation: React.FC = () => {
                               value={spec.key}
                               onChange={handleOnChangeProduct}
                             />
-                            {/* {validationError.specificationKey && <span>{validationError.specificationKey}</span>} */}
                             <input
                               type="text"
                               name="specificationValue"
@@ -316,7 +316,6 @@ const ProductCreation: React.FC = () => {
                               value={spec.value}
                               onChange={handleOnChangeProduct}
                             />
-                            {/* {validationError.specificationValue && <span>{validationError.specificationValue}</span>} */}
                             <button
                               // disabled={isLoading}
                               name={ButtonName.RemoveSpecification}

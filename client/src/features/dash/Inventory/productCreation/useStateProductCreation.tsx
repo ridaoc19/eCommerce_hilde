@@ -127,6 +127,9 @@ function useStateProductCreation() {
         temporaryImages: initialState.temporaryImages
       }));
     }
+    // Limpia files
+    const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
+    if (inputElement) inputElement.value = '';
     // eslint-disable-next-line
   }, [state._id, isFetching]);
 

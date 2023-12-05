@@ -59,8 +59,8 @@ const validationSchemas: { [key: string]: yup.Schema } = {
     .min(2, 'Ingrese al menos 2 caracteres para el Descripción')
     .max(30, 'Ingrese máximo 30 caracteres para el Descripción'),
   specification: yup.array().of(yup.object({
-    key: yup.string().required('La titulo es requerida'),
-    value: yup.string().required('El descripción es requerido'),
+    key: yup.string().required('El titulo es requerido'),
+    value: yup.string().required('La descripción es requerida'),
   }))
     .required('La especificación es requerida'),
   images: yup.array().of(yup.string())
