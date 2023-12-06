@@ -3,6 +3,17 @@ import { RequestMapProduct, RouteProduct } from "../services/productRequest";
 import { MakeProductRequestReturn, productRequest, Error } from "../services/productApi";
 import { IProduct } from "../interfaces/product.interface";
 
+export interface StatusSection {
+  isLoadingProduct: boolean;
+  isProductSuccess: boolean;
+  productError: Error | null;
+  isProductError: boolean;
+  variablesProduct: {
+    route: RouteProduct;
+    options: Omit<RequestMapProduct[RouteProduct], 'route' | 'method'>;
+  } | undefined;
+}
+
 function useMutationProduct() {
   const queryClient = useQueryClient();
 
@@ -46,7 +57,7 @@ function useMutationProduct() {
     },
   };
 
-  const statusSection = {
+  const statusSection: StatusSection = {
     isLoadingProduct,
     isProductSuccess,
     productError,
