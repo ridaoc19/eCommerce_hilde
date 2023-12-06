@@ -4,6 +4,7 @@ import useProductFilter, { BreadcrumbItem } from "../../../../hooks/useProductFi
 import { HandleChangeText, HandleChangeTextArea } from "../../../../interfaces/global.interface";
 import { IProduct } from "../../../../interfaces/product.interface";
 import { RequestMapProduct, RouteProduct } from "../../../../services/productRequest";
+import { useValidations } from "../../../auth/login";
 
 export enum ButtonName {
   Edit = 'edit',
@@ -54,7 +55,9 @@ export interface InitialState {
     brand: string,
     description: string,
     images: string,
-    specification: string
+    specification: string,
+    specificationKey: string,
+    specificationValue: string,
   }
   // changeForm: IProduct.Variants
   temporaryImages: { get: File[], delete: string[] };
@@ -96,16 +99,18 @@ export const initialState: InitialState = {
     brand: "",
     description: "",
     images: "",
-    specification: ""
+    specification: "",
+    specificationKey: "",
+    specificationValue: ""
   },
   temporaryImages: { get: [], delete: [] },
 }
 
 function useStateProductCreation() {
+  const { getValidationErrors } = useValidations();
   const { tools, status } = useMutationProduct();
   const { findItemById, isFetching } = useProductFilter();
   const [state, setState] = useState(initialState);
-  // const [stateProductCreation, setStateProductCreation] = useState(initialState);
 
   useEffect(() => {
     if (!isFetching) {
@@ -139,9 +144,7 @@ function useStateProductCreation() {
     const name = event.target.name as keyof InitialState['changeList'];
     const { value } = event.target;
     tools.resetError()
-
     // const stateChangeListValue = Object.fromEntries(Object.entries(state.changeList[name]).filter(([keys]) => keys === name))
-
 
     let isEdit = state.select[name] === 'edit'
     // let isEdit = stateChangeListValue[name] && state.changeList[name]._id
@@ -161,21 +164,23 @@ function useStateProductCreation() {
     }, {})
 
     const resSelect = Object.entries(state.select).reduce((acc, [key, values]) => {
-
-
       const updateCreate = state.select[name] !== 'edit' && refilter[name].length === 0 && isPreviousElementFilled({ name, state })
       if (key === name) {
         return { ...acc, [key]: isEdit ? values : updateCreate ? 'create' : "" }
-        // return { ...acc, [key]: updateCreate ? 'create' :  state.select[name] === 'edit' ? value: "" }
       } else
         return { ...acc, [key]: "" }
-    }, {})
+    }, {}) as InitialState['select']
+
+    const { field, message, stop } = getValidationErrors({ fieldName: name, value })
+    const isRenderError = ['create', 'edit'].includes(resSelect[name])
+    if (isRenderError && stop) return setState((prevState) => ({ ...prevState, error: { ...prevState.error, [field]: message } }))
 
     setState((prevState) => ({
       ...prevState,
       data: refilter,
       changeList: resChangeList as InitialState['changeList'],
-      select: resSelect as InitialState['select']
+      select: resSelect,
+      error: isRenderError ? { ...prevState.error, [field]: message } : { ...prevState.error, [field]: "" }
     }));
 
   };
@@ -183,85 +188,63 @@ function useStateProductCreation() {
 
   const handleOnChangeProduct: HandleChangeText = (event) => {
     const { name, value, files } = event.target;
+    const { field, message, stop } = getValidationErrors({ fieldName: name, value })
     tools.resetError()
-    // const { name, value, files } = event.target;
-    // const { stop, error } = responseError;
 
-    // if (name === 'images' && files) {
+    if (name === 'images') {
+      if (files && files.length > 0) {
+        const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
+        const fileList = Array.from(files) as File[];
+        const imagesFile = fileList.length + state.temporaryImages.get.length
+        const imagesString = state.changeList.product.images.length
+        const totalImages = imagesFile + imagesString;
 
-    if (files && files.length > 0) {
-      // const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
-      const fileList = Array.from(files) as File[];
-      // const totalImages = fileList.length + state.temporaryImages.get.length
-      setState(prevState => ({ ...prevState, temporaryImages: { ...prevState.temporaryImages, get: [...state.temporaryImages.get, ...fileList] } }))
-
-      // if (totalImages > 3) {
-      //   if (inputElement) inputElement.value = '';
-      //   return {
-      //     ...state,
-      //     validationError: { ...state.validationError, images: 'No puedes subir más de tres imágenes' }
-      //   }
-      // } else {
-
-      // setState(prevState=>({
-      // ...prevState,
-
-      // validationError: { ...state.validationError, images: '' },
-      // temporaryImages: { ...state.temporaryImages, get: [...state.temporaryImages.get, ...fileList] }))
-      // }
-      // }
-    }
-
-    // }
-    else if (name === 'specificationKey' || name === 'specificationValue') {
+        if (totalImages > 3) {
+          if (inputElement) inputElement.value = '';
+          const messageImage = imagesString > 0 ? `Tienes almacenadas ${imagesString} imágenes y quieres agregar ${imagesFile}, solo puedes agregar un total 3 imágenes` : `Solo se puede subir tres imágenes y estas cargando ${totalImages}`
+          setState({ ...state, error: { ...state.error, images: messageImage } })
+        } else if (totalImages === 0) {
+          setState({ ...state, error: { ...state.error, images: 'Debes subir al menos una imagen' } })
+        } else {
+          setState(prevState => ({
+            ...prevState,
+            error: { ...prevState.error, images: '' },
+            temporaryImages: { ...prevState.temporaryImages, get: [...state.temporaryImages.get, ...fileList] }
+          }))
+        }
+      }
+    } else if (name === 'specificationKey' || name === 'specificationValue') {
       const specIndex = parseInt(event.target.dataset.index || '0', 10);
       const specField = name === 'specificationKey' ? 'key' : 'value';
       const updatedSpecification = [...state.changeList.product.specification];
       updatedSpecification[specIndex] = { ...updatedSpecification[specIndex], [specField]: value };
+      if (stop) return setState((prevState) => ({ ...prevState, error: { ...prevState.error, [field]: message } }))
 
       setState(prevState => ({
-        ...prevState, changeList: {
-          ...prevState.changeList, product:
-            { ...prevState.changeList.product, specification: updatedSpecification }
-        }
+        ...prevState,
+        error: { ...prevState.error, [field]: message },
+        changeList: { ...prevState.changeList, product: { ...prevState.changeList.product, specification: updatedSpecification } }
       }))
-      //   const newValidationError = { ...state.validationError, [name]: error };
-      //   return {
-      //     ...state,
-      //     selectedProduct: stop
-      //       ? { ...state.selectedProduct }
-      //       : { ...state.selectedProduct, requestData: { ...state.selectedProduct.requestData, specification: updatedSpecification } },
-      //     validationError: newValidationError
-      //   }
     }
     else {
+      if (stop) return setState((prevState) => ({ ...prevState, error: { ...prevState.error, [field]: message } }))
       setState(prevState => ({
-        ...prevState, changeList: {
-          ...prevState.changeList, product:
-            { ...prevState.changeList.product, [name]: value }
-        }
+        ...prevState,
+        error: { ...prevState.error, [field]: message },
+        changeList: { ...prevState.changeList, product: { ...prevState.changeList.product, [name]: value } }
       }))
-      //   const newValidationError = { ...state.validationError, [name]: error };
-      //   return {
-      //     ...state,
-      //     selectedProduct: stop
-      //       ? { ...state.selectedProduct }
-      //       : { ...state.selectedProduct, requestData: { ...state.selectedProduct.requestData, [name]: value } },
-      //     validationError: newValidationError
-      // }
     }
-    // return state;
-
-
   }
 
   const handleOnChangeTextArea: HandleChangeTextArea = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
+    const { field, message, stop } = getValidationErrors({ fieldName: name, value })
+    if (stop) return setState((prevState) => ({ ...prevState, error: { ...prevState.error, [field]: message } }))
+
     setState(prevState => ({
-      ...prevState, changeList: {
-        ...prevState.changeList, product:
-          { ...prevState.changeList.product, [name]: value }
-      }
+      ...prevState,
+      error: { ...prevState.error, [field]: message },
+      changeList: { ...prevState.changeList, product: { ...prevState.changeList.product, [name]: value } }
     }))
   }
 
@@ -269,7 +252,6 @@ function useStateProductCreation() {
 }
 
 export default useStateProductCreation;
-
 
 
 

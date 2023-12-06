@@ -2,12 +2,13 @@ import React from 'react';
 import { IProduct } from '../../../../interfaces/product.interface';
 import { imagesAdmin } from '../../../../services/imagesApi';
 import { RouteProduct } from '../../../../services/productRequest';
-import { HandleClick, Spinner, UserInput } from '../../../auth/login';
+import { HandleClick, Spinner, UserInput, useValidations } from '../../../auth/login';
 import Breadcrumb from './Breadcrumb';
 import useStateProductCreation, { ButtonName, InitialState, NestedData, initialState } from './useStateProductCreation';
 
 
 const ProductCreation: React.FC = () => {
+  const { getValidationErrors } = useValidations();
   const { state, setState, handleOnChangeTextArea, handleOnChange, handleOnChangeProduct, findItemById, status, tools } = useStateProductCreation();
 
   const handleOnClick: HandleClick = async (event) => {
@@ -15,7 +16,7 @@ const ProductCreation: React.FC = () => {
     const { name, value, dataset } = event.target as HTMLButtonElement;
     const valueKey = value as keyof InitialState['changeList']
 
-    if (name !== ButtonName.FileDelete && name !== ButtonName.RemoveSpecification) {
+    if (name !== ButtonName.FileDelete && name !== ButtonName.RemoveSpecification && name !== ButtonName.Save) {
       setState(prevState => ({ ...prevState, error: initialState.error, temporaryImages: initialState.temporaryImages }))
       tools.resetError()
     }
@@ -27,6 +28,14 @@ const ProductCreation: React.FC = () => {
         break;
 
       case ButtonName.Save:
+        if (Object.entries(state.changeList[valueKey]).reduce<string[]>((acc, [key, valuen]) => {
+          const { field, message } = getValidationErrors({ fieldName: key, value: valuen });
+          if (field === '_id') return acc
+          setState(prevState => ({ ...prevState, error: { ...prevState.error, [field]: message } }));
+          if (message) return [...acc, field];
+          return acc;
+        }, []).length > 0) return;
+
         switch (valueKey) {
           case 'department':
             tools.fetch(RouteProduct.DepartmentCreate).options({ requestData: { department: state.changeList[valueKey].department } })
@@ -39,11 +48,19 @@ const ProductCreation: React.FC = () => {
             break
           case 'product':
             // valida images
-            const totalImages = state.temporaryImages.get.length + state.changeList.product.images.length;
-            if (totalImages === 0) setState(prevState => ({ ...prevState, error: { ...prevState.error, images: 'Debes subir al menos una imagen' } }))
-            if (totalImages > 3) setState(prevState => ({ ...prevState, error: { ...prevState.error, images: 'No puedes subir más de tres imágenes' } }))
+            const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
+            const imagesFile = state.temporaryImages.get.length
+            const imagesString = state.changeList.product.images.length
+            const totalImages = imagesFile + imagesString;
 
-            if (totalImages === 0 || totalImages > 3) return
+            if (totalImages > 3) {
+              if (inputElement) inputElement.value = '';
+              const messageImage = imagesString > 0 ? `Tienes almacenadas ${imagesString} imágenes y quieres agregar ${imagesFile}, solo puedes agregar un total 3 imágenes` : `Solo se puede subir tres imágenes y estas cargando ${totalImages}`
+              setState({ ...state, error: { ...state.error, images: messageImage } })
+            } else if (totalImages === 0) {
+              setState({ ...state, error: { ...state.error, images: 'Debes subir al menos una imagen' } })
+            }
+
             // GUARDA
             const responseImages = await imagesAdmin({
               toRequest: {
@@ -53,7 +70,6 @@ const ProductCreation: React.FC = () => {
                   .replace(/[\u0300-\u036f]/g, '') // Eliminar diacríticos (tildes)
               }
             })
-            console.log(responseImages)
             tools.fetch(RouteProduct.ProductCreate).options({
               requestData: {
                 product: state.changeList.product.product,
@@ -68,7 +84,6 @@ const ProductCreation: React.FC = () => {
           default:
             break;
         }
-        // setState(initialState)
         return;
 
       case ButtonName.EditUpdate:
@@ -91,6 +106,14 @@ const ProductCreation: React.FC = () => {
         return
 
       case ButtonName.Edit:
+        if (Object.entries(state.changeList[valueKey]).reduce<string[]>((acc, [key, valuen]) => {
+          const { field, message } = getValidationErrors({ fieldName: key, value: valuen });
+          if (field === '_id') return acc
+          setState(prevState => ({ ...prevState, error: { ...prevState.error, [field]: message } }));
+          if (message) return [...acc, field];
+          return acc;
+        }, []).length > 0) return;
+
         switch (valueKey) {
           case 'department':
             tools.fetch(RouteProduct.DepartmentEdit).options({ requestData: { department: state.changeList[valueKey].department }, paramId: state.changeList[valueKey]._id })
@@ -104,11 +127,18 @@ const ProductCreation: React.FC = () => {
 
           case 'product':
             // valida images
-            const totalImages = state.temporaryImages.get.length + state.changeList.product.images.length;
-            if (totalImages === 0) setState(prevState => ({ ...prevState, error: { ...prevState.error, images: 'Debes subir al menos una imagen' } }))
-            if (totalImages > 3) setState(prevState => ({ ...prevState, error: { ...prevState.error, images: 'No puedes subir más de tres imágenes' } }))
+            const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
+            const imagesFile = state.temporaryImages.get.length
+            const imagesString = state.changeList.product.images.length
+            const totalImages = imagesFile + imagesString;
 
-            if (totalImages === 0 || totalImages > 3) return
+            if (totalImages > 3) {
+              if (inputElement) inputElement.value = '';
+              const messageImage = imagesString > 0 ? `Tienes almacenadas ${imagesString} imágenes y quieres agregar ${imagesFile}, solo puedes agregar un total 3 imágenes` : `Solo se puede subir tres imágenes y estas cargando ${totalImages}`
+              setState({ ...state, error: { ...state.error, images: messageImage } })
+            } else if (totalImages === 0) {
+              setState({ ...state, error: { ...state.error, images: 'Debes subir al menos una imagen' } })
+            }
             // GUARDA
             // if (selectedProduct.productId) {
             if (state.temporaryImages.get.length > 0 || state.temporaryImages.delete.length > 0) {
@@ -241,6 +271,9 @@ const ProductCreation: React.FC = () => {
       </div>}
 
       {Object.entries(state.data).map(([name, _valueData], index) => {
+        const filterBreadcrumb = state.breadcrumb.map(e => e.name_id).at(-1)
+        const validateButton = filterBreadcrumb === "" ? 'department' : filterBreadcrumb === "department" ? 'category' : filterBreadcrumb === 'category' ? 'subcategory' : 'product'
+
         const nameKey = name as keyof NestedData
         const title = nameKey === 'department' ? 'Departamentos' : nameKey === 'category' ? 'Categorías' : nameKey === 'subcategory' ? 'Subcategorías' : 'Productos'
         const placeholder = nameKey === 'department' ? 'Tecnología' : nameKey === 'category' ? 'Televisores' : nameKey === 'subcategory' ? 'Smart TV' : 'Samsung L500'
@@ -268,7 +301,7 @@ const ProductCreation: React.FC = () => {
                   styleClass='product-creation-input'
                   errorMessage={state.error[nameKey] || status.productError?.errors.find(e => e.field === name)?.message}
                 />}
-                {true && nameKey === 'product' &&
+                {validateButton === 'product' && nameKey === 'product' && (state.select.product === 'create' || state.select.product === 'edit') &&
                   <div className='form-product-important-todo'>
 
                     <div className='brand-description'>
@@ -308,6 +341,7 @@ const ProductCreation: React.FC = () => {
                               value={spec.key}
                               onChange={handleOnChangeProduct}
                             />
+                            {(state.error.specificationKey) && <div>{state.error.specificationKey}</div>}
                             <input
                               type="text"
                               name="specificationValue"
@@ -316,6 +350,7 @@ const ProductCreation: React.FC = () => {
                               value={spec.value}
                               onChange={handleOnChangeProduct}
                             />
+                            {(state.error.specificationValue) && <div>{state.error.specificationValue}</div>}
                             <button
                               // disabled={isLoading}
                               name={ButtonName.RemoveSpecification}
@@ -357,8 +392,6 @@ const ProductCreation: React.FC = () => {
               </div>
               <div className="section-list__list">
                 {state.data[nameKey].map((item) => {
-                  const filter = state.breadcrumb.map(e => e.name_id).at(-1)
-                  const validateButton = filter === "" ? 'department' : filter === "department" ? 'category' : filter === 'category' ? 'subcategory' : 'product'
                   return (
                     <div key={item._id} style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <button

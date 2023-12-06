@@ -44,13 +44,14 @@ function Information() {
         navigate('/')
       }
     }, 10000);
+    // eslint-disable-next-line
   }, [status.isUserSuccess])
 
   const handleChangeAccountPass: HandleChangeText = ({ target: { name, value } }) => {
     clearUserError(() => tools.resetError(), (state) => setStateAccountPass(state), initialStateAccountPass, stateAccountPass)
-    const { error, stop } = getValidationErrors({ fieldName: name, value })
-    if (stop) return setStateAccountPass(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
-    setStateAccountPass(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
+    const { message, stop } = getValidationErrors({ fieldName: name, value })
+    if (stop) return setStateAccountPass(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
+    setStateAccountPass(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
   }
 
   const handleClickAccountPass: HandleClick = (event) => {
