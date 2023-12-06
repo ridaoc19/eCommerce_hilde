@@ -28,9 +28,9 @@ function AdminUser() {
 
   const handleChangeUserAdmin: handleSelectChange = ({ target: { name, value } }) => {
     clearUserError(() => tools.resetError(), (state) => setStateUserAdmin(state), initialStateUserAdmin, stateUserAdmin)
-    const { error, stop } = getValidationErrors({ fieldName: name, value })
-    if (stop) return setStateUserAdmin(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
-    setStateUserAdmin(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
+    const { message, stop } = getValidationErrors({ fieldName: name, value })
+    if (stop) return setStateUserAdmin(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
+    setStateUserAdmin(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
   }
 
   const handleClickUserAdmin: HandleClick = (event) => {

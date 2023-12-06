@@ -22,9 +22,9 @@ function Reset() {
 
   const handleChangeReset: HandleChangeText = ({ target: { name, value } }) => {
     clearUserError(() => tools.resetError(), (state) => setStateReset(state), initialStateReset, stateReset)
-    const { error, stop } = getValidationErrors({ fieldName: name, value })
-    if (stop) return setStateReset(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
-    setStateReset(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
+    const { message, stop } = getValidationErrors({ fieldName: name, value })
+    if (stop) return setStateReset(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
+    setStateReset(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
   }
 
   const handleClickReset: HandleClick = (event) => {
@@ -78,7 +78,7 @@ function Reset() {
                   id={`button__reset--${item}`}
                   onClick={handleClickReset}
                   className={item === ResetButtonName.Back ? 'button_light' : 'button_dark'}
-                  disabled={status.isLoadingUser || item === ResetButtonName.Save && status.isUserError} >
+                  disabled={(status.isLoadingUser || item === ResetButtonName.Save) && status.isUserError} >
                   {item === ResetButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Restablecer Contraseña'}</>) : (<>{'Volver'}</>)}
                 </button>
               ))}

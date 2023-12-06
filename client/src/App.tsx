@@ -1,27 +1,27 @@
-import { useQuery } from '@tanstack/react-query';
 import { StoreContext } from './hooks/useContext';
+import useQueryProduct from './hooks/useQueryProduct';
 import useQueryUser from './hooks/useQueryUser';
-import { IProduct } from './interfaces/product.interface';
 import { IUser } from './interfaces/user.interface';
 import Routes from './routes';
-import { Route, makeProductsRequest } from './services/productApi';
+import { RouteProduct } from './services/productRequest';
 import { RouteUser } from './services/userRequest';
 import './styles/app/App.scss';
 
 function App() {
   const token: IUser.UserData['token'] = localStorage?.token || ""
   useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } }, !!token);
-  const { isSuccess } = useQuery({
-    queryKey: IProduct.PRODUCT_NAME_QUERY,
-    queryFn: () => makeProductsRequest(Route.ProductRequest).withOptions({}),
-    refetchOnWindowFocus: false,
-    refetchOnMount: false
-  })
+  useQueryProduct({ route: RouteProduct.ProductRequest, options: {}, enabled: true })
+  // const { isSuccess } = useQuery({
+  //   queryKey: IProduct.PRODUCT_NAME_QUERY,
+  //   queryFn: () => makeProductsRequest(Route.ProductRequest).withOptions({}),
+  //   refetchOnWindowFocus: false,
+  //   refetchOnMount: false
+  // })
 
   return (
     <div>
       <StoreContext>
-        {isSuccess && <Routes />}
+        {<Routes />}
       </StoreContext>
     </div>
   );

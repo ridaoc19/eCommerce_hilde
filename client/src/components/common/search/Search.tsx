@@ -17,9 +17,9 @@ function Search() {
       </div>
       {search && <div className="search-list">
         <div>
-          {totalProduct.filter(pro => pro.name.toLowerCase().includes(search.toLowerCase())).filter((_ext, index) => index < 20).map(pro => {
+          {totalProduct.filter(pro => pro.product.toLowerCase().includes(search.toLowerCase())).filter((_ext, index) => index < 20).map(pro => {
             return (
-              <SearchCard key={pro._id} _id={pro._id} name={pro.name} images={pro.images} variants={pro.variants} handleOnClick={() => setSearch("")} />
+              <SearchCard key={pro._id} _id={pro._id} product={pro.product} images={pro.images} variants={pro.variants} handleOnClick={() => setSearch("")} />
             )
           })}
         </div>

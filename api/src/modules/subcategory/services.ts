@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { StatusHTTP } from "../../core/utils/enums";
 import { products } from "../../core/utils/helpers";
-import { splitString } from "../../core/utils/splitString";
+import { errorHandlerCatch } from "../../core/utils/send/errorHandler";
+import { successHandler } from "../../core/utils/send/successHandler";
 import Category from "../category/model";
 import Product from "../product/model";
 import Subcategory from "./model";
@@ -14,48 +16,43 @@ import Subcategory from "./model";
 export async function subcategoryCreate(req: Request, res: Response) {
   try {
     const { categoryId } = req.params;
-    const { name } = req.body;
-    const subcategory = await Subcategory.create({ name, categoryId: categoryId });
+    const { subcategory } = req.body;
+    const subcategoryResponse = await Subcategory.create({ subcategory, categoryId: categoryId });
 
-    await Category.findByIdAndUpdate(categoryId, { $push: { subcategoriesId: subcategory._id } });
+    await Category.findByIdAndUpdate(categoryId, { $push: { subcategoriesId: subcategoryResponse._id } });
 
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Creación subcategories exitosa",
-      products: updatedProducts,
-    });
-
-
-
-  } catch (error: unknown) {
-    console.log(error)
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'subcategory_create',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Se creo subcategoría exitosamente'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
 
 export async function subcategoryEdit(req: Request, res: Response) {
   try {
-    const { name } = req.body;
+    const { subcategory } = req.body;
     const { _id } = req.params;
 
-    await Subcategory.findByIdAndUpdate(_id, { name }, { new: true });
+    await Subcategory.findByIdAndUpdate(_id, { subcategory }, { new: true });
 
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Subcategories Editada exitosamente",
-      products: updatedProducts,
-    });
-
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'subcategory_edit',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Se edito subcategoría exitosamente'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
 
@@ -76,19 +73,15 @@ export async function subcategoryDelete(req: Request, res: Response) {
     }
 
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Eliminación subcategory en cascada exitosa",
-      products: updatedProducts,
-    });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'subcategory_delete',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Se elimino subcategoría exitosamente'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
-
-
-
-

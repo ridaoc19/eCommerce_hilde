@@ -1,9 +1,11 @@
 import { Response } from "express";
+import { Document } from "mongoose";
 import { MapStatusCode, StatusHTTPSuccess } from "../enums";
-import { IUser, IUsers } from "../../../modules/user/model";
 
 
-export const successHandler = <T extends StatusHTTPSuccess>({ res, json, dataDB, filterDelete, filterAdd }: { res: Response, json: Omit<MapStatusCode<IUsers>[T], 'data'>, dataDB: IUser[], filterDelete: (keyof IUsers)[], filterAdd: Array<{ key: string, value: string | number | boolean }> }) => {
+export const successHandler = <T extends StatusHTTPSuccess, R extends Document>({ res, json, dataDB, filterDelete, filterAdd }: 
+    { res: Response, json: Omit<MapStatusCode<R>[T], 'data'>, dataDB: R[], filterDelete: (keyof R)[], filterAdd: Array<{ key: string, value: string | number | boolean }> }) => {
+      // { res: Response, json: Omit<MapStatusCode<IUsers>[T], 'data'>, dataDB: IUser[], filterDelete: (keyof IUsers)[], filterAdd: Array<{ key: string, value: string | number | boolean }> }) => {
   // export const successHandler = <T extends StatusHTTPSuccess, R>({ res, json }: { json: MapStatusCode<R>[T], res: Response }) => {
   let cleanedUserData = dataDB.map((item) => {
     let cleanedItem = { ...item.toObject() };

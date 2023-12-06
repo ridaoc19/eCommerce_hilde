@@ -1,3 +1,5 @@
+import { Method } from "../interfaces/global.interface";
+import { RequestMapProduct, RouteProduct } from "./productRequest";
 import { IProduct } from "../interfaces/product.interface";
 
 // Enumeración para las rutas de las solicitudes
@@ -27,12 +29,12 @@ export type RequestMap = {
   // departamento
   [Route.DepartmentCreate]: {
     route: Route.DepartmentCreate;
-    requestData: Pick<IProduct.Department, 'name'>;
+    requestData: Pick<IProduct.Department, 'department'>;
   };
   [Route.DepartmentEdit]: {
     route: Route.DepartmentEdit;
     departmentId: IProduct.Department['_id'];
-    requestData: Pick<IProduct.Department, 'name'>;
+    requestData: Pick<IProduct.Department, 'department'>;
   };
   [Route.DepartmentDelete]: {
     route: Route.DepartmentDelete;
@@ -42,12 +44,12 @@ export type RequestMap = {
   [Route.CategoryCreate]: {
     route: Route.CategoryCreate;
     departmentId: IProduct.Category['departmentId'];
-    requestData: Pick<IProduct.Category, 'name'>;
+    requestData: Pick<IProduct.Category, 'category'>;
   };
   [Route.CategoryEdit]: {
     route: Route.CategoryEdit;
     categoryId: IProduct.Category['_id'];
-    requestData: Pick<IProduct.Category, 'name'>;
+    requestData: Pick<IProduct.Category, 'category'>;
   };
   [Route.CategoryDelete]: {
     route: Route.CategoryDelete;
@@ -57,12 +59,12 @@ export type RequestMap = {
   [Route.SubCategoryCreate]: {
     route: Route.SubCategoryCreate;
     categoryId: IProduct.Subcategory['categoryId'];
-    requestData: Pick<IProduct.Subcategory, 'name'>;
+    requestData: Pick<IProduct.Subcategory, 'subcategory'>;
   };
   [Route.SubCategoryEdit]: {
     route: Route.SubCategoryEdit;
     subcategoryId: IProduct.Subcategory['_id'];
-    requestData: Pick<IProduct.Subcategory, 'name'>;
+    requestData: Pick<IProduct.Subcategory, 'subcategory'>;
   };
   [Route.SubCategoryDelete]: {
     route: Route.SubCategoryDelete;
@@ -148,7 +150,7 @@ const createPayload: Payload<Route> = (params) => {
       return { route: `${route}/${params.productId}`, requestOptions: { method: 'delete', }, };
     case Route.ProductEntry:
       // console.log(params.requestData);
-      
+
       return { route: `${route}/${params.productId}`, requestOptions: { method: 'put', body: JSON.stringify(params.requestData), headers } };
     default:
       return { route: 'request', requestOptions: { method: 'get' } };
@@ -181,4 +183,75 @@ async function productApis<T extends Route>(params: RequestMap[T]): Promise<Make
       throw new Error("Error desconocido");
     }
   }
+}
+
+
+
+
+
+
+
+export type Error = {
+  status_code: number;
+  status: string;
+  errors: Array<{
+    field: string | 'general';
+    message: string
+  }>;
+}
+
+export type MakeProductRequestReturn = {
+  field: string;
+  status: string;
+  status_code: number;
+  message: string;
+  data: IProduct.Department[];
+};
+
+async function apiProduct<R extends keyof RequestMapProduct>(data: RequestMapProduct[R]): Promise<MakeProductRequestReturn> {
+  const parts = data.route.split('|');
+  const method = parts[0];
+  const route = parts[1];
+
+  try {
+    const fetchOptions: RequestInit = {
+      method: method,
+      headers: { 'Content-Type': 'application/json' }
+    };
+    if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
+
+    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'paramId' in data ? `/${data.paramId}` : ""}`, fetchOptions)
+    const resJson = await responseApi.json();
+
+    if (!responseApi.ok) {
+      throw resJson;
+    } else {
+      return { ...resJson };
+    }
+  } catch (error) {
+    // eslint-disable-next-line
+    if (error instanceof Error) {
+      throw ({
+        status_code: 500,
+        status: "internal_server_error",
+        errors: [{
+          field: 'general',
+          message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front".`
+        }]
+      })
+    } else {
+      throw error
+    }
+  }
+}
+
+
+// Función que realiza las solicitudes a la API
+export function productRequest<T extends RouteProduct>(route: T): { options: (options: Omit<RequestMapProduct[T], 'route'>) => Promise<MakeProductRequestReturn> } {
+  return {
+    options: async (options: Omit<RequestMapProduct[T], 'route'>) => {
+      const requestParams = { route, ...options } as RequestMapProduct[T];
+      return await apiProduct(requestParams);
+    },
+  };
 }

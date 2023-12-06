@@ -44,13 +44,14 @@ function Information() {
         navigate('/')
       }
     }, 10000);
+    // eslint-disable-next-line
   }, [status.isUserSuccess])
 
   const handleChangeAccountInfo: HandleChangeText = ({ target: { name, value } }) => {
     clearUserError(() => tools.resetError(), (state) => setStateAccountInfo(state), initialStateAccountInfo, stateAccountInfo)
-    const { error, stop } = getValidationErrors({ fieldName: name, value })
-    if (stop) return setStateAccountInfo(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
-    setStateAccountInfo(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
+    const { message, stop } = getValidationErrors({ fieldName: name, value })
+    if (stop) return setStateAccountInfo(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
+    setStateAccountInfo(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
   }
 
   const handleClickAccountInfo: HandleClick = (event) => {

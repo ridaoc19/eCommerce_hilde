@@ -32,15 +32,15 @@ function Login() {
 
   const handleChangeLogin: HandleChangeText = ({ target: { name, value } }) => {
     clearUserError(() => tools.resetError(), (state) => setStateLogin(state), initialStateLogin, stateLogin)
-    const { error, stop } = getValidationErrors({ fieldName: name, value })
+    const { message, stop } = getValidationErrors({ fieldName: name, value })
     if (stop) {
-      return setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
+      return setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
 
     }
     setStateLogin(prevState => ({
       ...prevState,
       change: { ...prevState.change, [name]: value },
-      error: { ...prevState.error, [name]: error }
+      error: { ...prevState.error, [name]: message }
     }))
   }
 
@@ -109,7 +109,7 @@ function Login() {
                   id={`button__login--${item}`}
                   onClick={handleClickLogin}
                   className={item === LoginButtonName.Reset ? "button_link" : item === LoginButtonName.Back ? 'button_light' : 'button_dark'}
-                  disabled={status.isLoadingUser || item === LoginButtonName.Login && status.isUserError} >
+                  disabled={(status.isLoadingUser || item === LoginButtonName.Login) && status.isUserError} >
                   {item === LoginButtonName.Login ? (<>{status.isLoadingUser ? <Spinner /> : 'Iniciar Sesión'}</>)
                     : (<>{item === LoginButtonName.Reset ? 'Restablecer' : item === LoginButtonName.Registre ? 'Crear Cuenta' : 'Volver'}</>)}
                 </button>

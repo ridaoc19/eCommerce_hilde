@@ -14,7 +14,7 @@ function ProductDetail() {
         <Breadcrumb />
       </div>
       <div>
-        <h2>{product.name}</h2>
+        <h2>{product.product}</h2>
         <p>{product.brand}</p>
         <div>
           {product.images.map((image, index) => <img key={index} src={`${process.env.REACT_APP_SERVER_FILE}/${image}`} alt={index.toString()} width={'200'} />)}

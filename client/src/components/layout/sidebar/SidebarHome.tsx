@@ -46,7 +46,7 @@ function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean, handleOn
           </div>
         </div>
         <div className="main__left-content">
-          {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}><Link to={`/list-products/${dep._id}`} onClick={handleOnClick} >{dep.name}</Link> <span>{`>`}</span></div>))}
+          {department.map((dep) => (<div key={dep._id} onMouseEnter={() => handleMouseEnter(dep._id)}><Link to={`/list-products/${dep._id}`} onClick={handleOnClick} >{dep.department}</Link> <span>{`>`}</span></div>))}
         </div>
 
         <div className="main__left-footer">
@@ -58,16 +58,16 @@ function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean, handleOn
         </div>
 
       </div>
-      
+
       {selectedId && (
         <div className='section__main-right'>
           {department.find(dep => dep._id === selectedId)?.categoriesId.map((cat) => {
             return (
               <div key={cat._id} className="right__card-container">
                 <div className='right__card-content' ref={(node) => node ? itemsRef.current.set(cat._id, node) : itemsRef.current.delete(cat._id)} >
-                  <h3><Link to={`/list-products/${cat._id}`} onClick={handleOnClick}>{cat.name}</Link></h3>
+                  <h3><Link to={`/list-products/${cat._id}`} onClick={handleOnClick}>{cat.category}</Link></h3>
                   <div >
-                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={`/list-products/${sub._id}`} onClick={handleOnClick} >{sub.name}</Link></h5>)}
+                    {cat.subcategoriesId.map(sub => <h5 key={sub._id}><Link to={`/list-products/${sub._id}`} onClick={handleOnClick} >{sub.subcategory}</Link></h5>)}
                   </div>
                 </div>
                 <div className="right__card-message">

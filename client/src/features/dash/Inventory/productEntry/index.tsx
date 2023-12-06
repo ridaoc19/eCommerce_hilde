@@ -20,7 +20,7 @@ const initialState: InitialState = {
   breadcrumb: [],
   changeList: { department: "", category: "", subcategory: "", product: "" },
   changeForm: { size: "", color: "", purchasePrice: 0, sellingPrice: 0, stock: 0 },
-  selectedProduct: { productId: "", requestData: { _id: "", name: "", brand: "", description: "", specification: [], images: [], variants: [] } },
+  selectedProduct: { productId: "", requestData: { _id: "", product: "", brand: "", description: "", specification: [], images: [], variants: [] } },
 }
 
 
@@ -43,7 +43,8 @@ const ProductEntry: React.FC = () => {
     const { name, value } = event.target;
     if (name === 'department' || name === 'category' || name === 'subcategory' || name === 'product') {
       const currentValue = getProperty(state.intactData, name as keyof NestedData);
-      const resFilter = currentValue.map(e => e).filter(d => d.name.toString().toLowerCase().includes(value.toLowerCase()))
+      const resFilter = currentValue.map(e => e).filter(d => d.toString().toLowerCase().includes(value.toLowerCase()))
+      // const resFilter = currentValue.map(e => e).filter(d => d.name.toString().toLowerCase().includes(value.toLowerCase()))
       setState(prevState => ({ ...prevState, data: { ...prevState.data, [name]: resFilter }, changeList: { ...prevState.changeList, [name]: value } }))
     } else {
       if (name === 'purchasePrice' || name === 'sellingPrice' || name === 'stock') {
