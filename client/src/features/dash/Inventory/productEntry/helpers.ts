@@ -4,13 +4,8 @@ import { RequestMapProduct, RouteProduct } from "../../../../services/productReq
 
 
 export enum ButtonName {
-  Edit = 'edit',
-  Delete = 'delete',
   Clean = 'clean',
   Save = 'save',
-  Add = 'add',
-  Confirm = 'confirm',
-  Cancel = 'cancel',
   FilterProduct = 'filterProduct',
   FilterOpenForm = 'filterOpenForm',
   AddVariant = 'addVariant',

@@ -1,22 +1,24 @@
 export namespace IModalConfirm {
   export enum ButtonNameConfirm {
-    Confirm = 'confirm',
-    Cancel = 'cancel'
-  } export interface Props {
+    ModalConfirm = 'modalConfirm',
+    ModalCancel = 'modalCancel'
+  }
+
+  export interface Props {
     message: string;
     handleOnClick: (data: React.MouseEvent<HTMLButtonElement>) => void,
-    Confirm: 'confirm',
-    Cancel: 'cancel'
+    ModalConfirm: 'modalConfirm',
+    ModalCancel: 'modalCancel'
   }
 }
 
-function ModalConfirm({ handleOnClick, message, Confirm, Cancel }: IModalConfirm.Props) {
+function ModalConfirm({ handleOnClick, message, ModalCancel, ModalConfirm }: IModalConfirm.Props) {
   return (
     <div className="modal">
       <div className="modal-content">
         <p>{message}</p>
-        <button name={Confirm} onClick={handleOnClick}>Confirmar</button>
-        <button name={Cancel} onClick={handleOnClick}>Cancelar</button>
+        <button name={ModalConfirm} onClick={handleOnClick}>Confirmar</button>
+        <button name={ModalCancel} onClick={handleOnClick}>Cancelar</button>
       </div>
     </div>
   );

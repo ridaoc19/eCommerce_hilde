@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useModalConfirm from '../../../../hooks/useModalConfirm/useModalConfirm';
 import useMutationProduct from '../../../../hooks/useMutationProduct';
 import useProductFilter from '../../../../hooks/useProductFilter';
 import useValidations from '../../../../hooks/useValidations';
@@ -31,6 +32,8 @@ const initialStateEntry: InitialStateEntry = {
 }
 
 const ProductEntry: React.FC = () => {
+  const { ModalComponent, closeModal, openModal } = useModalConfirm()
+
   const { tools, status } = useMutationProduct();
   const [state, setState] = useState<InitialStateEntry>(initialStateEntry);
   const { getValidationErrors } = useValidations();
@@ -87,12 +90,6 @@ const ProductEntry: React.FC = () => {
     event.preventDefault();
     const { name, value } = event.target as HTMLButtonElement;
     switch (name) {
-      case ButtonName.Edit:
-        return;
-
-      case ButtonName.Delete:
-        return;
-
       case ButtonName.Clean:
         setState(initialStateEntry);
         break;
@@ -100,12 +97,6 @@ const ProductEntry: React.FC = () => {
       case ButtonName.Save:
         tools.fetch(RouteProduct.ProductEntry).options({ requestData: state.changeList.product })
         return;
-
-      case ButtonName.Confirm:
-        // setState(prevState => ({ ...prevState, showDeleteModal: false }));
-        // collectFunctions.updateClickConfirm({ category, state })
-        // await mutateAsync(selectedCategory);
-        break;
 
       case ButtonName.FilterProduct:
         setState(prevState => ({
@@ -136,7 +127,7 @@ const ProductEntry: React.FC = () => {
           if (message) return [...acc, field];
           return acc;
         }, []).length > 0) return;
- 
+
         setState(prevState => ({
           ...prevState,
           changeList: { ...prevState.changeList, product: { ...prevState.changeList.product, variants: [...prevState.changeList.product.variants, state.changeForm] } },
@@ -159,24 +150,24 @@ const ProductEntry: React.FC = () => {
         return
 
       case ButtonName.RemoveVariant:
-        setState(prevState => ({
-          ...prevState,
-          changeForm: initialStateEntry.changeForm,
-          changeList: {
-            ...prevState.changeList,
-            product: {
-              ...prevState.changeList.product,
-              variants: [...prevState.changeList.product.variants].filter((_elem, index) => index !== parseInt(value))
-            }
-          },
-        }))
+        const handleConfirm = () => {
+          setState(prevState => ({
+            ...prevState,
+            changeForm: initialStateEntry.changeForm,
+            changeList: {
+              ...prevState.changeList, product: {
+                ...prevState.changeList.product,
+                variants: [...prevState.changeList.product.variants].filter((_elem, index) => index !== parseInt(value))
+              }
+            },
+          }))
+        };
+
+        const handleCancel = () => {
+          closeModal()
+        };
+        openModal(`Deseas eliminar variante?`, handleConfirm, handleCancel);
         return
-
-      case ButtonName.Add:
-        break;
-
-      case ButtonName.Cancel:
-        break;
 
       default:
         break;
@@ -186,6 +177,8 @@ const ProductEntry: React.FC = () => {
   };
   return (
     <>
+      {ModalComponent}
+      {/* <ModalConfirm handleOnClick={handleOnClick} message='Deseas eliminar una variante?' ModalConfirm={ButtonName.ModalConfirm} ModalCancel={ButtonName.ModalCancel} /> */}
       {!isFetching && state.breadcrumb.length > 0 && <ProductEntryList handleOnClick={handleOnClick} state={state} handleOnChange={handleOnChange} />}
       {state.changeList.product._id && <ProductEntryForm state={state} status={status} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />}
     </>
