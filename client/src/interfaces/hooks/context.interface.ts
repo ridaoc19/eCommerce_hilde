@@ -1,11 +1,6 @@
-
-// ==============================|| useContext ||============================== //
-
 import { ReactNode } from "react";
 import { ActionTypeDashboard } from "../../hooks/useContext/dash/reducer";
 import { PermitsRoles } from "../user.interface";
-
-
 export namespace IContext {
   export interface IContextData {
     dashboard: {
@@ -21,17 +16,10 @@ export namespace IContext {
 
 export namespace IDashReducer {
   export type AppState = {
-    breadcrumb: string,
     component: string,
     account: {
       information: boolean,
       password: boolean
-    };
-    inventory: {
-      department_id: string | null,
-      category_id: string | null,
-      subcategory_id: string | null,
-      products_id: string | null,
     };
     permits: {
       [key in PermitsRoles['id']]: boolean;

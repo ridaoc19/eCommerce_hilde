@@ -24,7 +24,7 @@ function Home() {
             const cardData = product.map(({ _id, images, variants, brand, product }) => {
               return {
                 _id,
-                images: images[0],
+                images,
                 price: variants.map(e => e.sellingPrice),
                 product,
                 brand

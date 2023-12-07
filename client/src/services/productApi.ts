@@ -51,7 +51,6 @@ async function apiProduct<R extends keyof RequestMapProduct>(data: RequestMapPro
         }]
       })
     } else {
-      // eslint-disable-next-line
       throw error
     }
   }
