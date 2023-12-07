@@ -13,6 +13,32 @@ export enum ButtonName {
   EditVariant = 'editVariant',
 }
 
+export const initialStateEntry: InitialStateEntry = {
+  _id: "",
+  intactData: {
+    department: [],
+    category: [],
+    subcategory: [],
+    product: [],
+  },
+  data: {
+    department: [],
+    category: [],
+    subcategory: [],
+    product: [],
+  },
+  breadcrumb: [],
+  changeList: {
+    department: { _id: "", department: "" },
+    category: { _id: "", category: "" },
+    subcategory: { _id: "", subcategory: "" },
+    product: { _id: "", product: "", brand: "", description: "", images: [], specification: [], variants: [] }
+  },
+  error: { size: "", color: "", sellingPrice: "", stock: "" },
+  changeForm: { size: "", color: "", sellingPrice: 0, stock: 0 },
+}
+
+
 
 export interface NestedData {
   department: IProduct.Department[]

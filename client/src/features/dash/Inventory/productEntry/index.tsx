@@ -8,28 +8,7 @@ import { RouteProduct } from '../../../../services/productRequest';
 import { filterData, updateChangeListEntry } from '../productCreation/helpers';
 import ProductEntryForm from './ProductEntryForm';
 import ProductEntryList from './ProductEntryList';
-import { ButtonName, InitialStateEntry, NestedData } from './helpers';
-
-
-const initialStateEntry: InitialStateEntry = {
-  _id: "",
-  intactData: {} as NestedData,
-  data: {
-    department: [],
-    category: [],
-    subcategory: [],
-    product: [],
-  },
-  breadcrumb: [],
-  changeList: {
-    department: { _id: "", department: "" },
-    category: { _id: "", category: "" },
-    subcategory: { _id: "", subcategory: "" },
-    product: { _id: "", product: "", brand: "", description: "", images: [], specification: [], variants: [] }
-  },
-  error: { size: "", color: "", sellingPrice: "", stock: "" },
-  changeForm: { size: "", color: "", sellingPrice: 0, stock: 0 },
-}
+import { ButtonName, InitialStateEntry, initialStateEntry } from './helpers';
 
 const ProductEntry: React.FC = () => {
   const { ModalComponent, closeModal, openModal } = useModalConfirm()
@@ -183,12 +162,10 @@ const ProductEntry: React.FC = () => {
         break;
 
     }
-    // setState(emptyCategory({ category, state }))
   };
   return (
     <>
       {ModalComponent}
-      {/* <ModalConfirm handleOnClick={handleOnClick} message='Deseas eliminar una variante?' ModalConfirm={ButtonName.ModalConfirm} ModalCancel={ButtonName.ModalCancel} /> */}
       {!isFetching && state.breadcrumb.length > 0 && <ProductEntryList handleOnClick={handleOnClick} state={state} handleOnChange={handleOnChange} />}
       {state.changeList.product._id && <ProductEntryForm state={state} status={status} handleOnChange={handleOnChange} handleOnClick={handleOnClick} />}
     </>
