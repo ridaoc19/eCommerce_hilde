@@ -40,14 +40,24 @@ const ProductEntry: React.FC = () => {
   const { findItemById, isFetching } = useProductFilter();
 
   useEffect(() => {
-    let res = findItemById({ id: state._id })
-    const updateData = { ...state.data, department: res.department.data, category: res.category.data, subcategory: res.subcategory.data, product: res.product.data }
-    setState(prevState => ({ ...prevState, breadcrumb: res.breadcrumb, data: updateData, intactData: updateData }))
+    if (!isFetching) {
+      let res = findItemById({ id: state._id })
+      const updateData = { ...state.data, department: res.department.data, category: res.category.data, subcategory: res.subcategory.data, product: res.product.data }
+      setState(prevState => ({
+        ...prevState,
+        changeForm: initialStateEntry.changeForm,
+        changeList: initialStateEntry.changeList,
+        breadcrumb: res.breadcrumb,
+        data: updateData,
+        intactData: updateData
+      }))
+    }
     // eslint-disable-next-line
-  }, [state._id])
+  }, [state._id, isFetching])
 
 
   const handleOnChange: HandleChangeTextSelect = (event) => {
+    tools.resetError()
     const { name, value } = event.target;
 
     if (['department', 'category', 'subcategory', 'product'].includes(name)) {
