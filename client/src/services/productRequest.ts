@@ -144,7 +144,7 @@ export type RequestMapProduct = {
   [RouteProduct.ProductEntry]: {
     route: RouteProduct.ProductEntry;
     // productId: IProduct.Product['_id'];
-    paramId: IProduct.Product['_id'];
-    requestData: Omit<IProduct.Product, '_id' | 'subcategoryId'> & { _id?: IProduct.Product['_id']; }
+    // paramId: IProduct.Category['_id'];
+    requestData: Omit<IProduct.Product, 'subcategoryId'>
   };
 };

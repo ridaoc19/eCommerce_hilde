@@ -14,7 +14,7 @@ export namespace IProduct {
     _id?: string;
     size: string;
     color: string;
-    purchasePrice: number;
+    // purchasePrice: number;
     sellingPrice: number;
     stock: number;
   }

@@ -8,7 +8,7 @@ router.post('/create/:subcategoryId', postCreate);
 router.put('/edit/:productId', productEdit)
 router.delete('/delete/:productsId', productDelete);
 
-router.put('/entry/:productId', productEntry)
+router.put('/entry', productEntry)
 
 
 export { router };

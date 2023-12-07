@@ -1,6 +1,6 @@
 import { BreadcrumbItem } from "../../../../hooks/useProductFilter";
 import { IProduct } from "../../../../interfaces/product.interface";
-import { MakeProductsRequestReturn, RequestMap, Route, makeProductsRequest } from "../../../../services/productApi";
+import { RequestMapProduct, RouteProduct } from "../../../../services/productRequest";
 
 
 export enum ButtonName {
@@ -26,47 +26,19 @@ export interface NestedData {
   product: IProduct.Product[]
 }
 
-export interface InitialState {
+export interface InitialStateEntry {
   _id: string;
   intactData: NestedData;
   data: NestedData;
   breadcrumb: BreadcrumbItem[];
   changeList: {
-    department: string
-    category: string
-    subcategory: string
-    product: string
+    department: { department: string, _id: string }
+    category: { category: string, _id: string }
+    subcategory: { subcategory: string, _id: string }
+    product: RequestMapProduct[RouteProduct.ProductEntry]['requestData'] & { product: string, _id: string }
   }
+  error: { size: string, color: string, sellingPrice: string, stock: string }
   changeForm: IProduct.Variants
-  selectedProduct: Omit<RequestMap[Route.ProductEntry], 'route'>;
-}
-
-export type HandleOnClick = (data: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLLIElement, MouseEvent>) => void
-export type HandleOnChange = (data: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void
-
-export type ProductsListProps = {
-  state: InitialState;
-  // isLoading: boolean;
-  handleOnChange: HandleOnChange;
-  handleOnClick: HandleOnClick;
-};
-
-export interface ProductEntryFormProps {
-  state: InitialState;
-  // isLoading: boolean;
-  handleOnChange: HandleOnChange;
-  handleOnClick: HandleOnClick;
-}
-
-export const callApiProductEntry = async (selectedProduct: InitialState['selectedProduct']): Promise<MakeProductsRequestReturn> => {
-  const { productId, requestData } = selectedProduct;
-  const response = await makeProductsRequest(Route.ProductEntry).withOptions({ productId, requestData })
-  return response;
-}
-
-// Función auxiliar para acceder a propiedades anidadas de manera segura
-export function getProperty<T>(obj: T, path: keyof T): T[keyof T] {
-  return obj[path];
 }
 
 type ColorItem = {

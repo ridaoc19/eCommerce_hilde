@@ -45,7 +45,7 @@ function useStateProductCreation() {
     let isEdit = state.select[name] === 'edit'
     tools.resetError()
 
-    const { filterDataResponse } = filterData({ isEdit, name, state, value })
+    const { filterDataResponse } = filterData({ isEdit, name, data: state.data, intactData: state.intactData, value })
     const { updateChangeListResponse } = updateChangeList({ isEdit, name, state, value })
     const { updateSelectResponse } = updateSelect({ isEdit, name, state, filterData: filterDataResponse })
 
@@ -265,7 +265,6 @@ function useStateProductCreation() {
                     .replace(/[\u0300-\u036f]/g, '') // Eliminar diacríticos (tildes)
                 }, toDelete: state.temporaryImages.delete
               })
-              console.log(responseImages, "edit")
               tools.fetch(RouteProduct.ProductEdit).options({
                 requestData: {
                   product: state.changeList.product.product,
