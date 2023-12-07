@@ -1,6 +1,7 @@
 import { BreadcrumbItem } from "../../../../hooks/useProductFilter";
 import { IProduct } from "../../../../interfaces/product.interface";
 import { RequestMapProduct, RouteProduct } from "../../../../services/productRequest";
+import { InitialStateEntry } from "../productEntry/helpers";
 
 export enum ButtonName {
   Edit = 'edit',
@@ -103,11 +104,11 @@ export const initialState: InitialState = {
 }
 
 
-type FilterData = (data: { isEdit: boolean, state: InitialState, name: keyof InitialState['changeList'], value: string }) => { filterDataResponse: InitialState['data'] }
-export const filterData: FilterData = ({ isEdit, name, state, value }) => {
-  if (isEdit) return { filterDataResponse: state.data }
+type FilterData = (data: { isEdit: boolean, data: InitialState['data'], intactData: InitialState['intactData'], name: keyof InitialState['changeList'], value: string }) => { filterDataResponse: InitialState['data'] }
+export const filterData: FilterData = ({ isEdit, name, data, intactData, value }) => {
+  if (isEdit) return { filterDataResponse: data }
   return {
-    filterDataResponse: Object.entries(state.intactData).reduce((acc, [key, valueInt]) => {
+    filterDataResponse: Object.entries(intactData).reduce((acc, [key, valueInt]) => {
       return {
         ...acc,
         [key]: key !== name ? valueInt
@@ -126,6 +127,19 @@ export const updateChangeList: UpdateChangeList = ({ isEdit, state, name, value 
       } else
         return { ...acc, [key]: { ...values, _id: values._id, [key]: "" } }
     }, {}) as InitialState['changeList']
+  }
+}
+
+
+type UpdateChangeListEntry = (data: { isEdit: boolean, state: InitialStateEntry, name: keyof InitialState['changeList'], value: string }) => { updateChangeListEntryResponse: InitialStateEntry['changeList'] }
+export const updateChangeListEntry: UpdateChangeListEntry = ({ isEdit, state, name, value }) => {
+  return {
+    updateChangeListEntryResponse: Object.entries(state.changeList).reduce((acc, [key, values]) => {
+      if (key === name) {
+        return { ...acc, [key]: isEdit ? { ...values, _id: values._id, [key]: value } : { ...values, _id: "", [key]: value } }
+      } else
+        return { ...acc, [key]: { ...values, _id: values._id, [key]: "" } }
+    }, {}) as InitialStateEntry['changeList']
   }
 }
 

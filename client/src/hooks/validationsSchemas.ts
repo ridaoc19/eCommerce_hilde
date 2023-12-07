@@ -74,19 +74,20 @@ const globalSchemas: { [key: string]: Yup.Schema } = {
   // .required('Debe ingresar un conjunto de imágenes')
   // .min(1, 'Ingrese al menos 1 imagen')
   // .max(3, 'Ingrese máximo 3 imágenes'),
-  color: Yup.string()
-    .required('Este campo es obligatorio'),
   size: Yup.string()
-    .required('Este campo es obligatorio'),
-  purchasePrice: Yup.number()
-    .min(1, 'El precio de compra debe ser mayor que 0')
-    .max(19999999, 'El precio de compra debe ser menor a 20,000,000')
-    .required('Este campo es obligatorio'),
+    .test('has-size', '', (value) => !!value)
+    .min(2, 'Este campo debe tener al menos 2 caracteres')
+    .max(20, 'Este campo debe tener máximo 20 caracteres'),
+  color: Yup.string()
+    .test('has-size', '', (value) => !!value)
+    .min(2, 'Este campo debe tener al menos 2 caracteres')
+    .max(20, 'Este campo debe tener máximo 20 caracteres'),
   sellingPrice: Yup.number()
     .min(1, 'El precio de venta debe ser mayor que 0')
     .max(19999999, 'El precio de venta debe ser menor a 20,000,000')
     .required('Este campo es obligatorio'),
   stock: Yup.number()
+    .max(500, 'El stock debe ser menor a 500')
     .required('Este campo es obligatorio'),
 };
 

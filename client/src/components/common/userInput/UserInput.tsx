@@ -20,7 +20,7 @@ export interface InputProps {
   input: {
     type?: string;
     placeholder: string;
-    value: string;
+    value: string | number;
     handleOnChange: HandleChangeText | any
     name: string;
     dataset_extra?: string;
@@ -39,7 +39,7 @@ function UserInput({ svg, svgTwo, styleClass, errorMessage, input }: InputProps)
   return (
     <div className={`user-input input__container--${styleClass}`}>
       <div className={`${errorMessage ? "input_error" : "input_brand"} input__content--${styleClass}`} >
-        <span style={{ border: errorMessage ? "1px solid #DB2424" : input.value.length === 0 ? "1px solid #FFA451" : "1px solid #66B949" }}>
+        <span style={{ border: errorMessage ? "1px solid #DB2424" : (input.value.toString().length === 0) ? "1px solid #FFA451" : "1px solid #66B949" }}>
           <span className={`input__svg--${styleClass}`}>
             {svg &&
               Svg({
