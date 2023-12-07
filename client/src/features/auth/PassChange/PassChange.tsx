@@ -17,13 +17,14 @@ function PassChange() {
   useEffect(() => {
     if (!userData) return navigate('/login')
     if (userData?.verified) setSuccess(true)
+    // eslint-disable-next-line
   }, [status.isUserSuccess])
 
   const handleChangeChange: HandleChangeText = ({ target: { name, value } }) => {
     clearUserError(() => tools.resetError(), (state) => setStateChange(state), initialStateChange, stateChange)
-    const { error, stop } = getValidationErrors({ fieldName: name, value })
-    if (stop) return setStateChange(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
-    setStateChange(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
+    const { message, stop } = getValidationErrors({ fieldName: name, value })
+    if (stop) return setStateChange(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
+    setStateChange(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
   }
 
   const handleClickChange: HandleClick = (event) => {
@@ -77,7 +78,7 @@ function PassChange() {
                     id={`button__change--${item}`}
                     onClick={handleClickChange}
                     className={item === ChangeButtonName.Back ? 'button_light' : 'button_dark'}
-                    disabled={status.isLoadingUser || ChangeButtonName.Save && status.isUserError} >
+                    disabled={(status.isLoadingUser || ChangeButtonName.Save) && status.isUserError} >
                     {item === ChangeButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Cambiar contraseña'}</>) : (<>{'Volver'}</>)}
                   </button>
                 ))}

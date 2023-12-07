@@ -5,12 +5,15 @@ import Product from "../product/model";
 import Subcategory from "../subcategory/model";
 import Department from "./model";
 import { products } from "../../core/utils/helpers";
+import { errorHandlerCatch } from "../../core/utils/send/errorHandler";
+import { successHandler } from "../../core/utils/send/successHandler";
+import { StatusHTTP } from "../../core/utils/enums";
 
-// function fetchCount(info: any) {
-//   return new Promise<{ data: number }>((resolve) =>
-//     setTimeout(() => resolve({ data: info }), 8000)
-//   );
-// }
+function fetchCount(info: any) {
+  return new Promise<{ data: number }>((resolve) =>
+    setTimeout(() => resolve({ data: info }), 8000)
+  );
+}
 
 export async function departmentGet(req: Request, res: Response) {
   try {
@@ -28,43 +31,43 @@ export async function departmentGet(req: Request, res: Response) {
 
 export async function departmentPost(req: Request, res: Response) {
   try {
-    const { name } = req.body;
-    await Department.create({ name });
+    const { department } = req.body;
+    await Department.create({ department });
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Departamento Departamento exitosamente",
-      products: updatedProducts,
-    });
-
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    fetchCount(updatedProducts)
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'department_create',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Se creo nuevo departamento'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
 
 
 export async function departmentPut(req: Request, res: Response) {
   try {
-    const { name } = req.body;
+    const { department } = req.body;
     const { _id } = req.params;
 
-    await Department.findByIdAndUpdate(_id, { name }, { new: true });
+    await Department.findByIdAndUpdate(_id, { department }, { new: true });
 
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Departamento Editado exitosamente",
-      products: updatedProducts,
-    });
-
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+   
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'department_put',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Se edito el Departamento exitosamente'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
 
@@ -94,16 +97,17 @@ export async function departmentDelete(req: Request, res: Response) {
     });
 
     const updatedProducts = await products();
-    res.status(200).json({
-      message: "Eliminación en cascada exitosa",
-      products: updatedProducts,
-    });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(409).json({ error: splitString(error) });
-    } else {
-      res.status(500).json({ error: `Error desconocido: ${error}` });
-    }
+    fetchCount(updatedProducts)
+    successHandler({
+      res, dataDB: updatedProducts, filterAdd: [], filterDelete: [], json: {
+        field: 'department_delete',
+        status: StatusHTTP.success_200,
+        status_code: 200,
+        message: 'Departamento eliminado exitosamente'
+      }
+    })
+  } catch (error) {
+    errorHandlerCatch({ error, res })
   }
 }
 

@@ -28,7 +28,7 @@ export async function postLogin(req: Request, res: Response) {
       token = generateToken({ _id: responseUserDB._id });
     }
 
-    successHandler<StatusHTTP.success_200>({
+    successHandler({
       dataDB: [responseUserDB!],
       filterAdd: [{ key: 'token', value: token }],
       filterDelete: ['password'],
@@ -54,7 +54,7 @@ export async function postLoginToken(req: Request, res: Response) {
     const dataDB = responseDB!
     // await fetchCount({ _id, name })
 
-    successHandler<StatusHTTP.success_200>({
+    successHandler({
       dataDB: [dataDB], filterAdd: [], filterDelete: ['password'], res, json: {
         field: 'token',
         status_code: 200,

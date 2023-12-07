@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { IProduct } from "../../../interfaces/product.interface";
 
-function SearchCard({ _id, name, variants, images, handleOnClick }:
-  Pick<IProduct.Product, '_id' | 'name' | 'variants' | 'images'> & { handleOnClick: () => void }) {
+function SearchCard({ _id, product, variants, images, handleOnClick }:
+  Pick<IProduct.Product, '_id' | 'product' | 'variants' | 'images'> & { handleOnClick: () => void }) {
   const uniqueVariants = [...new Set(variants.map(e => e.sellingPrice))];
   const minValue = Math.min(...uniqueVariants).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0, });
   const maxValue = Math.max(...uniqueVariants).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0, });
@@ -14,7 +14,7 @@ function SearchCard({ _id, name, variants, images, handleOnClick }:
       </div>
       <div className="card__content">
         <div className="card__title">
-          <h4>{name}</h4>
+          <h4>{product}</h4>
         </div>
         <div className="card__utils">
           <h5>{uniqueVariants.length > 1 ? `${minValue} - ${maxValue}` : minValue}</h5>

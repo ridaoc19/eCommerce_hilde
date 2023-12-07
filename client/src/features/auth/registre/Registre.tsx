@@ -11,13 +11,14 @@ function Registre() {
 
   useEffect(() => {
     if (userData) setSuccess(true)
+    // eslint-disable-next-line
   }, [status.isUserSuccess])
 
   const handleChangeRegistre: HandleChangeText = ({ target: { name, value } }) => {
     clearUserError(() => tools.resetError(), (state) => setStateRegistre(state), initialStateRegistre, stateRegistre)
-    const { error, stop } = getValidationErrors({ fieldName: name, value })
-    if (stop) return setStateRegistre(prevState => ({ ...prevState, error: { ...prevState.error, [name]: error } }))
-    setStateRegistre(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: error } }))
+    const { message, stop } = getValidationErrors({ fieldName: name, value })
+    if (stop) return setStateRegistre(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
+    setStateRegistre(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
   }
 
   const handleClickRegistre: HandleClick = (event) => {
@@ -71,7 +72,7 @@ function Registre() {
                     id={`button__registre--${item}`}
                     onClick={handleClickRegistre}
                     className={item === RegistreButtonName.Back ? 'button_light' : 'button_dark'}
-                    disabled={status.isLoadingUser || RegistreButtonName.Save && status.isUserError} >
+                    disabled={(status.isLoadingUser || RegistreButtonName.Save) && status.isUserError} >
                     {item === RegistreButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>)}
                   </button>
                 ))}

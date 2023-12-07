@@ -9,7 +9,7 @@ interface IVariants extends Document {
 }
 
 export interface IProduct extends Document {
-  name: string;
+  product: string;
   brand: string;
   specification: Record<string, string>[];
   description: string;
@@ -27,7 +27,7 @@ const varianteSchema = new Schema<IVariants>({
 });
 
 const productSchema = new Schema<IProduct>({
-  name: String,
+  product: String,
   brand: String,
   specification: [{ type: Schema.Types.Mixed }],
   description: String,

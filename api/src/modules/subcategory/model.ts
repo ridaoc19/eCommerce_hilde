@@ -2,13 +2,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ISubcategory extends Document {
-  name: string;
+  subcategory: string;
   productsId: mongoose.Types.ObjectId[];
   categoryId: mongoose.Types.ObjectId;
 }
 
 const subcategorySchema = new Schema<ISubcategory>({
-  name: { type: String, required: true },
+  subcategory: { type: String, required: true },
   productsId: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
   categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
 },

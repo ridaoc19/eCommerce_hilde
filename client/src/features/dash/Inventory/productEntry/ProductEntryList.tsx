@@ -1,5 +1,13 @@
+import { HandleChangeTextSelect, HandleClick } from '../../../../interfaces/global.interface';
 import SectionList from './SectionList';
-import { ButtonName, ProductsListProps } from './interface.ProductEntry';
+import { ButtonName, InitialStateEntry } from './helpers';
+
+export type ProductsListProps = {
+  state: InitialStateEntry;
+  // isLoading: boolean;
+  handleOnChange: HandleChangeTextSelect;
+  handleOnClick: HandleClick;
+};
 
 function ProductEntryList({ handleOnClick, handleOnChange, state }: ProductsListProps) {
   const { breadcrumb } = state;

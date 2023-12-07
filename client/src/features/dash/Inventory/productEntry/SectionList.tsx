@@ -1,8 +1,16 @@
 import InputText from "../../../../components/common/inputText/InputText";
-import { ButtonName, NestedData, ProductsListProps } from "./interface.ProductEntry";
-import './sectionList.scss'
+import { HandleChangeTextSelect, HandleClick } from "../../../../interfaces/global.interface";
+import { ButtonName, InitialStateEntry, } from "./helpers";
+import './sectionList.scss';
 
-function SectionList({ state, handleOnChange, handleOnClick }: ProductsListProps) {
+export type SectionListProps = {
+  state: InitialStateEntry;
+  // isLoading: boolean;
+  handleOnChange: HandleChangeTextSelect;
+  handleOnClick: HandleClick;
+};
+
+function SectionList({ state, handleOnChange, handleOnClick }: SectionListProps) {
   const { data } = state
   return (
     <>
@@ -10,7 +18,8 @@ function SectionList({ state, handleOnChange, handleOnClick }: ProductsListProps
 
 
         {Object.keys(data).map((nameEntry, index) => {
-          const nameKey = nameEntry as keyof NestedData
+          const nameKey = nameEntry as keyof InitialStateEntry['changeList']
+          const stateChangeListValue = Object.fromEntries(Object.entries(state.changeList[nameKey]).filter(([keys]) => keys === nameKey))
           const title = nameKey === 'department' ? 'Departamentos' : nameKey === 'category' ? 'Categorías' : nameKey === 'subcategory' ? 'Subcategorías' : 'Productos'
           const placeholder = nameKey === 'department' ? 'Tecnología' : nameKey === 'category' ? 'Televisores' : nameKey === 'subcategory' ? 'Smart TV' : 'Samsung L500'
 
@@ -23,18 +32,19 @@ function SectionList({ state, handleOnChange, handleOnClick }: ProductsListProps
                 </div>
 
                 <div className="section-list__search">
-                  <InputText name={nameEntry} value={state.changeList[nameKey]} placeholder={placeholder} handleChange={handleOnChange} />
+                  <InputText name={nameEntry} value={stateChangeListValue[nameKey] as string} placeholder={placeholder} handleChange={handleOnChange} />
                 </div>
 
                 <div className="section-list__list">
-                  {data[nameKey].map(({ _id, name }) => (
-                    <div key={_id}>
+                  {data[nameKey].map((item) => (
+                    // {data[nameKey].map(({ _id, name }) => (
+                    <div key={item._id}>
                       <button
                         name={nameKey === 'product' ? ButtonName.FilterOpenForm : ButtonName.FilterProduct}
                         onClick={handleOnClick}
-                        value={_id}
+                        value={item._id}
                       >
-                        {name}
+                        {'department' in item ? item.department : 'category' in item ? item.category : 'subcategory' in item ? item.subcategory : 'product' in item ? item.product : ""}
                       </button>
                     </div>
                   )

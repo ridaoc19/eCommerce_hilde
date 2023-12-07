@@ -41,14 +41,18 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
     }
   } catch (error) {
     // eslint-disable-next-line
-    throw ({
-      status_code: 500,
-      status: "internal_server_error",
-      errors: [{
-        field: 'general',
-        message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front".`
-      }]
-    })
+    if (error instanceof Error) {
+      throw ({
+        status_code: 500,
+        status: "internal_server_error",
+        errors: [{
+          field: 'general',
+          message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front".`
+        }]
+      })
+    } else {
+      throw error
+    }
   }
 }
 
