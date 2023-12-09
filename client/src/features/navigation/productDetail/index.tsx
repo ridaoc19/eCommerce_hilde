@@ -7,7 +7,7 @@ import Showcase from "../../../components/common/showcase/Showcase";
 function ProductDetail() {
   const { id } = useParams();
   const { findItemById } = useProductFilter();
-  const { product } = useMemo(() => findItemById({ id: id || "" }), [findItemById])
+  const { product } = useMemo(() => findItemById({ id: id || "" }), [findItemById, id])
   const similar = findItemById({ id: product.subcategoryId || "" }).product.data.filter(e => e._id !== product._id)
   const similarProducts = similar.map(({ _id, images, variants, brand, product }) => {
     return {

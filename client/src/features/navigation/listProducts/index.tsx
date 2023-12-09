@@ -9,7 +9,7 @@ function ListProducts() {
   const { id } = useParams();
   const [productId, setProductId] = useState(id || "")
   const { findItemById } = useProductFilter();
-  const { product } = useMemo(() => findItemById({ id: productId }), [productId])
+  const { product } = useMemo(() => findItemById({ id: productId }), [productId, findItemById])
 
   useEffect(() => {
     setProductId(id || "")

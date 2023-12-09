@@ -7,7 +7,7 @@ function Breadcrumb() {
   const navigator = useNavigate();
 
   const { findItemById } = useProductFilter();
-  const { breadcrumb } = useMemo(() => findItemById({ id: id || "" }), [id])
+  const { breadcrumb } = useMemo(() => findItemById({ id: id || "" }), [id, findItemById])
 
   const handleOnclick = ({ _id }: { _id: string }) => {
     

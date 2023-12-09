@@ -21,16 +21,18 @@ function SidebarHome({ isActive, handleOnSelectedId, selectedIdBoolean, handleOn
       return { _id: item._id, overrun: isVertical };
     });
     isVerticalOverflowing ? setIsOverflowing(isVerticalOverflowing) : setIsOverflowing(isOverflowing)
-  }, []);
+  }, [department, isOverflowing]);
 
   useEffect(() => {
     if (!isActive || !selectedIdBoolean) setSelectedId("")
+    // eslint-disable-next-line
   }, [isActive, selectedIdBoolean])
 
   useEffect(() => {
     if (selectedId) {
       handleOverflowCheck(selectedId);
     }
+    // eslint-disable-next-line
   }, [selectedId]);
 
   const handleMouseEnter = (depId: string) => {
