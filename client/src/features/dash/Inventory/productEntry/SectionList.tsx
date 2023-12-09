@@ -40,6 +40,7 @@ function SectionList({ state, handleOnChange, handleOnClick }: SectionListProps)
                     // {data[nameKey].map(({ _id, name }) => (
                     <div key={item._id}>
                       <button
+                        className="button_filter"
                         name={nameKey === 'product' ? ButtonName.FilterOpenForm : ButtonName.FilterProduct}
                         onClick={handleOnClick}
                         value={item._id}

@@ -1,5 +1,9 @@
 $base-font-size: 16px; // Tamaño de fuente base
 
+html{
+  font-size: 14px;
+}
+
 body {
   margin : 0;
   padding: 0;
@@ -11,11 +15,11 @@ body {
   font-size              : $base-font-size; // Establecer el tamaño de fuente base
 
   @media (max-width: 768px) {
-    font-size: 0.9rem; // Reduzca el tamaño de fuente en pantallas más pequeñas
+    font-size: 0.8rem; // Reduzca el tamaño de fuente en pantallas más pequeñas
   }
 
   @media (min-width: 1200px) {
-    font-size: 1.2rem; // Aumente el tamaño de fuente en pantallas más grandes
+    font-size: 0.9rem; // Aumente el tamaño de fuente en pantallas más grandes
   }
 }
 
@@ -29,7 +33,7 @@ code {
   }
 
   @media (min-width: 1200px) {
-    font-size: 1.1rem; // Aumente el tamaño de fuente del código en pantallas más grandes
+    font-size: 0.9rem; // Aumente el tamaño de fuente del código en pantallas más grandes
   }
 }
 

@@ -68,7 +68,12 @@
   padding         : 0;
 
   &:disabled {
-    color: var(--neutral-4);
-    cursor          : default;
+    color : var(--neutral-4);
+    cursor: default;
   }
+}
+
+.button_filter {
+  all: unset; // este limpia el botón de estilos
+  cursor: pointer;
 }

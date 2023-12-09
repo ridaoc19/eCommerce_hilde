@@ -40,14 +40,14 @@ function Navbar() {
       <div className='navbar__sidebar--container'>
         <Sidebar />
       </div>
-      <div className='navbar__cart--container'>
-        {Svg({ type: "shop", color: "white" })}
-      </div>
-      <div className='navbar__search--container' >
-        <Search />
-      </div>
       <div className='navbar__logo--container'>
         <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50, color: "white" })}</Link>
+      </div>
+      {/* <div className='navbar__cart--container'>
+        {Svg({ type: "shop", color: "white" })}
+      </div> */}
+      <div className='navbar__search--container' >
+        <Search />
       </div>
       <div className='navbar__login--container'>
         <Link to={'/login'}>{Svg({ type: 'user', color: "white" })}</Link>
