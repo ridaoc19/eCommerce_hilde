@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import Search from '../common/search/Search';
 import Footer from './footer';
 import Navbar from './navbar';
 
@@ -8,25 +9,28 @@ export namespace ILayout {
   }
 }
 
-
 function Layout({ children }: ILayout.LayoutProps) {
-  const pathname = window.location.pathname === "/hilde"
-  // console.log(pathname);
+  // const pathname = window.location.pathname === "/hilde"
 
   return (
-    <div className={`main__layout--container ${pathname ? 'remove' : 'add'}`}>
-      <div className='main__layout--navbar'>
-        <Navbar />
+    // <div className={`main__layout--container ${pathname ? 'remove' : 'add'}`}>
+    <div className={`layout`}>
+      <div className='layout__navbar'>
+        <div className='layout__navbar-container'>
+          <div className='layout__navbar-content'>
+            <Navbar />
+          </div>
+          {window.location.pathname !== "/hilde/dashboard" && <div className='layout__navbar-search'>
+            <Search />
+          </div>}
+        </div>
       </div>
-      {/* {window.location.pathname === "/hilde/dashboard" &&
-        <div className='main__layout--sidebar'>
-        </div>} */}
-      <div className='main__layout--children'>
-        <div>
+      <div className='layout__children'>
+        <div className='layout__children-container'>
           {children}
         </div>
       </div>
-      <div className='main__layout--footer'>
+      <div className='layout__footer'>
         <Footer />
       </div>
     </div>

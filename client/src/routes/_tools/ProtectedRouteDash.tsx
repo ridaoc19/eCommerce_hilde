@@ -11,7 +11,7 @@ function ProtectedRouteDash() {
   const { userData, isFetchingUser } = getUserQueryData()
 
   useEffect(() => {
-    if (!userData?.verifiedEmail) {
+    if (!userData?.verifiedEmail && !isFetchingUser) {
       dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
       localStorage.removeItem("token");
       tools.removeQuery()

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Showcase from "../../components/common/showcase/Showcase";
 import useProductFilter from "../../hooks/useProductFilter";
 import { IProduct } from "../../interfaces/product.interface";
+import App from "./principal";
 // import './card.scss';
 
 function Home() {
@@ -14,24 +14,27 @@ function Home() {
     }
     // eslint-disable-next-line
   }, [isLoadingProduct, isFetching])
-
+  if (false) {
+    console.log(department, "no");
+  }
   return (
     <>
       {isLoadingProduct ? <div>Cargando productos</div> :
         <>
-          {department.map(({ _id,  categoriesId, department }) => {
+          <App products={department.flatMap(e => e.categoriesId).flatMap(e => e.subcategoriesId).flatMap(e => e.productsId)} />
+          {/* {department.map(({ _id, categoriesId, department }) => {
             const product = categoriesId.flatMap(e => e.subcategoriesId).flatMap(e => e.productsId)
             const cardData = product.map(({ _id, images, variants, brand, product }) => {
               return {
                 _id,
-                images: images[0],
+                images,
                 price: variants.map(e => e.sellingPrice),
                 product,
                 brand
               }
             })
             return <Showcase key={_id} title={department} cardData={cardData} />
-          })}
+          })} */}
         </>
       }
     </>

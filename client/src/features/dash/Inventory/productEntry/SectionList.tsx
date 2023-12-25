@@ -1,7 +1,7 @@
 import InputText from "../../../../components/common/inputText/InputText";
 import { HandleChangeTextSelect, HandleClick } from "../../../../interfaces/global.interface";
 import { ButtonName, InitialStateEntry, } from "./helpers";
-import './sectionList.scss';
+// import './sectionList.scss';
 
 export type SectionListProps = {
   state: InitialStateEntry;
@@ -40,6 +40,7 @@ function SectionList({ state, handleOnChange, handleOnClick }: SectionListProps)
                     // {data[nameKey].map(({ _id, name }) => (
                     <div key={item._id}>
                       <button
+                        className="button_filter"
                         name={nameKey === 'product' ? ButtonName.FilterOpenForm : ButtonName.FilterProduct}
                         onClick={handleOnClick}
                         value={item._id}

@@ -121,8 +121,6 @@ const userSchemas: { [key: string]: Yup.Schema } = {
 
 }
 
-
-
 const validationSchemas = { ...globalSchemas, ...productSchemas, ...userSchemas };
 
 export { validationSchemas };
