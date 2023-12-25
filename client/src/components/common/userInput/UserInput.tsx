@@ -21,7 +21,7 @@ export interface InputProps {
     type?: string;
     placeholder: string;
     value: string | number;
-    handleOnChange: HandleChangeText | any
+    handleOnChange: HandleChangeText
     name: string;
     dataset_extra?: string;
     dataset_index?: string;

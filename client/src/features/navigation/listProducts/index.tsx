@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Breadcrumb from "../../../components/common/breadcrumb/Breadcrumb";
 import Card from "../../../components/common/card/Card";
 import useProductFilter from "../../../hooks/useProductFilter";
-import './listProducts.scss';
+// import './listProducts.scss';
 
 function ListProducts() {
   const { id } = useParams();

@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import useProductFilter from "../../../hooks/useProductFilter";
 import { IProduct } from "../../../interfaces/product.interface";
-import InputText from "../inputText/InputText";
+import UserInput from "../userInput/UserInput";
 import SearchCard from "./SearchCard";
-import './search.scss';
+// import './search.scss';
 
 function Search() {
   const { findItemById } = useProductFilter();
@@ -11,9 +11,15 @@ function Search() {
   const [search, setSearch] = useState("");
 
   return (
-    <div className="search-container">
+    <div className="search">
       <div className="search-input">
-        <InputText placeholder="Buscar en hilde.com" value={search} name="search" handleChange={(event) => setSearch(event.target.value)} />
+        <UserInput input={{
+          handleOnChange: (event) => { setSearch(event.target.value) },
+          name: "search",
+          value: search,
+          placeholder: "Buscar en Hilde.com",
+          type: 'text'
+        }} errorMessage="" styleClass="header__search-input" svg={{ type: 'search', color: '#FFA451' }} />
       </div>
       {search && <div className="search-list">
         <div>

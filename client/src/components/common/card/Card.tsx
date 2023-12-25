@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { IProduct } from '../../../interfaces/product.interface';
-import './card.scss';
+// import './card.scss';
 
 // export interface CardProps {
 //   _id: string,

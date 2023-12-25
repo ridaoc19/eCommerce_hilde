@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PermitsRoles } from '../../../interfaces/user.interface';
 import SidebarHome from './SidebarHome';
 import SidebarAdmin from './SidebarAdmin';
+import SidebarIcon from '../../common/sidebarIcon/SidebarIcon';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -23,20 +24,16 @@ function Sidebar() {
   }
 
   return (
-    <div className='sidebar__container'>
-      <div className={`sidebar__icon-container ${isActive ? 'is-active' : ''}`} onClick={handleOnClick}>
-        <div className="_layer -top"></div>
-        <div className="_layer -mid"></div>
-        <div className="_layer -bottom"></div>
-      </div>
+    <div className='sidebar'>
+      <SidebarIcon handleOnClick={handleOnClick} isActive={isActive} />
 
       <div className={`sidebar__content ${isActive ? 'is-active' : ''}`} onClick={handleOnClick}>
         <div className='sidebar__main'
           onMouseLeave={() => setSelectedIdBoolean(false)}
           onClick={(e) => e.stopPropagation()}>
-          <div className='sidebar__section-container'>
+          <div className='sidebar__section'>
             {window.location.pathname === "/hilde/dashboard"
-              ? <SidebarAdmin handleOnClick={handleOnClick} />
+              ? <SidebarAdmin handleOnClick={handleOnClick} isActive={isActive} />
               : <SidebarHome isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
             }
           </div>

@@ -1,13 +1,17 @@
 @import './navbar/navbar';
-@import './sidebar/sidebar';
+@import '../common/search/search';
 @import './footer/footer';
+// @import './sidebar/sidebar';
 
-.main__layout--container {
-  display           : grid;
-  min-height        : 100vh;
-  grid-template-rows: min-content 1fr min-content;
-  background-color  : var(--brand-2);
-  grid-template-areas:
+.layout {
+  background-color           : var(--neutral-2);
+  min-height                 : 100vh;
+  // display                 : flex;
+  // flex-direction          : column;
+  display                    : grid;
+  // // grid-template-rows: min-content 1fr min-content;
+  grid-template-rows         : min-content 1fr min-content;
+  grid-template-areas        :
     "navbar"
     "children"
     "footer";
@@ -16,30 +20,49 @@
     grid-area: $fields_each;
 
     @if $fields_each==navbar {
+      display         : block;
       background-color: var(--brand-6);
+
+      .layout__#{$fields_each}-container {
+        // background-color: gainsboro;
+
+        .layout__#{$fields_each}-content {
+          // background-color: red;
+          padding: 0.2rem 1rem;
+        }
+
+        .layout__#{$fields_each}-search {
+          padding         : 0.2rem 0;
+          background-color: var(--font-light);
+          display         : flex;
+          justify-content : center;
+        }
+      }
+
     }
 
     @else if $fields_each==children {
-      background-color   : var(--brand-1);
-      display            : grid;
-      // justify-content : center;
-      width              : 100vw;
+      // background-color   : var(--brand-1);
+      //     // display            : grid;
+      //     // justify-content : center;
+      //     // width              : 100vw;
+      //     // height: 100%;
 
+      //     .layout__#{$fields_each}-container {
+      //       // width           : 100%;
+      //       background-color   : antiquewhite;
+      //       // justify-self    : center;
 
-      >div {
-        height          : 100%;
-        width           : 100%;
-        background-color: antiquewhite;
-        justify-self    : center;
-
-        @media (min-width: 1300px) {
-          width: 80rem;
-        }
-      }
+      //       @media (min-width: 1300px) {
+      //         // width: 80rem;
+      //       }
+      //     }
     }
 
     @else if $fields_each==footer {
-      background-color: var(--brand-5);
+      // background-color          : var(--brand-5);
+      // min-height                : 6rem;
+      //     // height          : 1rem;
     }
   }
 
@@ -48,7 +71,8 @@
   footer;
 
   @each $fields_each in $fields {
-    .main__layout--#{$fields_each} {
+    .layout__#{$fields_each} {
+      // color: red;
       @include main_layout($fields_each)
     }
   }

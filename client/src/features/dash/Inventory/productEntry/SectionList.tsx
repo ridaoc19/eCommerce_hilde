@@ -1,7 +1,7 @@
 import InputText from "../../../../components/common/inputText/InputText";
 import { HandleChangeTextSelect, HandleClick } from "../../../../interfaces/global.interface";
 import { ButtonName, InitialStateEntry, } from "./helpers";
-import './sectionList.scss';
+// import './sectionList.scss';
 
 export type SectionListProps = {
   state: InitialStateEntry;
