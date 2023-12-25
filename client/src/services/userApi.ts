@@ -40,8 +40,8 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
       return { ...resJson };
     }
   } catch (error) {
-    // eslint-disable-next-line
     if (error instanceof Error) {
+      // eslint-disable-next-line
       throw ({
         status_code: 500,
         status: "internal_server_error",

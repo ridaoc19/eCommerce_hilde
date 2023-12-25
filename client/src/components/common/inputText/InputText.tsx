@@ -1,4 +1,4 @@
-import './inputText.scss'
+// import './inputText.scss'
 
 export interface InputTextProps {
   placeholder: string;

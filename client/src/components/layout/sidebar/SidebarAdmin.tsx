@@ -6,6 +6,7 @@ import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
 import useMutationUser from '../../../hooks/useMutationUser';
 import { IContext } from '../../../interfaces/hooks/context.interface';
 import { PermitsRoles } from '../../../interfaces/user.interface';
+import SidebarIcon from '../../common/sidebarIcon/SidebarIcon';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -24,19 +25,23 @@ const item: ISidebar.ItemRole[] = [
   { id: 'visitant', value: "otro", type: "Otro", svg: Svg({ type: "padlock" }), roles: ['visitant', "super", 'admin'] }
 ];
 
-function SidebarAdmin({ handleOnClick }: { handleOnClick: () => void }) {
+function SidebarAdmin({ handleOnClick, isActive }: { handleOnClick: () => void, isActive: boolean }) {
   const { dashboard: { state: { permits }, dispatch } }: IContext.IContextData = useContext(CreateContext)!
   const { data: { getUserQueryData } } = useMutationUser();
   const { userData } = getUserQueryData()
 
   return (
-    <div className='section__main-left'>
-      <div className="main__left-header">
-        <div>
-          <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50, color: "white" })}</Link>
+    <div className='sidebar__section-left'>
+        <div className="sidebar__section-left-header">
+          <div className="sidebar__section-left-header-content">
+            <SidebarIcon handleOnClick={handleOnClick} isActive={isActive} />
+            <div>
+              <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50, color: "white" })}</Link>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className='main__left-content'>
+
+      <div className='sidebar__section-left-main'>
         {item.map((e, i) => {
           if (userData?.roles) {
             return permits[e.id] && (
