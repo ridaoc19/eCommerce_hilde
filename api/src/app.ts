@@ -1,8 +1,7 @@
-import cors from "cors";
+import * as cors from "cors";
 import 'dotenv/config';
-import express from "express";
-import morgan from 'morgan';
-import { validatorsMiddlewareGlobal } from './core/utils/validations/validatorsMiddlewareGlobal';
+import * as express from "express";
+import * as morgan from 'morgan';
 import routes from './routes';
 
 const app = express();
@@ -14,7 +13,6 @@ app.use('/uploads', express.static('uploads'));
 app.use(morgan('dev'));
 app.use(cors())
 
-app.use(validatorsMiddlewareGlobal)
 
 app.use("/", routes)
 

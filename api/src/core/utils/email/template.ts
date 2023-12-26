@@ -1,4 +1,4 @@
-import { User } from "../../../modules/user/interface";
+import { User } from "../../../modules/users/interface";
 
 export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User.Content, 'name' | 'password' | 'type'> & { tokenEmail?: string }): { subject: string, html: string } => {
     switch (type) {
