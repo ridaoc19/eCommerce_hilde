@@ -1,7 +1,7 @@
 @import './navbar/navbar';
-@import '../common/search/search';
+// @import '../common/search/search';
 @import './footer/footer';
-// @import './sidebar/sidebar';
+@import './sidebar/sidebar';
 
 .layout {
   background-color           : var(--neutral-2);

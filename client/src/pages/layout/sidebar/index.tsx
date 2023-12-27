@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import SidebarIcon from '../../../components/common/sidebarIcon/SidebarIcon';
 import { PermitsRoles } from '../../../interfaces/user.interface';
+import SidebarNavigation from './SidebarNavigation';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -34,6 +35,7 @@ function Sidebar() {
               // ? <SidebarAdmin handleOnClick={handleOnClick} isActive={isActive} />
               // : <SidebarHome isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
             }
+            {<SidebarNavigation handleOnClick={handleOnClick} isActive={isActive} />}
           </div>
         </div>
       </div>
@@ -42,3 +44,5 @@ function Sidebar() {
 }
 
 export default Sidebar;
+
+
