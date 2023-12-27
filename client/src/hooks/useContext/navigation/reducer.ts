@@ -1,21 +1,14 @@
-
-export enum ActionTypeNavigation {
-  NAVIGATION_UPDATE = 'NAVIGATION_UPDATE',
-  NAVIGATION_UPDAgE = 'NAVIGATION_UPDAgE',
-}
-
-// export type UpdateState<T> = (
-//   data: { name: keyof T; value: T[keyof T] }[]
-// ) => void
-// const updateState: UpdateState<InitialState> = (data) => {
-//   data.forEach(({ name, value }) => {
-//     setState((prevState) => ({ ...prevState, [name]: value }))
-//   })
-// }
+import { RequestMapNavigation, RouteNavigation } from "../../../services/navigationRequest";
+import { ErrorNavigation } from '../../../services/navigationApi'
 
 export namespace INavigatorReducer {
   export type AppState = {
-    menu: [],
+    hierarchicalData: {
+      data: RequestMapNavigation[RouteNavigation.NavigationRequest]['data'] | []
+      isLoading: boolean
+      isFetching: boolean
+      errors: ErrorNavigation['errors'] | []
+    },
   };
 
   export type AppAction<T> = {
@@ -27,14 +20,19 @@ export namespace INavigatorReducer {
 }
 
 const initialState: INavigatorReducer.AppState = {
-  menu: []
+  hierarchicalData: {
+    isLoading: false,
+    isFetching: false,
+    data: [],
+    errors: []
+  }
 };
 
 const reducer: INavigatorReducer.Reducer = (state, action) => {
 
   switch (action.type) {
-    case "menu":
-      return { ...state, menu: action.payload }
+    case "hierarchicalData":
+      return { ...state, hierarchicalData: action.payload }
     default:
       return state;
   }

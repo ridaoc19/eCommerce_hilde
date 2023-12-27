@@ -7,6 +7,12 @@ import { DepartmentEntity } from '../departments/entity';
 import { ProductEntity } from '../products/entity';
 import { SubcategoryEntity } from '../subcategories/entity';
 
+function fetchCount(info: any) {
+  return new Promise<{ data: number }>((resolve) =>
+    setTimeout(() => resolve({ data: info }), 10000)
+  );
+}
+
 export default {
   async createProduct(req: Request, res: Response) {
     try {
@@ -141,12 +147,11 @@ export default {
         ])
         .getMany();
 
+      await fetchCount(productsAll)
+
       successHandler({
         res,
-        dataDB: [{
-          hierarchicalData: productsAll,
-          advertisement: {}
-        }],
+        dataDB: productsAll,
         json: {
           field: 'navigation_get',
           message: 'Departamentos, categorías, subcategoría y productos obtenidos',

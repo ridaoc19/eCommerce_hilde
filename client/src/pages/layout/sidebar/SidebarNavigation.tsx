@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
 import Svg from "../../../components/assets/icons/Svg";
 import SidebarIcon from "../../../components/common/sidebarIcon/SidebarIcon";
+import { useContext } from "react";
+import { CreateContext } from "../../../hooks/useContext";
+import Button from "../../../components/common/button/Button";
 
 
 function SidebarNavigation({ handleOnClick, isActive }: { isActive: boolean, handleOnClick: () => void }) {
+  const { navigation: { navigationContextState: { hierarchicalData: { isLoading, isFetching, data } } } } = useContext(CreateContext)!
 
   return (
     <>
@@ -19,7 +23,22 @@ function SidebarNavigation({ handleOnClick, isActive }: { isActive: boolean, han
         </div>
 
         <div className="sidebar__section-left-main">
-          {/* {department.map((dep) => (
+          {isFetching || isLoading ? <>Cargando...</> :
+            data.map(({ department_id, department }) => {
+              return (
+                <div
+                  key={department_id}
+                  onMouseEnter={() => console.log(department_id)}
+                >
+                  <Button
+                    button={{ type: "none", text: department, handleClick: () => { } }}
+                  />
+                  <span>{`>`}</span>
+                </div>
+        )
+            })
+          }
+        {/* {department.map((dep) => (
             <div
               key={dep._id}
               onMouseEnter={() => handleMouseEnter(dep._id)}>
@@ -30,19 +49,19 @@ function SidebarNavigation({ handleOnClick, isActive }: { isActive: boolean, han
               </Link>
               <span>{`>`}</span></div>))
               } */}
-        </div>
-
-        <div className="sidebar__section-left-footer">
-          <ul>
-            <li>Mi cuenta</li>
-            <li>Donde estamos</li>
-            <li>Atención al cliente</li>
-          </ul>
-        </div>
-
       </div>
 
-      {/* {selectedId && (
+      <div className="sidebar__section-left-footer">
+        <ul>
+          <li>Mi cuenta</li>
+          <li>Donde estamos</li>
+          <li>Atención al cliente</li>
+        </ul>
+      </div>
+
+    </div >
+
+    {/* {selectedId && (
         <div className='section__main-right'>
           <div className="right__button-back">
             <Button button={{ text: 'volver', handleClick: () => { setSelectedId("") }, type: 'light' }} />

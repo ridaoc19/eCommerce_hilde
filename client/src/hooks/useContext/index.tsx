@@ -2,6 +2,7 @@ import { ReactNode, createContext } from "react";
 import { IDashReducer } from "../../hooks/useContext/dash/reducer";
 import StateDashboard from "./dash/State";
 import StateNavigation from "./navigation/State";
+import { INavigatorReducer } from "./navigation/reducer";
 
 export interface IContextData {
   dashboard: {
@@ -9,6 +10,8 @@ export interface IContextData {
     dispatch: React.Dispatch<IDashReducer.AppAction>;
   };
   navigation: {
+    navigationContextState: INavigatorReducer.AppState,
+    navigationContextDispatch: React.Dispatch<INavigatorReducer.AppAction<INavigatorReducer.AppState>>
     tools: {
       solicitud: () => void
     }

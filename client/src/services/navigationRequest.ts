@@ -7,16 +7,13 @@ export enum RouteNavigation {
 export type RequestMapNavigation = {
   [RouteNavigation.NavigationRequest]: {
     route: RouteNavigation.NavigationRequest;
-    data: {
-      hierarchicalData: (Omit<IProduct.Department, 'categories'> & {
-        categories: (Omit<IProduct.Category, 'subcategories' | 'department'> & {
-          subcategories: (Omit<IProduct.Subcategory, 'products' | 'category'> & {
-            products: Pick<IProduct.Product, 'product_id' | 'product'>[]
-          })[]
+    data: (Omit<IProduct.Department, 'categories'> & {
+      categories: (Omit<IProduct.Category, 'subcategories' | 'department'> & {
+        subcategories: (Omit<IProduct.Subcategory, 'products' | 'category'> & {
+          products: Pick<IProduct.Product, 'product_id' | 'product'>[]
         })[]
       })[]
-      advertisement: {}
-    }
+    })[]
 
   };
 };
