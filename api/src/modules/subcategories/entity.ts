@@ -7,7 +7,7 @@ export class SubcategoryEntity {
   @PrimaryGeneratedColumn()
   subcategory_id: string;
 
-  @Column({ type: 'tsvector' })
+  @Column({ type: 'varchar' })
   subcategory: string;
 
   @ManyToOne(() => CategoryEntity, category => category.subcategories, { cascade: true })

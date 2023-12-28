@@ -9,6 +9,12 @@
       gap             : 1rem;
       justify-content : space-evenly;
 
+      @media (max-width: 548px) {
+        flex-direction: column;
+        align-items   : flex-start;
+        padding       : 0.3rem;
+      }
+
       .footer__top-left {
         display      : flex;
         align-items  : center;

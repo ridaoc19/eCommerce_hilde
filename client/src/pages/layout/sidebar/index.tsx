@@ -15,7 +15,7 @@ export namespace ISidebar {
 
 function Sidebar() {
   const [isActive, setIsActive] = useState(false);
-  // const [selectedIdBoolean, setSelectedIdBoolean] = useState(true)
+  const [selectedIdBoolean, setSelectedIdBoolean] = useState(true)
 
   const handleOnClick = () => {
     document.body.classList.toggle('body-scroll-locked');
@@ -33,9 +33,10 @@ function Sidebar() {
           <div className='sidebar__section'>
             {window.location.pathname === "/hilde/dashboard"
               // ? <SidebarAdmin handleOnClick={handleOnClick} isActive={isActive} />
-              // : <SidebarHome isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
+              // : <SidebarNavigation isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
             }
-            {<SidebarNavigation handleOnClick={handleOnClick} isActive={isActive} />}
+            <SidebarNavigation isActive={isActive} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
+            {/* {<SidebarNavigation handleOnClick={handleOnClick} isActive={isActive} />} */}
           </div>
         </div>
       </div>
