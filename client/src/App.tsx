@@ -13,7 +13,7 @@ function App() {
   const { isFetching, isLoading, data, error, isSuccess, isError } =
     useQuery({
       queryKey: [IProduct.QUERY_KEY_PRODUCT.Navigation],
-      queryFn: async () => await navigationRequest(RouteNavigation.NavigationRequest).options({}),
+      queryFn: async () => await navigationRequest(RouteNavigation.NavigationMenu).options({}),
       onError: (error: ErrorNavigation) => error,
       refetchOnWindowFocus: false,
       refetchOnMount: false,

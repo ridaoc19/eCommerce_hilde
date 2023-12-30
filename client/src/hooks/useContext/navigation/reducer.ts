@@ -4,7 +4,7 @@ import { ErrorNavigation } from '../../../services/navigationApi'
 export namespace INavigatorReducer {
   export type AppState = {
     hierarchicalData: {
-      data: RequestMapNavigation[RouteNavigation.NavigationRequest]['data'] | []
+      data: RequestMapNavigation[RouteNavigation.NavigationMenu]['data'] | []
       isLoading: boolean
       isFetching: boolean
       errors: ErrorNavigation['errors'] | []

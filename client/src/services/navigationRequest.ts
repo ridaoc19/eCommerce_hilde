@@ -1,12 +1,13 @@
 import { IProduct } from "../interfaces/product.interface";
 
 export enum RouteNavigation {
-  NavigationRequest = 'get|navigation/request',
+  NavigationMenu = 'get|navigation/menu',
+  NavigationListProduct = 'get|navigation/list-product',
 }
 
 export type RequestMapNavigation = {
-  [RouteNavigation.NavigationRequest]: {
-    route: RouteNavigation.NavigationRequest;
+  [RouteNavigation.NavigationMenu]: {
+    route: RouteNavigation.NavigationMenu;
     data: (Omit<IProduct.Department, 'categories'> & {
       categories: (Omit<IProduct.Category, 'subcategories' | 'department'> & {
         subcategories: (Omit<IProduct.Subcategory, 'products' | 'category'> & {
@@ -15,5 +16,10 @@ export type RequestMapNavigation = {
       })[]
     })[]
 
-  };
+  },
+  [RouteNavigation.NavigationListProduct]: {
+    route: RouteNavigation.NavigationListProduct;
+    paramId: `${string}/${string}`;
+    data: []
+  }
 };

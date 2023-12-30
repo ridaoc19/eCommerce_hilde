@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import productServices from './services';
-const { createProduct, updateProduct, deleteProduct, getProduct } = productServices;
+const { getMenu, getListProduct } = productServices;
 
 const router = Router();
 
-router.post('/create/:subcategory_id', createProduct);
-router.put('/edit/:product_id', updateProduct);
-router.delete('/delete/:product_id', deleteProduct);
-router.get('/request', getProduct);
+router.get('/list-product/:entity/:id', getListProduct);
+router.get('/menu', getMenu);
 
 export { router };
+

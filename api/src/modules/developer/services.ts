@@ -1,15 +1,16 @@
 import { Request, Response } from 'express';
+import { readFileSync } from 'fs';
 import { join } from 'path';
+import { AppDataSource } from '../../core/db/postgres';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { readFileSync } from 'fs';
-import { AppDataSource } from '../../core/db/postgres';
-import { DepartmentEntity } from '../departments/entity';
 import { CategoryEntity } from '../categories/entity';
-import { SubcategoryEntity } from '../subcategories/entity';
+import { DepartmentEntity } from '../departments/entity';
 import { ProductEntity } from '../products/entity';
+import { SubcategoryEntity } from '../subcategories/entity';
 import { VariantEntity } from '../variants/entity';
+import { NavigationEntity } from '../navigation/entity';
 
 interface Data {
   specification: Specification;
@@ -101,6 +102,22 @@ export default {
           newVariant.videos = jstonVariant.videos
           newVariant.product = existingProduct
           await variantRepository.save(newVariant)
+
+
+          // Crear entidad de navegación asociada a la variante
+          const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+          const newNavigation = new NavigationEntity();
+          newNavigation.variant = newVariant;
+
+          // Asignar otras entidades relacionadas
+          newNavigation.product = existingProduct;
+          newNavigation.subcategory = existingSubcategory;
+          newNavigation.category = existingCategory;
+          newNavigation.department = existingDepartment;
+
+          // Guardar la entidad de navegación
+          await navigationRepository.save(newNavigation);
+
         }
       }
 

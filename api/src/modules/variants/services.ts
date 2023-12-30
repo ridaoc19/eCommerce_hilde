@@ -5,6 +5,7 @@ import { successHandler } from '../../core/utils/send/successHandler';
 import { ProductEntity } from '../products/entity';
 import { VariantEntity } from '../variants/entity';
 import { AppDataSource } from '../../core/db/postgres';
+import { NavigationEntity } from '../navigation/entity';
 
 export default {
   async createVariant(req: Request, res: Response) {
@@ -34,7 +35,24 @@ export default {
       newVariant.stock = stock;
       newVariant.product = existingProduct;
 
+      // Después de guardar la variante
       await variantRepository.save(newVariant);
+
+      // Crear entidad de navegación asociada a la variante
+      const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+      const newNavigation = new NavigationEntity();
+      newNavigation.variant = newVariant;
+
+      // Asignar otras entidades relacionadas
+      newNavigation.product = newVariant.product;
+      newNavigation.subcategory = newVariant.product.subcategory;
+      newNavigation.category = newVariant.product.subcategory.category;
+      newNavigation.department = newVariant.product.subcategory.category.department;
+
+      // Guardar la entidad de navegación
+      await navigationRepository.save(newNavigation);
+
+
 
       successHandler({
         res,
