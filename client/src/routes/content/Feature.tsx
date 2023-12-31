@@ -8,7 +8,7 @@ function NotFoundPage() {
 }
 
 const Home = Loadable(lazy(() => import("../../pages/navigation/home/Home")))
-const ListProducts = Loadable(lazy(() => import("../../pages/navigation/home/listProducts")))
+const ListProducts = Loadable(lazy(() => import("../../pages/navigation/home/listProducts/ListProducts")))
 // const ProductDetail = Loadable(lazy(() => import('../../features/navigation/productDetail')))
 
 
@@ -19,7 +19,7 @@ const Feature = [
     element: <Layout><Home /></Layout>
   },
   {
-    path: '/list-products/:entity/:id',
+    path: '/list-products/:id',
     element: <Layout><ListProducts /></Layout>
   },
   // {

@@ -53,4 +53,13 @@ export namespace IProduct {
     department: string;
     categories: Category[];
   }
+  export interface ListProduct {
+    navigation_id: string;
+    department: Pick<Department, 'categories'>;
+    category: Pick<Category, 'department' | 'subcategories'>;
+    subcategory: Pick<Subcategory, 'category' | 'products'>;
+    product: Pick<Product, 'subcategory' | 'variants'>;
+    variant: Pick<Variant, 'product'>;
+  }
 }
+

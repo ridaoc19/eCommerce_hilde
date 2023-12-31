@@ -30,7 +30,7 @@ export class ProductEntity {
   @OneToMany(() => NavigationEntity, navigation => navigation.product, { cascade: ['soft-remove', 'recover'] })
   navigations: NavigationEntity[];
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }
 

@@ -1,3 +1,4 @@
+import { BreadcrumbType, MapEntityBreadcrumb } from "../interfaces/global.interface";
 import { IProduct } from "../interfaces/product.interface";
 
 export enum RouteNavigation {
@@ -19,7 +20,11 @@ export type RequestMapNavigation = {
   },
   [RouteNavigation.NavigationListProduct]: {
     route: RouteNavigation.NavigationListProduct;
-    paramId: `${string}/${string}`;
-    data: []
+    extensionRoute: `?id=${string}&skip=${string}&take=${string}`;
+    data: {
+      breadcrumb: MapEntityBreadcrumb[BreadcrumbType];
+      listProduct: IProduct.ListProduct;
+    }
   }
 };
+

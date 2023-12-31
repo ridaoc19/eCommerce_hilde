@@ -74,29 +74,32 @@ export default {
   },
 
   async getListProduct(req: Request, res: Response) {
-    const { id } = req.params;
-    try {
-      const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+    const id = String(req.query.id)
+    const skip = Number(req.query.skip)
+    const take = Number(req.query.take)
 
-      const listProduct = await navigationRepository
+    try {
+      const breadcrumb = await getBreadcrumbs(id)
+
+      const listProduct = await AppDataSource
+        .getRepository(NavigationEntity)
         .createQueryBuilder('navigation')
+        .leftJoinAndSelect('navigation.department', 'department')
+        .leftJoinAndSelect('navigation.category', 'category')
+        .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
         .leftJoinAndSelect('navigation.variant', 'variant')
-        .where('navigation.department.department_id = :id', { id })
-        .orWhere('navigation.category.category_id = :id', { id })
-        .orWhere('navigation.subcategory.subcategory_id = :id', { id })
-        .orWhere('navigation.product.product_id = :id', { id })
-        .orWhere('variant.variant_id = :id', { id })
+        .where(`navigation.${breadcrumb?.entity}.${breadcrumb?.entity}_id = :id`, { id })
+        .skip(skip)
+        .take(take)
         .getMany();
-
-      const breadcrumb = await getBreadcrumbs(id)
 
       successHandler({
         res,
-        dataDB: [{
+        dataDB: {
           breadcrumb,
           listProduct,
-        }],
+        },
         json: {
           field: 'navigation_list-product',
           message: 'Datos obtenidos',
@@ -109,6 +112,23 @@ export default {
     }
   },
 };
+
+
+// const listProduct = await navigationRepository
+//         .createQueryBuilder('navigation')
+//         .leftJoinAndSelect('navigation.department', 'department')
+//         .leftJoinAndSelect('navigation.category', 'category')
+//         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+//         .leftJoinAndSelect('navigation.product', 'product')
+//         .leftJoinAndSelect('navigation.variant', 'variant')
+//         .where('navigation.department.department_id = :id', { id })
+//         .orWhere('navigation.category.category_id = :id', { id })
+//         .orWhere('navigation.subcategory.subcategory_id = :id', { id })
+//         .orWhere('navigation.product.product_id = :id', { id })
+//         .orWhere('variant.variant_id = :id', { id })
+//         .skip(skip)
+//         .take(take)
+//         .getMany();
 
 
 // const navigationRepository = AppDataSource.getRepository(NavigationEntity);

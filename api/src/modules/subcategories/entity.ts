@@ -21,6 +21,6 @@ export class SubcategoryEntity {
   @OneToMany(() => NavigationEntity, navigation => navigation.subcategory, { cascade: ['soft-remove', 'recover'] })
   navigations: NavigationEntity[];
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }

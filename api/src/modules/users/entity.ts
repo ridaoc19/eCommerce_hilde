@@ -32,7 +32,7 @@ export class UserEntity {
   @Column()
   addresses: string;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }
 

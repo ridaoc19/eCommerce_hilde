@@ -68,7 +68,7 @@ function SidebarNavigation({ isActive, handleOnSelectedId, selectedIdBoolean, ha
               onClick={() => handleMouseEnter(department_id)}>
               {/* onMouseEnter={() => handleMouseEnter(department_id)}> */}
               <Link
-                to={`/list-products/department/${department_id}`}
+                to={`/list-products/${department_id}`}
                 onClick={handleOnClick} >
                 {department}
               </Link>
@@ -100,7 +100,7 @@ function SidebarNavigation({ isActive, handleOnSelectedId, selectedIdBoolean, ha
                   ref={(node) => node ? itemsRef.current.set(category_id, node) : itemsRef.current.delete(category_id)} >
                   <h3>
                     <Link
-                      to={`/list-products/category/${category_id}`}
+                      to={`/list-products/${category_id}`}
                       onClick={handleOnClick}>
                       {category}
                     </Link>
@@ -110,7 +110,7 @@ function SidebarNavigation({ isActive, handleOnSelectedId, selectedIdBoolean, ha
                       return (
                         <h5 key={subcategory_id}>
                           <Link
-                            to={`/list-products/subcategory/${subcategory_id}`}
+                            to={`/list-products/${subcategory_id}`}
                             onClick={handleOnClick} >
                             {subcategory}
                           </Link>

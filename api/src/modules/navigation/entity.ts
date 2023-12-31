@@ -30,7 +30,7 @@ export class NavigationEntity {
   @JoinColumn({ name: 'variant_id' })
   variant: VariantEntity;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }
 

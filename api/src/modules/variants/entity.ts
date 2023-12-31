@@ -29,7 +29,7 @@ export class VariantEntity {
   @OneToMany(() => NavigationEntity, navigation => navigation.variant, { cascade: ['soft-remove', 'recover'] })
   navigations: NavigationEntity[];
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }
 
