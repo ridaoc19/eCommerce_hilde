@@ -26,7 +26,7 @@ export enum BreadcrumbType {
 export interface Data {
   name: string;
   _id: string;
-  name_id: 'department' | 'category' | 'subcategory' | 'product'
+  name_id: 'department' | 'category' | 'subcategory' | 'product' | 'home'
 }
 
 export type MapEntityBreadcrumb = {

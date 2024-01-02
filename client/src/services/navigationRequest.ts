@@ -23,7 +23,8 @@ export type RequestMapNavigation = {
     extensionRoute: `?id=${string}&skip=${string}&take=${string}`;
     data: {
       breadcrumb: MapEntityBreadcrumb[BreadcrumbType];
-      listProduct: IProduct.ListProduct;
+      listProduct: IProduct.ListProduct[];
+      totalCount: number;
     }
   }
 };

@@ -94,11 +94,24 @@ export default {
         .take(take)
         .getMany();
 
+      const totalCount = await AppDataSource
+        .getRepository(NavigationEntity)
+        .createQueryBuilder('navigation')
+        .leftJoinAndSelect('navigation.department', 'department')
+        .leftJoinAndSelect('navigation.category', 'category')
+        .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+        .leftJoinAndSelect('navigation.product', 'product')
+        .leftJoinAndSelect('navigation.variant', 'variant')
+        .where(`navigation.${breadcrumb?.entity}.${breadcrumb?.entity}_id = :id`, { id })
+        .getCount();
+
+
       successHandler({
         res,
         dataDB: {
           breadcrumb,
           listProduct,
+          totalCount
         },
         json: {
           field: 'navigation_list-product',

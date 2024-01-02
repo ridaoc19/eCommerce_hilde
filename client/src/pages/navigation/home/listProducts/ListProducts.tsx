@@ -6,7 +6,9 @@
 import useListProduct from "../../../../hooks/useListProduct/useListProduct";
 
 function ListProducts() {
-  const { BreadcrumbComponent, error, isError, isLoading, listProduct } = useListProduct()
+  const { BreadcrumbComponent, listProducts, PaginationButton, currentIndex } = useListProduct()
+  // const { BreadcrumbComponent, error, isError, isLoading, listProducts } = useListProduct()
+
   // const { id } = useParams();
   // const { data, isLoading, isError } = useQuery(
   //   ['list-product', id], () => navigationRequest(RouteNavigation.NavigationListProduct).options({ extensionRoute: `?id=${id}&skip=${0}&take=${10}` }), {
@@ -24,13 +26,15 @@ function ListProducts() {
   // }, [id])
 
 
-  console.log({listProduct, error, isLoading, isError});
+  // console.log({listProducts, error, isLoading, isError});
 
   return (
     <div className="list-product__container">
-      {/* <Breadcrumb breadcrumb={data?.data.breadcrumb} /> */}
       <div className="list-product__breadcrumb">
         {BreadcrumbComponent}
+        cargados: {listProducts.length}
+        posicion:{currentIndex}
+        {PaginationButton}
         {/* <Breadcrumb /> */}
       </div>
       <div className="list-product__card">
