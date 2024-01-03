@@ -5,6 +5,7 @@ import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { DepartmentEntity } from '../departments/entity';
+import { ProductEntity } from '../products/entity';
 import { NavigationEntity } from './entity';
 
 // function fetchCount(info: any) {
@@ -12,6 +13,14 @@ import { NavigationEntity } from './entity';
 //     setTimeout(() => resolve({ data: info }), 10000)
 //   );
 // }
+
+export interface ListProduct {
+  // department: Omit<DepartmentEntity, 'categories'>;
+  // category: Omit<CategoryEntity, 'department' | 'subcategories'>;
+  // subcategory: Omit<SubcategoryEntity, 'category' | 'products'>;
+  product: Omit<ProductEntity, 'subcategory'>;
+  // variant: Omit<VariantEntity, 'product'>;
+}
 
 export default {
   async getMenu(_req: Request, res: Response) {
@@ -88,8 +97,9 @@ export default {
         .leftJoinAndSelect('navigation.category', 'category')
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
-        .leftJoinAndSelect('navigation.variant', 'variant')
-        .where(`navigation.${breadcrumb?.entity}.${breadcrumb?.entity}_id = :id`, { id })
+        .leftJoinAndSelect('product.variants', 'variant')  // Asegúrate de que la relación se llama 'variants'
+        // .leftJoinAndSelect('navigation.variant', 'variant')
+        .where(`navigation.${breadcrumb?.entity}_id = :id`, { id })
         .skip(skip)
         .take(take)
         .getMany();
@@ -101,7 +111,7 @@ export default {
         .leftJoinAndSelect('navigation.category', 'category')
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
-        .leftJoinAndSelect('navigation.variant', 'variant')
+        // .leftJoinAndSelect('navigation.variant', 'variant')
         .where(`navigation.${breadcrumb?.entity}.${breadcrumb?.entity}_id = :id`, { id })
         .getCount();
 
@@ -126,6 +136,32 @@ export default {
   },
 };
 
+
+// const listProduct = await AppDataSource
+// .getRepository(NavigationEntity)
+// .createQueryBuilder('navigation')
+// .leftJoinAndSelect('navigation.department', 'department')
+// .leftJoinAndSelect('navigation.category', 'category')
+// .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+// .leftJoinAndSelect('navigation.product', 'product')
+// .leftJoinAndSelect('product.variants', 'variant')  // Asegúrate de que la relación se llama 'variants'
+// // .leftJoinAndSelect('navigation.variant', 'variant')
+// .where(`navigation.${breadcrumb?.entity}.${breadcrumb?.entity}_id = :id`, { id })
+// .skip(skip)
+// .take(take)
+// .getMany();
+
+// const totalCount = await AppDataSource
+// .getRepository(NavigationEntity)
+// .createQueryBuilder('navigation')
+// .leftJoinAndSelect('navigation.department', 'department')
+// .leftJoinAndSelect('navigation.category', 'category')
+// .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+// .leftJoinAndSelect('navigation.product', 'product')
+// // .leftJoinAndSelect('navigation.variant', 'variant')
+// .where(`navigation.${breadcrumb?.entity}.${breadcrumb?.entity}_id = :id`, { id })
+// .getCount();
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // const listProduct = await navigationRepository
 //         .createQueryBuilder('navigation')

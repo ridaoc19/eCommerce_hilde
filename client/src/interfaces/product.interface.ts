@@ -55,11 +55,10 @@ export namespace IProduct {
   }
   export interface ListProduct {
     navigation_id: string;
-    department: Pick<Department, 'categories'>;
-    category: Pick<Category, 'department' | 'subcategories'>;
-    subcategory: Pick<Subcategory, 'category' | 'products'>;
-    product: Pick<Product, 'subcategory' | 'variants'>;
-    variant: Pick<Variant, 'product'>;
+    department: Omit<Department, 'categories'>;
+    category: Omit<Category, 'department' | 'subcategories'>;
+    subcategory: Omit<Subcategory, 'category' | 'products'>;
+    product: Omit<Product, 'subcategory'>;
   }
 }
 

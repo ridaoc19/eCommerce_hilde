@@ -1,32 +1,9 @@
-// import Breadcrumb from "../../../components/common/breadcrumb/Breadcrumb";
-// import Card from "../../../components/common/card/Card";
-// import useProductFilter from "../../../hooks/useProductFilter";
-// import './listProducts.scss';
 
+import Card from "../../../../components/common/card/Card";
 import useListProduct from "../../../../hooks/useListProduct/useListProduct";
 
 function ListProducts() {
   const { BreadcrumbComponent, listProducts, PaginationButton, currentIndex } = useListProduct()
-  // const { BreadcrumbComponent, error, isError, isLoading, listProducts } = useListProduct()
-
-  // const { id } = useParams();
-  // const { data, isLoading, isError } = useQuery(
-  //   ['list-product', id], () => navigationRequest(RouteNavigation.NavigationListProduct).options({ extensionRoute: `?id=${id}&skip=${0}&take=${10}` }), {
-  //   enabled: !!id, // Esto evita que se realice la solicitud si id es falsy (por ejemplo, en la primera renderización cuando aún no hay un id)
-  //   refetchOnWindowFocus: false,
-  //   refetchOnMount: false,
-  // });
-
-  // const [productId, setProductId] = useState(id || "")
-  // // const { findItemById } = useProductFilter();
-  // // const { product } = useMemo(() => findItemById({ id: productId }), [productId, findItemById])
-
-  // useEffect(() => {
-  //   setProductId(id || "")
-  // }, [id])
-
-
-  // console.log({listProducts, error, isLoading, isError});
 
   return (
     <div className="list-product__container">
@@ -37,12 +14,14 @@ function ListProducts() {
         {PaginationButton}
         {/* <Breadcrumb /> */}
       </div>
-      <div className="list-product__card">
-        {/* {product.data.map(({ _id, product, brand, images, variants }) => {
+      <div className="list-product__card" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '1rem' }}>
+        {listProducts.map(({ product: { product_id, product, brand, variants } }) => {
           return (
-            <Card key={_id} _id={_id} product={product} brand={brand} images={images} price={variants.map(pri => pri.sellingPrice)} />
+            <Card key={product_id} product_id={product_id} product={product} brand={brand} images={variants[0].images} price={variants.map(variant => variant.price)} />
           )
-        })} */}
+        })}
+
+
       </div>
     </div>
   );

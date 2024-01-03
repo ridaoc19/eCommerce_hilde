@@ -7,10 +7,10 @@ import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { CategoryEntity } from '../categories/entity';
 import { DepartmentEntity } from '../departments/entity';
+import { NavigationEntity } from '../navigation/entity';
 import { ProductEntity } from '../products/entity';
 import { SubcategoryEntity } from '../subcategories/entity';
 import { VariantEntity } from '../variants/entity';
-import { NavigationEntity } from '../navigation/entity';
 
 interface Data {
   specification: Specification;
@@ -90,6 +90,20 @@ export default {
           existingProduct.specification = dataJson.specification
           existingProduct.subcategory = existingSubcategory
           await productRepository.save(existingProduct)
+
+          // Crear entidad de navegación asociada a la variante
+          const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+          const newNavigation = new NavigationEntity();
+          // newNavigation.variant = newVariant;
+
+          // Asignar otras entidades relacionadas
+          newNavigation.product = existingProduct;
+          newNavigation.subcategory = existingSubcategory;
+          newNavigation.category = existingCategory;
+          newNavigation.department = existingDepartment;
+
+          // Guardar la entidad de navegación
+          await navigationRepository.save(newNavigation);
         }
 
         for (const jstonVariant of dataJson.variants) {
@@ -104,19 +118,19 @@ export default {
           await variantRepository.save(newVariant)
 
 
-          // Crear entidad de navegación asociada a la variante
-          const navigationRepository = AppDataSource.getRepository(NavigationEntity);
-          const newNavigation = new NavigationEntity();
-          newNavigation.variant = newVariant;
+          // // Crear entidad de navegación asociada a la variante
+          // const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+          // const newNavigation = new NavigationEntity();
+          // newNavigation.variant = newVariant;
 
-          // Asignar otras entidades relacionadas
-          newNavigation.product = existingProduct;
-          newNavigation.subcategory = existingSubcategory;
-          newNavigation.category = existingCategory;
-          newNavigation.department = existingDepartment;
+          // // Asignar otras entidades relacionadas
+          // newNavigation.product = existingProduct;
+          // newNavigation.subcategory = existingSubcategory;
+          // newNavigation.category = existingCategory;
+          // newNavigation.department = existingDepartment;
 
-          // Guardar la entidad de navegación
-          await navigationRepository.save(newNavigation);
+          // // Guardar la entidad de navegación
+          // await navigationRepository.save(newNavigation);
 
         }
       }

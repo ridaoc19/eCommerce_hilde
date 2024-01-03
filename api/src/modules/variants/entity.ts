@@ -1,6 +1,5 @@
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ProductEntity } from '../products/entity';
-import { NavigationEntity } from '../navigation/entity';
 
 @Entity('variants')
 export class VariantEntity {
@@ -26,8 +25,8 @@ export class VariantEntity {
   @JoinColumn({ name: 'product_id' })
   product: ProductEntity;
 
-  @OneToMany(() => NavigationEntity, navigation => navigation.variant, { cascade: ['soft-remove', 'recover'] })
-  navigations: NavigationEntity[];
+  // @OneToMany(() => NavigationEntity, navigation => navigation.variant, { cascade: ['soft-remove', 'recover'] })
+  // navigations: NavigationEntity[];
 
   @DeleteDateColumn({ select: false })
   deletedAt: Date;
