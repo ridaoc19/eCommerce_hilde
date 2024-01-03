@@ -1,6 +1,6 @@
 
-import Card from "../../../../components/common/card/Card";
-import useListProduct from "../../../../hooks/useListProduct/useListProduct";
+import Card from "../../../components/common/card/Card";
+import useListProduct from "../../../hooks/useListProduct/useListProduct";
 
 function ListProducts() {
   const { BreadcrumbComponent, listProducts, PaginationButton, currentIndex } = useListProduct()

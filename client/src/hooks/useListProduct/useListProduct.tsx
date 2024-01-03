@@ -179,7 +179,6 @@ const useListProduct = (): ListProductHook => {
   const breadcrumbProps = {
     breadcrumb: data?.data.breadcrumb,
   };
-  console.log(data?.data.breadcrumb, "fuera")
 
   const paginationButtonProps = {
     paginationTotal: paginationTotal,
