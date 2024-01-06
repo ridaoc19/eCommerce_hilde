@@ -20,12 +20,28 @@ export type RequestMapNavigation = {
   },
   [RouteNavigation.NavigationListProduct]: {
     route: RouteNavigation.NavigationListProduct;
-    extensionRoute: `?id=${string}&skip=${string}&take=${string}`;
+    extensionRoute: `/${string}/${string}/${string}${string}`;
     data: {
       breadcrumb: MapEntityBreadcrumb[BreadcrumbType];
       listProduct: IProduct.ListProduct[];
+      filters: {
+        categories: string[]
+        subcategories: string[]
+        brand: string[]
+        attributes: {
+          [key: string]: string[];
+        }
+        specifications: {
+          [key: string]: string[];
+        }
+      }
       totalCount: number;
     }
   }
 };
+
+
+
+
+
 

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AppDataSource } from '../../core/db/postgres';
 import { getBreadcrumbs } from '../../core/utils/breadcrumb/breadcrumb';
 import { StatusHTTP } from '../../core/utils/enums';
+import { generateFilters } from '../../core/utils/navigation/generateFilters';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { DepartmentEntity } from '../departments/entity';
@@ -83,45 +84,86 @@ export default {
   },
 
   async getListProduct(req: Request, res: Response) {
-    const id = String(req.query.id)
-    const skip = Number(req.query.skip)
-    const take = Number(req.query.take)
+    const { id, skip, take } = req.params;
+    const { brand, category, subcategory } = req.query;
+    console.log(req.query)
 
     try {
-      const breadcrumb = await getBreadcrumbs(id)
+      const breadcrumb = await getBreadcrumbs(id);
 
-      const listProduct = await AppDataSource
+      const queryBuilder = AppDataSource
         .getRepository(NavigationEntity)
         .createQueryBuilder('navigation')
         .leftJoinAndSelect('navigation.department', 'department')
         .leftJoinAndSelect('navigation.category', 'category')
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
-        .leftJoinAndSelect('product.variants', 'variant')  // Asegúrate de que la relación se llama 'variants'
-        // .leftJoinAndSelect('navigation.variant', 'variant')
-        .where(`navigation.${breadcrumb?.entity}_id = :id`, { id })
-        .skip(skip)
-        .take(take)
-        .getMany();
+        .leftJoinAndSelect('product.variants', 'variant')
+        .where(`navigation.${breadcrumb?.entity}_id = :id`, { id });
 
-      const totalCount = await AppDataSource
-        .getRepository(NavigationEntity)
-        .createQueryBuilder('navigation')
-        .leftJoinAndSelect('navigation.department', 'department')
-        .leftJoinAndSelect('navigation.category', 'category')
-        .leftJoinAndSelect('navigation.subcategory', 'subcategory')
-        .leftJoinAndSelect('navigation.product', 'product')
-        // .leftJoinAndSelect('navigation.variant', 'variant')
-        .where(`navigation.${breadcrumb?.entity}.${breadcrumb?.entity}_id = :id`, { id })
-        .getCount();
+      const filtersQueryBuilder = queryBuilder.clone();
 
+      const filters = await generateFilters(filtersQueryBuilder);
+
+      // Agregar filtro adicional para la marca (brand)
+      if (category) {
+        if (Array.isArray(category)) {
+          queryBuilder.andWhere('category.category IN (:...categories)', { categories: category });
+        } else {
+          queryBuilder.andWhere('category.category = :category', { category });
+        }
+      }
+
+      if (subcategory) {
+        if (Array.isArray(subcategory)) {
+          queryBuilder.andWhere('subcategory.subcategory IN (:...subcategories)', { subcategories: subcategory });
+        } else {
+          queryBuilder.andWhere('subcategory.subcategory = :subcategory', { subcategory });
+        }
+      }
+
+      if (brand) {
+        if (Array.isArray(brand)) {
+          queryBuilder.andWhere('product.brand IN (:...brands)', { brands: brand });
+        } else {
+          queryBuilder.andWhere('product.brand = :brand', { brand });
+        }
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // Seleccionar campos específicos
+      const filteredProducts = await queryBuilder
+        // .select([
+        //   'navigation.product',
+        //   'product.brand',
+        //   'product.description', // Agrega otros campos que desees seleccionar
+        // ])
+        .skip(Number(skip))
+        .take(Number(take))
+        .getMany(); // Usa getRawMany para obtener resultados como objetos crudos
+
+      // Obtener el recuento total
+      const totalCount = await queryBuilder.getCount();
 
       successHandler({
         res,
         dataDB: {
+          totalCount,
+          filters,
           breadcrumb,
-          listProduct,
-          totalCount
+          listProduct: filteredProducts,
         },
         json: {
           field: 'navigation_list-product',
@@ -135,6 +177,23 @@ export default {
     }
   },
 };
+
+
+
+
+// const totalCount = await AppDataSource
+//   .getRepository(NavigationEntity)
+//   .createQueryBuilder('navigation')
+//   .leftJoinAndSelect('navigation.department', 'department')
+//   .leftJoinAndSelect('navigation.category', 'category')
+//   .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+//   .leftJoinAndSelect('navigation.product', 'product')
+//   .where(`navigation.${breadcrumb?.entity}.${breadcrumb?.entity}_id = :id`, { id });
+
+// // Agregar filtro adicional para la marca (brand) en el conteo
+// if (brand) {
+//   totalCount.andWhere('product.brand = :brand', { brand });
+// }
 
 
 // const listProduct = await AppDataSource

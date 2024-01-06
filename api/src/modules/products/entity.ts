@@ -17,6 +17,15 @@ export class ProductEntity {
   @Column({ type: 'text' })
   description: string;
 
+  @Column('simple-array')
+  benefits: string[];
+
+  @Column({ type: 'text' })
+  contents: string;
+
+  @Column({ type: 'text' })
+  warranty: string;
+
   @Column({ type: 'jsonb' })
   specification: Record<string, string>;
 

@@ -1,0 +1,35 @@
+// Estilos para el componente Filters
+.filters {
+  // display: flex;
+  // height: 100vh; // Ocupa la altura completa de la pantalla
+}
+
+// // Estilos para el sidebar
+// .sidebar {
+//   width: 200px; // Ancho del sidebar
+//   background-color: #f1f1f1; // Color de fondo del sidebar
+//   padding: 20px;
+// }
+
+// Estilos para los elementos del acordeón
+.acordeon-item {
+  margin-bottom: 10px;
+}
+
+// Estilos para los checkboxes
+.acordeon-content input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+// Estilos para el acordeón
+.acordeon-content {
+  display : none;
+  overflow: hidden;
+}
+
+// Estilos para el acordeón cuando está abierto
+.acordeon-content.open {
+  display   : block;
+  max-height: 20rem;
+  overflow-y: auto;
+}

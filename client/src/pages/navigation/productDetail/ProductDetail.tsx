@@ -3,7 +3,7 @@ import useListProduct from "../../../hooks/useListProduct/useListProduct";
 function ProductDetail() {
   const { BreadcrumbComponent, listProducts } = useListProduct()
 
-  listProducts.length > 0 && console.log(listProducts[0].product)
+  listProducts.length > 0 && console.log(listProducts)
 
   return (
     <div>

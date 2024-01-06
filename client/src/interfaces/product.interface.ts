@@ -31,6 +31,9 @@ export namespace IProduct {
     brand: string;
     description: string;
     specification: Specification;
+    benefits: string[];
+    contents: string;
+    warranty: string;
     subcategory: Subcategory;
     variants: Variant[];
   }

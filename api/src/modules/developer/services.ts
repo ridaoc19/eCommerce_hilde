@@ -21,6 +21,9 @@ interface Data {
   subcategory: string;
   description: string;
   variants: Variant[];
+  benefits: string[];
+  contents: string;
+  warranty: string;
 }
 
 interface Variant {
@@ -88,6 +91,10 @@ export default {
           existingProduct.brand = dataJson.brand
           existingProduct.description = dataJson.description
           existingProduct.specification = dataJson.specification
+          existingProduct.benefits = dataJson.benefits
+          existingProduct.contents = dataJson.contents
+          existingProduct.warranty = dataJson.warranty
+
           existingProduct.subcategory = existingSubcategory
           await productRepository.save(existingProduct)
 
