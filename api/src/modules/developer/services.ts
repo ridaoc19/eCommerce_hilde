@@ -90,7 +90,7 @@ export default {
           existingProduct.product = dataJson.product
           existingProduct.brand = dataJson.brand
           existingProduct.description = dataJson.description
-          existingProduct.specification = dataJson.specification
+          existingProduct.specifications = dataJson.specification
           existingProduct.benefits = dataJson.benefits
           existingProduct.contents = dataJson.contents
           existingProduct.warranty = dataJson.warranty

@@ -31,7 +31,7 @@ export default {
       newProduct.product = product;
       newProduct.brand = brand;
       newProduct.description = description;
-      newProduct.specification = specification;
+      newProduct.specifications = specification;
       newProduct.subcategory = existingSubcategory;
 
       await productRepository.save(newProduct);
@@ -85,7 +85,7 @@ export default {
       existingProduct.product = product;
       existingProduct.brand = brand;
       existingProduct.description = description;
-      existingProduct.specification = specification;
+      existingProduct.specifications = specification;
 
       await productRepository.save(existingProduct);
 

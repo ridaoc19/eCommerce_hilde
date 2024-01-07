@@ -22,7 +22,7 @@ export namespace IProduct {
     product: Product;
   }
 
-  interface Specification {
+  interface Specifications {
     [key: string]: string;
   }
   export interface Product {
@@ -30,7 +30,7 @@ export namespace IProduct {
     product: string;
     brand: string;
     description: string;
-    specification: Specification;
+    specifications: Specifications;
     benefits: string[];
     contents: string;
     warranty: string;

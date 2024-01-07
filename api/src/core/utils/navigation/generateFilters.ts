@@ -1,7 +1,20 @@
 import { SelectQueryBuilder } from "typeorm";
 import { NavigationEntity } from "../../../modules/navigation/entity";
 
-export const generateFilters = async (queryBuilder: SelectQueryBuilder<NavigationEntity>): Promise<any> => {
+
+export interface GenerateFiltersReturn {
+  category: string[]
+  subcategory: string[]
+  brand: string[]
+  attributes: {
+    [key: string]: string[];
+  }
+  specifications: {
+    [key: string]: string[];
+  }
+}
+
+export const generateFilters = async (queryBuilder: SelectQueryBuilder<NavigationEntity>): Promise<GenerateFiltersReturn> => {
 
   await queryBuilder
     .getMany();
@@ -67,10 +80,10 @@ export const generateFilters = async (queryBuilder: SelectQueryBuilder<Navigatio
 
 
   const uniqueSpecifications = await queryBuilder
-    .groupBy('product.specification') // Agrupar por atributos
+    .groupBy('product.specifications') // Agrupar por atributos
     .select([
-      'product.specification AS specification',
-      'COUNT(product.specification) AS count', // Contar la cantidad de ocurrencias
+      'product.specifications AS specification',
+      'COUNT(product.specifications) AS count', // Contar la cantidad de ocurrencias
     ])
     .getRawMany();
 
@@ -89,8 +102,8 @@ export const generateFilters = async (queryBuilder: SelectQueryBuilder<Navigatio
 
 
   return {
-    categories: categories.length > 1 ? categories : [],
-    subcategories: subcategories.length > 1 ? subcategories : [],
+    category: categories.length > 1 ? categories : [],
+    subcategory: subcategories.length > 1 ? subcategories : [],
     brand,
     attributes,
     specifications,

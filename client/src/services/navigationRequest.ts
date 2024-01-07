@@ -25,8 +25,8 @@ export type RequestMapNavigation = {
       breadcrumb: MapEntityBreadcrumb[BreadcrumbType];
       listProduct: IProduct.ListProduct[];
       filters: {
-        categories: string[]
-        subcategories: string[]
+        category: string[]
+        subcategory: string[]
         brand: string[]
         attributes: {
           [key: string]: string[];

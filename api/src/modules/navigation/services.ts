@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
+import { Brackets } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 import { AppDataSource } from '../../core/db/postgres';
 import { getBreadcrumbs } from '../../core/utils/breadcrumb/breadcrumb';
 import { StatusHTTP } from '../../core/utils/enums';
-import { generateFilters } from '../../core/utils/navigation/generateFilters';
+import { GenerateFiltersReturn, generateFilters } from '../../core/utils/navigation/generateFilters';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { DepartmentEntity } from '../departments/entity';
@@ -85,8 +87,7 @@ export default {
 
   async getListProduct(req: Request, res: Response) {
     const { id, skip, take } = req.params;
-    const { brand, category, subcategory } = req.query;
-    console.log(req.query)
+    // const { brand, category, subcategory } = req.query;
 
     try {
       const breadcrumb = await getBreadcrumbs(id);
@@ -98,50 +99,38 @@ export default {
         .leftJoinAndSelect('navigation.category', 'category')
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
-        .leftJoinAndSelect('product.variants', 'variant')
-        .where(`navigation.${breadcrumb?.entity}_id = :id`, { id });
+        .leftJoinAndSelect('product.variants', 'variant');
+
+      // Condición para el ID de navigation
+      queryBuilder.andWhere(`navigation.${breadcrumb?.entity}_id = :id`, { id });
 
       const filtersQueryBuilder = queryBuilder.clone();
-
       const filters = await generateFilters(filtersQueryBuilder);
 
-      // Agregar filtro adicional para la marca (brand)
-      if (category) {
-        if (Array.isArray(category)) {
-          queryBuilder.andWhere('category.category IN (:...categories)', { categories: category });
-        } else {
-          queryBuilder.andWhere('category.category = :category', { category });
-        }
+      if (filters) {
+        queryBuilder.andWhere(new Brackets(qb => {
+          Object.entries(req.query).forEach(([key, value]) => {
+            const newValue = Array.isArray(value) ? value : [value]
+            const parent = findParentProperty(filters, key)
+            const variantProperty: string =
+              parent === 'category' ? `category.category` :
+                parent === 'subcategory' ? `subcategory.subcategory` :
+                  parent === 'brand' ? `product.brand` :
+                    parent === 'specifications' ? `product.specifications` : ``
+
+            if (parent === 'specifications' || parent === 'attributes') {
+              newValue.forEach((element) => {
+                const uniqueId = uuidv4().replace(/-/g, '')
+                console.log({ variantProperty, parent, key, element, name: `${parent}${uniqueId}` }, "es string");
+                qb.orWhere(`${variantProperty} ::jsonb @> :${parent}${uniqueId}`, { [`${parent}${uniqueId}`]: { [key]: element } })
+              })
+            } else {
+              console.log({ key, value, parent, variantProperty, newValue }, "otros")
+              qb.orWhere(`${variantProperty} IN (:...${key})`, { [key]: newValue })
+            }
+          })
+        }))
       }
-
-      if (subcategory) {
-        if (Array.isArray(subcategory)) {
-          queryBuilder.andWhere('subcategory.subcategory IN (:...subcategories)', { subcategories: subcategory });
-        } else {
-          queryBuilder.andWhere('subcategory.subcategory = :subcategory', { subcategory });
-        }
-      }
-
-      if (brand) {
-        if (Array.isArray(brand)) {
-          queryBuilder.andWhere('product.brand IN (:...brands)', { brands: brand });
-        } else {
-          queryBuilder.andWhere('product.brand = :brand', { brand });
-        }
-      }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       // Seleccionar campos específicos
       const filteredProducts = await queryBuilder
@@ -178,6 +167,65 @@ export default {
   },
 };
 
+export function findParentProperty(obj: GenerateFiltersReturn, targetProperty: string, parentPath: string[] = []): string | null {
+  for (const [key, value] of Object.entries(obj)) {
+    const currentPath = [...parentPath, key];
+
+    if (key.toLowerCase() === targetProperty.toLowerCase()) {
+      // La propiedad se encuentra en este nivel del objeto
+      return currentPath[0];
+    } else if (typeof value === "object" && value !== null) {
+      // La propiedad se podría encontrar en otro subobjeto, así que recursivamente buscamos
+      const parentInSubObject = findParentProperty(
+        value,
+        targetProperty,
+        currentPath
+      );
+      if (parentInSubObject !== null) {
+        return parentInSubObject;
+      }
+    }
+  }
+  return null; // No se encontró la propiedad
+}
+
+// // Agregar filtro adicional para la marca (brand)
+// if (category) {
+//   if (Array.isArray(category)) {
+//     queryBuilder.andWhere('category.category IN (:...category)', { category });
+//   } else {
+//     queryBuilder.andWhere('category.category = :category', { category: category });
+//   }
+// }
+
+// if (subcategory) {
+//   if (Array.isArray(subcategory)) {
+//     queryBuilder.andWhere('subcategory.subcategory IN (:...subcategory)', { subcategory });
+//   } else {
+//     queryBuilder.andWhere('subcategory.subcategory = :subcategory', { subcategory: subcategory });
+//   }
+// }
+
+// if (brand) {
+//   if (Array.isArray(brand)) {
+//     queryBuilder.andWhere('product.brand IN (:...brands)', { brands: brand });
+//   } else {
+//     queryBuilder.andWhere('product.brand = :brand', { brand });
+//   }
+// }
+
+// Condiciones OR para los filtros de specifications
+// queryBuilder
+//   .andWhere(
+//     new Brackets(qb => {
+//       qb.orWhere('product.specifications ::jsonb @> :specifications1', { specifications1: { Redes: '4G/LTE' } })
+//       .orWhere('product.specifications ::jsonb @> :specifications2', { specifications2: { Redes: '4 G' } })
+//         // .orWhere('product.specifications @> :specifications2', { specifications2: { Procesador: 'A13 Bionic' } })
+//         // .orWhere('product.specifications @> :specifications3', { specifications3: { 'Memoria RAM': '8 GB' } })
+//         // .orWhere('product.specifications @> :specifications4', { specifications4: { 'Sistema Operativo': 'Android' } })
+//         // .orWhere('product.specifications @> :specifications5', { specifications5: { Color: 'Negro' } });
+//     })
+//   );
 
 
 

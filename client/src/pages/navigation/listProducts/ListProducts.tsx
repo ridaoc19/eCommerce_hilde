@@ -14,10 +14,10 @@ function ListProducts() {
          - paginacion Total: {paginationTotal}
          - Total Productos: {totalProduct}
         {PaginationButton}
-        {Filters}
         {/* <Breadcrumb /> */}
       </div>
       <div className="list-product__card" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '1rem' }}>
+        {Filters}
         {listProducts.map(({ product: { product_id, product, brand, variants } }) => {
           return (
             <Card key={product_id} product_id={product_id} product={product} brand={brand} images={variants[0].images} price={variants.map(variant => variant.price)} />

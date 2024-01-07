@@ -34,7 +34,7 @@ function ProductDetail() {
               <p>{listProducts[0].product.description}</p>
             </div>
             <div className="specification">
-              {Object.entries(listProducts[0].product.specification).map(([key, value], index) => {
+              {Object.entries(listProducts[0].product.specifications).map(([key, value], index) => {
                 return (
                   <div key={index}>
                     <div ><span>{key}: </span><span>{value}</span></div>

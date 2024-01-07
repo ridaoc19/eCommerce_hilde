@@ -27,7 +27,7 @@ export class ProductEntity {
   warranty: string;
 
   @Column({ type: 'jsonb' })
-  specification: Record<string, string>;
+  specifications: Record<string, string>;
 
   @ManyToOne(() => SubcategoryEntity, subcategory => subcategory.products, { cascade: true })
   @JoinColumn({ name: 'subcategory_id' })

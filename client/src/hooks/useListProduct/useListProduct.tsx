@@ -19,7 +19,7 @@ const initialStateListProduct: InitialStateListProduct = {
   query: "",
   dataState: {
     breadcrumb: { data: [], entity: BreadcrumbType.Department },
-    filters: { categories: [], subcategories: [], brand: [], attributes: {}, specifications: {} }
+    filters: { category: [], subcategory: [], brand: [], attributes: {}, specifications: {} }
   }
 }
 
@@ -56,6 +56,10 @@ const useListProduct = (): ListProductHook => {
 
   useEffect(() => {
     if (data?.data) {
+      // data.data.listProduct.forEach(e => {
+      //   console.log(e.department)
+      // })
+      console.log(data.data)
       const bre = data.data.breadcrumb;
       const id = bre.data.find((d) => d.name_id === bre.entity)?._id;
       if (id && bre) {

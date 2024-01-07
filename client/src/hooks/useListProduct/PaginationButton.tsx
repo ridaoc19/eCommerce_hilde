@@ -21,7 +21,7 @@ function PaginationButton({
   paginationTotal
 }: PaginationButtonProps) {
   return (
-    <div style={{ display: 'flex', gap: '1rem' }}>
+    <div style={{ display: 'flex', gap: '1rem', width: '95vw' }}>
       <Button button={{ type: "dark", text: '<', handleClick: handleClickPaginationButtonBack, disabled: disableBack }} />
       <div style={{ display: 'flex', gap: '1rem', overflow: 'auto', maxWidth: '100vw' }} className='pagination'>
         {Array.from({ length: paginationTotal }, (_, index) => {
