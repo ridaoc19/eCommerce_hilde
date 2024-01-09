@@ -4,11 +4,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { AppDataSource } from '../../core/db/postgres';
 import { getBreadcrumbs } from '../../core/utils/breadcrumb/breadcrumb';
 import { StatusHTTP } from '../../core/utils/enums';
-import { GenerateFiltersReturn, generateFilters } from '../../core/utils/navigation/generateFilters';
+import { findParentProperty } from '../../core/utils/navigation/findParentProperty';
+import { generateFilters } from '../../core/utils/navigation/generateFilters';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { DepartmentEntity } from '../departments/entity';
-import { ProductEntity } from '../products/entity';
 import { NavigationEntity } from './entity';
 
 // function fetchCount(info: any) {
@@ -16,14 +16,6 @@ import { NavigationEntity } from './entity';
 //     setTimeout(() => resolve({ data: info }), 10000)
 //   );
 // }
-
-export interface ListProduct {
-  // department: Omit<DepartmentEntity, 'categories'>;
-  // category: Omit<CategoryEntity, 'department' | 'subcategories'>;
-  // subcategory: Omit<SubcategoryEntity, 'category' | 'products'>;
-  product: Omit<ProductEntity, 'subcategory'>;
-  // variant: Omit<VariantEntity, 'product'>;
-}
 
 export default {
   async getMenu(_req: Request, res: Response) {
@@ -87,7 +79,6 @@ export default {
 
   async getListProduct(req: Request, res: Response) {
     const { id, skip, take } = req.params;
-    // const { brand, category, subcategory } = req.query;
 
     try {
       const breadcrumb = await getBreadcrumbs(id);
@@ -99,7 +90,8 @@ export default {
         .leftJoinAndSelect('navigation.category', 'category')
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
-        .leftJoinAndSelect('product.variants', 'variant');
+        .leftJoinAndSelect('navigation.variants', 'variants')
+      // .leftJoinAndSelect('product.variants', 'variant');
 
       // Condición para el ID de navigation
       queryBuilder.andWhere(`navigation.${breadcrumb?.entity}_id = :id`, { id });
@@ -116,16 +108,14 @@ export default {
               parent === 'category' ? `category.category` :
                 parent === 'subcategory' ? `subcategory.subcategory` :
                   parent === 'brand' ? `product.brand` :
-                    parent === 'specifications' ? `product.specifications` : ``
+                    parent === 'specifications' ? `product.specifications` : `variants.attributes`
 
             if (parent === 'specifications' || parent === 'attributes') {
               newValue.forEach((element) => {
                 const uniqueId = uuidv4().replace(/-/g, '')
-                console.log({ variantProperty, parent, key, element, name: `${parent}${uniqueId}` }, "es string");
                 qb.orWhere(`${variantProperty} ::jsonb @> :${parent}${uniqueId}`, { [`${parent}${uniqueId}`]: { [key]: element } })
               })
             } else {
-              console.log({ key, value, parent, variantProperty, newValue }, "otros")
               qb.orWhere(`${variantProperty} IN (:...${key})`, { [key]: newValue })
             }
           })
@@ -167,27 +157,8 @@ export default {
   },
 };
 
-export function findParentProperty(obj: GenerateFiltersReturn, targetProperty: string, parentPath: string[] = []): string | null {
-  for (const [key, value] of Object.entries(obj)) {
-    const currentPath = [...parentPath, key];
 
-    if (key.toLowerCase() === targetProperty.toLowerCase()) {
-      // La propiedad se encuentra en este nivel del objeto
-      return currentPath[0];
-    } else if (typeof value === "object" && value !== null) {
-      // La propiedad se podría encontrar en otro subobjeto, así que recursivamente buscamos
-      const parentInSubObject = findParentProperty(
-        value,
-        targetProperty,
-        currentPath
-      );
-      if (parentInSubObject !== null) {
-        return parentInSubObject;
-      }
-    }
-  }
-  return null; // No se encontró la propiedad
-}
+
 
 // // Agregar filtro adicional para la marca (brand)
 // if (category) {

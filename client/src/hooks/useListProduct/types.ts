@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { ErrorNavigation } from "../../services/navigationApi";
-import { RequestMapNavigation, RouteNavigation } from "../../services/navigationRequest";
+import { ErrorNavigation } from "../../services/navigation/navigationApi";
+import { RequestMapNavigation, RouteNavigation } from "../../services/navigation/navigationRequest";
 
 export interface ListProductHook {
   listProducts: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data']['listProduct'];

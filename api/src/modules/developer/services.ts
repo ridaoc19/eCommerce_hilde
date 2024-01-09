@@ -52,6 +52,8 @@ export default {
       const subcategoryRepository = AppDataSource.getRepository(SubcategoryEntity);
       const productRepository = AppDataSource.getRepository(ProductEntity);
       const variantRepository = AppDataSource.getRepository(VariantEntity);
+      const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+
 
 
       for (const dataJson of jsonData) {
@@ -99,7 +101,6 @@ export default {
           await productRepository.save(existingProduct)
 
           // Crear entidad de navegación asociada a la variante
-          const navigationRepository = AppDataSource.getRepository(NavigationEntity);
           const newNavigation = new NavigationEntity();
           // newNavigation.variant = newVariant;
 
@@ -114,6 +115,8 @@ export default {
         }
 
         for (const jstonVariant of dataJson.variants) {
+          let existingNavigation = await navigationRepository.findOne({ where: { product: { product_id: existingProduct.product_id } } });
+
 
           const newVariant = new VariantEntity();
           newVariant.attributes = jstonVariant.attributes
@@ -122,6 +125,11 @@ export default {
           newVariant.stock = jstonVariant.stock
           newVariant.videos = jstonVariant.videos
           newVariant.product = existingProduct
+
+          if (existingNavigation) {
+            newVariant.navigation = existingNavigation;
+          }
+
           await variantRepository.save(newVariant)
 
 

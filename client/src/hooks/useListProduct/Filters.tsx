@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { RequestMapNavigation, RouteNavigation } from "../../services/navigationRequest";
+import { RequestMapNavigation, RouteNavigation } from "../../services/navigation/navigationRequest";
 import './style/filters.scss'; // Asegúrate de importar el archivo SCSS en tu componente
 
 function Filters(filters: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data']['filters']) {
@@ -15,8 +15,8 @@ function Filters(filters: RequestMapNavigation[RouteNavigation.NavigationListPro
     <div className="filters">
       <div className="content">
         {Object.entries(filters).map(([title, value], index) => {
-
           if (Array.isArray(value)) {
+            if (value.length === 0) return null
             return (
               <div key={index} className="acordeon-item">
                 <div className="acordeon-header" onClick={() => handleAccordionToggle(title)}>{title}</div>
@@ -72,6 +72,7 @@ function Filters(filters: RequestMapNavigation[RouteNavigation.NavigationListPro
             )
           } else {
             return Object.entries(value).map(([itemKey, itemValue], itemIndex) => {
+            if (itemValue.length === 0) return null
               return (
                 <div key={itemIndex} className="acordeon-item">
                   <div className="acordeon-header" onClick={() => handleAccordionToggle(itemKey)}>{itemKey}</div>

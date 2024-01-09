@@ -1,5 +1,5 @@
-import { BreadcrumbType, MapEntityBreadcrumb } from "../interfaces/global.interface";
-import { IProduct } from "../interfaces/product.interface";
+import { BreadcrumbType, MapEntityBreadcrumb } from "../../interfaces/global.interface";
+import { IProduct } from "../../interfaces/product.interface";
 
 export enum RouteNavigation {
   NavigationMenu = 'get|navigation/menu',

@@ -2,8 +2,8 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom';
 import { BreadcrumbType } from '../../interfaces/global.interface';
-import { ErrorNavigation, navigationRequest } from '../../services/navigationApi';
-import { RouteNavigation } from '../../services/navigationRequest';
+import { ErrorNavigation, navigationRequest } from '../../services/navigation/navigationApi';
+import { RouteNavigation } from '../../services/navigation/navigationRequest';
 import Breadcrumb from './Breadcrumb';
 import Filters from './Filters';
 import PaginationButton from './PaginationButton';
@@ -52,14 +52,18 @@ const useListProduct = (): ListProductHook => {
         dataState: stateListProduct.dataState
       })
     }
+    // eslint-disable-next-line
   }, [params.id, location.search])
 
   useEffect(() => {
     if (data?.data) {
-      // data.data.listProduct.forEach(e => {
-      //   console.log(e.department)
-      // })
-      console.log(data.data)
+      data.data.listProduct.forEach(e => {
+        e.variants.forEach(o =>{
+          console.log(o.attributes)
+
+        })
+      })
+      // console.log(data.data)
       const bre = data.data.breadcrumb;
       const id = bre.data.find((d) => d.name_id === bre.entity)?._id;
       if (id && bre) {

@@ -1,4 +1,4 @@
-import { Method } from "../interfaces/global.interface";
+import { Method } from "../../interfaces/global.interface";
 import { RequestMapNavigation, RouteNavigation } from "./navigationRequest";
 
 export type ErrorNavigation = {

@@ -54,10 +54,10 @@ export const generateFilters = async (queryBuilder: SelectQueryBuilder<Navigatio
   //   .select(['DISTINCT product.specification'])
   //   .getRawMany();
   const uniqueAttributes = await queryBuilder
-    .groupBy('variant.attributes') // Agrupar por atributos
+    .groupBy('variants.attributes') // Agrupar por atributos
     .select([
-      'variant.attributes AS attributes',
-      'COUNT(variant.attributes) AS count', // Contar la cantidad de ocurrencias
+      'variants.attributes AS attributes',
+      'COUNT(variants.attributes) AS count', // Contar la cantidad de ocurrencias
     ])
     .getRawMany();
 

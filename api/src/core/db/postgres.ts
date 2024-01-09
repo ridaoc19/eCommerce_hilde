@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from 'typeorm';
+import { AdvertisingEntity } from "../../modules/advertising/entity";
 import { CategoryEntity } from "../../modules/categories/entity";
 import { DepartmentEntity } from "../../modules/departments/entity";
 import { NavigationEntity } from "../../modules/navigation/entity";
@@ -25,7 +26,8 @@ export const AppDataSource = new DataSource({
     ProductEntity,
     VariantEntity,
     UserEntity,
-    NavigationEntity
+    NavigationEntity,
+    AdvertisingEntity
   ],
   migrations: [],
   subscribers: [],

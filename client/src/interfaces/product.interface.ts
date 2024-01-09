@@ -61,7 +61,8 @@ export namespace IProduct {
     department: Omit<Department, 'categories'>;
     category: Omit<Category, 'department' | 'subcategories'>;
     subcategory: Omit<Subcategory, 'category' | 'products'>;
-    product: Omit<Product, 'subcategory'>;
+    product: Omit<Product, 'subcategory' | 'variants'>;
+    variants: Omit<Variant, 'product'>[]
   }
 }
 

@@ -1,14 +1,26 @@
 import { useContext, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { CreateContext } from './hooks/useContext';
+import { IAdvertising } from './interfaces/advertising.interface';
 import { IProduct } from './interfaces/product.interface';
 import Routes from './routes';
-import { ErrorNavigation, navigationRequest } from './services/navigationApi';
-import { RouteNavigation } from './services/navigationRequest';
+import { advertisingRequest } from './services/advertising/advertisingApi';
+import { RouteAdvertising } from './services/advertising/advertisingRequest';
+import { ErrorNavigation, navigationRequest } from './services/navigation/navigationApi';
+import { RouteNavigation } from './services/navigation/navigationRequest';
 import './styles/app/App.scss';
 
 function App() {
   const { navigation: { navigationContextDispatch } } = useContext(CreateContext)!
+
+  useQuery({
+    queryKey: [IAdvertising.QUERY_KEY_PRODUCT.Advertising],
+    queryFn: async () => await advertisingRequest(RouteAdvertising.AdvertisingRequest).options({}),
+    onError: (error: ErrorNavigation) => error,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    // enabled: true,
+  });
 
   const { isFetching, isLoading, data, error, isSuccess, isError } =
     useQuery({
@@ -19,6 +31,7 @@ function App() {
       refetchOnMount: false,
       // enabled: true,
     });
+
 
   useEffect(() => {
     navigationContextDispatch({

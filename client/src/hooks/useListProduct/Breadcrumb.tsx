@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/button/Button';
-import { RequestMapNavigation, RouteNavigation } from '../../services/navigationRequest';
+import { RequestMapNavigation, RouteNavigation } from '../../services/navigation/navigationRequest';
 
 
 

@@ -1,5 +1,5 @@
-import { RequestMapNavigation, RouteNavigation } from "../../../services/navigationRequest";
-import { ErrorNavigation } from '../../../services/navigationApi'
+import { RequestMapNavigation, RouteNavigation } from "../../../services/navigation/navigationRequest";
+import { ErrorNavigation } from '../../../services/navigation/navigationApi'
 
 export namespace INavigatorReducer {
   export type AppState = {

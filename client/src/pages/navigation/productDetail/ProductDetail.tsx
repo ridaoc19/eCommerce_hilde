@@ -20,7 +20,7 @@ function ProductDetail() {
               <p>{listProducts[0].product.brand}</p>
             </div>
             <div className="images" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-              {listProducts[0].product.variants.map(e => {
+              {listProducts[0].variants.map(e => {
                 return e.images.map((img, i) => (
                   <div key={i}>
                     <img src={img} alt="" width={100} />
