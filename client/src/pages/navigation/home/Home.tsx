@@ -1,7 +1,7 @@
 import useAdvertising from "../../../hooks/useAdvertising/useAdvertising";
 
 function Home() {
-  const { BannerBox, Carrusel } = useAdvertising()
+  const { BannerBox, Carrusel, BannerPrimary, BannerSecondary } = useAdvertising()
 
 
   // const { advertising: { advertisingContextState } } = useContext(CreateContext)!
@@ -9,6 +9,7 @@ function Home() {
   return (
     <div>
       {Carrusel}
+      {BannerPrimary}
       <hr />
       {BannerBox}
       {/* {isLoading || isFetching ? <div>Cargando...</div> :
@@ -50,6 +51,7 @@ function Home() {
           }
         })
       } */}
+      {BannerSecondary}
     </div>
   );
 }
