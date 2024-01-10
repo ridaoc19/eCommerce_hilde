@@ -5,11 +5,14 @@ export namespace IAdvertising {
 
   export interface advertising {
     advertising_id: string;
+    page: string;
     location: string;
     title: string;
-    link: string;
+    redirect: string;
     text: string;
-    image: string;
+    image_desktop: string;
+    image_tablet: string;
+    image_phone: string;
   }
 
 }

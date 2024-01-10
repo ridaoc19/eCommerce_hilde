@@ -7,19 +7,28 @@ export class AdvertisingEntity {
   advertising_id: string;
 
   @Column()
+  page: string;
+
+  @Column()
   location: string;
 
   @Column()
   title: string;
 
   @Column()
-  link: string;
+  redirect: string;
 
   @Column()
   text: string;
 
   @Column()
-  image: string;
+  image_desktop: string;
+
+  @Column()
+  image_tablet: string;
+
+  @Column()
+  image_phone: string;
 
   @DeleteDateColumn({ select: false })
   deletedAt: Date;

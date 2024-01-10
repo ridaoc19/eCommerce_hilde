@@ -113,7 +113,17 @@ export default {
 };
 
 
-const getAllAdvertising = async (): Promise<{ advertising_id: string; location: string; title: string; link: string; text: string; image: string }[]> => {
+const getAllAdvertising = async (): Promise<{
+  advertising_id: string;
+  page: string;
+  location: string;
+  title: string;
+  redirect: string;
+  text: string;
+  image_desktop: string;
+  image_tablet: string;
+  image_phone: string;
+}[]> => {
   const advertisingRepository = AppDataSource.getRepository(AdvertisingEntity);
   const allAdvertising = await advertisingRepository.find();
 

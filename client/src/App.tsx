@@ -11,16 +11,16 @@ import { RouteNavigation } from './services/navigation/navigationRequest';
 import './styles/app/App.scss';
 
 function App() {
-  const { navigation: { navigationContextDispatch } } = useContext(CreateContext)!
-
-  useQuery({
-    queryKey: [IAdvertising.QUERY_KEY_PRODUCT.Advertising],
-    queryFn: async () => await advertisingRequest(RouteAdvertising.AdvertisingRequest).options({}),
-    onError: (error: ErrorNavigation) => error,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    // enabled: true,
-  });
+  const { navigation: { navigationContextDispatch }, advertising: { advertisingContextDispatch } } = useContext(CreateContext)!
+  const advertising =
+    useQuery({
+      queryKey: [IAdvertising.QUERY_KEY_PRODUCT.Advertising],
+      queryFn: async () => await advertisingRequest(RouteAdvertising.AdvertisingRequest).options({}),
+      onError: (error: ErrorNavigation) => error,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      // enabled: true,
+    });
 
   const { isFetching, isLoading, data, error, isSuccess, isError } =
     useQuery({
@@ -43,9 +43,24 @@ function App() {
         errors: error?.errors ? error.errors : []
       }
     })
-
     // eslint-disable-next-line
   }, [isFetching, isLoading, isError, isSuccess])
+
+
+  useEffect(() => {
+    advertisingContextDispatch({
+      type: 'advertisingData',
+      payload: {
+        isLoading: advertising.isLoading,
+        isFetching: advertising.isFetching,
+        data: advertising.data?.data ? advertising.data.data : [],
+        errors: advertising.error?.errors ? advertising.error.errors : []
+      }
+    })
+
+    // eslint-disable-next-line
+  }, [advertising.isLoading, advertising.isFetching, advertising.isError, advertising.isSuccess])
+
 
   return (
     <div>
