@@ -86,7 +86,7 @@ export default {
         .getRepository(DepartmentEntity)
         .findOne({
           where: { department_id },
-          // withDeleted: false,
+          withDeleted: true,
           relations: { categories: { subcategories: { products: { variants: true } } } }
         });
 

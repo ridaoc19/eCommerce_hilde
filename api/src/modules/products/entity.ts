@@ -1,10 +1,11 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { VariantEntity } from '../variants/entity';
 import { SubcategoryEntity } from '../subcategories/entity';
+import { NavigationEntity } from '../navigation/entity';
 
 @Entity('products')
 export class ProductEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   product_id: string;
 
   @Column({ type: 'varchar' })
@@ -16,8 +17,17 @@ export class ProductEntity {
   @Column({ type: 'text' })
   description: string;
 
+  @Column('simple-array')
+  benefits: string[];
+
+  @Column({ type: 'text' })
+  contents: string;
+
+  @Column({ type: 'text' })
+  warranty: string;
+
   @Column({ type: 'jsonb' })
-  specification: Record<string, string>;
+  specifications: Record<string, string>;
 
   @ManyToOne(() => SubcategoryEntity, subcategory => subcategory.products, { cascade: true })
   @JoinColumn({ name: 'subcategory_id' })
@@ -26,7 +36,10 @@ export class ProductEntity {
   @OneToMany(() => VariantEntity, variant => variant.product, { cascade: ['soft-remove', 'recover'] })
   variants: VariantEntity[];
 
-  @DeleteDateColumn()
+  @OneToMany(() => NavigationEntity, navigation => navigation.product, { cascade: ['soft-remove', 'recover'] })
+  navigations: NavigationEntity[];
+
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }
 

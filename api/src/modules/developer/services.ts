@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
+import { readFileSync } from 'fs';
 import { join } from 'path';
+import { AppDataSource } from '../../core/db/postgres';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { readFileSync } from 'fs';
-import { AppDataSource } from '../../core/db/postgres';
-import { DepartmentEntity } from '../departments/entity';
 import { CategoryEntity } from '../categories/entity';
-import { SubcategoryEntity } from '../subcategories/entity';
+import { DepartmentEntity } from '../departments/entity';
+import { NavigationEntity } from '../navigation/entity';
 import { ProductEntity } from '../products/entity';
+import { SubcategoryEntity } from '../subcategories/entity';
 import { VariantEntity } from '../variants/entity';
 
 interface Data {
@@ -20,6 +21,9 @@ interface Data {
   subcategory: string;
   description: string;
   variants: Variant[];
+  benefits: string[];
+  contents: string;
+  warranty: string;
 }
 
 interface Variant {
@@ -48,6 +52,8 @@ export default {
       const subcategoryRepository = AppDataSource.getRepository(SubcategoryEntity);
       const productRepository = AppDataSource.getRepository(ProductEntity);
       const variantRepository = AppDataSource.getRepository(VariantEntity);
+      const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+
 
 
       for (const dataJson of jsonData) {
@@ -86,12 +92,31 @@ export default {
           existingProduct.product = dataJson.product
           existingProduct.brand = dataJson.brand
           existingProduct.description = dataJson.description
-          existingProduct.specification = dataJson.specification
+          existingProduct.specifications = dataJson.specification
+          existingProduct.benefits = dataJson.benefits
+          existingProduct.contents = dataJson.contents
+          existingProduct.warranty = dataJson.warranty
+
           existingProduct.subcategory = existingSubcategory
           await productRepository.save(existingProduct)
+
+          // Crear entidad de navegación asociada a la variante
+          const newNavigation = new NavigationEntity();
+          // newNavigation.variant = newVariant;
+
+          // Asignar otras entidades relacionadas
+          newNavigation.product = existingProduct;
+          newNavigation.subcategory = existingSubcategory;
+          newNavigation.category = existingCategory;
+          newNavigation.department = existingDepartment;
+
+          // Guardar la entidad de navegación
+          await navigationRepository.save(newNavigation);
         }
 
         for (const jstonVariant of dataJson.variants) {
+          let existingNavigation = await navigationRepository.findOne({ where: { product: { product_id: existingProduct.product_id } } });
+
 
           const newVariant = new VariantEntity();
           newVariant.attributes = jstonVariant.attributes
@@ -100,7 +125,28 @@ export default {
           newVariant.stock = jstonVariant.stock
           newVariant.videos = jstonVariant.videos
           newVariant.product = existingProduct
+
+          if (existingNavigation) {
+            newVariant.navigation = existingNavigation;
+          }
+
           await variantRepository.save(newVariant)
+
+
+          // // Crear entidad de navegación asociada a la variante
+          // const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+          // const newNavigation = new NavigationEntity();
+          // newNavigation.variant = newVariant;
+
+          // // Asignar otras entidades relacionadas
+          // newNavigation.product = existingProduct;
+          // newNavigation.subcategory = existingSubcategory;
+          // newNavigation.category = existingCategory;
+          // newNavigation.department = existingDepartment;
+
+          // // Guardar la entidad de navegación
+          // await navigationRepository.save(newNavigation);
+
         }
       }
 

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
+import { AppDataSource } from '../../core/db/postgres';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { ProductEntity } from '../products/entity';
 import { VariantEntity } from '../variants/entity';
-import { AppDataSource } from '../../core/db/postgres';
 
 export default {
   async createVariant(req: Request, res: Response) {
@@ -34,7 +34,9 @@ export default {
       newVariant.stock = stock;
       newVariant.product = existingProduct;
 
+      // Después de guardar la variante
       await variantRepository.save(newVariant);
+
 
       successHandler({
         res,

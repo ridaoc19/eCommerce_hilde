@@ -1,0 +1,152 @@
+@mixin button_repeat($type) {
+  width           : 100%;
+  white-space     : nowrap;
+  cursor          : pointer;
+  user-select     : none;
+  // height       : 2.5rem;
+  border-radius   : 0.4rem;
+  outline         : none;
+  display         : flex;
+  align-items     : center;
+  gap             : 0.3rem;
+  padding         : 0 1rem;
+
+  span,
+  p {
+    pointer-events: none;
+  }
+
+  @if $type==button_dark {
+    background-color: var(--brand-6);
+    color           : var(--font-light);
+    border          : 1px solid transparent;
+
+    &:active {
+      background-color: var(--brand-9);
+      color           : var(--font-light);
+      transform       : scale(0.97);
+    }
+
+    &:disabled {
+      background-color: var(--neutral-1);
+      color           : var(--neutral-4);
+      transform       : scale(0.97);
+      border          : 1px solid var(--brand-5);
+      cursor          : default;
+    }
+  }
+
+  @else if $type==button_light {
+    background-color: var(--font-light);
+    color           : var(--brand-6);
+    border          : 1px solid var(--brand-6);
+
+    &:active {
+      background-color: var(--brand-6);
+      color           : var(--font-light);
+      transform       : scale(0.97);
+    }
+
+    &:disabled {
+      background-color: var(--neutral-1);
+      color           : var(--neutral-4);
+      transform       : scale(0.97);
+      border          : 1px solid var(--brand-5);
+      cursor          : default;
+    }
+  }
+
+  @else if $type==button_none {
+    background-color: transparent;
+    border          : none;
+    height          : 1.8rem;
+    padding         : 0;
+  }
+
+  @else if $type==button_highlighter {
+    background-color: transparent;
+    border          : none;
+    height          : 1.8rem;
+    padding         : 1.3rem 1rem;
+
+    &:hover {
+      background-color: var(--neutral-2);
+    }
+  }
+
+  @else if $type==button_link {
+    background-color: transparent;
+    border          : none;
+    height          : 1.8rem;
+    padding         : 0;
+
+    p {
+      display        : inline-block;
+      position       : relative;
+      color          : var(--font-brand);
+      text-decoration: none;
+
+      &:after {
+        content   : "";
+        display   : block;
+        margin    : auto;
+        height    : 2px;
+        width     : 0px;
+        transition: all .5s;
+      }
+
+      &:hover:after {
+        width     : 100%;
+        background: var(--font-brand);
+      }
+    }
+  }
+}
+
+.button {
+
+  button {
+    all        : unset;
+    line-height: 0;
+
+  }
+
+  .input__svg {
+    display: grid;
+  }
+
+  &.button_dark {
+    @include button_repeat(button_dark);
+  }
+
+  &.button_light {
+    @include button_repeat(button_light);
+  }
+
+  &.button_none {
+    @include button_repeat(button_none);
+  }
+
+  &.button_highlighter {
+    @include button_repeat(button_highlighter);
+  }
+
+  &.button_link {
+    @include button_repeat(button_link);
+
+    //   background-color: transparent;
+    //   color           : #1677ff;
+    //   border          : 1px solid transparent;
+    //   text-decoration : underline;
+    //   white-space     : nowrap;
+    //   cursor          : pointer;
+    //   user-select     : none;
+    //   touch-action    : manipulation;
+    //   padding         : 0;
+
+    //   &:disabled {
+    //     color : var(--neutral-4);
+    //     cursor: default;
+    //   }
+  }
+}

@@ -1,9 +1,10 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { NavigationEntity } from '../navigation/entity';
 import { ProductEntity } from '../products/entity';
 
 @Entity('variants')
 export class VariantEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   variant_id: string;
 
   @Column('simple-array')
@@ -25,7 +26,11 @@ export class VariantEntity {
   @JoinColumn({ name: 'product_id' })
   product: ProductEntity;
 
-  @DeleteDateColumn()
+  @ManyToOne(() => NavigationEntity, navigation => navigation.variants, { cascade: true })
+  @JoinColumn({ name: 'navigation_id' })
+  navigation: NavigationEntity;
+
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }
 

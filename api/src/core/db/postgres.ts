@@ -1,7 +1,9 @@
 import "reflect-metadata";
 import { DataSource } from 'typeorm';
+import { AdvertisingEntity } from "../../modules/advertising/entity";
 import { CategoryEntity } from "../../modules/categories/entity";
 import { DepartmentEntity } from "../../modules/departments/entity";
+import { NavigationEntity } from "../../modules/navigation/entity";
 import { ProductEntity } from "../../modules/products/entity";
 import { SubcategoryEntity } from "../../modules/subcategories/entity";
 import { UserEntity } from "../../modules/users/entity";
@@ -17,7 +19,16 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_database,
   synchronize: true,
   logging: false,
-  entities: [DepartmentEntity, CategoryEntity, SubcategoryEntity, ProductEntity, VariantEntity, UserEntity],
+  entities: [
+    DepartmentEntity,
+    CategoryEntity,
+    SubcategoryEntity,
+    ProductEntity,
+    VariantEntity,
+    UserEntity,
+    NavigationEntity,
+    AdvertisingEntity
+  ],
   migrations: [],
   subscribers: [],
 });

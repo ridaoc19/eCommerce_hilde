@@ -1,10 +1,11 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { DepartmentEntity } from '../departments/entity';
 import { SubcategoryEntity } from '../subcategories/entity';
+import { NavigationEntity } from '../navigation/entity';
 
 @Entity('categories')
 export class CategoryEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   category_id: string;
 
   @Column({ type: 'varchar' })
@@ -17,6 +18,9 @@ export class CategoryEntity {
   @OneToMany(() => SubcategoryEntity, subcategory => subcategory.category, { cascade: ['soft-remove', 'recover'] })
   subcategories: SubcategoryEntity[];
 
-  @DeleteDateColumn()
+  @OneToMany(() => NavigationEntity, navigation => navigation.category, { cascade: ['soft-remove', 'recover'] })
+  navigations: NavigationEntity[];
+
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 }
