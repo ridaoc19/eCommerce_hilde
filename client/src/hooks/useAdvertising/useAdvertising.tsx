@@ -10,6 +10,7 @@ interface UseAdvertising {
   Carrusel: ReactNode;
   BannerPrimary: ReactNode;
   BannerSecondary: ReactNode;
+  CarruselMultiple: ReactNode;
 }
 
 function useAdvertising(): UseAdvertising {
@@ -17,9 +18,10 @@ function useAdvertising(): UseAdvertising {
 
   return {
     BannerBox: <BannerBox advertisingData={advertisingData} />,
-    Carrusel: <Carrusel advertising={advertisingData.data.filter(e => e.location === 'carrusel')} />,
+    Carrusel: <Carrusel itemPerPage={1} advertising={advertisingData.data.filter(e => e.location === 'carrusel')} />,
     BannerPrimary: <Banner advertisingData={{ ...advertisingData, data: advertisingData.data.filter(e => e.location === 'banner-primary') }} />,
     BannerSecondary: <Banner advertisingData={{ ...advertisingData, data: advertisingData.data.filter(e => e.location === 'banner-secondary') }} />,
+    CarruselMultiple: <Carrusel advertising={advertisingData.data.filter(e => e.location === 'carrusel-multiple')} />,
   };
 }
 

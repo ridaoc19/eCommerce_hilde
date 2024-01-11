@@ -63,7 +63,7 @@ function App() {
 
 
   return (
-    <div>
+    <div className='app'>
       <Routes />
     </div>
   );
