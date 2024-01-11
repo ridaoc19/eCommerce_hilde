@@ -55,7 +55,7 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
       if (!isMouseOverVitrine && allAdvertising.length > 0) {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % allAdvertising.length);
       }
-    }, 3000);
+    }, 5000);
 
     // Limpiar el intervalo cuando el componente se desmonta o cuando isMouseOverVitrine cambia
     return () => clearInterval(interval);
@@ -77,11 +77,11 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
       })}>&lt;</button>
 
       {/* Mapear y renderizar los productos en la vitrina */}
-      <div className='render_container' style={{ display: 'flex' }}>
+      <div className='render_container' style={{ display: 'flex', gap: '1.5rem', width: '100%' }}>
         {allAdvertising[currentIndex]?.map((item, index) => {
           return (
             <div key={index}>
-              <img src={item.image} style={{ width: '100%' }} alt="" />
+              <img src={item.image} style={{ width: '100%', borderRadius: '0.5rem' }} alt="" />
             </div>
           )
         })}
