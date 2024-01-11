@@ -17,6 +17,11 @@ import { NavigationEntity } from './entity';
 //   );
 // }
 
+// Define una interfaz que extienda NavigationEntity
+// interface ProductWithBreadcrumb extends NavigationEntity {
+//   breadcrumb: GetBreadcrumbsReturn; // O el tipo adecuado para tus breadcrumbs
+// }
+
 export default {
   async getMenu(_req: Request, res: Response) {
     try {
@@ -155,6 +160,60 @@ export default {
       errorHandlerCatch({ error, res });
     }
   },
+
+  async getSearch(req: Request, res: Response) {
+    const { search } = req.params;
+
+    try {
+      const queryBuilder = AppDataSource
+        .getRepository(NavigationEntity)
+        .createQueryBuilder('navigation')
+        .leftJoinAndSelect('navigation.department', 'department')
+        .leftJoinAndSelect('navigation.category', 'category')
+        .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+        .leftJoinAndSelect('navigation.product', 'product')
+        .leftJoinAndSelect('navigation.variants', 'variants');
+
+      // Condición para el nombre del producto (ILIKE para búsqueda insensible a mayúsculas y minúsculas)
+      queryBuilder.where(`product.product ILIKE :productName`, { productName: `%${search}%` });
+
+      // Seleccionar campos específicos
+      const filteredProducts = await queryBuilder
+        .skip(0)
+        .take(6)
+        .getMany();
+
+      // Obtener el recuento total
+      const totalCount = await queryBuilder.getCount();
+
+      // // Agregar breadcrumbs a cada producto
+      // const productsWithBreadcrumbs: ProductWithBreadcrumb[] = [];
+      // for (const item of filteredProducts) {
+      //   const breadcrumb = await getBreadcrumbs(item.product.product_id);
+      //   // Asegurarse de manejar el caso donde breadcrumb es null
+      //   const productWithBreadcrumb: ProductWithBreadcrumb = { ...item, breadcrumb };
+      //   productsWithBreadcrumbs.push(productWithBreadcrumb);
+      // }
+
+      successHandler({
+        res,
+        dataDB: {
+          totalCount,
+          listProduct: filteredProducts,
+        },
+        json: {
+          field: 'navigation_search',
+          message: 'Datos obtenidos',
+          status_code: 200,
+          status: StatusHTTP.success_200,
+        },
+      });
+    } catch (error) {
+      errorHandlerCatch({ error, res });
+    }
+  }
+
+
 };
 
 

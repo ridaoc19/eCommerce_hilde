@@ -38,7 +38,7 @@ type Variant = {
 }
 
 // Define el tipo de retorno para la función de breadcrumbs
-type GetBreadcrumbsReturn = Department | Category | Subcategory | Product | Variant | null;
+export type GetBreadcrumbsReturn = Department | Category | Subcategory | Product | Variant | null;
 type GetEntityBreadcrumbs = Department | Category | Subcategory | Product | Variant;
 
 export async function getBreadcrumbs(entityId: string): Promise<GetBreadcrumbsReturn> {
