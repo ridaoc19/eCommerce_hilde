@@ -21,7 +21,7 @@ function useAdvertising(): UseAdvertising {
     Carrusel: <Carrusel itemPerPage={1} advertising={advertisingData.data.filter(e => e.location === 'carrusel')} />,
     BannerPrimary: <Banner advertisingData={{ ...advertisingData, data: advertisingData.data.filter(e => e.location === 'banner-primary') }} />,
     BannerSecondary: <Banner advertisingData={{ ...advertisingData, data: advertisingData.data.filter(e => e.location === 'banner-secondary') }} />,
-    CarruselMultiple: <Carrusel advertising={advertisingData.data.filter(e => e.location === 'carrusel-multiple')} />,
+    CarruselMultiple: <Carrusel itemPerPage={2} advertising={advertisingData.data.filter(e => e.location === 'carrusel-multiple')} />,
   };
 }
 

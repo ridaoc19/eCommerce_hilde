@@ -6,12 +6,12 @@ function Home() {
   return (
     <div>
       {Carrusel}
-      {CarruselMultiple}
       {BannerPrimary}
       <hr />
       {BannerBox}
 
       {BannerSecondary}
+      {CarruselMultiple}
     </div>
   );
 }
