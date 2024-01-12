@@ -155,6 +155,60 @@ export default {
       errorHandlerCatch({ error, res });
     }
   },
+
+  async getSearch(req: Request, res: Response) {
+    const { search } = req.params;
+
+    try {
+      const queryBuilder = AppDataSource
+        .getRepository(NavigationEntity)
+        .createQueryBuilder('navigation')
+        .leftJoinAndSelect('navigation.department', 'department')
+        .leftJoinAndSelect('navigation.category', 'category')
+        .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+        .leftJoinAndSelect('navigation.product', 'product')
+        .leftJoinAndSelect('navigation.variants', 'variants');
+
+      const searchTerms = search.split(' ').join('|');
+      // console.log(searchTerms)
+
+      // Condición para el nombre del producto (ILIKE para búsqueda insensible a mayúsculas y minúsculas)
+      // queryBuilder.where(`product.product ILIKE :productName`, { productName: `%${search}%` });
+      queryBuilder
+        // .where('to_tsvector(\'simple\', CAST(navigation.search AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: search })
+
+        // .where(`navigation.search::text ILIKE :productName`, { productName: `%${search}%` })
+
+        // .where(`LOWER(product.product) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+        .where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+      // Seleccionar campos específicos
+      const filteredProducts = await queryBuilder
+        .skip(0)
+        .take(6)
+        .getMany();
+
+      // Obtener el recuento total
+      const totalCount = await queryBuilder.getCount();
+
+      successHandler({
+        res,
+        dataDB: {
+          totalCount,
+          listProduct: filteredProducts,
+        },
+        json: {
+          field: 'navigation_search',
+          message: 'Datos obtenidos',
+          status_code: 200,
+          status: StatusHTTP.success_200,
+        },
+      });
+    } catch (error) {
+      errorHandlerCatch({ error, res });
+    }
+  }
+
+
 };
 
 

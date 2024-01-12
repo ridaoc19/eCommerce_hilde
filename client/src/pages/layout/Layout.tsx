@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import Navbar from './navbar';
 import Footer from './footer';
+import Search from '../../components/common/search/Search';
 
 export namespace ILayout {
   export type LayoutProps = {
@@ -19,7 +20,7 @@ function Layout({ children }: ILayout.LayoutProps) {
             <Navbar />
           </div>
           {window.location.pathname !== "/hilde/dashboard" && <div className='layout__navbar-search'>
-            {/* <Search /> */}
+            <Search />
           </div>}
         </div>
       </div>

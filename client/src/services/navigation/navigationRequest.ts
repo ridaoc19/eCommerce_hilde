@@ -4,6 +4,7 @@ import { IProduct } from "../../interfaces/product.interface";
 export enum RouteNavigation {
   NavigationMenu = 'get|navigation/menu',
   NavigationListProduct = 'get|navigation/list-product',
+  NavigationSearch = 'get|navigation/search',
 }
 
 export type RequestMapNavigation = {
@@ -35,6 +36,14 @@ export type RequestMapNavigation = {
           [key: string]: string[];
         }
       }
+      totalCount: number;
+    }
+  },
+  [RouteNavigation.NavigationSearch]: {
+    route: RouteNavigation.NavigationSearch;
+    extensionRoute: `/${string}`;
+    data: {
+      listProduct: (IProduct.ListProduct & { breadcrumb: MapEntityBreadcrumb[BreadcrumbType] })[];
       totalCount: number;
     }
   }
