@@ -25,7 +25,7 @@
 
     .search-list {
       width           : 100%;
-      background-color: var(--brand-1);
+      background-color: var(--brand-3);
       position        : absolute;
 
       >div {
@@ -36,22 +36,15 @@
 
         // top             : 0;
         // left            : 0;
-        h4,
-        h5 {
-          margin : 0;
-          padding: 0;
-        }
 
         .search__card-content {
           display              : grid;
-          grid-template-columns: 6rem 1fr;
+          grid-template-columns: 7rem 1fr;
+          background-color     : var(--brand-1);
           gap                  : 0.5rem;
-          background-color     : #fff;
           padding              : 0.5rem;
 
-          .card__breadcrumb{
-
-          }
+          .card__breadcrumb {}
 
           .card__images {
             >img {
@@ -61,27 +54,38 @@
 
           .card__content {
             display           : grid;
-            grid-template-rows: 1.5rem 1.8rem 2.5rem;
+            grid-template-rows: 1.5rem 1.8rem 2.4rem;
             gap               : 0.5rem;
+            align-items       : center;
 
             .card__title {
               color: var(--font-brand);
             }
 
             .card__utils {
-              h5 {
-                color: var(--font-dark);
-
-              }
-
               display              : grid;
               grid-template-columns: 8rem 1fr;
+
+              .card__utils-price {
+                display      : grid;
+                place-content: center;
+              }
+
+              .card__utils-button {
+                display        : grid;
+                justify-content: end;
+              }
             }
           }
 
 
         }
       }
+    }
+
+    .search-view {
+      display      : flex;
+      justify-items: flex-end;
     }
 
   }

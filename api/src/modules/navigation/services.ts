@@ -10,6 +10,7 @@ import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { DepartmentEntity } from '../departments/entity';
 import { NavigationEntity } from './entity';
+import { findParentUUID } from '../../core/utils/navigation/findParentUUID';
 
 // function fetchCount(info: any) {
 //   return new Promise<{ data: number }>((resolve) =>
@@ -79,7 +80,6 @@ export default {
 
   async getListProduct(req: Request, res: Response) {
     const { id, skip, take } = req.params;
-
     try {
       const breadcrumb = await getBreadcrumbs(id);
 
@@ -94,7 +94,11 @@ export default {
       // .leftJoinAndSelect('product.variants', 'variant');
 
       // Condición para el ID de navigation
-      queryBuilder.andWhere(`navigation.${breadcrumb?.entity}_id = :id`, { id });
+      if (findParentUUID(id)) {
+        queryBuilder.andWhere(`navigation.${breadcrumb?.entity}_id = :id`, { id });
+      } else {
+        queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${id})` })
+      }
 
       const filtersQueryBuilder = queryBuilder.clone();
       const filters = await generateFilters(filtersQueryBuilder);
@@ -184,7 +188,7 @@ export default {
       // Seleccionar campos específicos
       const filteredProducts = await queryBuilder
         .skip(0)
-        .take(6)
+        .take(4)
         .getMany();
 
       // Obtener el recuento total

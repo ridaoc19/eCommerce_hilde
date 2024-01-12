@@ -3,6 +3,7 @@ import { NavigationEntity } from "../../../modules/navigation/entity";
 
 
 export interface GenerateFiltersReturn {
+  department: string[]
   category: string[]
   subcategory: string[]
   brand: string[]
@@ -24,6 +25,13 @@ export const generateFilters = async (queryBuilder: SelectQueryBuilder<Navigatio
   //   // .andWhere(/* Otras condiciones si es necesario */)
   //   .select(['DISTINCT variant.attributes'])
   //   .getRawMany();
+
+  const uniqueDepartment = await queryBuilder
+    // .andWhere(/* Otras condiciones si es necesario */)
+    .select(['DISTINCT department.department'])
+    .getRawMany();
+
+  const department = uniqueDepartment.map(e => e.department)
 
   const uniqueCategories = await queryBuilder
     // .andWhere(/* Otras condiciones si es necesario */)
@@ -102,6 +110,7 @@ export const generateFilters = async (queryBuilder: SelectQueryBuilder<Navigatio
 
 
   return {
+    department: department.length > 1 ? department : [],
     category: categories.length > 1 ? categories : [],
     subcategory: subcategories.length > 1 ? subcategories : [],
     brand,

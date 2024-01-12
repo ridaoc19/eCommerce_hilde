@@ -19,7 +19,7 @@ const initialStateListProduct: InitialStateListProduct = {
   query: "",
   dataState: {
     breadcrumb: { data: [], entity: BreadcrumbType.Department },
-    filters: { category: [], subcategory: [], brand: [], attributes: {}, specifications: {} }
+    filters: { department: [], category: [], subcategory: [], brand: [], attributes: {}, specifications: {} }
   }
 }
 
@@ -57,24 +57,18 @@ const useListProduct = (): ListProductHook => {
 
   useEffect(() => {
     if (data?.data) {
-      data.data.listProduct.forEach(e => {
-        e.variants.forEach(o =>{
-          console.log(o.attributes)
-
-        })
-      })
-      // console.log(data.data)
-      const bre = data.data.breadcrumb;
-      const id = bre.data.find((d) => d.name_id === bre.entity)?._id;
-      if (id && bre) {
+      // const bre = data.data.breadcrumb;
+      // const id = params.id;
+      // const id = bre.data.find((d) => d.name_id === bre.entity)?._id;
+      // console.log({ data, bre, id })
+      // if (id && bre) {
         setStateListProduct(prevState => ({
           ...prevState,
           allProducts: [{ allProducts_id: currentIndex, allProducts_data: data.data.listProduct }, ...allProducts],
-          changeRequest: { entity: bre.entity, id },
           paginationTotal: Math.ceil(data.data.totalCount / pagination),
           dataState: { filters: data.data.filters, breadcrumb: data.data.breadcrumb }
         }))
-      }
+      // }
     }
     // eslint-disable-next-line
   }, [isLoading, isSuccess, data, isFetching]);

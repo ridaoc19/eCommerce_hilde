@@ -5,6 +5,7 @@ import useListProduct from "../../../hooks/useListProduct/useListProduct";
 function ListProducts() {
   const { Filters, BreadcrumbComponent, listProducts, PaginationButton, currentIndex, paginationTotal, totalProduct } = useListProduct()
 
+  console.log(listProducts, "lista")
   return (
     <div className="list-product__container">
       <div className="list-product__breadcrumb">

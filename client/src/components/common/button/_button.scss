@@ -1,5 +1,6 @@
 @mixin button_repeat($type) {
   width           : 100%;
+  min-height      : 2.5rem;
   white-space     : nowrap;
   cursor          : pointer;
   user-select     : none;
@@ -14,6 +15,8 @@
   span,
   p {
     pointer-events: none;
+    margin        : 0;
+    padding       : 0;
   }
 
   @if $type==button_dark {
