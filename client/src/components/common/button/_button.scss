@@ -11,6 +11,11 @@
   gap             : 0.3rem;
   padding         : 0 1rem;
 
+  span,
+  p {
+    pointer-events: none;
+  }
+
   @if $type==button_dark {
     background-color: var(--brand-6);
     color           : var(--font-light);

@@ -25,7 +25,10 @@
   min-width            : 15rem;
   gap                  : 0.5rem;
 
-
+  h4,
+  p {
+    margin: 0;
+  }
 
   .card__images {
     width: 100%;

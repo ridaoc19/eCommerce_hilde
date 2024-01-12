@@ -1,12 +1,24 @@
-
 import app from "./app";
-import { dbConnect } from "./core/db/mongo";
-// import sequelize from "./src/core/database/db.js";
-
-
+import { AppDataSource } from "./core/db/postgres";
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => { console.log(`http://localhost:${PORT}`) });
-dbConnect().then(() => console.log("Conexión base datos")).catch(error => console.log("Se ha producido un error en db", error))
+AppDataSource.initialize().then(async () => {
 
+    
+    // console.log("Inserting a new user into the database...")
+    // const user = new User()
+    // user.firstName = "Timber"
+    // user.lastName = "Saw"
+    // user.age = 25
+    // await AppDataSource.manager.save(user)
+    // console.log("Saved a new user with id: " + user.id)
+
+    // console.log("Loading users from the database...")
+    // const users = await AppDataSource.manager.find(User)
+    // console.log("Loaded users: ", users)
+    console.log("Conexión base de datos exitosa")
+}).catch(error => console.log(error))
+
+
+app.listen(PORT, () => { console.log(`http://localhost:${PORT}`) });

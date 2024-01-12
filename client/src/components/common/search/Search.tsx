@@ -1,19 +1,34 @@
-import { useMemo, useState } from "react";
-import useProductFilter from "../../../hooks/useProductFilter";
-import { IProduct } from "../../../interfaces/product.interface";
-import UserInput from "../userInput/UserInput";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { ErrorNavigation, navigationRequest } from "../../../services/navigation/navigationApi";
+import { RouteNavigation } from "../../../services/navigation/navigationRequest";
+import Input from "../Input/Input";
 import SearchCard from "./SearchCard";
 // import './search.scss';
 
 function Search() {
-  const { findItemById } = useProductFilter();
-  const totalProduct = useMemo(() => findItemById<IProduct.Department[]>({ id: "" }).product.data, [findItemById])
   const [search, setSearch] = useState("");
+
+  const { data } = useQuery(
+    ['search', search],
+    async () => navigationRequest(RouteNavigation.NavigationSearch).options({ extensionRoute: `/${search}` }),
+    {
+      enabled: !!search,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      onError(err: ErrorNavigation) {
+        return err;
+      },
+    }
+  );
+
+  // console.log({ data, isLoading, isError, error, isSuccess, isFetching });
+
 
   return (
     <div className="search">
       <div className="search-input">
-        <UserInput input={{
+        <Input input={{
           handleOnChange: (event) => { setSearch(event.target.value) },
           name: "search",
           value: search,
@@ -23,9 +38,15 @@ function Search() {
       </div>
       {search && <div className="search-list">
         <div>
-          {totalProduct.filter(pro => pro.product.toLowerCase().includes(search.toLowerCase())).filter((_ext, index) => index < 20).map(pro => {
+          {data?.data.listProduct.map(pro => {
             return (
-              <SearchCard key={pro._id} _id={pro._id} product={pro.product} images={pro.images} variants={pro.variants} handleOnClick={() => setSearch("")} />
+              <SearchCard
+                key={pro.product.product_id}
+                listProduct={pro}
+                // product_id={pro.product.product_id} 
+                // product={pro.product.product} 
+                // variants={pro.variants} 
+                handleOnClick={() => setSearch("")} />
             )
           })}
         </div>

@@ -1,54 +1,68 @@
 export namespace IProduct {
   export enum QUERY_KEY_PRODUCT {
     SingleProduct = 'user',
-    MultipleProducts = 'products'
+    MultipleProducts = 'products',
+    Navigation = 'navigation'
   }
   type Route = "request" | "create" | "edit" | "delete" | "";
   export type Method = "get" | "post" | "put" | "delete";
   export type Routes = {
     routes: Route
   }
-  export const PRODUCT_NAME_QUERY = ['products']
 
-  export interface Variants {
-    _id?: string;
-    size: string;
-    color: string;
-    // purchasePrice: number;
-    sellingPrice: number;
+  type Attributes = Record<string, string>
+
+  export interface Variant {
+    variant_id: string;
+    images: string[];
+    attributes: Attributes;
+    videos: string[];
+    price: number;
     stock: number;
+    product: Product;
   }
 
-  interface Specification {
+  interface Specifications {
     [key: string]: string;
   }
   export interface Product {
-    _id: string;
-    subcategoryId: string;
+    product_id: string;
     product: string;
     brand: string;
-    specification: Specification[];
     description: string;
-    images: string[];
-    variants: Variants[];
+    specifications: Specifications;
+    benefits: string[];
+    contents: string;
+    warranty: string;
+    subcategory: Subcategory;
+    variants: Variant[];
   }
   export interface Subcategory {
-    _id: string;
+    subcategory_id: string;
     subcategory: string;
-    productsId: Product[];
-    categoryId: string;
+    category: Category;
+    products: Product[];
   }
 
   export interface Category {
-    _id: string;
+    category_id: string;
     category: string;
-    subcategoriesId: Subcategory[];
-    departmentId: string;
+    department: Department;
+    subcategories: Subcategory[];
   }
 
   export interface Department {
-    _id: string;
+    department_id: string;
     department: string;
-    categoriesId: Category[];
+    categories: Category[];
+  }
+  export interface ListProduct {
+    navigation_id: string;
+    department: Omit<Department, 'categories'>;
+    category: Omit<Category, 'department' | 'subcategories'>;
+    subcategory: Omit<Subcategory, 'category' | 'products'>;
+    product: Omit<Product, 'subcategory' | 'variants'>;
+    variants: Omit<Variant, 'product'>[]
   }
 }
+

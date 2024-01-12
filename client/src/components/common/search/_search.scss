@@ -1,4 +1,4 @@
-@import '../inputText/inputText';
+@import '../Input/userInput';
 
 .layout__navbar-search {
   .search {
@@ -44,11 +44,14 @@
 
         .search__card-content {
           display              : grid;
-          grid-template-columns: 8rem 1fr;
+          grid-template-columns: 6rem 1fr;
           gap                  : 0.5rem;
           background-color     : #fff;
           padding              : 0.5rem;
 
+          .card__breadcrumb{
+
+          }
 
           .card__images {
             >img {
@@ -58,7 +61,7 @@
 
           .card__content {
             display           : grid;
-            grid-template-rows: 3.5rem 1fr;
+            grid-template-rows: 1.5rem 1.8rem 2.5rem;
             gap               : 0.5rem;
 
             .card__title {

@@ -1,4 +1,3 @@
-import { IProduct } from "./product.interface";
 
 export namespace IUser {
 
@@ -17,10 +16,6 @@ export namespace IUser {
     verified: boolean;
     verifiedEmail: boolean;
     roles: Roles;
-    items: {
-      purchasedProducts: Array<IProduct.Variants['_id']>;
-      favoriteProducts: Array<IProduct.Variants['_id']>;
-    };
     addresses: Array<string>;
     token: string;
   }

@@ -1,4 +1,26 @@
-import { IDashReducer } from "../../../interfaces/hooks/context.interface";
+import { PermitsRoles } from "../../../interfaces/user.interface";
+
+export namespace IDashReducer {
+  export type AppState = {
+    component: string,
+    account: {
+      information: boolean,
+      password: boolean
+    };
+    permits: {
+      [key in PermitsRoles['id']]: boolean;
+    }
+  };
+
+  export type NameInventory = "department_id" | "category_id" | "subcategory_id" | "products_id" | "departmentEmpty_id" | "categoryEmpty_id" | "subcategoryEmpty_id" | "productsEmpty_id"
+  export type SelectAction = {
+    type: ActionTypeDashboard;
+    payload: { name: null | NameInventory, value: string }
+  };
+  export type AppAction = SelectAction;
+
+  export type Reducer = (state: AppState, action: AppAction) => AppState
+}
 
 export enum ActionTypeDashboard {
   PERMITS_ROLES = 'PERMITS_ROLES',
