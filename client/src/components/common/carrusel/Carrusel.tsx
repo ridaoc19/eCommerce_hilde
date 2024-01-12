@@ -29,9 +29,9 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
 
 
   useEffect(() => {
-    console.log(mediaQuery)
     setAdvertisingPerPage(mediaQuery === 'phone' ? 1 : itemPerPage);
-  }, [mediaQuery])
+     // eslint-disable-next-lin
+  }, [mediaQuery, itemPerPage])
 
 
   // Efecto para actualizar los productos paginados cuando cambian los productos originales
