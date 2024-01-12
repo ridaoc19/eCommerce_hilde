@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { IAdvertising } from '../../../interfaces/advertising.interface';
+import { Link } from 'react-router-dom';
 // import './principal.scss'; // Importa tu archivo de estilos
 
 interface CarruselProps {
@@ -80,9 +81,9 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
       <div className='render_container' style={{ display: 'flex', gap: '1.5rem', width: '100%' }}>
         {allAdvertising[currentIndex]?.map((item, index) => {
           return (
-            <div key={index}>
+            <Link key={index} to={item.redirect}>
               <img src={item.image} style={{ width: '100%', borderRadius: '0.5rem' }} alt="" />
-            </div>
+            </Link>
           )
         })}
       </div>

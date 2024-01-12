@@ -17,11 +17,6 @@ import { NavigationEntity } from './entity';
 //   );
 // }
 
-// Define una interfaz que extienda NavigationEntity
-// interface ProductWithBreadcrumb extends NavigationEntity {
-//   breadcrumb: GetBreadcrumbsReturn; // O el tipo adecuado para tus breadcrumbs
-// }
-
 export default {
   async getMenu(_req: Request, res: Response) {
     try {
@@ -174,9 +169,18 @@ export default {
         .leftJoinAndSelect('navigation.product', 'product')
         .leftJoinAndSelect('navigation.variants', 'variants');
 
-      // Condición para el nombre del producto (ILIKE para búsqueda insensible a mayúsculas y minúsculas)
-      queryBuilder.where(`product.product ILIKE :productName`, { productName: `%${search}%` });
+      const searchTerms = search.split(' ').join('|');
+      // console.log(searchTerms)
 
+      // Condición para el nombre del producto (ILIKE para búsqueda insensible a mayúsculas y minúsculas)
+      // queryBuilder.where(`product.product ILIKE :productName`, { productName: `%${search}%` });
+      queryBuilder
+        // .where('to_tsvector(\'simple\', CAST(navigation.search AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: search })
+
+        // .where(`navigation.search::text ILIKE :productName`, { productName: `%${search}%` })
+
+        // .where(`LOWER(product.product) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+        .where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
       // Seleccionar campos específicos
       const filteredProducts = await queryBuilder
         .skip(0)
@@ -185,15 +189,6 @@ export default {
 
       // Obtener el recuento total
       const totalCount = await queryBuilder.getCount();
-
-      // // Agregar breadcrumbs a cada producto
-      // const productsWithBreadcrumbs: ProductWithBreadcrumb[] = [];
-      // for (const item of filteredProducts) {
-      //   const breadcrumb = await getBreadcrumbs(item.product.product_id);
-      //   // Asegurarse de manejar el caso donde breadcrumb es null
-      //   const productWithBreadcrumb: ProductWithBreadcrumb = { ...item, breadcrumb };
-      //   productsWithBreadcrumbs.push(productWithBreadcrumb);
-      // }
 
       successHandler({
         res,

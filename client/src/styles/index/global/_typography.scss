@@ -41,11 +41,11 @@ code {
   overflow: hidden;
 }
 
-// a {
+a {
 //   display        : inline-block;
 //   position       : relative;
-//   color          : var(--font-brand);
-//   text-decoration: none;
+  color          : var(--font-brand);
+  text-decoration: none;
 
 //   &:after {
 //     content   : "";
@@ -60,4 +60,4 @@ code {
 //     width     : 100%;
 //     background: var(--font-brand);
 //   }
-// }
+}

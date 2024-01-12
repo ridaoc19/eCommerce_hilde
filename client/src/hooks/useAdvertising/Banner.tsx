@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { IContextData } from "../useContext";
 
 function Banner({ advertisingData }: IContextData['advertising']['advertisingContextState']) {
@@ -6,9 +7,9 @@ function Banner({ advertisingData }: IContextData['advertising']['advertisingCon
     <div className="banner" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-around' }}>
       {isFetching || isLoading ? <div>Cargando...</div> : data.map(item => {
         return (
-          <div key={item.advertising_id}>
+          <Link key={item.advertising_id} to={item.redirect}>
             <img src={item.image_desktop} alt="" style={{ borderRadius: '0.5rem', width: '100%' }} />
-          </div>
+          </Link>
         )
       })}
     </div>
