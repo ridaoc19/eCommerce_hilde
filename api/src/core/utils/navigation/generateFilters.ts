@@ -1,5 +1,6 @@
 import { SelectQueryBuilder } from "typeorm";
 import { NavigationEntity } from "../../../modules/navigation/entity";
+import { findParentUUID } from "./findParentUUID";
 
 
 export interface GenerateFiltersReturn {
@@ -15,7 +16,14 @@ export interface GenerateFiltersReturn {
   }
 }
 
-export const generateFilters = async (queryBuilder: SelectQueryBuilder<NavigationEntity>): Promise<GenerateFiltersReturn> => {
+export const generateFilters = async (queryBuilder: SelectQueryBuilder<NavigationEntity>, search: string, entity?: string): Promise<GenerateFiltersReturn> => {
+
+  if (findParentUUID(search)) {
+    queryBuilder.where(`navigation.${entity}_id = :id`, { id: search });
+  } else {
+    const searchTerms = search.split(' ').join('|');
+    queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+  }
 
   await queryBuilder
     .getMany();

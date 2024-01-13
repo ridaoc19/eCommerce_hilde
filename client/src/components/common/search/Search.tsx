@@ -52,7 +52,7 @@ function Search() {
           })}
         </div>
         <div className="search-view">
-          <Link className="link" to={`/list-products/${search}`}>Ver Todo</Link>
+          <Link className="link" to={`/list-products/${search}`} onClick={() => setSearch("")}>Ver Todo</Link>
         </div>
       </div>}
     </div>

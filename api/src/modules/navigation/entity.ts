@@ -4,6 +4,7 @@ import { DepartmentEntity } from '../departments/entity';
 import { ProductEntity } from '../products/entity';
 import { SubcategoryEntity } from '../subcategories/entity';
 import { VariantEntity } from '../variants/entity';
+import { objectString, stringEmpty } from '../../core/utils/navigation/functions';
 
 @Entity('navigation')
 export class NavigationEntity {
@@ -26,8 +27,14 @@ export class NavigationEntity {
   @JoinColumn({ name: 'product_id' })
   product: ProductEntity;
 
-  @Column({ type: 'tsvector', select: false }) // Select false evita que la columna aparezca en las consultas por defecto
+  @Column() // Select false evita que la columna aparezca en las consultas por defecto
   search: string;
+
+  @Column({ type: 'tsvector' }) // Select false evita que la columna aparezca en las consultas por defecto
+  filter: string;
+
+  @Column({ default: 0, select: false }) // Select false evita que la columna aparezca en las consultas por defecto
+  product_view: number;
 
   @OneToMany(() => VariantEntity, variant => variant.navigation, { cascade: ['soft-remove', 'recover'] })
   variants: VariantEntity[];
@@ -37,9 +44,22 @@ export class NavigationEntity {
 
   @BeforeInsert()
   @BeforeUpdate()
-  updateSearchVector() {
-    const cleanedProduct = this.product.product.replace(/[^a-zA-Z0-9 ]/g, ' ');
-    const cleanedBrand = this.product.brand.replace(/[^a-zA-Z0-9 ]/g, ' ');
-    this.search = `${cleanedProduct} ${cleanedBrand}`;
+  updateSearch() {
+    // .replace(/[^a-zA-Z0-9 ]/g, ' ') Reemplaza los caracteres no alfanuméricos por espacios antes de aplicar to_tsvector
+    // const cleanedProduct = this.product.product.replace(/[^a-zA-Z0-9 ]/g, ' ');
+    // const cleanedBrand = this.product.brand.replace(/[^a-zA-Z0-9 ]/g, ' ');
+    this.search = `${this.product.product} ${this.product.brand}`;
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateFilter() {
+    this.filter = `
+    department${stringEmpty(this.department.department)}
+    category${stringEmpty(this.category.category)}
+    subcategory${stringEmpty(this.subcategory.subcategory)}
+    brand${stringEmpty(this.product.brand)}
+    ${objectString(this.product.specifications)}
+    `;
   }
 }
