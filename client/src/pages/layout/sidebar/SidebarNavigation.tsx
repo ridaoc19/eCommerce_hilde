@@ -8,7 +8,7 @@ import { CreateContext } from "../../../hooks/useContext";
 
 interface IsOverflowing { _id: string, overrun: boolean }
 
-function SidebarNavigation({ isActive, handleOnSelectedId, selectedIdBoolean, handleOnClick }: { isActive: boolean, handleOnSelectedId: () => void, selectedIdBoolean: boolean, handleOnClick: () => void }) {
+function SidebarNavigation({ isOpenMenu, handleOnSelectedId, selectedIdBoolean, handleOnClick }: { isOpenMenu: boolean, handleOnSelectedId: () => void, selectedIdBoolean: boolean, handleOnClick: () => void }) {
   const { navigation: { navigationContextState: { hierarchicalData: { isLoading, isFetching, data } } } } = useContext(CreateContext)!
 
 
@@ -29,9 +29,9 @@ function SidebarNavigation({ isActive, handleOnSelectedId, selectedIdBoolean, ha
   }, [data, isOverflowing]);
 
   useEffect(() => {
-    if (!isActive || !selectedIdBoolean) setSelectedId("")
+    if (!isOpenMenu || !selectedIdBoolean) setSelectedId("")
     // eslint-disable-next-line
-  }, [isActive, selectedIdBoolean])
+  }, [isOpenMenu, selectedIdBoolean])
 
   useEffect(() => {
     if (selectedId) {
@@ -54,7 +54,7 @@ function SidebarNavigation({ isActive, handleOnSelectedId, selectedIdBoolean, ha
       <div className={`sidebar__section-left ${selectedId ? "hide" : ""}`}>
         <div className="sidebar__section-left-header">
           <div className="sidebar__section-left-header-content">
-            <SidebarIcon handleOnClick={handleOnClick} isActive={isActive} />
+            <SidebarIcon handleOnClick={handleOnClick} isOpenMenu={isOpenMenu} />
             <div>
               <Link to={'/'}>{Svg({ type: "logo", width: 50, height: 50, color: "white" })}</Link>
             </div>
@@ -65,8 +65,8 @@ function SidebarNavigation({ isActive, handleOnSelectedId, selectedIdBoolean, ha
           {isFetching || isLoading ? <>Cargando...</> : data.map(({ department_id, department }) => (
             <div
               key={department_id}
-              onClick={() => handleMouseEnter(department_id)}>
-              {/* onMouseEnter={() => handleMouseEnter(department_id)}> */}
+              // onClick={() => handleMouseEnter(department_id)}>
+              onMouseEnter={() => handleMouseEnter(department_id)}>
               <Link
                 to={`/list-products/${department_id}`}
                 onClick={handleOnClick} >

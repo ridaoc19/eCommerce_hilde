@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import Navbar from './navbar';
+import Navbar from './navbar/Navbar';
 import Footer from './footer';
 import Search from '../../components/common/search/Search';
 
