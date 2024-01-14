@@ -20,10 +20,10 @@ function Footer() {
                 <h4>Hilde</h4>
               </div>
               <div className="footer__top-center-content">
-                <Button button={{ type: 'link', text: "(+57) 312 000 00 00", handleClick: () => { } }} svg={{ type: 'phone' }} />
-                <Button button={{ type: 'link', text: 'hilde.ecommerce@outlook.com', handleClick: () => { } }} svg={{ type: 'email' }} />
-                <Button button={{ type: 'link', text: 'Cra 77 No. 48-06', handleClick: () => { } }} svg={{ type: 'location' }} />
-                <Button button={{ type: 'none', text: 'Lunes - Viernes de 8 AM - 6 PM', handleClick: () => { } }} svg={{ type: 'time' }} />
+                <Button button={{ type: 'link', text: "(+57) 312 000 00 00", handleClick: () => { } }} svgRight={{ type: 'phone' }} />
+                <Button button={{ type: 'link', text: 'hilde.ecommerce@outlook.com', handleClick: () => { } }} svgRight={{ type: 'email' }} />
+                <Button button={{ type: 'link', text: 'Cra 77 No. 48-06', handleClick: () => { } }} svgRight={{ type: 'location' }} />
+                <Button button={{ type: 'none', text: 'Lunes - Viernes de 8 AM - 6 PM', handleClick: () => { } }} svgRight={{ type: 'time' }} />
               </div>
             </div>
           </div>

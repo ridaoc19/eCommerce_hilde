@@ -29,7 +29,7 @@ function Sidebar() {
 
       <div className={`sidebar__content ${isOpenMenu ? 'is-active' : ''}`} onClick={handleOnClick}>
         <div className='sidebar__main'
-          onMouseLeave={() => setSelectedIdBoolean(false)}
+          // onMouseLeave={() => setSelectedIdBoolean(false)}
           onClick={(e) => e.stopPropagation()}>
           <div className='sidebar__section'>
             {window.location.pathname === "/hilde/dashboard"
