@@ -29,7 +29,7 @@
           display              : grid;
           grid-template-columns: 15rem auto;
 
-          @media (max-width: 410px) {
+          @media (max-width: 539px) {
             grid-template-columns: 100vw;
           }
 

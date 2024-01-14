@@ -1,4 +1,5 @@
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { objectString } from '../../core/utils/navigation/functions';
 import { NavigationEntity } from '../navigation/entity';
 import { ProductEntity } from '../products/entity';
 
@@ -32,5 +33,15 @@ export class VariantEntity {
 
   @DeleteDateColumn({ select: false })
   deletedAt: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateFilter() {
+    const variantAttributesString = objectString(this.attributes);
+
+    // Si ya hay información en la propiedad filter, entonces concatena con un espacio adicional
+    this.navigation.filter = `${this.navigation.filter || ''} ${variantAttributesString} `;
+  }
+
 }
 

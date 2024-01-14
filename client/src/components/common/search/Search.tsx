@@ -4,6 +4,7 @@ import { ErrorNavigation, navigationRequest } from "../../../services/navigation
 import { RouteNavigation } from "../../../services/navigation/navigationRequest";
 import Input from "../Input/Input";
 import SearchCard from "./SearchCard";
+import { Link } from "react-router-dom";
 // import './search.scss';
 
 function Search() {
@@ -49,6 +50,9 @@ function Search() {
                 handleOnClick={() => setSearch("")} />
             )
           })}
+        </div>
+        <div className="search-view">
+          <Link className="link" to={`/list-products/${search}`} onClick={() => setSearch("")}>Ver Todo</Link>
         </div>
       </div>}
     </div>

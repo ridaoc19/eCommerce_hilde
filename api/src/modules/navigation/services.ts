@@ -1,15 +1,17 @@
 import { Request, Response } from 'express';
-import { Brackets } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { AppDataSource } from '../../core/db/postgres';
 import { getBreadcrumbs } from '../../core/utils/breadcrumb/breadcrumb';
 import { StatusHTTP } from '../../core/utils/enums';
-import { findParentProperty } from '../../core/utils/navigation/findParentProperty';
+// import { findParentProperty } from '../../core/utils/navigation/findParentProperty';
+import { findParentUUID } from '../../core/utils/navigation/findParentUUID';
+import { stringEmpty } from '../../core/utils/navigation/functions';
 import { generateFilters } from '../../core/utils/navigation/generateFilters';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { DepartmentEntity } from '../departments/entity';
 import { NavigationEntity } from './entity';
+import { Brackets } from 'typeorm';
 
 // function fetchCount(info: any) {
 //   return new Promise<{ data: number }>((resolve) =>
@@ -79,7 +81,11 @@ export default {
 
   async getListProduct(req: Request, res: Response) {
     const { id, skip, take } = req.params;
-
+    const filtersQuery = Object.entries(req.query).map(([key, value]) => {
+      const values = Array.isArray(value) ? value : [value];
+      return values.map((element: string) => `${stringEmpty(key)}${stringEmpty(element)}`);
+    }).flat().join('|');
+    
     try {
       const breadcrumb = await getBreadcrumbs(id);
 
@@ -91,44 +97,53 @@ export default {
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
         .leftJoinAndSelect('navigation.variants', 'variants')
-      // .leftJoinAndSelect('product.variants', 'variant');
+
+        const filtersQueryBuilder = queryBuilder.clone();
+        const generateFiltersResponse = await generateFilters(filtersQueryBuilder, id, breadcrumb?.entity);
 
       // Condición para el ID de navigation
-      queryBuilder.andWhere(`navigation.${breadcrumb?.entity}_id = :id`, { id });
+      if (findParentUUID(id)) {
+        queryBuilder.where(`navigation.${breadcrumb?.entity}_id = :id`, { id });
 
-      const filtersQueryBuilder = queryBuilder.clone();
-      const filters = await generateFilters(filtersQueryBuilder);
+        if (Object.keys(req.query).length > 0) {
+          queryBuilder.andWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filtersQuery})` })
+        }
 
-      if (filters) {
-        queryBuilder.andWhere(new Brackets(qb => {
-          Object.entries(req.query).forEach(([key, value]) => {
-            const newValue = Array.isArray(value) ? value : [value]
-            const parent = findParentProperty(filters, key)
-            const variantProperty: string =
-              parent === 'category' ? `category.category` :
-                parent === 'subcategory' ? `subcategory.subcategory` :
-                  parent === 'brand' ? `product.brand` :
-                    parent === 'specifications' ? `product.specifications` : `variants.attributes`
+      } else {
+        const searchTerms = id.split(' ').join('|');
+        // queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+        // Estructura de la consulta
+        queryBuilder
+          .andWhere(new Brackets(qb => {
+            // Condición para la columna 'search'
+            // qb.where('LOWER(navigation.search::text) ~ LOWER(:search)', { search: `(${searchTerms})` });
+            qb.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
 
-            if (parent === 'specifications' || parent === 'attributes') {
-              newValue.forEach((element) => {
-                const uniqueId = uuidv4().replace(/-/g, '')
-                qb.orWhere(`${variantProperty} ::jsonb @> :${parent}${uniqueId}`, { [`${parent}${uniqueId}`]: { [key]: element } })
-              })
-            } else {
-              qb.orWhere(`${variantProperty} IN (:...${key})`, { [key]: newValue })
+            // Condición para la columna 'filter'
+            if (Object.keys(req.query).length > 0) {
+              // queryBuilder.andWhere(`navigation.filters::text ILIKE :productName`, { productName: `%${filters.join(' ')}%` })
+              qb.orWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filtersQuery})` })
             }
-          })
-        }))
+          }));
       }
+
+      // if (Object.keys(req.query).length > 0) {
+      //   const filters = Object.entries(req.query).map(([key, value]) => {
+      //     const values = Array.isArray(value) ? value : [value];
+      //     return values.map((element: string) => `${stringEmpty(key)}${stringEmpty(element)}`);
+      //   }).flat();
+      //   console.log(req.query, filters.join(' '), "ENTRO")
+      //   // queryBuilder.andWhere(`navigation.filters::text ILIKE :productName`, { productName: `%${filters.join(' ')}%` })
+      //   queryBuilder.andWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filters.join('|')})` })
+      // }
+
+
+      const ensayo = queryBuilder.clone();
+      const totalCountf = await ensayo.getCount();
+      console.log(totalCountf)
 
       // Seleccionar campos específicos
       const filteredProducts = await queryBuilder
-        // .select([
-        //   'navigation.product',
-        //   'product.brand',
-        //   'product.description', // Agrega otros campos que desees seleccionar
-        // ])
         .skip(Number(skip))
         .take(Number(take))
         .getMany(); // Usa getRawMany para obtener resultados como objetos crudos
@@ -140,7 +155,7 @@ export default {
         res,
         dataDB: {
           totalCount,
-          filters,
+          filters: generateFiltersResponse,
           breadcrumb,
           listProduct: filteredProducts,
         },
@@ -170,7 +185,7 @@ export default {
         .leftJoinAndSelect('navigation.variants', 'variants');
 
       const searchTerms = search.split(' ').join('|');
-      // console.log(searchTerms)
+      console.log(searchTerms)
 
       // Condición para el nombre del producto (ILIKE para búsqueda insensible a mayúsculas y minúsculas)
       // queryBuilder.where(`product.product ILIKE :productName`, { productName: `%${search}%` });
@@ -184,7 +199,7 @@ export default {
       // Seleccionar campos específicos
       const filteredProducts = await queryBuilder
         .skip(0)
-        .take(6)
+        .take(4)
         .getMany();
 
       // Obtener el recuento total
@@ -210,6 +225,71 @@ export default {
 
 
 };
+
+
+// // busqueda de filtros
+// if (generateFiltersResponse) {
+//   queryBuilder.andWhere(new Brackets(qb => {
+//     Object.entries(req.query).forEach(([key, value]) => {
+//       const newValue = Array.isArray(value) ? value : [value]
+//       const parent = findParentProperty(generateFiltersResponse, key)
+//       const variantProperty: string =
+//         parent === 'category' ? `category.category` :
+//           parent === 'subcategory' ? `subcategory.subcategory` :
+//             parent === 'brand' ? `product.brand` :
+//               parent === 'specifications' ? `product.specifications` : `variants.attributes`
+
+//       if (parent === 'specifications' || parent === 'attributes') {
+//         newValue.forEach((element) => {
+//           const uniqueId = uuidv4().replace(/-/g, '')
+//           qb.orWhere(`${variantProperty} ::jsonb @> :${parent}${uniqueId}`, { [`${parent}${uniqueId}`]: { [key]: element } })
+//         })
+//       } else {
+//         qb.orWhere(`${variantProperty} IN (:...${key})`, { [key]: newValue })
+//       }
+//     })
+//   }))
+// }
+
+
+
+
+// const { entities, raw } = await connection.manager
+// .createQueryBuilder(Note, 'note')
+// .leftJoinAndSelect('note.subjects', 'subject')
+// .leftJoinAndSelect('note.notebook', 'notebook')
+// .addSelect(
+//   "ts_rank_cd(to_tsvector(coalesce(note.content,'')), plainto_tsquery(:query))",
+//   'rank'
+// )
+// .where('notebook."ownerId" =(:userId)', { userId: user.id })
+// .andWhere('notebook.id=(:notebookId)', { notebookId: notebook.id })
+// .orderBy('rank', 'DESC')
+// .setParameter('query', query)
+// .getRawAndEntities();
+
+// const enhancedEntities = entities.map((e, index) => {
+// return { ...e, rank: raw[index].rank, isTypeOf: 'Note' };
+// });
+
+// return enhancedEntities.reduce((accum, entity) => {
+// if (entity.rank > 0) {
+//   accum.push(entity);
+// }
+// return accum;
+// }, []);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

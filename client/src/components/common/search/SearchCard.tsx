@@ -3,6 +3,7 @@ import { IProduct } from "../../../interfaces/product.interface";
 import { validateRouteImage } from "../../utils/validateRouteImage";
 import Breadcrumb from "../../../hooks/useListProduct/Breadcrumb";
 import { BreadcrumbType } from "../../../interfaces/global.interface";
+import Button from "../button/Button";
 
 interface SearchCardProps {
   listProduct: IProduct.ListProduct;
@@ -35,11 +36,15 @@ function SearchCard({ listProduct, handleOnClick }: SearchCardProps) {
           }} />
         </div>
         <div className="card__title">
-          <h4>{product.product}</h4>
+          <h3>{product.product}</h3>
         </div>
         <div className="card__utils">
-          <h5>{uniqueVariants.length > 1 ? `${minValue} - ${maxValue}` : minValue}</h5>
-          <button className="button_dark">Agregar</button>
+          <div className="card__utils-price">
+            <h4>{uniqueVariants.length > 1 ? `${minValue} - ${maxValue}` : minValue}</h4>
+          </div>
+          <div className="card__utils-button">
+            <Button button={{ type: "dark", text: 'Agregar', handleClick: () => { } }} />
+          </div>
         </div>
       </div>
     </Link>
