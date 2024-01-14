@@ -4,11 +4,12 @@ import { ProductEntity } from "../../../modules/products/entity";
 import { SubcategoryEntity } from "../../../modules/subcategories/entity";
 import { VariantEntity } from "../../../modules/variants/entity";
 import { AppDataSource } from "../../db/postgres";
+import { findParentUUID } from "../navigation/findParentUUID";
 
 export interface Data {
   name: string;
   _id: string;
-  name_id: 'department' | 'category' | 'subcategory' | 'product'
+  name_id: 'department' | 'category' | 'subcategory' | 'product' | 'search'
 }
 
 // Define tipos para las entidades anidadas
@@ -37,12 +38,17 @@ type Variant = {
   data: Data[];
 }
 
+type Search = {
+  entity: 'search';
+  data: Data[];
+}
+
 // Define el tipo de retorno para la función de breadcrumbs
-export type GetBreadcrumbsReturn = Department | Category | Subcategory | Product | Variant | null;
-type GetEntityBreadcrumbs = Department | Category | Subcategory | Product | Variant;
+export type GetBreadcrumbsReturn = Department | Category | Subcategory | Product | Variant | Search | null;
+type GetEntityBreadcrumbs = Department | Category | Subcategory | Product | Variant | Search;
 
 export async function getBreadcrumbs(entityId: string): Promise<GetBreadcrumbsReturn> {
-  const entityTypes = ['department', 'category', 'subcategory', 'product', 'variant'];
+  const entityTypes = ['search', 'department', 'category', 'subcategory', 'product', 'variant'];
 
   for (const entityType of entityTypes) {
     const breadcrumb = await getEntityBreadcrumbs(entityType, entityId);
@@ -57,6 +63,20 @@ export async function getBreadcrumbs(entityId: string): Promise<GetBreadcrumbsRe
 
 async function getEntityBreadcrumbs(entityType: string, entityId: string): Promise<GetEntityBreadcrumbs | null> {
   switch (entityType) {
+    case 'search':
+
+      const search: Data[] = findParentUUID(entityId) ? [] : [{
+        _id: "",
+        name: entityId,
+        name_id: "search"
+      }]
+
+      return {
+        entity: 'search',
+        data: search
+      };
+
+
     case 'department':
       const responseDepartment = await AppDataSource.getRepository(DepartmentEntity)
         .createQueryBuilder('department')

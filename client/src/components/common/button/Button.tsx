@@ -2,7 +2,14 @@ import { HandleClick } from "../../../interfaces/global.interface";
 import Svg, { SvgType } from "../../assets/icons/Svg";
 
 export interface ButtonProps {
-  svg?: {
+  svgRight?: {
+    type: SvgType;
+    height?: number;
+    width?: number;
+    color?: string;
+  };
+
+  svgLeft?: {
     type: SvgType;
     height?: number;
     width?: number;
@@ -21,15 +28,31 @@ export interface ButtonProps {
   };
 }
 
-function Button({ button, styleClass, svg }: ButtonProps) {
+function Button({ button, svgRight, svgLeft }: ButtonProps) {
   return (
-    <button className={`button_${button.type} button`} onClick={button.handleClick} value={button.value} disabled={button.disabled}>
-      {svg && <span className={`input__svg input__svg--${styleClass}`}>
-        {Svg({ type: svg.type as SvgType, height: svg.height || 16, width: svg.width || 16, color: svg.color })}
-      </span>}
-      <span>
+    <button
+      style={{}}
+      className={`button button_${button.type}`}
+      onClick={button.handleClick}
+      value={button.value}
+      disabled={button.disabled}
+    >
+      {svgRight &&
+        <span className={`button__svg-right`}>
+          {Svg({ type: svgRight.type as SvgType, height: svgRight.height || 16, width: svgRight.width || 16, color: svgRight.color })}
+        </span>}
+      <span className="button__text-container">
         <p>{button.text}</p>
       </span>
+      {svgLeft &&
+        <span>
+          {Svg({
+            type: svgLeft.type,
+            height: svgLeft.height || 16,
+            width: svgLeft.width || 16,
+          })}
+        </span>
+      }
     </button>
   );
 }
