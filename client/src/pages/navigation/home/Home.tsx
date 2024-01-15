@@ -1,15 +1,13 @@
 import useAdvertising from "../../../hooks/useAdvertising/useAdvertising";
 
 function Home() {
-  const {CarruselMultiple, BannerBox, Carrusel, BannerPrimary, BannerSecondary } = useAdvertising()
+  const { CarruselMultiple, BannerBox, Carrusel, BannerPrimary, BannerSecondary } = useAdvertising()
 
   return (
-    <div>
+    <div className="home">
       {Carrusel}
       {BannerPrimary}
-      <hr />
       {BannerBox}
-
       {BannerSecondary}
       {CarruselMultiple}
     </div>

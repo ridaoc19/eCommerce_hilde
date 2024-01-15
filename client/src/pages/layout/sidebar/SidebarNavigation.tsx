@@ -24,6 +24,7 @@ function SidebarNavigation({ isOpenMenu, handleOnSelectedId, selectedIdBoolean, 
       return { _id: category_id, overrun: isVertical };
     });
     isVerticalOverflowing ? setIsOverflowing(isVerticalOverflowing) : setIsOverflowing(isOverflowing)
+    // eslint-disable-next-line
   }, [data, isOverflowing]);
 
   useEffect(() => {
@@ -61,7 +62,7 @@ function SidebarNavigation({ isOpenMenu, handleOnSelectedId, selectedIdBoolean, 
             <div
               key={department_id}
               // onClick={() => handleMouseEnter(department_id)}
-            onMouseEnter={() => handleMouseEnter(department_id)}
+              onMouseEnter={() => handleMouseEnter(department_id)}
             >
               <Button
                 svgLeft={{ type: "arrowRight" }}

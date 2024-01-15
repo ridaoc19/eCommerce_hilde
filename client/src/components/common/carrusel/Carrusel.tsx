@@ -30,7 +30,7 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
 
   useEffect(() => {
     setAdvertisingPerPage(mediaQuery === 'phone' ? 1 : itemPerPage);
-     // eslint-disable-next-lin
+    // eslint-disable-next-lin
   }, [mediaQuery, itemPerPage])
 
 
@@ -64,9 +64,10 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
   }, [isMouseOverVitrine, allAdvertising]);
 
   // Renderizar el componente principal
+  if (advertising.length === 0) return null
   return (
     <div
-      className="advertising"
+      className={`${advertising[0]?.location || "advertising"} advertising`}
       onMouseEnter={() => setIsMouseOverVitrine(true)}
       onMouseLeave={() => setIsMouseOverVitrine(false)}
     >
