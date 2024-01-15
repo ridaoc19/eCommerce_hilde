@@ -4,7 +4,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { BreadcrumbType } from '../../interfaces/global.interface';
 import { ErrorNavigation, navigationRequest } from '../../services/navigation/navigationApi';
 import { RouteNavigation } from '../../services/navigation/navigationRequest';
-import Breadcrumb from './Breadcrumb';
+import Breadcrumb from '../../components/common/breadcrumb/Breadcrumb';
 import Filters from './Filters';
 import PaginationButton from './PaginationButton';
 import { InitialStateListProduct, ListProductHook } from './types';

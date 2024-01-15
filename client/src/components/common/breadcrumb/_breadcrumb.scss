@@ -1,0 +1,17 @@
+.breadcrumb {
+  display    : flex;
+  gap        : 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+  
+  a{
+    text-overflow: ellipsis;
+    
+  }
+
+  .breadcrumb__section {
+    display: flex;
+    gap    : 0.2rem;
+  }
+}
