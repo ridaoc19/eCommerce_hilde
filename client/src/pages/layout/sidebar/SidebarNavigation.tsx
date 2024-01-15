@@ -60,8 +60,8 @@ function SidebarNavigation({ isOpenMenu, handleOnSelectedId, selectedIdBoolean, 
           {isFetching || isLoading ? <>Cargando...</> : data.map(({ department_id, department }) => (
             <div
               key={department_id}
-              onClick={() => handleMouseEnter(department_id)}
-            // onMouseEnter={() => handleMouseEnter(department_id)}
+              // onClick={() => handleMouseEnter(department_id)}
+            onMouseEnter={() => handleMouseEnter(department_id)}
             >
               <Button
                 svgLeft={{ type: "arrowRight" }}
