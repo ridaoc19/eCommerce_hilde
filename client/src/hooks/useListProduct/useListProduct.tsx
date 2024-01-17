@@ -4,7 +4,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { BreadcrumbType } from '../../interfaces/global.interface';
 import { ErrorNavigation, navigationRequest } from '../../services/navigation/navigationApi';
 import { RouteNavigation } from '../../services/navigation/navigationRequest';
-import Breadcrumb from './Breadcrumb';
+import Breadcrumb from '../../components/common/breadcrumb/Breadcrumb';
 import Filters from './Filters';
 import PaginationButton from './PaginationButton';
 import { InitialStateListProduct, ListProductHook } from './types';
@@ -62,12 +62,12 @@ const useListProduct = (): ListProductHook => {
       // const id = bre.data.find((d) => d.name_id === bre.entity)?._id;
       // console.log({ data, bre, id })
       // if (id && bre) {
-        setStateListProduct(prevState => ({
-          ...prevState,
-          allProducts: [{ allProducts_id: currentIndex, allProducts_data: data.data.listProduct }, ...allProducts],
-          paginationTotal: Math.ceil(data.data.totalCount / pagination),
-          dataState: { filters: data.data.filters, breadcrumb: data.data.breadcrumb }
-        }))
+      setStateListProduct(prevState => ({
+        ...prevState,
+        allProducts: [{ allProducts_id: currentIndex, allProducts_data: data.data.listProduct }, ...allProducts],
+        paginationTotal: Math.ceil(data.data.totalCount / pagination),
+        dataState: { filters: data.data.filters, breadcrumb: data.data.breadcrumb }
+      }))
       // }
     }
     // eslint-disable-next-line
@@ -85,6 +85,7 @@ const useListProduct = (): ListProductHook => {
     error,
     BreadcrumbComponent: <Breadcrumb breadcrumb={dataState.breadcrumb} />,
     PaginationButton: <PaginationButton
+      currentIndex={currentIndex}
       paginationTotal={paginationTotal}
       disableBack={false}
       disableNext={false}
