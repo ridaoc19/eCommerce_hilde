@@ -1,8 +1,8 @@
 import { ReactNode, useContext } from 'react';
-import Carrusel from '../../components/common/carrusel/Carrusel';
 import { CreateContext } from '../useContext';
-import Banner from './Banner';
-import BannerBox from './BannerBox';
+import Carrusel from '../../components/common/carrusel/Carrusel';
+import Banner from '../../components/common/Banner/Banner';
+import BannerBox from '../../components/common/BannerBox/BannerBox';
 
 interface UseAdvertising {
   BannerBox: ReactNode;

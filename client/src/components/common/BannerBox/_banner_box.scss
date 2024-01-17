@@ -1,0 +1,19 @@
+.banner-box {
+  display         : flex;
+  flex-wrap       : wrap;
+  gap             : 1rem;
+  justify-content : space-around;
+  background-color: var(--brand-3);
+  padding         : 2rem;
+  border-radius   : 0.5rem;
+
+  .banner-box__item {
+    display      : grid;
+    justify-items: center;
+
+    img {
+      border-radius: 0.5rem;
+      width        : 100%;
+    }
+  }
+}

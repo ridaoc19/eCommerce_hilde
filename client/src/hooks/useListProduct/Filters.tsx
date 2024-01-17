@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { RequestMapNavigation, RouteNavigation } from "../../services/navigation/navigationRequest";
-import './style/filters.scss'; // Asegúrate de importar el archivo SCSS en tu componente
+// import './style/filters.scss'; // Asegúrate de importar el archivo SCSS en tu componente
 
 function Filters(filters: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data']['filters']) {
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
@@ -10,6 +10,10 @@ function Filters(filters: RequestMapNavigation[RouteNavigation.NavigationListPro
   const handleAccordionToggle = (section: string) => {
     setOpenAccordion(openAccordion === section ? null : section);
   };
+  // Esta función se memoizará y no se recreará en cada renderizado
+  const devAllSelectedBrands = useCallback((itemKey: string) => {
+    return searchParams.getAll(itemKey)
+  }, [searchParams]); // La función se memoizará solo si 'searchParams' cambia
 
   return (
     <div className="filters">
@@ -72,7 +76,7 @@ function Filters(filters: RequestMapNavigation[RouteNavigation.NavigationListPro
             )
           } else {
             return Object.entries(value).map(([itemKey, itemValue], itemIndex) => {
-            if (itemValue.length === 0) return null
+              if (itemValue.length === 0) return null
               return (
                 <div key={itemIndex} className="acordeon-item">
                   <div className="acordeon-header" onClick={() => handleAccordionToggle(itemKey)}>{itemKey}</div>
@@ -80,7 +84,8 @@ function Filters(filters: RequestMapNavigation[RouteNavigation.NavigationListPro
                     <div className={`${itemKey}`}>
                       {/* <label>Brand:</label> */}
                       {itemValue.map((item, index) => {
-                        const allSelectedBrands = searchParams.getAll(itemKey)
+                        const allSelectedBrands = devAllSelectedBrands(itemKey)
+                        // const allSelectedBrands = searchParams.getAll(itemKey)
                         return (
                           <div key={index}>
                             <input

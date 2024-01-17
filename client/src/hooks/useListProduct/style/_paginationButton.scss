@@ -1,0 +1,18 @@
+.pagination-buttons {
+  overflow             : hidden;
+  display              : grid;
+  grid-template-columns: 3rem 1fr 3rem;
+  gap                  : 0.5rem;
+
+  .pagination-buttons__button--back {}
+
+  .pagination-numbers {
+    display   : flex;
+    flex-wrap : nowrap;
+    overflow-x: hidden;
+    gap       : 0.5rem;
+  }
+
+  .pagination-buttons__button--left {}
+
+}
