@@ -5,7 +5,7 @@ import useMediaQuery from "../../../hooks/useMediaQuery";
 
 function ListProducts() {
   const { mediaQuery } = useMediaQuery()
-  const { BreadcrumbComponent, listProducts, currentIndex, paginationTotal, totalProduct } = useListProduct()
+  const { BreadcrumbComponent, listProducts, PaginationButton, currentIndex, paginationTotal, totalProduct } = useListProduct()
 
   return (
     <div className="list-product__container">
@@ -15,7 +15,7 @@ function ListProducts() {
         - posicion:{currentIndex}
         - paginacion Total: {paginationTotal}
         - Total Productos: {totalProduct}
-        {/* {PaginationButton} */}
+        {PaginationButton}
         {/* <Breadcrumb /> */}
       </div>
       <div className="list-product__card"

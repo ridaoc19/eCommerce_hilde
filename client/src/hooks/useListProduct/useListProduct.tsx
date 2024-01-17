@@ -62,12 +62,12 @@ const useListProduct = (): ListProductHook => {
       // const id = bre.data.find((d) => d.name_id === bre.entity)?._id;
       // console.log({ data, bre, id })
       // if (id && bre) {
-        setStateListProduct(prevState => ({
-          ...prevState,
-          allProducts: [{ allProducts_id: currentIndex, allProducts_data: data.data.listProduct }, ...allProducts],
-          paginationTotal: Math.ceil(data.data.totalCount / pagination),
-          dataState: { filters: data.data.filters, breadcrumb: data.data.breadcrumb }
-        }))
+      setStateListProduct(prevState => ({
+        ...prevState,
+        allProducts: [{ allProducts_id: currentIndex, allProducts_data: data.data.listProduct }, ...allProducts],
+        paginationTotal: Math.ceil(data.data.totalCount / pagination),
+        dataState: { filters: data.data.filters, breadcrumb: data.data.breadcrumb }
+      }))
       // }
     }
     // eslint-disable-next-line
@@ -85,6 +85,7 @@ const useListProduct = (): ListProductHook => {
     error,
     BreadcrumbComponent: <Breadcrumb breadcrumb={dataState.breadcrumb} />,
     PaginationButton: <PaginationButton
+      currentIndex={currentIndex}
       paginationTotal={paginationTotal}
       disableBack={false}
       disableNext={false}

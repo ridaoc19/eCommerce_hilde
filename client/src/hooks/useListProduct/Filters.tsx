@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { RequestMapNavigation, RouteNavigation } from "../../services/navigation/navigationRequest";
-import './style/filters.scss'; // Asegúrate de importar el archivo SCSS en tu componente
+// import './style/filters.scss'; // Asegúrate de importar el archivo SCSS en tu componente
 
 function Filters(filters: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data']['filters']) {
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
