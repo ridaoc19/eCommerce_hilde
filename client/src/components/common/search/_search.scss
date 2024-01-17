@@ -2,6 +2,7 @@
 
 .layout__navbar-search {
   background-color: var(--brand-3);
+
   .search {
     width   : 95%;
     position: relative;
@@ -48,10 +49,17 @@
           padding                    : 0.5rem;
 
           .card__breadcrumb {
-            white-space  : nowrap;
-            overflow     : hidden;
-            text-overflow: ellipsis;
+            // white-space  : nowrap;
+            // overflow     : hidden;
+            // text-overflow: ellipsis;
             font-size    : x-small;
+            // display: none;
+            // display           : -webkit-box;
+            // -webkit-line-clamp: 1;        /* Número de líneas a mostrar */
+            // -webkit-box-orient: horizontal;        /* Orientación vertical */
+            // overflow          : hidden;
+            // text-overflow     : ellipsis;
+            // white-space       : nowrap;        
           }
 
           .card__main {
@@ -70,9 +78,9 @@
             }
 
             .card__content {
-              display              : grid;
-              align-items          : center;
-              width                : 100%;
+              display    : grid;
+              align-items: center;
+              width      : 100%;
 
               .card__title {
                 color    : var(--font-brand);
