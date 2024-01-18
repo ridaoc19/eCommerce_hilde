@@ -17,6 +17,7 @@ export interface ButtonProps {
   };
 
   style?: React.CSSProperties;
+  className?: string;
   button: {
     type: "dark" | "light" | "link" | "highlighter" | "none";
     text: string;
@@ -28,11 +29,11 @@ export interface ButtonProps {
   };
 }
 
-function Button({ button, svgRight, svgLeft, style }: ButtonProps) {
+function Button({ button, svgRight, svgLeft, style, className = "" }: ButtonProps) {
   return (
     <button
       style={style}
-      className={`button button_${button.type}`}
+      className={`button button_${button.type} ${className}`}
       onClick={button.handleClick}
       value={button.value}
       disabled={button.disabled}

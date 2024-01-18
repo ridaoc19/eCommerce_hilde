@@ -99,9 +99,10 @@ const useListProduct = (): ListProductHook => {
           setStateListProduct(prevState => ({ ...prevState, currentIndex: currentIndex + 1 }))
         }
       }}
-      handleClickPaginationButtonSelect={(event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        const selectedValue = (event.target as HTMLButtonElement).value;
+      handleClickPaginationButtonSelect={(selectedValue: string) => {
+        // event.preventDefault();
+        // const selectedValue = (event.target as HTMLButtonElement).value;
+        console.log(selectedValue, "valor sele")
         setStateListProduct(prevState => ({ ...prevState, currentIndex: Number(selectedValue) }))
       }}
     />,
