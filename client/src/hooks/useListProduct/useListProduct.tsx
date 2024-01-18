@@ -103,7 +103,7 @@ const useListProduct = (): ListProductHook => {
         setStateListProduct(prevState => ({ ...prevState, currentIndex: Number(selectedValue) }))
       }}
     />,
-    Filters: <Filters {...dataState.filters} />
+    Filters: <Filters filters={{...dataState.filters}} />
   };
 };
 

@@ -25,8 +25,10 @@
     gap       : 1rem;
 
     .list-product__header {
-      display              : grid;
-      grid-template-columns: 40% 20% 40%;
+      display                 : flex;
+      justify-content         : space-between;
+      // display              : grid;
+      // grid-template-columns: 20% 20% 20%;
 
       .list-product__breadcrumb {}
 
@@ -37,10 +39,11 @@
     }
 
     .list-product__card {
-      display        : grid;
-      justify-content: space-between;
-      row-gap        : 1rem;
-      width          : 100%;
+      display              : grid;
+      justify-content      : space-between;
+      row-gap              : 1rem;
+      width                : 100%;
+      // gap               : 1rem;
 
       &.phone {
         grid-template-columns: repeat(auto-fit, minmax(9rem, 9rem));

@@ -1,36 +1,59 @@
-// Estilos para el componente Filters
 .filters {
-  // display: flex;
-  // height: 100vh; // Ocupa la altura completa de la pantalla
-  // padding   : 1rem;
-}
+  font-family: 'Arial', sans-serif;
+  border: 1px solid var(--neutral-7);
+  border-radius: 8px;
+  // margin: 20px;
+  background-color: var(--neutral-1);
 
-// // Estilos para el sidebar
-// .sidebar {
-//   width: 200px; // Ancho del sidebar
-//   background-color: #f1f1f1; // Color de fondo del sidebar
-//   padding: 20px;
-// }
+  .filters__content {
+    padding: 10px;
 
-// Estilos para los elementos del acordeón
-.acordeon-item {
-  margin-bottom: 10px;
-}
+    .filters__accordion-item {
+      margin-bottom: 10px;
+      border: 1px solid var(--neutral-4);
+      border-radius: 4px;
 
-// Estilos para los checkboxes
-.acordeon-content input[type="checkbox"] {
-  margin-right: 5px;
-}
+      .filters__accordion-header {
+        padding: 10px;
+        background-color: var(--neutral-3);
+        cursor: pointer;
+        border-bottom: 1px solid var(--neutral-4);
 
-// Estilos para el acordeón
-.acordeon-content {
-  display : none;
-  overflow: hidden;
-}
+        &:hover {
+          background-color: var(--neutral-4);
+        }
+      }
 
-// Estilos para el acordeón cuando está abierto
-.acordeon-content.open {
-  display   : block;
-  max-height: 20rem;
-  overflow-y: auto;
+      .filters__accordion-content {
+        padding: 10px;
+        display: none;
+
+        &--open {
+          display: block;
+        }
+
+        .filters__brand {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+
+          input[type="checkbox"] {
+            margin-right: 5px;
+          }
+
+          label {
+            background-color: var(--neutral-5);
+            padding: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+
+            &.filters__checked {
+              background-color: var(--brand-9);
+              color: var(--font-light);
+            }
+          }
+        }
+      }
+    }
+  }
 }
