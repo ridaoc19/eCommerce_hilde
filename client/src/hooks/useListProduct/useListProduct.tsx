@@ -100,9 +100,6 @@ const useListProduct = (): ListProductHook => {
         }
       }}
       handleClickPaginationButtonSelect={(selectedValue: string) => {
-        // event.preventDefault();
-        // const selectedValue = (event.target as HTMLButtonElement).value;
-        console.log(selectedValue, "valor sele")
         setStateListProduct(prevState => ({ ...prevState, currentIndex: Number(selectedValue) }))
       }}
     />,

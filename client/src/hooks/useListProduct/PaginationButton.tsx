@@ -24,10 +24,10 @@ function PaginationButton({
   const { mediaQuery } = useMediaQuery()
   const visibleRange = useMemo(() => mediaQuery === 'phone' ? 5 : 7, [mediaQuery]) // cuántos números de página quieres mostrar en la barra
 
+  // para crear contenedor numeración paginado
   const startPage = Math.max(1, currentIndex - Math.floor(visibleRange / 2));
   const endPage = Math.min(paginationTotal, startPage + visibleRange - 1);
 
-  console.log(startPage, endPage)
   return (
     <div className="pagination-buttons">
       <div className='pagination-buttons_container'>
@@ -39,7 +39,6 @@ function PaginationButton({
         <div className="pagination-numbers">
           {Array.from({ length: endPage - startPage + 1 }, (_, index) => {
             const pageNumber = startPage + index;
-            console.log(pageNumber, "dentro")
             return (
               <span key={pageNumber} className="pagination-numbers__item">
                 <Button

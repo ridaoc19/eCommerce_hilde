@@ -12,10 +12,10 @@
   overflow          : hidden;
   text-overflow     : ellipsis;
   white-space       : normal;
+  width             : 100%;
 
-  a {
-    // text-overflow: ellipsis;
-
+  button {
+    all: unset;
   }
 
   .breadcrumb__section {
