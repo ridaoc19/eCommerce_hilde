@@ -13,6 +13,8 @@ export interface ListProductHook {
   Filters: ReactNode;
   paginationTotal: number;
   totalProduct: number;
+  // heightContentFilter: number;
+  // setHeightContentFilter: Dispatch<SetStateAction<number>>
 }
 
 interface AllProducts {

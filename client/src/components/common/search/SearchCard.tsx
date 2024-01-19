@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { BreadcrumbType } from "../../../interfaces/global.interface";
 import { IProduct } from "../../../interfaces/product.interface";
 import { validateRouteImage } from "../../utils/validateRouteImage";
 import Breadcrumb from "../breadcrumb/Breadcrumb";
-import { BreadcrumbType } from "../../../interfaces/global.interface";
 import Button from "../button/Button";
 
 interface SearchCardProps {
@@ -11,6 +11,7 @@ interface SearchCardProps {
 }
 
 function SearchCard({ listProduct, handleOnClick }: SearchCardProps) {
+  const navigate = useNavigate()
   const { product, variants, department, category, subcategory } = listProduct;
   const uniqueVariants = [...new Set(variants.map(e => e.price))];
   const minValue = Math.min(...uniqueVariants).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0, });
@@ -18,10 +19,17 @@ function SearchCard({ listProduct, handleOnClick }: SearchCardProps) {
 
   const image: string = variants.length > 0 ? variants[0].images[0] : '';
 
+  const handleCardClick = () => {
+    // Navegar a la ruta deseada
+    navigate(`/product-detail/${product.product_id}`);
+    // También puedes ejecutar otras acciones si es necesario
+    handleOnClick();
+  };
+
   return (
-    <Link to={`/product-detail/${product.product_id}`} onClick={handleOnClick} className="search__card-content">
+    <div className="search__card-content" onClick={handleCardClick}>
       <div className="card__breadcrumb">
-        <Breadcrumb viewHome={false} breadcrumb={{
+        <Breadcrumb viewHome={false} handleOnClick={handleOnClick} breadcrumb={{
           entity: BreadcrumbType.Product,
           data: [
             { _id: department.department_id, name: department.department, name_id: 'department' },
@@ -50,7 +58,7 @@ function SearchCard({ listProduct, handleOnClick }: SearchCardProps) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 

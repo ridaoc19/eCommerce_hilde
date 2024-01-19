@@ -28,7 +28,7 @@ const useListProduct = (): ListProductHook => {
   let location = useLocation()
 
   const [stateListProduct, setStateListProduct] = useState<InitialStateListProduct>(initialStateListProduct)
-  const { allProducts, currentIndex, pagination, paginationTotal, id, query, dataState } = stateListProduct;
+    const { allProducts, currentIndex, pagination, paginationTotal, id, query, dataState } = stateListProduct;
   const { data, isLoading, isError, error, isSuccess, isFetching } = useQuery(
     ['list-product', id, currentIndex, query],
     async () => navigationRequest(RouteNavigation.NavigationListProduct).options({ extensionRoute: `/${id}/${(((currentIndex - 1) * pagination) - 1) < 0 ? 0 : ((currentIndex - 1) * pagination) - 1}/${pagination}${query}` }),
@@ -99,13 +99,11 @@ const useListProduct = (): ListProductHook => {
           setStateListProduct(prevState => ({ ...prevState, currentIndex: currentIndex + 1 }))
         }
       }}
-      handleClickPaginationButtonSelect={(event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        const selectedValue = (event.target as HTMLButtonElement).value;
+      handleClickPaginationButtonSelect={(selectedValue: string) => {
         setStateListProduct(prevState => ({ ...prevState, currentIndex: Number(selectedValue) }))
       }}
     />,
-    Filters: <Filters {...dataState.filters} />
+    Filters: <Filters filters={{...dataState.filters}} />
   };
 };
 
