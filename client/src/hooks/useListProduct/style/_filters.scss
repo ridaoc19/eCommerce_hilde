@@ -1,26 +1,26 @@
 .filters {
-  font-family: 'Arial', sans-serif;
-  border: 1px solid var(--neutral-7);
-  border-radius: 8px;
+  // font-family: 'Arial', sans-serif;
+  // border: 1px solid var(--brand-7);
+  // border-radius: 8px;
   // margin: 20px;
-  background-color: var(--neutral-1);
+  background-color: var(--brand-1);
 
   .filters__content {
     padding: 10px;
 
     .filters__accordion-item {
-      margin-bottom: 10px;
-      border: 1px solid var(--neutral-4);
-      border-radius: 4px;
+      // margin-bottom: 10px;
+      border          : 1px solid var(--brand-4);
+      // border-radius: 4px;
 
       .filters__accordion-header {
-        padding: 10px;
-        background-color: var(--neutral-3);
-        cursor: pointer;
-        border-bottom: 1px solid var(--neutral-4);
+        padding         : 10px;
+        background-color: var(--brand-3);
+        cursor          : pointer;
+        // border-bottom: 1px solid var(--brand-4);
 
         &:hover {
-          background-color: var(--neutral-4);
+          background-color: var(--brand-4);
         }
       }
 
@@ -32,24 +32,38 @@
           display: block;
         }
 
-        .filters__brand {
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
+        .filters__items {
+          display              : flex;
+          flex-wrap            : wrap;
+          // align-items    : center;
+          // justify-content   : space-evenly;
+          // row-gap        : 0.8rem;
 
-          input[type="checkbox"] {
-            margin-right: 5px;
-          }
+          .filters__checked-container {
+            flex            : auto;
+            background-color: var(--brand-4);
+            padding         : 0.5rem;
+            border          : 0.1px solid var(--brand-6);
 
-          label {
-            background-color: var(--neutral-5);
-            padding: 5px;
-            border-radius: 4px;
-            cursor: pointer;
-
-            &.filters__checked {
+            &--selected {
               background-color: var(--brand-9);
-              color: var(--font-light);
+              color           : var(--font-light);
+            }
+
+            input[type="checkbox"] {
+              margin-right: 5px;
+            }
+
+            label {
+              // background-color: var(--brand-5);
+              // padding         : 3px 5px;
+              border-radius: 4px;
+              cursor       : pointer;
+
+              &.filters__checked {
+                // background-color: var(--brand-9);
+                // color           : var(--font-light);
+              }
             }
           }
         }

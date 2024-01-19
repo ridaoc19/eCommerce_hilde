@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { RequestMapNavigation, RouteNavigation } from "../../services/navigation/navigationRequest";
-// import './style/filters.scss'; // Asegúrate de importar el archivo SCSS en tu componente
 
 function Filters({ filters }: { filters: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data']['filters'] }) {
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
@@ -27,12 +26,12 @@ function Filters({ filters }: { filters: RequestMapNavigation[RouteNavigation.Na
                   {title}
                 </div>
                 <div className={`filters__accordion-content ${openAccordion === title ? 'filters__accordion-content--open' : ''}`}>
-                  <div className={`filters__${title}`}>
+                  <div className={`filters__${title} filters__items`}>
                     {/* <label>Brand:</label> */}
                     {value.map((item, index) => {
                       const allSelectedBrands = searchParams.getAll(title)
                       return (
-                        <div key={index}>
+                        <div key={index} className={`filters__checked-container ${allSelectedBrands.includes(item) ? 'filters__checked-container--selected' : ''}`}>
                           <input
                             type="checkbox"
                             id={`${title}-${index}`}
@@ -72,9 +71,6 @@ function Filters({ filters }: { filters: RequestMapNavigation[RouteNavigation.Na
                   </div>
                 </div>
               </div>
-              // <div key={index}>
-              //   {`${key} : ${value}`}
-              // </div>
             )
           } else {
             return Object.entries(value).map(([itemKey, itemValue], itemIndex) => {
@@ -85,13 +81,13 @@ function Filters({ filters }: { filters: RequestMapNavigation[RouteNavigation.Na
                     {itemKey}
                   </div>
                   <div className={`filters__accordion-content ${openAccordion === itemKey ? 'filters__accordion-content--open' : ''}`}>
-                    <div className={`filters__${itemKey}`}>
+                    <div className={`filters__${itemKey} filters__items`}>
                       {/* <label>Brand:</label> */}
                       {itemValue.map((item, index) => {
                         const allSelectedBrands = devAllSelectedBrands(itemKey)
                         // const allSelectedBrands = searchParams.getAll(itemKey)
                         return (
-                          <div key={index}>
+                          <div key={index} className={`filters__checked-container ${allSelectedBrands.includes(item) ? 'filters__checked-container--selected' : ''}`}>
                             <input
                               type="checkbox"
                               id={`${itemKey}-${index}`}
@@ -131,18 +127,10 @@ function Filters({ filters }: { filters: RequestMapNavigation[RouteNavigation.Na
                     </div>
                   </div>
                 </div>
-                // <div key={index}>
-                //   {`${key} : ${value}`}
-                // </div>
               )
             })
           }
-
         })}
-
-
-
-
       </div>
     </div>
   );
