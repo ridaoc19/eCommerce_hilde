@@ -1,0 +1,54 @@
+.product-detail {
+  display: grid;
+
+  .product-detail__container {
+    display: grid;
+
+    .product-detail__breadcrumb {}
+
+    .product-detail__content {
+      display: flex;
+
+      .product-detail__images {
+
+        &-showcase {
+          .images-showcase__container {
+            .images-showcase__parent {}
+
+            .images-showcase__children {}
+          }
+        }
+      }
+
+      .product-detail__detail {
+        .product-detail__title {}
+
+        .product-detail__brand {}
+
+        .product-detail__price {}
+
+        .product-detail__attributes {
+
+          .family {
+            display: flex;
+            gap    : 1rem;
+          }
+        }
+
+        .product-detail__benefits {}
+      }
+    }
+
+    .product-detail__description {}
+
+    .product-detail__warranty {}
+
+    .product-detail__contents {}
+
+    .product-detail__specification {}
+
+    .product-detail__showcase {}
+
+  }
+
+}
