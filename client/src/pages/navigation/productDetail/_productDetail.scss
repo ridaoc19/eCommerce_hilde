@@ -1,5 +1,6 @@
 .product-detail {
   display: grid;
+  width  : 100%;
 
   .product-detail__container {
     display: grid;
@@ -7,7 +8,8 @@
     .product-detail__breadcrumb {}
 
     .product-detail__content {
-      display: flex;
+      display              : grid;
+      grid-template-columns: 1fr 1fr;
 
       .product-detail__images {
 
@@ -21,19 +23,95 @@
       }
 
       .product-detail__detail {
+        overflow: hidden;
+
+        .product-detail__attributes {
+          position: relative;
+          padding : 0 2.5rem;
+
+          &-content {
+            display              : flex;
+            gap                  : 1rem;
+            flex-wrap            : nowrap;
+            white-space          : nowrap;
+            overflow-x           : auto;
+            scroll-behavior      : smooth;
+            // overflow          : hidden;
+            // white-space       : nowrap;
+            // animation         : scroll 20s linear infinite;
+
+            // @keyframes scroll {
+            //   0% {
+            //     transform: translateX(0);
+            //   }
+
+            //   100% {
+            //     transform: translateX(-100%); // Ajusta según la anchura de tus elementos
+            //   }
+            // }
+
+
+            &::-webkit-scrollbar {
+              height: 12px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background-color: var(--brand-9);
+              border-radius   : 6px;
+            }
+
+            &::-webkit-scrollbar-track {
+              background-color: var(--brand-2);
+              border-radius   : 6px;
+            }
+
+            .product-detail__attributes-card {
+              padding         : 1rem;
+              background-color: var(--font-light);
+              border-radius   : 0.5rem;
+              min-width       : 5rem;
+              max-width       : 10rem;
+              display         : grid;
+              justify-content : center;
+              text-align      : center;
+              cursor          : pointer;
+              user-select     : none;
+              outline         : none;
+            }
+          }
+
+          &-button--left-container,
+          &-button--right-container {
+            position: absolute;
+            top     : 0;
+            height  : 100%;
+            width   : 2.5rem;
+
+            button {
+              height          : 100%;
+              width           : 100%;
+              background-color: transparent;
+              border          : none;
+              background-color: #33333340;
+              cursor          : pointer;
+            }
+          }
+
+          &-button--left-container {
+            left: 0;
+          }
+
+          &-button--right-container {
+            right: 0;
+          }
+        }
+
         .product-detail__title {}
 
         .product-detail__brand {}
 
         .product-detail__price {}
 
-        .product-detail__attributes {
-
-          .family {
-            display: flex;
-            gap    : 1rem;
-          }
-        }
 
         .product-detail__benefits {}
       }
