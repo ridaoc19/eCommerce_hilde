@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
 import useListProduct from "../../../hooks/useListProduct/useListProduct";
 import { IProduct } from "../../../interfaces/product.interface";
-import ShowcaseAttributes from "./ShowcaseAttributes";
+import ShowcaseMin from "./ShowcaseMin";
 
 interface InitialStateProductDetail {
   selectedVariant: Omit<IProduct.Variant, "product"> | null;
+  currentImage: number;
 }
 
 const initialStateProductDetail: InitialStateProductDetail = {
-  selectedVariant: null
+  selectedVariant: null,
+  currentImage: 0
 }
 
 function ProductDetail() {
   const { BreadcrumbComponent, listProducts } = useListProduct();
   const [stateProductDetail, setStateProductDetail] = useState<InitialStateProductDetail>(initialStateProductDetail);
+
   useEffect(() => {
     if (listProducts.length > 0) {
       const selectProductStock = listProducts[0].variants.find(e => e.stock > 0)
@@ -24,6 +27,7 @@ function ProductDetail() {
 
   if (listProducts.length === 0 || !stateProductDetail.selectedVariant) return <div className="product-detail">Cargando...</div>;
   const { product: { product, brand, description, specifications, benefits, warranty, contents } } = listProducts[0];
+  console.log(stateProductDetail);
 
   return (
     <>
@@ -37,25 +41,71 @@ function ProductDetail() {
             <div className='product-detail__content'>
               <div className="product-detail__images">
 
-                <div className="product-detail__images-showcase">
-                  <div className='images-showcase__container'>
-
-                    <div className='images-showcase__parent'>
-                      <img width={"400px"} src={stateProductDetail.selectedVariant.images[0]} alt="" />
-                    </div>
-
-                    <div className='images-showcase__children'>
-                      {stateProductDetail.selectedVariant.images.map((img, index) => <img key={index} width={"100px"} src={img} alt='' />)}
-                    </div>
-
+                <div className='images-showcase__container'>
+                  <div className='images-showcase__parent'>
+                    <img width={"400px"} src={stateProductDetail.selectedVariant.images[stateProductDetail.currentImage]} alt="" />
                   </div>
-                </div>
 
+                  <div className='images-showcase__children'>
+                    <ShowcaseMin>
+                      {stateProductDetail.selectedVariant.images.map((e, index) => {
+                        return (
+                          <button key={index} className="showcase-children__button" onClick={() => setStateProductDetail({ ...stateProductDetail, currentImage: index })}>
+                            <img src={e} width={"100%"} alt="" />
+                          </button>
+                        )
+                      })}
+                    </ShowcaseMin>
+                  </div>
+
+                </div>
               </div>
+
               <div className='product-detail__detail'>
 
                 <div className='product-detail__attributes'>
-                  <ShowcaseAttributes listProducts={listProducts} handleOnClick={async (variant) => setStateProductDetail({ ...stateProductDetail, selectedVariant: variant })} />
+                  <ShowcaseMin>
+                    {listProducts[0].variants.sort((a, b) => b.price - a.price).map(e => {
+                      return (
+                        <div key={e.variant_id}>
+                          <button disabled={e.price === 0} className={`product-detail__attributes-card ${e.price === 0 ? 'disabled' : ''}`} onClick={() => setStateProductDetail({ ...stateProductDetail, selectedVariant: e })}>
+                            {e.price === 0 && <span className="no-stock">AGOTADO</span>}
+                            <img src={e.images[0]} width={60} alt="" />
+                            {Object.values(e.attributes).map((attribute, index) => {
+                              return (
+                                <div key={index}>
+                                  <p>{attribute}</p>
+                                </div>
+                              )
+                            })}
+                          </button>
+                        </div>
+                      )
+                    })}
+                  </ShowcaseMin>
+                  {/* <ShowcaseAttributes >
+                    {listProducts[0].variants.sort((a, b) => b.price - a.price).map(e => {
+                      return (
+                        <div key={e.variant_id}>
+                          <button disabled={e.price === 0} className={`product-detail__attributes-card ${e.price === 0 ? 'disabled' : ''}`} onClick={() => setStateProductDetail({ ...stateProductDetail, selectedVariant: e })}>
+                            {e.price === 0 && <span className="no-stock">AGOTADO</span>}
+                            <img src={e.images[0]} width={60} alt="" />
+                            {Object.values(e.attributes).map((attribute, index) => {
+                              return (
+                                <div key={index}>
+                                  <p>{attribute}</p>
+                                </div>
+                              )
+                            })}
+                          </button>
+                        </div>
+                      )
+                    })}
+                  </ShowcaseAttributes> */}
+                </div>
+
+                <div className="product-detail__id">
+                  <h6>ID: {stateProductDetail.selectedVariant.variant_id.replace(/-/g, '').toUpperCase()}</h6>
                 </div>
 
                 <div className="product-detail__title">
@@ -63,14 +113,15 @@ function ProductDetail() {
                 </div>
 
                 <div className="product-detail__brand">
-                  <p>{brand}</p>
+                  <h3>Marca:</h3> <p>{brand}</p>
                 </div>
 
                 <div className="product-detail__price">
-                  <h4>{stateProductDetail.selectedVariant.price}</h4>
+                  <h3>{stateProductDetail.selectedVariant.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0, })}</h3>
                 </div>
 
                 <div className="product-detail__benefits">
+                  {benefits.length > 0 && <h3>Acerca de este producto</h3>}
                   {benefits.map((ben, index) => (
                     <ul key={index}>
                       <li>{ben}</li>
@@ -82,26 +133,33 @@ function ProductDetail() {
             </div>
 
             <div className="product-detail__description">
+              {description && <h3>Descripción del producto</h3>}
               <p>{description}</p>
             </div>
 
             <div className="product-detail__warranty">
+              {warranty && <h3>Garantía</h3>}
               <p>{warranty}</p>
             </div>
 
             <div className="product-detail__contents">
+              {contents && <h3>Contenido de la caja</h3>}
               <p>{contents}</p>
             </div>
 
             <div className="product-detail__specification">
+              <h2>Especificaciones</h2>
+              <h4>{product}</h4>
+              <div className="specification-columns">
               {Object.entries(specifications).map(([key, value], index) => (
                 <ul key={index}>
                   <li>
-                    <span>{key}: </span>
+                    <h5>{key}</h5>
                     <span>{value}</span>
                   </li>
                 </ul>
               ))}
+              </div>
             </div>
 
 
