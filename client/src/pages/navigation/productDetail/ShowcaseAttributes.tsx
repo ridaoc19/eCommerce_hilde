@@ -26,18 +26,20 @@ function ShowcaseAttributes({ listProducts, handleOnClick }: { listProducts: Lis
   return (
     <>
       <div className="product-detail__attributes-content" ref={containerRef} onScroll={onScrollHandler}>
-        {listProducts[0].variants.map(e => {
+        {listProducts[0].variants.sort((a, b) => b.price - a.price).map(e => {
           return (
-            <div key={e.variant_id} className='product-detail__attributes-card' onClick={() => handleOnClick(e)}>
-              <img src={e.images[0]} width={60} alt="" />
-              {/* <h4>{e.price}</h4> */}
-              {Object.values(e.attributes).map((attribute, index) => {
-                return (
-                  <div key={index}>
-                    <p>{attribute}</p>
-                  </div>
-                )
-              })}
+            <div key={e.variant_id}>
+              <button disabled={e.price === 0} className={`product-detail__attributes-card ${e.price === 0 ? 'disabled' : ''}`} onClick={() => handleOnClick(e)}>
+                {e.price === 0 && <span className="no-stock">AGOTADO</span>}
+                <img src={e.images[0]} width={60} alt="" />
+                {Object.values(e.attributes).map((attribute, index) => {
+                  return (
+                    <div key={index}>
+                      <p>{attribute}</p>
+                    </div>
+                  )
+                })}
+              </button>
             </div>
           )
         })}

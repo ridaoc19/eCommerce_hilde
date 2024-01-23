@@ -30,15 +30,15 @@
           padding : 0 2.5rem;
 
           &-content {
-            display              : flex;
-            gap                  : 1rem;
-            flex-wrap            : nowrap;
-            white-space          : nowrap;
-            overflow-x           : auto;
-            scroll-behavior      : smooth;
-            // overflow          : hidden;
-            // white-space       : nowrap;
-            // animation         : scroll 20s linear infinite;
+            display        : flex;
+            gap            : 1rem;
+            flex-wrap      : nowrap;
+            white-space    : nowrap;
+            overflow-x     : auto;
+            scroll-behavior: smooth;
+            // overflow       : hidden;
+            // white-space    : nowrap;
+            // animation      : scroll 20s linear infinite;
 
             // @keyframes scroll {
             //   0% {
@@ -65,19 +65,41 @@
               border-radius   : 6px;
             }
 
-            .product-detail__attributes-card {
-              padding         : 1rem;
-              background-color: var(--font-light);
-              border-radius   : 0.5rem;
-              min-width       : 5rem;
-              max-width       : 10rem;
-              display         : grid;
-              justify-content : center;
-              text-align      : center;
-              cursor          : pointer;
-              user-select     : none;
-              outline         : none;
+            >div {
+              position: relative;
+
+              .product-detail__attributes-card {
+                all             : unset;
+                padding         : 1rem;
+                background-color: var(--font-light);
+                border-radius   : 0.5rem;
+                min-width       : 5rem;
+                max-width       : 10rem;
+                display         : grid;
+                justify-content : center;
+                text-align      : center;
+                cursor          : pointer;
+                user-select     : none;
+                outline         : none;
+                border          : 1px solid var(--brand-6);
+
+                &.disabled {
+                  opacity: 0.5;
+                  cursor : default;
+                }
+
+                .no-stock {
+                  position  : absolute;
+                  top       : 0;
+                  right     : 0;
+                  color     : var(--error-5);
+                  font-style: italic;
+                  font-size : x-small;
+                  margin    : 3px 10px;
+                }
+              }
             }
+
           }
 
           &-button--left-container,
