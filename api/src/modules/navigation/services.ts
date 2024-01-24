@@ -85,7 +85,7 @@ export default {
     const filtersQuery = Object.entries(req.query).map(([key, value]) => {
       const values = Array.isArray(value) ? value : [value];
       return values.map((element: string) => `${stringEmpty(key)}${stringEmpty(element)}`);
-    }).flat().join('|');
+    }).flat();
 
     try {
       const breadcrumb = await getBreadcrumbs(id);
@@ -107,23 +107,20 @@ export default {
         queryBuilder.where(`navigation.${breadcrumb?.entity}_id = :id`, { id });
 
         if (Object.keys(req.query).length > 0) {
-          queryBuilder.andWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filtersQuery})` })
+          queryBuilder.andWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filtersQuery.join('|')})` })
         }
 
       } else {
         const searchTerms = id.split(' ').join('|');
-        // queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
-        // Estructura de la consulta
+        queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+        
         queryBuilder
           .andWhere(new Brackets(qb => {
-            // Condición para la columna 'search'
-            // qb.where('LOWER(navigation.search::text) ~ LOWER(:search)', { search: `(${searchTerms})` });
-            qb.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
-
-            // Condición para la columna 'filter'
             if (Object.keys(req.query).length > 0) {
-              // queryBuilder.andWhere(`navigation.filters::text ILIKE :productName`, { productName: `%${filters.join(' ')}%` })
-              qb.orWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filtersQuery})` })
+              filtersQuery.forEach((el, i) => {
+                qb.orWhere(`navigation.filter::text ILIKE :${el}${i}`, { [`${el}${i}`]: `%${el}%` })
+              })
+              // queryBuilder.andWhere('to_tsvector(\'simple\', CAST(navigation.filter AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: filtersQuery.join(' ') })
             }
           }));
       }
