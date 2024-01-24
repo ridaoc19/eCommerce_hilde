@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
-import Svg from "../../../components/assets/icons/Svg";
+import Svg from "../../assets/icons/Svg";
 import './showcaseMin.scss';
 
 
