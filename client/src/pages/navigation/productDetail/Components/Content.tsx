@@ -3,9 +3,9 @@ import { IProduct } from "../../../../interfaces/product.interface";
 import { UseProductDetail } from "../useProductDetail";
 
 interface ContentProps {
-  listProductsData: UseProductDetail['data']
-  handleClick: (variant: Omit<IProduct.Variant, 'product'>) => void
-  stateProductDetail: UseProductDetail['react']['stateProductDetail']
+  listProductsData: UseProductDetail['data'];
+  handleClick: (variant: Omit<IProduct.Variant, 'product'>) => void;
+  stateProductDetail: UseProductDetail['react']['stateProductDetail'];
 }
 
 function Content({ handleClick, stateProductDetail, listProductsData: { listProducts } }: ContentProps) {

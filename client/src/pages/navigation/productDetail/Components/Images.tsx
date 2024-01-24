@@ -3,8 +3,8 @@ import useMediaQuery from "../../../../hooks/useMediaQuery";
 import { InitialStateProductDetail } from "../useProductDetail";
 
 interface ImagesProps {
-  handleClick: (currentImage: number) => void,
-  stateProductDetail: InitialStateProductDetail
+  handleClick: (currentImage: number) => void;
+  stateProductDetail: InitialStateProductDetail;
 }
 
 function Images({ handleClick, stateProductDetail: { selectedVariant, currentImage } }: ImagesProps) {
@@ -34,6 +34,3 @@ function Images({ handleClick, stateProductDetail: { selectedVariant, currentIma
 }
 
 export default Images;
-{/* <div className="content">
-
-</div> */}

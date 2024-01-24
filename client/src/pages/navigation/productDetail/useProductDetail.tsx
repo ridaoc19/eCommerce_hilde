@@ -40,6 +40,7 @@ function useProductDetail(): UseProductDetail {
       const selectProductAllStock = listProducts[0].variants[0]
       setStateProductDetail({ ...stateProductDetail, selectedVariant: selectProductStock || selectProductAllStock });
     }
+    // eslint-disable-next-line
   }, [listProducts]);
 
   return {
@@ -58,6 +59,7 @@ function useProductDetail(): UseProductDetail {
     }
   };
 }
+
 
 export default useProductDetail;
 

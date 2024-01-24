@@ -2,11 +2,7 @@ import { UseProductDetail } from "../useProductDetail";
 
 interface OtherProps {
   listProductsData: UseProductDetail['data']
-  // handleClick: (variant: Omit<IProduct.Variant, 'product'>) => void
-  // stateProductDetail: UseProductDetail['react']['stateProductDetail']
 }
-
-
 
 function Other({ listProductsData: { listProducts } }: OtherProps) {
   if (listProducts.length === 0) return null
@@ -28,7 +24,7 @@ function Other({ listProductsData: { listProducts } }: OtherProps) {
         <p>{contents}</p>
       </div>
 
-      <div className="other__specification">
+      {Object.keys(specifications).length > 0 && <div className="other__specification">
         <h2>Especificaciones</h2>
         <h4>{product}</h4>
         <div className="other__specification-columns">
@@ -41,7 +37,7 @@ function Other({ listProductsData: { listProducts } }: OtherProps) {
             </ul>
           ))}
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
