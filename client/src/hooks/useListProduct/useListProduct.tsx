@@ -27,6 +27,7 @@ const initialStateListProduct: InitialStateListProduct = {
 const useListProduct = (): ListProductHook => {
   const params = useParams();
   let location = useLocation()
+  // eslint-disable-next-line
   const [_, setSearchParams] = useSearchParams();
 
   const [stateListProduct, setStateListProduct] = useState<InitialStateListProduct>(initialStateListProduct)
