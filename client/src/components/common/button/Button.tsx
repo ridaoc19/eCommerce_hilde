@@ -42,15 +42,16 @@ function Button({ button, svgRight, svgLeft, style, className = "" }: ButtonProp
         <span className={`button__svg-right`}>
           {Svg({ type: svgRight.type as SvgType, height: svgRight.height || 16, width: svgRight.width || 16, color: svgRight.color })}
         </span>}
-      <span className="button__text-container">
+      {!!button.text && <span className="button__text-container">
         <p>{button.text}</p>
-      </span>
+      </span>}
       {svgLeft &&
         <span>
           {Svg({
             type: svgLeft.type,
             height: svgLeft.height || 16,
             width: svgLeft.width || 16,
+            color: svgLeft.color
           })}
         </span>
       }

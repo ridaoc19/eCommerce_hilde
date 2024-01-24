@@ -1,0 +1,29 @@
+.images {
+  display       : flex;
+  flex-direction: column;
+  gap           : 0.5rem;
+  height        : 100%;
+
+  &.desktop {
+    max-width: 40%;
+  }
+
+  img {
+    width    : 100%;
+    height   : auto;
+    max-width: 100%;
+    /* Asegura que las imágenes no se desborden */
+  }
+
+  &__parent {
+    background-color: var(--font-light);
+  }
+
+  &__children {
+
+    &-button {
+      all   : unset;
+      cursor: pointer;
+    }
+  }
+}

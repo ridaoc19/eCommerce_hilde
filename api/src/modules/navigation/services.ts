@@ -6,12 +6,13 @@ import { StatusHTTP } from '../../core/utils/enums';
 // import { findParentProperty } from '../../core/utils/navigation/findParentProperty';
 import { findParentUUID } from '../../core/utils/navigation/findParentUUID';
 import { stringEmpty } from '../../core/utils/navigation/functions';
-import { generateFilters } from '../../core/utils/navigation/generateFilters';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { DepartmentEntity } from '../departments/entity';
 import { NavigationEntity } from './entity';
 import { Brackets } from 'typeorm';
+import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
+import { generateFilters } from '../../core/utils/navigation/generateFilters';
 
 // function fetchCount(info: any) {
 //   return new Promise<{ data: number }>((resolve) =>
@@ -84,8 +85,8 @@ export default {
     const filtersQuery = Object.entries(req.query).map(([key, value]) => {
       const values = Array.isArray(value) ? value : [value];
       return values.map((element: string) => `${stringEmpty(key)}${stringEmpty(element)}`);
-    }).flat().join('|');
-    
+    }).flat();
+
     try {
       const breadcrumb = await getBreadcrumbs(id);
 
@@ -98,31 +99,28 @@ export default {
         .leftJoinAndSelect('navigation.product', 'product')
         .leftJoinAndSelect('navigation.variants', 'variants')
 
-        const filtersQueryBuilder = queryBuilder.clone();
-        const generateFiltersResponse = await generateFilters(filtersQueryBuilder, id, breadcrumb?.entity);
+      const filtersQueryBuilder = queryBuilder.clone();
+      const generateFiltersResponse = await generateFilters(filtersQueryBuilder, id, breadcrumb?.entity);
 
       // Condición para el ID de navigation
       if (findParentUUID(id)) {
         queryBuilder.where(`navigation.${breadcrumb?.entity}_id = :id`, { id });
 
         if (Object.keys(req.query).length > 0) {
-          queryBuilder.andWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filtersQuery})` })
+          queryBuilder.andWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filtersQuery.join('|')})` })
         }
 
       } else {
         const searchTerms = id.split(' ').join('|');
-        // queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
-        // Estructura de la consulta
+        queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+        
         queryBuilder
           .andWhere(new Brackets(qb => {
-            // Condición para la columna 'search'
-            // qb.where('LOWER(navigation.search::text) ~ LOWER(:search)', { search: `(${searchTerms})` });
-            qb.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
-
-            // Condición para la columna 'filter'
             if (Object.keys(req.query).length > 0) {
-              // queryBuilder.andWhere(`navigation.filters::text ILIKE :productName`, { productName: `%${filters.join(' ')}%` })
-              qb.orWhere(`LOWER(navigation.filter::text) ~ LOWER(:regex)`, { regex: `(${filtersQuery})` })
+              filtersQuery.forEach((el, i) => {
+                qb.orWhere(`navigation.filter::text ILIKE :${el}${i}`, { [`${el}${i}`]: `%${el}%` })
+              })
+              // queryBuilder.andWhere('to_tsvector(\'simple\', CAST(navigation.filter AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: filtersQuery.join(' ') })
             }
           }));
       }
@@ -150,6 +148,82 @@ export default {
 
       // Obtener el recuento total
       const totalCount = await queryBuilder.getCount();
+
+      successHandler({
+        res,
+        dataDB: {
+          totalCount,
+          filters: generateFiltersResponse,
+          breadcrumb,
+          listProduct: filteredProducts,
+        },
+        json: {
+          field: 'navigation_list-product',
+          message: 'Datos obtenidos',
+          status_code: 200,
+          status: StatusHTTP.success_200,
+        },
+      });
+    } catch (error) {
+      errorHandlerCatch({ error, res });
+    }
+  },
+  async getListProductStrict(req: Request, res: Response) {
+    const { id, skip, take } = req.params;
+    const filtersQuery = Object.entries(req.query).map(([key, value]) => {
+      const values = Array.isArray(value) ? value : [value];
+      return values.map((element: string) => `${stringEmpty(key)}${stringEmpty(element)}`);
+    }).flat();
+    // }).flat().join('|');
+
+    try {
+      const breadcrumb = await getBreadcrumbs(id);
+
+      const queryBuilder = AppDataSource
+        .getRepository(NavigationEntity)
+        .createQueryBuilder('navigation')
+        .leftJoinAndSelect('navigation.department', 'department')
+        .leftJoinAndSelect('navigation.category', 'category')
+        .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+        .leftJoinAndSelect('navigation.product', 'product')
+        .leftJoinAndSelect('navigation.variants', 'variants')
+
+      // Condición para el ID de navigation
+      if (findParentUUID(id)) {
+        queryBuilder.where(`navigation.${breadcrumb?.entity}_id = :id`, { id });
+        console.log(filtersQuery)
+
+
+        if (Object.keys(req.query).length > 0) {
+          queryBuilder.andWhere('to_tsvector(\'simple\', CAST(navigation.filter AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: filtersQuery.join(' ') })
+        }
+      } else {
+        const searchTerms = id.split(' ').join('|');
+        queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+        queryBuilder
+          .andWhere(new Brackets(qb => {
+            // Condición para la columna 'search'
+            // qb.where('LOWER(navigation.search::text) ~ LOWER(:search)', { search: `(${searchTerms})` });
+
+            if (Object.keys(req.query).length > 0) {
+              qb.andWhere('to_tsvector(\'simple\', CAST(navigation.filter AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: filtersQuery.join(' ') })
+            }
+          }));
+
+      }
+
+      // Seleccionar campos específicos
+      const filteredProducts = await queryBuilder
+        .skip(Number(skip))
+        .take(Number(take))
+        .getMany();
+
+      // Obtener el recuento total
+      const totalCount = await queryBuilder.getCount();
+
+      const filtersQueryBuilder = queryBuilder.clone();
+      const generateFiltersResponse = await generateFiltersStrict(filtersQueryBuilder);
+
 
       successHandler({
         res,
