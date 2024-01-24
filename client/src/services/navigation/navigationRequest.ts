@@ -21,7 +21,7 @@ export type RequestMapNavigation = {
   },
   [RouteNavigation.NavigationListProduct]: {
     route: RouteNavigation.NavigationListProduct;
-    extensionRoute: `/${string}/${string}/${string}${string}`;
+    extensionRoute: `/${string}/${string}/${string}/${string}${string}`;
     data: {
       breadcrumb: MapEntityBreadcrumb[BreadcrumbType];
       listProduct: IProduct.ListProduct[];

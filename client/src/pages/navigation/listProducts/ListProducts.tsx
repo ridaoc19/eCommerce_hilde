@@ -6,7 +6,7 @@ import useListProduct from "../../../hooks/useListProduct/useListProduct";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 
 function ListProducts() {
-  const { listProducts, PaginationButton, BreadcrumbComponent, Filters, currentIndex, paginationTotal, totalProduct } = useListProduct()
+  const { listProducts, PaginationButton, BreadcrumbComponent, Filters, currentIndex, paginationTotal, setStateListProduct, totalProduct } = useListProduct()
   const { mediaQuery } = useMediaQuery()
   const [isButtonFilter, setIsButtonFilter] = useState(false)
 
@@ -26,14 +26,27 @@ function ListProducts() {
             </div>
 
             <div className="header__group-totalizer">
-              cargados: {listProducts.length} - posicion:{currentIndex} - paginacion Total: {paginationTotal} - Total Productos: {totalProduct}
+              Viendo {currentIndex} de {paginationTotal} páginas - {listProducts.length} de {totalProduct} productos
+              {/* De un total de {totalProduct} Productos filtrados, estamos Mostrando {listProducts.length} productos, en la posición {currentIndex} de {paginationTotal} paginas */}
             </div>
           </div>
 
-          {mediaQuery === 'phone' && <div className="header__button">
-            <Button button={{ type: "light", text: "filtros", handleClick: () => setIsButtonFilter(true) }} />
+          {<div className="header__button">
+            {/* {mediaQuery === 'phone' && <div className="header__button"> */}
+            <Button button={{
+              type: "light", text: "filtro flexible", handleClick: () => {
+                setIsButtonFilter(true)
+                setStateListProduct(prevState => ({ ...prevState, filterType: 'flexible' }))
+              }
+            }} />
+            <Button button={{
+              type: "light", text: "filtro estricto", handleClick: () => {
+                setIsButtonFilter(true)
+                setStateListProduct(prevState => ({ ...prevState, filterType: 'strict' }))
+              }
+            }} />
             <Button button={{ type: "light", text: "Orden", handleClick: () => { } }} />
-            <div className="header__button-close">
+            <div className={`header__button-close ${isButtonFilter ? "open" : "close"}`}>
               <Button button={{ type: "dark", text: "", handleClick: () => setIsButtonFilter(false) }} svgLeft={{ type: "close", color: 'white' }} />
             </div>
           </div>}

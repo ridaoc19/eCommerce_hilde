@@ -59,7 +59,15 @@
           position: fixed;
           top     : 0;
           right   : 0;
-          margin  : 1rem;
+          margin  : 0.6rem;
+
+          &.open {
+            display: block;
+          }
+
+          &.close {
+            display: none;
+          }
         }
       }
 

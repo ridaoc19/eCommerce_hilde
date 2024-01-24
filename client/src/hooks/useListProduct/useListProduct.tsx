@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { BreadcrumbType } from '../../interfaces/global.interface';
 import { ErrorNavigation, navigationRequest } from '../../services/navigation/navigationApi';
 import { RouteNavigation } from '../../services/navigation/navigationRequest';
@@ -15,6 +15,7 @@ const initialStateListProduct: InitialStateListProduct = {
   paginationTotal: 0,
   pagination: 10,
   currentIndex: 1,
+  filterType: "flexible",
   id: "",
   query: "",
   dataState: {
@@ -26,12 +27,15 @@ const initialStateListProduct: InitialStateListProduct = {
 const useListProduct = (): ListProductHook => {
   const params = useParams();
   let location = useLocation()
+  const [_, setSearchParams] = useSearchParams();
 
   const [stateListProduct, setStateListProduct] = useState<InitialStateListProduct>(initialStateListProduct)
-    const { allProducts, currentIndex, pagination, paginationTotal, id, query, dataState } = stateListProduct;
+  const { allProducts, currentIndex, pagination, paginationTotal, id, query, dataState, filterType } = stateListProduct;
   const { data, isLoading, isError, error, isSuccess, isFetching } = useQuery(
     ['list-product', id, currentIndex, query],
-    async () => navigationRequest(RouteNavigation.NavigationListProduct).options({ extensionRoute: `/${id}/${(((currentIndex - 1) * pagination) - 1) < 0 ? 0 : ((currentIndex - 1) * pagination) - 1}/${pagination}${query}` }),
+    async () => navigationRequest(RouteNavigation.NavigationListProduct).options({
+      extensionRoute: `/${filterType}/${id}/${(((currentIndex - 1) * pagination) - 1) < 0 ? 0 : ((currentIndex - 1) * pagination) - 1}/${pagination}${query}`
+    }),
     {
       enabled: !!id && (!allProducts.some(e => e.allProducts_id === currentIndex) || !!query),
       refetchOnWindowFocus: false,
@@ -42,11 +46,25 @@ const useListProduct = (): ListProductHook => {
     }
   );
 
+  useEffect(() => { //limpiar si se cambia se filtro strict y flex
+    if (params?.id) {
+      setSearchParams()
+      setStateListProduct({
+        ...initialStateListProduct,
+        filterType: stateListProduct.filterType,
+        id: params.id,
+        dataState: stateListProduct.dataState
+      })
+    }
+    // eslint-disable-next-line
+  }, [stateListProduct.filterType])
+
 
   useLayoutEffect(() => {
     if (params?.id) {
       setStateListProduct({
         ...initialStateListProduct,
+        filterType: stateListProduct.filterType,
         query: location.search,
         id: params.id,
         dataState: stateListProduct.dataState
@@ -57,11 +75,6 @@ const useListProduct = (): ListProductHook => {
 
   useEffect(() => {
     if (data?.data) {
-      // const bre = data.data.breadcrumb;
-      // const id = params.id;
-      // const id = bre.data.find((d) => d.name_id === bre.entity)?._id;
-      // console.log({ data, bre, id })
-      // if (id && bre) {
       setStateListProduct(prevState => ({
         ...prevState,
         allProducts: [{ allProducts_id: currentIndex, allProducts_data: data.data.listProduct }, ...allProducts],
@@ -83,6 +96,7 @@ const useListProduct = (): ListProductHook => {
     isLoading,
     isError,
     error,
+    setStateListProduct,
     BreadcrumbComponent: <Breadcrumb breadcrumb={dataState.breadcrumb} />,
     PaginationButton: <PaginationButton
       currentIndex={currentIndex}
@@ -103,7 +117,7 @@ const useListProduct = (): ListProductHook => {
         setStateListProduct(prevState => ({ ...prevState, currentIndex: Number(selectedValue) }))
       }}
     />,
-    Filters: <Filters filters={{...dataState.filters}} />
+    Filters: <Filters filters={{ ...dataState.filters }} />
   };
 };
 
