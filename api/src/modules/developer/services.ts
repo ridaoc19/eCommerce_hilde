@@ -7,6 +7,7 @@ import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { CategoryEntity } from '../categories/entity';
 import { DepartmentEntity } from '../departments/entity';
+import { MediaFilesEntity } from '../media/entity';
 import { NavigationEntity } from '../navigation/entity';
 import { ProductEntity } from '../products/entity';
 import { SubcategoryEntity } from '../subcategories/entity';
@@ -43,7 +44,8 @@ export default {
     try {
 
       const currentDirectory = __dirname; // Obtén el directorio actual
-      const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'upload.json'); // Obtén el directorio superior
+      const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'tempo.json'); // Obtén el directorio superior
+      // const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'upload.json'); // Obtén el directorio superior
 
       const jsonData: Data[] = JSON.parse(readFileSync(parentDirectory, 'utf-8'));
 
@@ -53,6 +55,7 @@ export default {
       const productRepository = AppDataSource.getRepository(ProductEntity);
       const variantRepository = AppDataSource.getRepository(VariantEntity);
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+      const mediaRepository = AppDataSource.getRepository(MediaFilesEntity);
 
 
 
@@ -117,6 +120,7 @@ export default {
         for (const jstonVariant of dataJson.variants) {
           let existingNavigation = await navigationRepository.findOne({ where: { product: { product_id: existingProduct.product_id } } });
 
+          const newMedia = new MediaFilesEntity();
 
           const newVariant = new VariantEntity();
           newVariant.attributes = jstonVariant.attributes
@@ -125,6 +129,13 @@ export default {
           newVariant.stock = jstonVariant.stock
           newVariant.videos = jstonVariant.videos
           newVariant.product = existingProduct
+          newVariant.media = newMedia
+
+          // imagenes y videos
+          newMedia.images = jstonVariant.images
+          newMedia.videos = jstonVariant.videos
+          await mediaRepository.save(newMedia)
+          // 
 
           if (existingNavigation) {
             newVariant.navigation = existingNavigation;

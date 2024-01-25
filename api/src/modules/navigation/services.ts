@@ -98,6 +98,7 @@ export default {
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
         .leftJoinAndSelect('navigation.variants', 'variants')
+        .leftJoinAndSelect('variants.media', 'media')
 
       const filtersQueryBuilder = queryBuilder.clone();
       const generateFiltersResponse = await generateFilters(filtersQueryBuilder, id, breadcrumb?.entity);
