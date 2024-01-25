@@ -4,6 +4,7 @@ import { DepartmentEntity } from '../departments/entity';
 import { ProductEntity } from '../products/entity';
 import { SubcategoryEntity } from '../subcategories/entity';
 import { VariantEntity } from '../variants/entity';
+import { AdvertisingEntity } from '../advertising/entity';
 
 
 @Entity('media_files')
@@ -11,11 +12,14 @@ export class MediaFilesEntity {
   @PrimaryGeneratedColumn("uuid")
   media_id: string;
 
-  @Column({ type: 'simple-array', default: [] })
+  @Column({ type: 'simple-array', nullable: true})
   images: string[];
 
-  @Column({ type: 'simple-array', default: [] })
+  @Column({ type: 'simple-array', nullable: true})
   videos: string[];
+
+  @OneToOne(() => AdvertisingEntity, advertising => advertising.media, { cascade: ['soft-remove', 'recover'] })
+  advertising: AdvertisingEntity;
 
   @OneToOne(() => DepartmentEntity, department => department.media, { cascade: ['soft-remove', 'recover'] })
   department: DepartmentEntity;

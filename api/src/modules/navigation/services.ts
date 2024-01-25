@@ -94,6 +94,7 @@ export default {
         .getRepository(NavigationEntity)
         .createQueryBuilder('navigation')
         .leftJoinAndSelect('navigation.department', 'department')
+        .leftJoinAndSelect('department.media', 'media_department')
         .leftJoinAndSelect('navigation.category', 'category')
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
