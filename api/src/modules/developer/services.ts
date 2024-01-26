@@ -21,10 +21,10 @@ interface Data {
   category: string;
   subcategory: string;
   description: string;
-  variants: Variant[];
   benefits: string[];
   contents: string;
   warranty: string;
+  variants: Variant[];
 }
 
 interface Variant {
@@ -33,6 +33,7 @@ interface Variant {
   videos: string[];
   price: number;
   stock: number;
+  listPrice: number;
 }
 
 type Attributes = Record<string, string>
@@ -44,8 +45,8 @@ export default {
     try {
 
       const currentDirectory = __dirname; // Obtén el directorio actual
-      const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'tempo.json'); // Obtén el directorio superior
-      // const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'upload.json'); // Obtén el directorio superior
+      // const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'tempo.json'); // Obtén el directorio superior
+      const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'upload.json'); // Obtén el directorio superior
 
       const jsonData: Data[] = JSON.parse(readFileSync(parentDirectory, 'utf-8'));
 
@@ -92,7 +93,7 @@ export default {
           existingSubcategory = new SubcategoryEntity();
           existingSubcategory.subcategory = dataJson.subcategory
           existingSubcategory.category = existingCategory
-          existingSubcategory.media =  newMedia
+          existingSubcategory.media = newMedia
           await subcategoryRepository.save(existingSubcategory)
           await mediaRepository.save(newMedia)
         }
@@ -188,4 +189,95 @@ export default {
       errorHandlerCatch({ error, res });
     }
   },
+  async clearProduct(_req: Request, res: Response) {
+    const currentDirectory = __dirname; // Obtén el directorio actual
+    const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'ultimo.json'); // Obtén el directorio superior
+    const jsonData: DataTotal[] = JSON.parse(readFileSync(parentDirectory, 'utf-8'));
+
+    const result: DataTotal[] = jsonData.reduce((acc: DataTotal[], e) => {
+      if (!e.productId || !e.productName || !e.brand || !e.department || !e.category || !e.subcategory || !e.description) return acc;
+      if (acc.find((p) => p.productId === e.productId)) return acc;
+      return [...acc, e];
+    }, []);
+
+
+    const data: Data[] = result.map(({ benefits, brand, category, contents, department, description, productName, specification, subcategory, variants, warranty }) => {
+      return {
+        product: productName,
+        brand,
+        description,
+        contents,
+        warranty,
+        department,
+        category,
+        subcategory,
+        benefits,
+        specification,
+        variants: variants.map(({ ListPrice, attributes, images, price, stock, videos }) => {
+          return {
+            attributes,
+            images,
+            ListPrice,
+            listPrice: ListPrice,
+            price,
+            stock,
+            videos
+          }
+        }),
+      }
+    })
+
+
+    // const seenProductIds = new Set<string>();
+    // const result: DataTotal[] = [];
+
+    // jsonData.forEach((e) => {
+    //   // if (e.productId && e.productName && e.brand && e.department && e.category && e.subcategory && e.description) {
+    //     if (seenProductIds.has(e.productId)) {
+    //       // Si el productId ya está en el conjunto, agrega el producto al resultado
+    //       result.push(e);
+    //     } else {
+    //       // Si es la primera vez que encuentras este productId, agrégalo al conjunto
+    //       seenProductIds.add(e.productId);
+    //     // }
+    //   }
+    // });
+
+    res.json({ data })
+  },
+  async clearEnsayo(_req: Request, res: Response) {
+    const currentDirectory = __dirname; // Obtén el directorio actual
+    const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'upload.json'); // Obtén el directorio superior
+    const jsonData: DataTotal[] = JSON.parse(readFileSync(parentDirectory, 'utf-8'));
+
+    const filter = jsonData.filter(e => e.variants.some(d => !d.images))
+
+    res.json({ jsonData: jsonData.length, filter: filter })
+  }
 };
+
+
+interface DataTotal {
+  specification: Specification;
+  productId: string;
+  productName: string;
+  brand: string;
+  department: string;
+  category: string;
+  subcategory: string;
+  description: string;
+  benefits: string[];
+  contents: string;
+  warranty: string;
+  variants: Variantt[];
+}
+
+interface Variantt {
+  itemId: string;
+  images: string[];
+  attributes: Attributes;
+  videos: string[];
+  ListPrice: number;
+  price: number;
+  stock: number;
+}
