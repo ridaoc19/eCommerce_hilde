@@ -34,7 +34,16 @@ export type SvgType =
   | "phone-social"
   | "whatsapp"
   | "location"
-  | "time";
+  | "time"
+  | "redirect"
+  | "edit"
+  | "tablet"
+  | "desktop"
+  | "text"
+  | "mobile"
+  | "check"
+  | "uncheck"
+  ;
 
 interface Props {
   type: SvgType,
@@ -155,27 +164,27 @@ const Svg: React.FC<Props> = ({ type, width = 24, height = 24, color = "#292D32"
 
     case "arrowLeft":
       return <svg width={width} height={height} viewBox="0 0 9 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M8.00009 16.92L1.48009 10.4C0.710088 9.62996 0.710088 8.36996 1.48009 7.59996L8.00009 1.07996" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M8.00009 16.92L1.48009 10.4C0.710088 9.62996 0.710088 8.36996 1.48009 7.59996L8.00009 1.07996" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      
+
 
     case "arrowRight":
       return <svg width={width} height={height} viewBox="0 0 9 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0.909912 16.92L7.42991 10.4C8.19991 9.62996 8.19991 8.36996 7.42991 7.59996L0.909912 1.07996" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M0.909912 16.92L7.42991 10.4C8.19991 9.62996 8.19991 8.36996 7.42991 7.59996L0.909912 1.07996" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      
+
 
     case "arrowTop":
       return <svg width={width} height={height} viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16.9201 8.05001L10.4001 1.53001C9.63008 0.760015 8.37008 0.760015 7.60008 1.53001L1.08008 8.05001" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M16.9201 8.05001L10.4001 1.53001C9.63008 0.760015 8.37008 0.760015 7.60008 1.53001L1.08008 8.05001" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      
+
 
     case "arrowBottom":
       return <svg width={width} height={height} viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16.9201 0.949951L10.4001 7.46995C9.63008 8.23995 8.37008 8.23995 7.60008 7.46995L1.08008 0.949951" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M16.9201 0.949951L10.4001 7.46995C9.63008 8.23995 8.37008 8.23995 7.60008 7.46995L1.08008 0.949951" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      
+
 
     case "update":
       return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -350,6 +359,62 @@ const Svg: React.FC<Props> = ({ type, width = 24, height = 24, color = "#292D32"
         <path d="M15.24 2H8.76004C5.00004 2 4.71004 5.38 6.74004 7.22L17.26 16.78C19.29 18.62 19 22 15.24 22H8.76004C5.00004 22 4.71004 18.62 6.74004 16.78L17.26 7.22C19.29 5.38 19 2 15.24 2Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
 
+
+    case "redirect":
+      return <svg width={width} height={height} viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.58008 4.15997H15.4201C17.0801 4.15997 18.4201 5.49997 18.4201 7.15997V10.48" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M4.74008 1L1.58008 4.15997L4.74008 7.32001" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M18.4201 17.84H4.58008C2.92008 17.84 1.58008 16.5 1.58008 14.84V11.52" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M15.2603 21L18.4203 17.84L15.2603 14.68" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+
+    case "text":
+      return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.99146 5.92995V4.41995C1.99146 3.39995 2.82146 2.56995 3.84145 2.56995H16.7615C17.7815 2.56995 18.6115 3.39995 18.6115 4.41995V5.92995" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M10.3015 18.0999V3.31995" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M6.90149 18.1H12.4815" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M13.6815 10.34H20.6915C21.4215 10.34 22.0115 10.93 22.0115 11.66V12.46" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M16.0814 21.43V10.87" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M13.9414 21.4301H18.2214" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+
+    case "desktop":
+      return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6.44 2H17.55C21.11 2 22 2.89 22 6.44V12.77C22 16.33 21.11 17.21 17.56 17.21H6.44C2.89 17.22 2 16.33 2 12.78V6.44C2 2.89 2.89 2 6.44 2Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 17.22V22" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M2 13H22" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M7.5 22H16.5" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+
+    case "tablet":
+      return <svg width={width} height={height} viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.44 1H16.55C20.11 1 21 1.89 21 5.44V11.77C21 15.33 20.11 16.21 16.56 16.21H5.44C1.89 16.22 1 15.33 1 11.78V5.44C1 1.89 1.89 1 5.44 1Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+
+    case "mobile":
+      return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 7V17C20 21 19 22 15 22H9C5 22 4 21 4 17V7C4 3 5 2 9 2H15C19 2 20 3 20 7Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 5.5H10" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 19.1C12.856 19.1 13.55 18.406 13.55 17.55C13.55 16.694 12.856 16 12 16C11.1439 16 10.45 16.694 10.45 17.55C10.45 18.406 11.1439 19.1 12 19.1Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+
+    case "edit":
+      return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M16.0399 3.02001L8.15988 10.9C7.85988 11.2 7.55988 11.79 7.49988 12.22L7.06988 15.23C6.90988 16.32 7.67988 17.08 8.76988 16.93L11.7799 16.5C12.1999 16.44 12.7899 16.14 13.0999 15.84L20.9799 7.96001C22.3399 6.60001 22.9799 5.02001 20.9799 3.02001C18.9799 1.02001 17.3999 1.66001 16.0399 3.02001Z" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14.9102 4.15002C15.5802 6.54002 17.4502 8.41002 19.8502 9.09002" stroke={color} strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+
+    case "check":
+      return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM16.78 9.7L11.11 15.37C10.97 15.51 10.78 15.59 10.58 15.59C10.38 15.59 10.19 15.51 10.05 15.37L7.22 12.54C6.93 12.25 6.93 11.77 7.22 11.48C7.51 11.19 7.99 11.19 8.28 11.48L10.58 13.78L15.72 8.64C16.01 8.35 16.49 8.35 16.78 8.64C17.07 8.93 17.07 9.4 16.78 9.7Z" fill={color} />
+      </svg>
+
+
+    case "uncheck":
+      return <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM15.36 14.3C15.65 14.59 15.65 15.07 15.36 15.36C15.21 15.51 15.02 15.58 14.83 15.58C14.64 15.58 14.45 15.51 14.3 15.36L12 13.06L9.7 15.36C9.55 15.51 9.36 15.58 9.17 15.58C8.98 15.58 8.79 15.51 8.64 15.36C8.35 15.07 8.35 14.59 8.64 14.3L10.94 12L8.64 9.7C8.35 9.41 8.35 8.93 8.64 8.64C8.93 8.35 9.41 8.35 9.7 8.64L12 10.94L14.3 8.64C14.59 8.35 15.07 8.35 15.36 8.64C15.65 8.93 15.65 9.41 15.36 9.7L13.06 12L15.36 14.3Z" fill={color} />
+      </svg>
 
 
     default:
