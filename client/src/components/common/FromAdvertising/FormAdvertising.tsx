@@ -1,43 +1,41 @@
 import { RefObject, useState } from "react";
 import { useLocation } from "react-router-dom";
-import Svg from "../../components/assets/icons/Svg";
-import Input from "../../components/common/Input/Input";
-import Button from "../../components/common/button/Button";
-import { IAdvertising } from "../../interfaces/advertising.interface";
-import { HandleChangeText } from "../../interfaces/global.interface";
-import { RequestMapAdvertising, RouteAdvertising } from "../../services/advertising/advertisingRequest";
-import { IContextData } from "../useContext";
-import './inputAdvertising.scss';
-import useMediaQuery from "../useMediaQuery";
+import Svg from "../../assets/icons/Svg";
+import Input from "../Input/Input";
+import Button from "../button/Button";
+import { IAdvertising } from "../../../interfaces/advertising.interface";
+import { HandleChangeText } from "../../../interfaces/global.interface";
+import { RequestMapAdvertising, RouteAdvertising } from "../../../services/advertising/advertisingRequest";
+import { IContextData } from "../../../hooks/useContext";
+import './formAdvertising.scss';
+import useMediaQuery from "../../../hooks/useMediaQuery";
 
 // Interfaces
-interface InitialStateInputAdvertising {
+interface InitialStateFormAdvertising {
   change: RequestMapAdvertising[RouteAdvertising.AdvertisingCreate]['requestData'];
   error: RequestMapAdvertising[RouteAdvertising.AdvertisingCreate]['requestData'];
   advertising_id: string;
 }
 
-interface InputAdvertisingProps {
+interface FormAdvertisingProps {
   advertising: Partial<IContextData['advertising']['advertisingContextState']>;
   location: IAdvertising.TotalLocation;
   componentMount?: RefObject<HTMLDivElement>;
 }
 
 
-// Componente InputAdvertising
-function InputAdvertising({ advertising: { advertisingData }, location, componentMount }: InputAdvertisingProps) {
-  const { pathname } = useLocation();
+// Componente FormAdvertising
+function FormAdvertising({ advertising: { advertisingData }, location, componentMount }: FormAdvertisingProps) {
   const { mediaQuery } = useMediaQuery()
+  const { pathname } = useLocation();
   const page = pathname.split('/').filter(Boolean)[0] || 'home' as "home" | "product-detail" | "list-products";
-  // const title = [{ advertising_id: "1", page: "", location: "", title: "Titulo", redirect: "Redirigir", text: "Texto", image_desktop: "Imagen Desktop", image_tablet: "Imagen Tablet", image_phone: "Imagen Phone" }];
-
-  const initialStateInputAdvertising: InitialStateInputAdvertising = {
+  const initialStateFormAdvertising: InitialStateFormAdvertising = {
     change: { page, location, title: "", redirect: "", text: "", image_desktop: "", image_tablet: "", image_phone: "" },
     error: { page: "", location: "", title: "", text: "", redirect: "", image_desktop: "", image_tablet: "", image_phone: "" },
     advertising_id: ""
   };
 
-  const [stateInput, setStateInput] = useState(initialStateInputAdvertising);
+  const [stateInput, setStateInput] = useState(initialStateFormAdvertising);
 
   const handleItemClick = ({ advertising_id, type }: { advertising_id: string, type: "edit" | "delete" | "save" }) => {
     if (type === 'edit') {
@@ -77,7 +75,7 @@ function InputAdvertising({ advertising: { advertisingData }, location, componen
         </ul>
       </div>
       <div className={`advertising-form__input ${mediaQuery}`}>
-        {(Object.keys(initialStateInputAdvertising.change).filter(key => !['page', 'location', 'advertising_id'].includes(key)) as (keyof Omit<InitialStateInputAdvertising['change'], 'page' | 'location' | 'advertising_id'>)[]).map((item) => (
+        {(Object.keys(initialStateFormAdvertising.change).filter(key => !['page', 'location', 'advertising_id'].includes(key)) as (keyof Omit<InitialStateFormAdvertising['change'], 'page' | 'location' | 'advertising_id'>)[]).map((item) => (
           <Input
             key={item}
             styleClass={`login--${item}`}
@@ -89,39 +87,11 @@ function InputAdvertising({ advertising: { advertisingData }, location, componen
       <div className={`advertising-form__button`} >
         <div>
           <Button button={{ type: "dark", handleClick: () => handleItemClick({ advertising_id: "1", type: "save" }), text: "Guardar" }} />
-          <Button button={{ type: "dark", handleClick: () => setStateInput(initialStateInputAdvertising), text: "Limpiar" }} />
+          <Button button={{ type: "dark", handleClick: () => setStateInput(initialStateFormAdvertising), text: "Limpiar" }} />
         </div>
       </div>
     </div>
   );
 }
 
-// interface Item {
-//   advertising_id: string,
-//   title: string;
-//   redirect: string;
-//   text: string;
-//   image_desktop: string;
-//   image_tablet: string;
-//   image_phone: string;
-// }
-
-// Componente ListItem
-// const ListItem: React.FC<{ item: Item; isSelected: boolean; handleClick: ({ advertising_id, type }: { advertising_id: string, type: "edit" | "delete" }) => void }> = ({
-//   item,
-//   isSelected,
-//   handleClick,
-// }) => (
-//   <li className={`list-item ${isSelected ? 'selected' : ''}`}>
-//     <div className="item-title">{item.title}</div>
-//     <div>{item.redirect}</div>
-//     <div>{item.text ? 'true' : 'false'}</div>
-//     <div>{item.image_desktop ? 'true' : 'false'}</div>
-//     <div>{item.image_tablet ? 'true' : 'false'}</div>
-//     <div>{item.image_phone ? 'true' : 'false'}</div>
-//     <div><Button button={{ type: "dark", handleClick: () => handleClick({ advertising_id: item.advertising_id, type: "edit" }), text: "" }} svgLeft={{ type: "arrowBottom", }} /></div>
-//     <div><Button button={{ type: "dark", handleClick: () => handleClick({ advertising_id: item.advertising_id, type: "delete" }), text: "" }} svgLeft={{ type: "delete", }} /></div>
-//   </li>
-// );
-
-export default InputAdvertising;
+export default FormAdvertising;

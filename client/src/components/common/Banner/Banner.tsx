@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import InputAdvertising from "../../../hooks/useAdvertising/InputAdvertising";
+import InputAdvertising from "../FromAdvertising/FormAdvertising";
 import { IContextData } from "../../../hooks/useContext";
 import { IAdvertising } from "../../../interfaces/advertising.interface";
 

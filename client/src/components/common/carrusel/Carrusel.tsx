@@ -1,7 +1,7 @@
 // src/Carrusel.tsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import InputAdvertising from '../../../hooks/useAdvertising/InputAdvertising';
+import InputAdvertising from '../FromAdvertising/FormAdvertising';
 import { IContextData } from '../../../hooks/useContext';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { IAdvertising } from '../../../interfaces/advertising.interface';
@@ -99,7 +99,7 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage 
           {allAdvertising[currentIndex]?.map((item, index) => {
             return (
               <Link key={index} to={item.redirect}>
-                <img src={item.image}
+                <img src={item.image} alt=''
                 // style={{ width: '100%', borderRadius: '0.5rem' }} alt="" 
                 />
               </Link>
