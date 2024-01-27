@@ -9,6 +9,7 @@ import { RequestMapAdvertising, RouteAdvertising } from "../../../services/adver
 import { IContextData } from "../../../hooks/useContext";
 import './formAdvertising.scss';
 import useMediaQuery from "../../../hooks/useMediaQuery";
+import useAdminImages from "../../../hooks/useAdminImages/useAdminImages";
 
 // Interfaces
 interface InitialStateFormAdvertising {
@@ -28,6 +29,7 @@ interface FormAdvertisingProps {
 function FormAdvertising({ advertising: { advertisingData }, location, componentMount }: FormAdvertisingProps) {
   const { mediaQuery } = useMediaQuery()
   const { pathname } = useLocation();
+  const { ModalAdminImages } = useAdminImages({ location })
   const page = pathname.split('/').filter(Boolean)[0] || 'home' as "home" | "product-detail" | "list-products";
   const initialStateFormAdvertising: InitialStateFormAdvertising = {
     change: { page, location, title: "", redirect: "", text: "", image_desktop: "", image_tablet: "", image_phone: "" },
@@ -86,6 +88,7 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
       </div>
       <div className={`advertising-form__button`} >
         <div>
+          {ModalAdminImages}
           <Button button={{ type: "dark", handleClick: () => handleItemClick({ advertising_id: "1", type: "save" }), text: "Guardar" }} />
           <Button button={{ type: "dark", handleClick: () => setStateInput(initialStateFormAdvertising), text: "Limpiar" }} />
         </div>
