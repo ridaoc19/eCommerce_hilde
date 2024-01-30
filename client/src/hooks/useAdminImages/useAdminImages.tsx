@@ -13,7 +13,7 @@ function useAdminImages({ location }: { location: string }): UseAdminImagesRetur
   const [files, setFiles] = useState<File[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [allImages, setAllImages] = useState<{ media: string, location: string }[]>([])
-
+console.log(files, "files")
   const queryClient = useQueryClient();
 
   const mutationSaveServerImages = useMutation({
@@ -34,6 +34,9 @@ function useAdminImages({ location }: { location: string }): UseAdminImagesRetur
     },
     onSuccess: (data) => {
       // Actualizar los datos en caché después de la segunda mutación
+      setFiles([])
+      const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
+      if (inputElement) inputElement.value = '';
       setAllImages(data.data)
       queryClient.invalidateQueries('posts');
     },

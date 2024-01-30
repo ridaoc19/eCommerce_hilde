@@ -9,7 +9,7 @@ export enum RouteAdvertising {
 export type RequestMapAdvertising = {
   [RouteAdvertising.AdvertisingCreate]: {
     route: RouteAdvertising.AdvertisingCreate;
-    requestData: Omit<IAdvertising.advertising, 'advertising_id'>
+    requestData: Omit<IAdvertising.advertising, 'advertising_id' | 'image_desktop' | 'image_phone' | 'image_tablet'> & { image_desktop: File | string, image_phone: File | string, image_tablet: File | string }
     data: IAdvertising.advertising[]
   },
   [RouteAdvertising.AdvertisingEdit]: {

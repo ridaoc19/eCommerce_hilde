@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { HandleChangeText, HandleClick } from '../../interfaces/global.interface';
 import './adminImages.scss';
+import useMediaQuery from '../useMediaQuery';
+import Button from '../../components/common/button/Button';
 
 interface ModalAdminImagesProps {
   files: File[],
@@ -14,39 +16,62 @@ interface ModalAdminImagesProps {
 }
 
 function ModalAdminImages({ handleDeleteImage, setModalOpen, handleSaveImages, allImages, handleUploadImage, files, isOpen, onClose }: ModalAdminImagesProps) {
-
+  const { mediaQuery } = useMediaQuery()
 
   return (
     <div>
       {/* Botón para abrir el modal */}
-      <button onClick={() => setModalOpen(true)}>Administrar Imágenes</button>
+      <button onClick={() => {
+        document.body.classList.add('body-scroll-locked');
+        setModalOpen(true)
+      }}>Administrar Imágenes</button>
 
       {/* Modal */}
       <div className={`modal ${isOpen ? 'open' : ''}`}>
-        <div className="modal-content">
-          {/* Contenido del modal (lista de imágenes, botones de carga y eliminación, etc.) */}
-          <h2>Administrar Imágenes</h2>
-          {/* <input type="file" onChange={(e) => handleUploadImage(e.target.files?.[0] || null)} /> */}
+        {/* <div className="modal__content"> */}
 
-          <div className='container-images'>
-            <ul>
-              {allImages.map(({ media }) => (
-                <img src={media} alt="" />
-              ))}
-            </ul>
+          <div className='modal-header'>
+            <h2>Administrar Imágenes</h2>
           </div>
 
-          <input id={`input__images-`} multiple className='input__images' type='file' name='images' onChange={handleUploadImage} />
-          {files.map((image, index) => (
-            <div key={index}>
-              <img src={URL.createObjectURL(image)} width={200} alt={`${index}`} />
-              <button value={index} onClick={handleDeleteImage}>Eliminar Imagen</button>
+          <div className={`modal-main ${mediaQuery}`}>
+            <div className='modal-main__images-stored'>
+              <h3>Imágenes Almacenadas</h3>
+              <ul>
+                {allImages.map(({ media }, index) => (
+                  <img key={index} src={media} alt="" />
+                ))}
+              </ul>
             </div>
-          ))}
-          <button onClick={onClose}>Cerrar</button>
-          <button onClick={handleSaveImages}>Guardar</button>
+
+            <div className='modal-main__images-add'>
+              <div className='modal-main__images-add-input'>
+                <input id={`input__images`} multiple className='input__images' type='file' name='images' onChange={handleUploadImage} />
+              </div>
+
+              <div className='modal-main__images-add-render'>
+                {files.map((image, index) => (
+                  <div key={index}>
+                    <img src={URL.createObjectURL(image)} width={"100%"} alt={`${index}`} />
+                    <Button button={{ type: 'dark', text: "Eliminar Imagen", handleClick: handleDeleteImage, }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          <div className='modal-button'>
+            <button onClick={() => {
+              onClose()
+              document.body.classList.remove('body-scroll-locked');
+            }}>Cerrar</button>
+            <button onClick={handleSaveImages}>Guardar</button>
+          </div>
+
         </div>
-      </div>
+
+      {/* </div> */}
     </div>
   );
 }
