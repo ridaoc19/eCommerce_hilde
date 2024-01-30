@@ -1,7 +1,8 @@
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CategoryEntity } from '../categories/entity';
 import { ProductEntity } from '../products/entity';
 import { NavigationEntity } from '../navigation/entity';
+import { MediaFilesEntity } from '../media/entity';
 
 @Entity('subcategories')
 export class SubcategoryEntity {
@@ -10,6 +11,10 @@ export class SubcategoryEntity {
 
   @Column({ type: 'varchar' })
   subcategory: string;
+
+  @OneToOne(() => MediaFilesEntity, media => media.subcategory, { cascade: true })
+  @JoinColumn({ name: 'media_id' })
+  media: MediaFilesEntity;
 
   @ManyToOne(() => CategoryEntity, category => category.subcategories, { cascade: true })
   @JoinColumn({ name: 'category_id' })

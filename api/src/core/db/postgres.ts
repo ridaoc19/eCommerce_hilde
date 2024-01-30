@@ -3,6 +3,8 @@ import { DataSource } from 'typeorm';
 import { AdvertisingEntity } from "../../modules/advertising/entity";
 import { CategoryEntity } from "../../modules/categories/entity";
 import { DepartmentEntity } from "../../modules/departments/entity";
+import { MediaFilesTempoEntity } from "../../modules/media-tempo/entity";
+import { MediaFilesEntity } from "../../modules/media/entity";
 import { NavigationEntity } from "../../modules/navigation/entity";
 import { ProductEntity } from "../../modules/products/entity";
 import { SubcategoryEntity } from "../../modules/subcategories/entity";
@@ -27,7 +29,9 @@ export const AppDataSource = new DataSource({
     VariantEntity,
     UserEntity,
     NavigationEntity,
-    AdvertisingEntity
+    AdvertisingEntity,
+    MediaFilesEntity,
+    MediaFilesTempoEntity
   ],
   migrations: [],
   subscribers: [],

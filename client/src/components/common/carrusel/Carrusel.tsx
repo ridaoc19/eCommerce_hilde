@@ -1,16 +1,21 @@
 // src/Carrusel.tsx
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import InputAdvertising from '../FromAdvertising/FormAdvertising';
+import { IContextData } from '../../../hooks/useContext';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { IAdvertising } from '../../../interfaces/advertising.interface';
-import { Link } from 'react-router-dom';
 import Button from '../button/Button';
 // import './principal.scss'; // Importa tu archivo de estilos
 
 interface CarruselProps {
-  advertising: IAdvertising.advertising[];
+  // advertising: IAdvertising.advertising[];
   itemPerPage?: number
+  advertising: IContextData['advertising']['advertisingContextState'],
+  location: IAdvertising.TotalLocation
 }
-const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => {
+const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage = 3 }) => {
+  const advertisingData = { ...advertising.advertisingData, data: advertising.advertisingData.data.filter(e => e.location === location) }
   const { mediaQuery } = useMediaQuery();
   // Estado para controlar si el mouse está sobre la vitrina
   const [isMouseOverVitrine, setIsMouseOverVitrine] = useState(false);
@@ -26,7 +31,7 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
   // const advertisingPerPage = 1;
 
   // Número total de páginas
-  const pageCount = Math.ceil(advertising.length / advertisingPerPage);
+  const pageCount = Math.ceil(advertisingData.data.length / advertisingPerPage);
 
 
   useEffect(() => {
@@ -36,7 +41,7 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
 
   // Efecto para actualizar los productos paginados cuando cambian los productos originales
   useEffect(() => {
-    const adve = advertising.map(({ advertising_id, redirect, title, image_desktop, image_phone, image_tablet }) => {
+    const adve = advertisingData.data.map(({ advertising_id, redirect, title, image_desktop, image_phone, image_tablet }) => {
       const resultImage = mediaQuery === 'phone' ? image_phone : mediaQuery === 'tablet' ? image_tablet : image_desktop
       const image = resultImage ? resultImage : image_desktop
       return {
@@ -64,54 +69,57 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, itemPerPage = 3 }) => 
   }, [isMouseOverVitrine, allAdvertising]);
 
   // Renderizar el componente principal
-  if (advertising.length === 0) return null
+  if (advertisingData.data.length === 0) return null
   return (
-    <div
-      className={`${advertising[0]?.location || "advertising"} carrusel`}
-      onMouseEnter={() => setIsMouseOverVitrine(true)}
-      onMouseLeave={() => setIsMouseOverVitrine(false)}
-    >
-      {/* Botón para retroceder al producto anterior */}
-      <div className='carrusel__button-left'>
-        <Button
-          button={{
-            type: 'dark',
-            text: "<",
-            handleClick: () => setCurrentIndex((prevIndex) => {
-              const newIndex = prevIndex - 1;
-              // Si el nuevo índice es menor que cero, vuelve al final de la vitrina
-              return newIndex < 0 ? allAdvertising.length - 1 : newIndex;
-            })
-          }}
-        />
-      </div>
-
-      {/* Mapear y renderizar los productos en la vitrina */}
-      <div className='carrusel__image_container'
-      //  style={{ display: 'flex', gap: '1.5rem', width: '100%' }}
+    <>
+      <div
+        className={`${advertisingData.data[0]?.location || "advertising"} carrusel`}
+        onMouseEnter={() => setIsMouseOverVitrine(true)}
+        onMouseLeave={() => setIsMouseOverVitrine(false)}
       >
-        {allAdvertising[currentIndex]?.map((item, index) => {
-          return (
-            <Link key={index} to={item.redirect}>
-              <img src={item.image}
-              // style={{ width: '100%', borderRadius: '0.5rem' }} alt="" 
-              />
-            </Link>
-          )
-        })}
-      </div>
+        {/* Botón para retroceder al producto anterior */}
+        <div className='carrusel__button-left'>
+          <Button
+            button={{
+              type: 'dark',
+              text: "<",
+              handleClick: () => setCurrentIndex((prevIndex) => {
+                const newIndex = prevIndex - 1;
+                // Si el nuevo índice es menor que cero, vuelve al final de la vitrina
+                return newIndex < 0 ? allAdvertising.length - 1 : newIndex;
+              })
+            }}
+          />
+        </div>
 
-      {/* Botón para avanzar al siguiente producto */}
-      <div className='carrusel__button-right'>
-        <Button
-          button={{
-            type: 'dark',
-            text: `>`,
-            handleClick: () => { setCurrentIndex((prevIndex) => (prevIndex + 1) % allAdvertising.length) }
-          }}
-        />
+        {/* Mapear y renderizar los productos en la vitrina */}
+        <div className='carrusel__image_container'
+        //  style={{ display: 'flex', gap: '1.5rem', width: '100%' }}
+        >
+          {allAdvertising[currentIndex]?.map((item, index) => {
+            return (
+              <Link key={index} to={item.redirect}>
+                <img src={item.image} alt=''
+                // style={{ width: '100%', borderRadius: '0.5rem' }} alt="" 
+                />
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* Botón para avanzar al siguiente producto */}
+        <div className='carrusel__button-right'>
+          <Button
+            button={{
+              type: 'dark',
+              text: `>`,
+              handleClick: () => { setCurrentIndex((prevIndex) => (prevIndex + 1) % allAdvertising.length) }
+            }}
+          />
+        </div>
       </div>
-    </div>
+      <InputAdvertising advertising={{ advertisingData }} location={location} />
+    </>
   );
 };
 

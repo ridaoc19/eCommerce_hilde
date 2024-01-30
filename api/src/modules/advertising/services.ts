@@ -7,9 +7,11 @@ import { AdvertisingEntity } from './entity';
 
 
 
+
 export default {
   async createAdvertising(req: Request, res: Response) {
     try {
+      console.log(req)
       const advertisingRepository = AppDataSource.getRepository(AdvertisingEntity);
 
       const newAdvertising = advertisingRepository.create(req.body);

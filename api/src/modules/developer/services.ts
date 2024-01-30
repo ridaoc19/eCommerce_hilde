@@ -7,6 +7,7 @@ import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import { CategoryEntity } from '../categories/entity';
 import { DepartmentEntity } from '../departments/entity';
+import { MediaFilesEntity } from '../media/entity';
 import { NavigationEntity } from '../navigation/entity';
 import { ProductEntity } from '../products/entity';
 import { SubcategoryEntity } from '../subcategories/entity';
@@ -20,10 +21,10 @@ interface Data {
   category: string;
   subcategory: string;
   description: string;
-  variants: Variant[];
   benefits: string[];
   contents: string;
   warranty: string;
+  variants: Variant[];
 }
 
 interface Variant {
@@ -32,6 +33,7 @@ interface Variant {
   videos: string[];
   price: number;
   stock: number;
+  listPrice: number;
 }
 
 type Attributes = Record<string, string>
@@ -43,6 +45,7 @@ export default {
     try {
 
       const currentDirectory = __dirname; // Obtén el directorio actual
+      // const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'tempo.json'); // Obtén el directorio superior
       const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'upload.json'); // Obtén el directorio superior
 
       const jsonData: Data[] = JSON.parse(readFileSync(parentDirectory, 'utf-8'));
@@ -53,6 +56,7 @@ export default {
       const productRepository = AppDataSource.getRepository(ProductEntity);
       const variantRepository = AppDataSource.getRepository(VariantEntity);
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+      const mediaRepository = AppDataSource.getRepository(MediaFilesEntity);
 
 
 
@@ -61,33 +65,43 @@ export default {
         let existingDepartment = await departmentRepository.findOne({ where: { department: dataJson.department } });
 
         if (!existingDepartment) {
+          const newMedia = new MediaFilesEntity();
           existingDepartment = new DepartmentEntity();
           existingDepartment.department = dataJson.department
+          existingDepartment.media = newMedia
           await departmentRepository.save(existingDepartment);
+          await mediaRepository.save(newMedia)
         }
 
         let existingCategory = await categoryRepository.findOne({ where: { category: dataJson.category } });
 
         if (!existingCategory) {
+          const newMedia = new MediaFilesEntity();
           existingCategory = new CategoryEntity();
           existingCategory.category = dataJson.category
           existingCategory.department = existingDepartment
+          existingCategory.media = newMedia
           await categoryRepository.save(existingCategory)
+          await mediaRepository.save(newMedia)
         }
 
 
         let existingSubcategory = await subcategoryRepository.findOne({ where: { subcategory: dataJson.subcategory } });
 
         if (!existingSubcategory) {
+          const newMedia = new MediaFilesEntity();
           existingSubcategory = new SubcategoryEntity();
           existingSubcategory.subcategory = dataJson.subcategory
           existingSubcategory.category = existingCategory
+          existingSubcategory.media = newMedia
           await subcategoryRepository.save(existingSubcategory)
+          await mediaRepository.save(newMedia)
         }
 
         let existingProduct = await productRepository.findOne({ where: { product: dataJson.product } })
 
         if (!existingProduct) {
+          const newMedia = new MediaFilesEntity();
           existingProduct = new ProductEntity();
           existingProduct.product = dataJson.product
           existingProduct.brand = dataJson.brand
@@ -98,7 +112,10 @@ export default {
           existingProduct.warranty = dataJson.warranty
 
           existingProduct.subcategory = existingSubcategory
+          existingProduct.media = newMedia
           await productRepository.save(existingProduct)
+          await mediaRepository.save(newMedia)
+
 
           // Crear entidad de navegación asociada a la variante
           const newNavigation = new NavigationEntity();
@@ -117,6 +134,7 @@ export default {
         for (const jstonVariant of dataJson.variants) {
           let existingNavigation = await navigationRepository.findOne({ where: { product: { product_id: existingProduct.product_id } } });
 
+          const newMedia = new MediaFilesEntity();
 
           const newVariant = new VariantEntity();
           newVariant.attributes = jstonVariant.attributes
@@ -125,6 +143,13 @@ export default {
           newVariant.stock = jstonVariant.stock
           newVariant.videos = jstonVariant.videos
           newVariant.product = existingProduct
+          newVariant.media = newMedia
+
+          // imagenes y videos
+          newMedia.images = jstonVariant.images
+          newMedia.videos = jstonVariant.videos
+          await mediaRepository.save(newMedia)
+          // 
 
           if (existingNavigation) {
             newVariant.navigation = existingNavigation;
@@ -164,4 +189,95 @@ export default {
       errorHandlerCatch({ error, res });
     }
   },
+  async clearProduct(_req: Request, res: Response) {
+    const currentDirectory = __dirname; // Obtén el directorio actual
+    const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'ultimo.json'); // Obtén el directorio superior
+    const jsonData: DataTotal[] = JSON.parse(readFileSync(parentDirectory, 'utf-8'));
+
+    const result: DataTotal[] = jsonData.reduce((acc: DataTotal[], e) => {
+      if (!e.productId || !e.productName || !e.brand || !e.department || !e.category || !e.subcategory || !e.description) return acc;
+      if (acc.find((p) => p.productId === e.productId)) return acc;
+      return [...acc, e];
+    }, []);
+
+
+    const data: Data[] = result.map(({ benefits, brand, category, contents, department, description, productName, specification, subcategory, variants, warranty }) => {
+      return {
+        product: productName,
+        brand,
+        description,
+        contents,
+        warranty,
+        department,
+        category,
+        subcategory,
+        benefits,
+        specification,
+        variants: variants.map(({ ListPrice, attributes, images, price, stock, videos }) => {
+          return {
+            attributes,
+            images,
+            ListPrice,
+            listPrice: ListPrice,
+            price,
+            stock,
+            videos
+          }
+        }),
+      }
+    })
+
+
+    // const seenProductIds = new Set<string>();
+    // const result: DataTotal[] = [];
+
+    // jsonData.forEach((e) => {
+    //   // if (e.productId && e.productName && e.brand && e.department && e.category && e.subcategory && e.description) {
+    //     if (seenProductIds.has(e.productId)) {
+    //       // Si el productId ya está en el conjunto, agrega el producto al resultado
+    //       result.push(e);
+    //     } else {
+    //       // Si es la primera vez que encuentras este productId, agrégalo al conjunto
+    //       seenProductIds.add(e.productId);
+    //     // }
+    //   }
+    // });
+
+    res.json({ data })
+  },
+  async clearEnsayo(_req: Request, res: Response) {
+    const currentDirectory = __dirname; // Obtén el directorio actual
+    const parentDirectory = join(currentDirectory, '..', '..', 'core', 'db', 'upload.json'); // Obtén el directorio superior
+    const jsonData: DataTotal[] = JSON.parse(readFileSync(parentDirectory, 'utf-8'));
+
+    const filter = jsonData.filter(e => e.variants.some(d => !d.images))
+
+    res.json({ jsonData: jsonData.length, filter: filter })
+  }
 };
+
+
+interface DataTotal {
+  specification: Specification;
+  productId: string;
+  productName: string;
+  brand: string;
+  department: string;
+  category: string;
+  subcategory: string;
+  description: string;
+  benefits: string[];
+  contents: string;
+  warranty: string;
+  variants: Variantt[];
+}
+
+interface Variantt {
+  itemId: string;
+  images: string[];
+  attributes: Attributes;
+  videos: string[];
+  ListPrice: number;
+  price: number;
+  stock: number;
+}
