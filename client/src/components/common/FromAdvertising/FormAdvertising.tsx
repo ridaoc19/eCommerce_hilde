@@ -12,6 +12,7 @@ import FormAdvertisingList from "./FormAdvertisingList";
 import './formAdvertising.scss';
 import Button from "../button/Button";
 import useModalConfirm from "../../../hooks/useModalConfirm/useModalConfirm";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 // Interfaces
 export interface InitialStateFormAdvertising {
@@ -53,7 +54,7 @@ const handleImageChange = (key: keyof InitialStateFormAdvertising['change'], fil
 
 // Componente FormAdvertising
 function FormAdvertising({ advertising: { advertisingData }, location, componentMount, title }: FormAdvertisingProps) {
-  const { mutate } = useMutationAdvertising();
+  const { mutate, error } = useMutationAdvertising();
   const { mediaQuery } = useMediaQuery();
   const { pathname } = useLocation();
   const { ModalComponent, closeModal, openModal } = useModalConfirm()
@@ -135,7 +136,7 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
 
   return (
     <div ref={componentMount} className="advertising-form">
-
+      {error && <ErrorMessage message={JSON.stringify(error.errors)}/>}
       <div className="advertising-form-title">
         <h3>{title}</h3>
       </div>

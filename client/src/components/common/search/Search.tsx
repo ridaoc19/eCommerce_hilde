@@ -1,27 +1,35 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
-import { ErrorNavigation, navigationRequest } from "../../../services/navigation/navigationApi";
-import { RouteNavigation } from "../../../services/navigation/navigationRequest";
+import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from "../../../services/navigation/navigationApi";
+import { RequestMapNavigation, RouteNavigation } from "../../../services/navigation/navigationRequest";
 import Input from "../Input/Input";
 import SearchCard from "./SearchCard";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 // import './search.scss';
 
 function Search() {
   const [search, setSearch] = useState("");
 
-  const { data } = useQuery(
-    ['search', search],
-    async () => navigationRequest(RouteNavigation.NavigationSearch).options({ extensionRoute: `/${search}` }),
-    {
-      enabled: !!search,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      onError(err: ErrorNavigation) {
-        return err;
-      },
-    }
-  );
+  // const { data } = useQuery(
+  //   ['search', search],
+  //   async () => navigationRequest(RouteNavigation.NavigationSearch).options({ extensionRoute: `/${search}` }),
+  //   {
+  //     enabled: !!search,
+  //     refetchOnWindowFocus: false,
+  //     refetchOnMount: false,
+  //     onError(err: ErrorNavigation) {
+  //       return err;
+  //     },
+  //   }
+  // );
+
+  const { data } = useQuery<MakeNavigationRequestReturn & { data: RequestMapNavigation[RouteNavigation.NavigationSearch]['data'] }, ErrorNavigation>({
+    queryKey: ['search', search],
+    queryFn: async () => navigationRequest(RouteNavigation.NavigationSearch).options({ extensionRoute: `/${search}` }),
+    enabled: !!search,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  })
 
   // console.log({ data, isLoading, isError, error, isSuccess, isFetching });
 

@@ -1,13 +1,13 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { useQuery } from 'react-query';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { BreadcrumbType } from '../../interfaces/global.interface';
-import { ErrorNavigation, navigationRequest } from '../../services/navigation/navigationApi';
-import { RouteNavigation } from '../../services/navigation/navigationRequest';
+import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from '../../services/navigation/navigationApi';
+import { RequestMapNavigation, RouteNavigation } from '../../services/navigation/navigationRequest';
 import Breadcrumb from '../../components/common/breadcrumb/Breadcrumb';
 import Filters from './Filters';
 import PaginationButton from './PaginationButton';
 import { InitialStateListProduct, ListProductHook } from './types';
+import { useQuery } from '@tanstack/react-query';
 
 
 const initialStateListProduct: InitialStateListProduct = {
@@ -32,20 +32,31 @@ const useListProduct = (): ListProductHook => {
 
   const [stateListProduct, setStateListProduct] = useState<InitialStateListProduct>(initialStateListProduct)
   const { allProducts, currentIndex, pagination, paginationTotal, id, query, dataState, filterType } = stateListProduct;
-  const { data, isLoading, isError, error, isSuccess, isFetching } = useQuery(
-    ['list-product', id, currentIndex, query],
-    async () => navigationRequest(RouteNavigation.NavigationListProduct).options({
+  // const { data, isLoading, isError, error, isSuccess, isFetching } = useQuery<MakeNavigationRequestReturn&{data: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data']}, ErrorNavigation>(
+  //   ['list-product', id, currentIndex, query],
+  //   async () => navigationRequest(RouteNavigation.NavigationListProduct).options({
+  //     extensionRoute: `/${filterType}/${id}/${(((currentIndex - 1) * pagination) - 1) < 0 ? 0 : ((currentIndex - 1) * pagination) - 1}/${pagination}${query}`
+  //   }),
+  //   {
+  //     enabled: !!id && (!allProducts.some(e => e.allProducts_id === currentIndex) || !!query),
+  //     refetchOnWindowFocus: false,
+  //     refetchOnMount: false,
+  //     // onError(err: ErrorNavigation) {
+  //     //   return err;
+  //     // },
+  //   }
+  // );
+  const { data, isLoading, isError, error, isSuccess, isFetching } = useQuery<MakeNavigationRequestReturn & { data: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data'] }, ErrorNavigation>({
+    queryKey: ['list-product', id, currentIndex, query],
+    queryFn: async () => navigationRequest(RouteNavigation.NavigationListProduct).options({
       extensionRoute: `/${filterType}/${id}/${(((currentIndex - 1) * pagination) - 1) < 0 ? 0 : ((currentIndex - 1) * pagination) - 1}/${pagination}${query}`
     }),
-    {
-      enabled: !!id && (!allProducts.some(e => e.allProducts_id === currentIndex) || !!query),
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      onError(err: ErrorNavigation) {
-        return err;
-      },
-    }
+    enabled: !!id && (!allProducts.some(e => e.allProducts_id === currentIndex) || !!query),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  }
   );
+
 
   useEffect(() => { //limpiar si se cambia se filtro strict y flex
     if (params?.id) {
