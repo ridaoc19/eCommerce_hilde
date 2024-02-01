@@ -108,8 +108,11 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
       // openModal(`Deseas Editar?`, handleConfirm, handleCancel);
     } else if (type === 'delete') {
       // mutate({ route: RouteAdvertising.AdvertisingDelete, options: { extensionRoute: `/${advertising_id}` } })
-      setStateInput((prevState) => ({ ...prevState, status: "delete", advertising_id, }));
-      openModal(`Deseas Eliminar?`, handleConfirm, handleCancel);
+      setStateInput((prevState) => ({
+        ...prevState, status: "delete",
+        change: advertisingData?.data.find(e => e.advertising_id === advertising_id)!,
+        advertising_id,
+      }));
     } else if (type === 'save') {
       setStateInput((prevState) => ({ ...prevState, status: "save" }));
       openModal(`Deseas ${stateInput.status}?`, handleConfirm, handleCancel);
