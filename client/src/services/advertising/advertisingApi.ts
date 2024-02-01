@@ -22,6 +22,7 @@ async function apiAdvertising<R extends keyof RequestMapAdvertising>(data: Omit<
   const parts = data.route.split('|');
   const method = parts[0];
   const route = parts[1];
+
   try {
     const fetchOptions: RequestInit = {
       method: method,
@@ -29,8 +30,6 @@ async function apiAdvertising<R extends keyof RequestMapAdvertising>(data: Omit<
     };
     if (method !== Method.Get && 'requestData' in data) {
       const convert = convertFromData(data.requestData as Omit<IAdvertising.advertising, 'advertising_id'>)
-
-      console.log(convert)
 
       fetchOptions.body = convert!
       // fetchOptions.body = JSON.stringify(data.requestData)

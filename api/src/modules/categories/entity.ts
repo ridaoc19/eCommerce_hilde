@@ -1,11 +1,11 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { DepartmentEntity } from '../departments/entity';
-import { MediaFilesEntity } from '../media/entity';
-import { NavigationEntity } from '../navigation/entity';
-import { SubcategoryEntity } from '../subcategories/entity';
+import DepartmentEntity from '../departments/entity';
+import MediaFilesEntity from '../media/entity';
+import NavigationEntity from '../navigation/entity';
+import SubcategoryEntity from '../subcategories/entity';
 
 @Entity('categories')
-export class CategoryEntity {
+export default class CategoryEntity {
   @PrimaryGeneratedColumn("uuid")
   category_id: string;
 

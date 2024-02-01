@@ -1,11 +1,11 @@
 import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { objectString } from '../../core/utils/navigation/functions';
-import { MediaFilesEntity } from '../media/entity';
-import { NavigationEntity } from '../navigation/entity';
-import { ProductEntity } from '../products/entity';
+import MediaFilesEntity from '../media/entity';
+import NavigationEntity from '../navigation/entity';
+import ProductEntity from '../products/entity';
 
 @Entity('variants')
-export class VariantEntity {
+export default class VariantEntity {
   @PrimaryGeneratedColumn("uuid")
   variant_id: string;
 

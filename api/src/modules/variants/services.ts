@@ -3,8 +3,8 @@ import { AppDataSource } from '../../core/db/postgres';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { ProductEntity } from '../products/entity';
-import { VariantEntity } from '../variants/entity';
+import ProductEntity from '../products/entity';
+import VariantEntity from '../variants/entity';
 
 export default {
   async createVariant(req: Request, res: Response) {

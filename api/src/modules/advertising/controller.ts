@@ -1,15 +1,15 @@
 import { Router } from "express";
 import departmentServices from './services';
-import { uploadImages } from "../developer/middleware";
-const { createAdvertising, updateAdvertising, getAdvertising } = departmentServices;
+const { createAdvertising, updateAdvertising, getAdvertising, deleteAdvertising } = departmentServices;
 
 const router = Router();
-const { upload } = uploadImages()
+// const { upload } = uploadImages()
 
-router.post('/create', upload.array('images'), createAdvertising);
+router.post('/create', createAdvertising);
+// router.post('/create', upload.array('images'), createAdvertising);
 router.get('/request', getAdvertising);
 router.put('/edit/:advertising_id', updateAdvertising);
-// router.delete('/delete', deleteAdvertising);
+router.delete('/delete/:advertising_id', deleteAdvertising);
 // router.put('/restore', restoreAdvertising);
 
 export { router };
