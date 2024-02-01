@@ -3,7 +3,7 @@ import { AppDataSource } from '../../core/db/postgres';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { AdvertisingEntity } from './entity';
+import AdvertisingEntity from './entity';
 
 
 
@@ -11,7 +11,6 @@ import { AdvertisingEntity } from './entity';
 export default {
   async createAdvertising(req: Request, res: Response) {
     try {
-      console.log(req)
       const advertisingRepository = AppDataSource.getRepository(AdvertisingEntity);
 
       const newAdvertising = advertisingRepository.create(req.body);
@@ -66,6 +65,7 @@ export default {
     }
   },
   async deleteAdvertising(req: Request, res: Response) {
+    
     try {
       const { advertising_id } = req.params;
       const advertisingRepository = AppDataSource.getRepository(AdvertisingEntity);
@@ -76,7 +76,8 @@ export default {
         return errorHandlerRes({ res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'advertising_delete', message: 'Anuncio no encontrado' }] })
       }
 
-      await advertisingRepository.softRemove(existingAdvertising);
+      await advertisingRepository.delete(existingAdvertising);
+      // await advertisingRepository.softRemove(existingAdvertising);
 
       const allAdvertising = await getAllAdvertising()
 

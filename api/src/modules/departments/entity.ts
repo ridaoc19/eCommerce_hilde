@@ -1,10 +1,10 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { CategoryEntity } from '../categories/entity';
-import { NavigationEntity } from '../navigation/entity';
-import { MediaFilesEntity } from '../media/entity';
+import CategoryEntity from '../categories/entity';
+import NavigationEntity from '../navigation/entity';
+import MediaFilesEntity from '../media/entity';
 
 @Entity('department')
-export class DepartmentEntity {
+export default class DepartmentEntity {
   @PrimaryGeneratedColumn("uuid")
   department_id: string;
 

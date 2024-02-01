@@ -69,10 +69,10 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage 
   }, [isMouseOverVitrine, allAdvertising]);
 
   // Renderizar el componente principal
-  if (advertisingData.data.length === 0) return null
+  // if (advertisingData.data.length === 0) return null
   return (
     <>
-      <div
+      {advertisingData.data.length > 0 && <div
         className={`${advertisingData.data[0]?.location || "advertising"} carrusel`}
         onMouseEnter={() => setIsMouseOverVitrine(true)}
         onMouseLeave={() => setIsMouseOverVitrine(false)}
@@ -117,8 +117,8 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage 
             }}
           />
         </div>
-      </div>
-      <InputAdvertising advertising={{ advertisingData }} location={location} />
+      </div>}
+      <InputAdvertising advertising={{ advertisingData }} location={location} title={location} />
     </>
   );
 };

@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { ProductEntity } from '../products/entity';
-import { SubcategoryEntity } from '../subcategories/entity';
+import ProductEntity from '../products/entity';
+import SubcategoryEntity from '../subcategories/entity';
 import { AppDataSource } from '../../core/db/postgres';
-import { NavigationEntity } from '../navigation/entity';
+import NavigationEntity from '../navigation/entity';
 
 export default {
   async createProduct(req: Request, res: Response) {

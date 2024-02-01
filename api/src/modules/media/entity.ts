@@ -1,14 +1,14 @@
 import { Column, DeleteDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { CategoryEntity } from '../categories/entity';
-import { DepartmentEntity } from '../departments/entity';
-import { ProductEntity } from '../products/entity';
-import { SubcategoryEntity } from '../subcategories/entity';
-import { VariantEntity } from '../variants/entity';
-import { AdvertisingEntity } from '../advertising/entity';
+import CategoryEntity from '../categories/entity';
+import DepartmentEntity from '../departments/entity';
+import ProductEntity from '../products/entity';
+import SubcategoryEntity from '../subcategories/entity';
+import VariantEntity from '../variants/entity';
+import AdvertisingEntity from '../advertising/entity';
 
 
 @Entity('media_files')
-export class MediaFilesEntity {
+export default class MediaFilesEntity {
   @PrimaryGeneratedColumn("uuid")
   media_id: string;
 

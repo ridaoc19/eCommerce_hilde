@@ -15,7 +15,7 @@ function BannerBox({ advertising, location }: BannerBoxProps) {
   return (
     <>
       <div className="banner-box">
-        {isFetching || isLoading ? <div>Cargando...</div> : data.map(item => {
+        {isFetching || isLoading ? <div>Cargando...</div> : advertisingData.data.length > 0 && data.map(item => {
           return (
             <Link key={item.advertising_id} to={item.redirect} className="banner-box__item">
               <img src={item.image_desktop} alt="" />
@@ -24,7 +24,7 @@ function BannerBox({ advertising, location }: BannerBoxProps) {
           )
         })}
       </div>
-      <InputAdvertising advertising={{advertisingData}} location={location} />
+      <InputAdvertising advertising={{ advertisingData }} location={location} title={location} />
     </>
 
   );

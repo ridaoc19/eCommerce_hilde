@@ -1,8 +1,8 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { MediaFilesEntity } from '../media/entity';
+import MediaFilesEntity from '../media/entity';
 
 @Entity('advertising')
-export class AdvertisingEntity {
+export default class AdvertisingEntity {
   @PrimaryGeneratedColumn('uuid')
   advertising_id: string;
 

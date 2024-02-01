@@ -1,5 +1,5 @@
 import { SelectQueryBuilder } from "typeorm";
-import { NavigationEntity } from "../../../modules/navigation/entity";
+import NavigationEntity from "../../../modules/navigation/entity";
 
 
 export interface GenerateFiltersReturn {

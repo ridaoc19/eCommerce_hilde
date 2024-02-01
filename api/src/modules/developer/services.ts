@@ -5,13 +5,13 @@ import { AppDataSource } from '../../core/db/postgres';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { CategoryEntity } from '../categories/entity';
-import { DepartmentEntity } from '../departments/entity';
-import { MediaFilesEntity } from '../media/entity';
-import { NavigationEntity } from '../navigation/entity';
-import { ProductEntity } from '../products/entity';
-import { SubcategoryEntity } from '../subcategories/entity';
-import { VariantEntity } from '../variants/entity';
+import CategoryEntity from '../categories/entity';
+import DepartmentEntity from '../departments/entity';
+import MediaFilesEntity from '../media/entity';
+import NavigationEntity from '../navigation/entity';
+import ProductEntity from '../products/entity';
+import SubcategoryEntity from '../subcategories/entity';
+import VariantEntity from '../variants/entity';
 
 interface Data {
   specification: Specification;

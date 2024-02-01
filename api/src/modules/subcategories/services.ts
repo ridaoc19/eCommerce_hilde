@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { CategoryEntity } from '../categories/entity';
-import { SubcategoryEntity } from '../subcategories/entity';
+import CategoryEntity from '../categories/entity';
+import SubcategoryEntity from '../subcategories/entity';
 import { AppDataSource } from '../../core/db/postgres';
 
 export default {
