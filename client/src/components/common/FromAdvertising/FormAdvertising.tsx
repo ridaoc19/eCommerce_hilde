@@ -4,6 +4,7 @@ import { IContextData } from "../../../hooks/useContext";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 import useModalConfirm from "../../../hooks/useModalConfirm/useModalConfirm";
 import useMutationAdvertising from "../../../hooks/useMutationAdvertising";
+import useValidations from "../../../hooks/useValidations/useValidations";
 import { IAdvertising } from "../../../interfaces/advertising.interface";
 import { HandleChangeText } from "../../../interfaces/global.interface";
 import { RequestMapAdvertising, RouteAdvertising } from "../../../services/advertising/advertisingRequest";
@@ -58,6 +59,8 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
   const { mediaQuery } = useMediaQuery();
   const { pathname } = useLocation();
   const { ModalComponent, closeModal, openModal } = useModalConfirm()
+  const { getValidationErrors } = useValidations();
+
 
 
   const page = (pathname.split('/').filter(Boolean)[0] || 'home') as "home" | "product-detail" | "list-products";
@@ -147,13 +150,9 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
   };
 
   const handleChange: HandleChangeText = ({ target }) => {
-    setStateInput((prevState) => ({
-      ...prevState,
-      change: {
-        ...prevState.change,
-        [target.name]: target.value,
-      },
-    }));
+    const { name, message, stop } = getValidationErrors({ name: target.name, value: target.value })
+    if (stop) return setStateInput({ ...stateInput, error: { ...stateInput.error, [name]: message } })
+    setStateInput((prevState) => ({ ...prevState, change: { ...prevState.change, [name]: target.value, }, error: { ...prevState.error, [name]: message } }));
   };
 
   return (
