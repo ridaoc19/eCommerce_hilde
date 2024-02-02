@@ -41,7 +41,7 @@ type Attributes = Record<string, string>
 type Specification = Record<string, string>
 
 export default {
-  async loadBackup(_req: Request, res: Response) {
+  async loadBackup(req: Request, res: Response) {
     try {
 
       const currentDirectory = __dirname; // Obtén el directorio actual
@@ -186,7 +186,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   },
   async clearProduct(_req: Request, res: Response) {

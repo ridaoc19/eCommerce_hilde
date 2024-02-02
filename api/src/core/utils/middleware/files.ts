@@ -91,14 +91,13 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
 
 export default filesMiddleware;
 
-const deleteFiles = (filteredImages: string[]): boolean => {
+export const deleteFiles = (filteredImages: string[]): boolean => {
   try {
     let status = false;
 
     filteredImages.forEach((url: string) => {
       try {
         const absolutePath = path.resolve(__dirname, '../../../../uploads', url);
-
         if (fs.existsSync(absolutePath)) {
           console.log(`El archivo ${url} sí existe en ${absolutePath}`);
           fs.unlinkSync(absolutePath);

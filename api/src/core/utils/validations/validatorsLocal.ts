@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import * as yup from 'yup';
 import { Errors } from '../enums';
+import { deleteFiles } from '../middleware/files';
 
 type ValidateLocal = (data: { req: Request, validationSchemas: yup.AnyObject }) => Promise<Errors>
 
@@ -22,6 +23,9 @@ export const validatorsLocal: ValidateLocal = async ({ req, validationSchemas })
       await validationSchema.validate(fieldValue, { context: { reqBody: requestBody, route: capturedPart } });
     } catch (error) {
       if (error instanceof yup.ValidationError) {
+        if (req?.files && Array.isArray(req.files) && req.files.length > 0) {//eliminar image si hay error
+          deleteFiles(req.files.map(e => e.filename))
+        }
         errorResponse.push({ field, message: error.message });
       } else {
         console.error(error);

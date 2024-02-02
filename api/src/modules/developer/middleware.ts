@@ -39,21 +39,4 @@ export const uploadImages = () => {
 
   const upload = multer({ storage: storage })
   return { upload }
-
-
-  // export async function checkFolderAccess({ folderPath }: { folderPath: string }) {
-  //   try {
-  //     await fs_folder.access(folderPath, fs_folder.constants.F_OK); // Verifica la existencia de la carpeta
-  //     return await fs_folder.readdir(folderPath);
-  //   } catch (err: any) {
-  //     if (err.code === 'ENOENT') {
-  //       // La carpeta no existe, la creamos
-  //       await fs_folder.mkdir(folderPath, { recursive: true }); // Crea la carpeta de forma recursiva
-  //       return 'carpeta creada'; // Devuelve verdadero si la carpeta se crea con éxito
-  //     } else {
-  //       console.error(`Error al verificar/acceder a la carpeta ${folderPath}:`, err);
-  //       return false; // Devuelve falso en caso de otro error
-  //     }
-  //   }
-  // }
 }
