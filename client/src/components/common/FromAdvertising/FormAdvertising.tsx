@@ -1,18 +1,18 @@
-import { RefObject, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { IContextData } from "../../../hooks/useContext";
 import useMediaQuery from "../../../hooks/useMediaQuery";
+import useModalConfirm from "../../../hooks/useModalConfirm/useModalConfirm";
 import useMutationAdvertising from "../../../hooks/useMutationAdvertising";
 import { IAdvertising } from "../../../interfaces/advertising.interface";
 import { HandleChangeText } from "../../../interfaces/global.interface";
 import { RequestMapAdvertising, RouteAdvertising } from "../../../services/advertising/advertisingRequest";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import Input from "../Input/Input";
+import Button from "../button/Button";
 import FormAdvertisingButton from "./FormAdvertisingButton";
 import FormAdvertisingList from "./FormAdvertisingList";
 import './formAdvertising.scss';
-import Button from "../button/Button";
-import useModalConfirm from "../../../hooks/useModalConfirm/useModalConfirm";
-import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 // Interfaces
 export interface InitialStateFormAdvertising {
@@ -54,7 +54,7 @@ const handleImageChange = (key: keyof InitialStateFormAdvertising['change'], fil
 
 // Componente FormAdvertising
 function FormAdvertising({ advertising: { advertisingData }, location, componentMount, title }: FormAdvertisingProps) {
-  const { mutate, error } = useMutationAdvertising();
+  const { tools: { mutate, resetError }, isLoading, error, status } = useMutationAdvertising();
   const { mediaQuery } = useMediaQuery();
   const { pathname } = useLocation();
   const { ModalComponent, closeModal, openModal } = useModalConfirm()
@@ -70,6 +70,31 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
   };
 
   const [stateInput, setStateInput] = useState<InitialStateFormAdvertising>(initialStateFormAdvertising);
+
+  useEffect(() => {
+    switch (status) {
+      case 'success':
+        setStateInput(initialStateFormAdvertising);
+        const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
+        if (inputElement) inputElement.value = '';
+        break;
+
+      case 'error':
+        if (error?.errors) {
+          const restructureError = error.errors.reduce((acc, { field, message }) => {
+            if (field !== 'general') {
+              return { ...acc, [field]: message };
+            }
+            return acc
+          }, {});
+          setStateInput((prev) => ({ ...prev, error: { ...prev.error, ...restructureError } }));
+        }
+        break;
+
+      default:
+        break;
+    }
+  }, [status])
 
   const handleCancel = () => {
     closeModal()
@@ -92,9 +117,6 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
       default:
         break;
     }
-    setStateInput(initialStateFormAdvertising);
-    const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
-    if (inputElement) inputElement.value = '';
   }
 
   const handleItemClick = ({ advertising_id, type }: { advertising_id: string, type: "edit" | "delete" | "save" }) => {
@@ -136,7 +158,8 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
 
   return (
     <div ref={componentMount} className="advertising-form">
-      {error && <ErrorMessage message={JSON.stringify(error.errors)}/>}
+      {error && <ErrorMessage errors={error.errors} emptyMessage={() => resetError()} />}
+      {isLoading && <div>Loading...</div>}
       <div className="advertising-form-title">
         <h3>{title}</h3>
       </div>
@@ -150,7 +173,7 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
           <Input
             key={item}
             styleClass={`login--${item}`}
-            errorMessage={stateInput.error[item] || advertisingData?.errors.find((e) => e.field === item)?.message}
+            errorMessage={stateInput.error[item] || stateInput.error[item]}
             input={{ type: item, placeholder: item, value: stateInput.change[item], handleOnChange: handleChange, name: item }}
           />
         ))}
