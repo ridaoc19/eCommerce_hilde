@@ -21,7 +21,7 @@ import { generateFilters } from '../../core/utils/navigation/generateFilters';
 // }
 
 export default {
-  async getMenu(_req: Request, res: Response) {
+  async getMenu(req: Request, res: Response) {
     try {
 
       const responseMenu = await AppDataSource
@@ -76,7 +76,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   },
 
@@ -167,7 +167,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   },
   async getListProductStrict(req: Request, res: Response) {
@@ -243,7 +243,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   },
 
@@ -295,7 +295,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   }
 

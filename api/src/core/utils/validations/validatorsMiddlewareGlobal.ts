@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as yup from 'yup';
 import { MapStatusCode, StatusHTTP } from '../enums';
+import { deleteFiles } from '../middleware/files';
 
 const validationSchemas: { [key: string]: yup.Schema } = {
   // _id: yup.string(),
@@ -113,6 +114,9 @@ export const validatorsMiddlewareGlobal = async (req: Request, res: Response, ne
   }
 
   if (errorResponse.errors.length > 0) {
+    if (req?.files && Array.isArray(req.files) && req.files.length > 0) {//eliminar image si hay error
+      deleteFiles(req.files.map(e => e.filename))
+    }
     res.status(errorResponse.status_code).json(errorResponse);
   } else {
     next();

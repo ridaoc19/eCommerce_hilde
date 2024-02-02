@@ -31,7 +31,7 @@ export default {
       });
 
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   },
   async updateAdvertising(req: Request, res: Response) {
@@ -42,7 +42,7 @@ export default {
       const existingAdvertising = await advertisingRepository.findOne({ where: { advertising_id } });
 
       if (!existingAdvertising) {
-        return errorHandlerRes({ res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_edit', message: 'Categoría no existe' }] })
+        return errorHandlerRes({req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_edit', message: 'Categoría no existe' }] })
       }
 
       advertisingRepository.merge(existingAdvertising, req.body);
@@ -61,7 +61,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   },
   async deleteAdvertising(req: Request, res: Response) {
@@ -73,7 +73,7 @@ export default {
       const existingAdvertising = await advertisingRepository.findOne({ where: { advertising_id } });
 
       if (!existingAdvertising) {
-        return errorHandlerRes({ res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'advertising_delete', message: 'Anuncio no encontrado' }] })
+        return errorHandlerRes({req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'advertising_delete', message: 'Anuncio no encontrado' }] })
       }
 
       await advertisingRepository.delete(existingAdvertising);
@@ -93,10 +93,10 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   },
-  async getAdvertising(_req: Request, res: Response) {
+  async getAdvertising(req: Request, res: Response) {
     try {
       const allAdvertising = await getAllAdvertising()
       successHandler({
@@ -110,7 +110,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({req, error, res });
     }
   },
 };
