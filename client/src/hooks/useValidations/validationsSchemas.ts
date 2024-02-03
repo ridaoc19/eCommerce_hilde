@@ -133,7 +133,7 @@ const advertisingSchemas: { [key: string]: Yup.Schema } = {
   redirect: Yup.string()
     .required('Debe ingresar un redirect')
     .min(2, 'Ingrese al menos 2 caracteres para el redirect')
-    .max(50, 'Ingrese máximo 50 caracteres para el redirect'),
+    .max(400, 'Ingrese máximo 400 caracteres para el redirect'),
   text: Yup.string()
     .required('Debe ingresar un text')
     .min(2, 'Ingrese al menos 2 caracteres para el text')

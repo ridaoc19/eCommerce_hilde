@@ -1,5 +1,5 @@
 import Button from '../button/Button';
-import { InitialStateFormAdvertising } from './FormAdvertising';
+import { InitialStateFormAdvertising } from './utils';
 interface FormAdvertisingButtonProps {
   handleItemClick: (data: { advertising_id: string, type: "edit" | "delete" | "save" }) => void
   handleClickEmpty: () => void

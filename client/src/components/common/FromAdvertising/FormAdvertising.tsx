@@ -1,67 +1,14 @@
-import { RefObject, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { IContextData } from "../../../hooks/useContext";
-import useMediaQuery from "../../../hooks/useMediaQuery";
-import useModalConfirm from "../../../hooks/useModalConfirm/useModalConfirm";
-import useMutationAdvertising from "../../../hooks/useMutationAdvertising";
-import useValidations from "../../../hooks/useValidations/useValidations";
-import { IAdvertising } from "../../../interfaces/advertising.interface";
-import { HandleChangeText } from "../../../interfaces/global.interface";
-import { RequestMapAdvertising, RouteAdvertising } from "../../../services/advertising/advertisingRequest";
-import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import Input from "../Input/Input";
-import Button from "../button/Button";
-import FormAdvertisingButton from "./FormAdvertisingButton";
-import FormAdvertisingList from "./FormAdvertisingList";
-import './formAdvertising.scss';
+import { Components, FormAdvertisingProps, InitialStateFormAdvertising, RouterDom, react, } from "./utils";
+const { ErrorMessage, FormAdvertisingButton, FormAdvertisingForm, FormAdvertisingList, useMediaQuery, useModalConfirm, useMutationAdvertising } = Components
+const { useEffect, useState, RouteAdvertising } = react;
+const { useLocation } = RouterDom;
 
-// Interfaces
-export interface InitialStateFormAdvertising {
-  change: RequestMapAdvertising[RouteAdvertising.AdvertisingCreate]['requestData'];
-  error: Omit<RequestMapAdvertising[RouteAdvertising.AdvertisingCreate]['requestData'], 'image_desktop' | 'image_phone' | 'image_tablet'> & { image_desktop: string, image_phone: string, image_tablet: string };
-  advertising_id: string;
-  status: "save" | "edit" | "delete"
-}
 
-interface FormAdvertisingProps {
-  advertising: Partial<IContextData['advertising']['advertisingContextState']>;
-  location: IAdvertising.TotalLocation;
-  componentMount?: RefObject<HTMLDivElement>;
-  title: string
-}
-
-// // Función para crear un objeto File ficticio
-// const createFileObject = (name: string, type: string): File => {
-//   const fileContent = noImage;
-//   const blob = new Blob([fileContent], { type: type });
-//   const file = new File([blob], name, { type: type, lastModified: Date.now() });
-//   return file;
-// };
-
-// Función para manejar el estado de las imágenes
-const handleImageChange = (key: keyof InitialStateFormAdvertising['change'], files: FileList | null, stateInput: InitialStateFormAdvertising, setStateInput: React.Dispatch<React.SetStateAction<InitialStateFormAdvertising>>): void => {
-  console.log(stateInput);
-
-  if (files && files.length > 0) {
-    setStateInput((prevState) => ({
-      ...prevState,
-      change: {
-        ...prevState.change,
-        [key]: files[0],
-      },
-    }));
-  }
-};
-
-// Componente FormAdvertising
 function FormAdvertising({ advertising: { advertisingData }, location, componentMount, title }: FormAdvertisingProps) {
   const { tools: { mutate, resetError }, isLoading, error, status } = useMutationAdvertising();
+  const { ModalComponent, closeModal, openModal } = useModalConfirm()
   const { mediaQuery } = useMediaQuery();
   const { pathname } = useLocation();
-  const { ModalComponent, closeModal, openModal } = useModalConfirm()
-  const { getValidationErrors } = useValidations();
-
-
 
   const page = (pathname.split('/').filter(Boolean)[0] || 'home') as "home" | "product-detail" | "list-products";
 
@@ -75,84 +22,59 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
   const [stateInput, setStateInput] = useState<InitialStateFormAdvertising>(initialStateFormAdvertising);
 
   useEffect(() => {
-    switch (status) {
-      case 'success':
-        setStateInput(initialStateFormAdvertising);
-        const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
-        if (inputElement) inputElement.value = '';
-        break;
-
-      case 'error':
-        if (error?.errors) {
-          const restructureError = error.errors.reduce((acc, { field, message }) => {
-            if (field !== 'general') {
-              return { ...acc, [field]: message };
-            }
-            return acc
-          }, {});
-          setStateInput((prev) => ({ ...prev, error: { ...prev.error, ...restructureError } }));
-        }
-        break;
-
-      default:
-        break;
+    if (status === 'success') {
+      setStateInput(initialStateFormAdvertising);
+      const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
+      if (inputElement) inputElement.value = '';
+    } else if (status === 'error' && error?.errors) {
+      const restructureError = Object.keys(stateInput.error).reduce((acc, key) => {
+        const find = error.errors.find(({ field }) => field === key);
+        return { ...acc, [key]: find ? find.message : "" };
+      }, {});
+      setStateInput((prev) => ({ ...prev, error: { ...prev.error, ...restructureError } }));
     }
+    // eslint-disable-next-line
   }, [status])
 
-  const handleCancel = () => {
-    closeModal()
-  };
+  const handleCancel = () => closeModal();
 
   const handleConfirm = () => {
-    switch (stateInput.status) {
-      case "save":
-        mutate({ route: RouteAdvertising.AdvertisingCreate, options: { requestData: stateInput.change } });
-        break;
+    if (stateInput.status === 'save') {
+      mutate({ route: RouteAdvertising.AdvertisingCreate, options: { requestData: stateInput.change } });
+    } else if (stateInput.status === 'edit') {
+      mutate({ route: RouteAdvertising.AdvertisingEdit, options: { requestData: stateInput.change, extensionRoute: `/${stateInput.advertising_id}` } })
+    } else if (stateInput.status === 'delete') {
+      mutate({ route: RouteAdvertising.AdvertisingDelete, options: { extensionRoute: `/${stateInput.advertising_id}` } })
 
-      case "edit":
-        mutate({ route: RouteAdvertising.AdvertisingEdit, options: { requestData: stateInput.change, extensionRoute: `/${stateInput.advertising_id}` } })
-        break
-
-      case "delete":
-        mutate({ route: RouteAdvertising.AdvertisingDelete, options: { extensionRoute: `/${stateInput.advertising_id}` } })
-        break
-
-      default:
-        break;
     }
   }
 
-  const handleItemClick = ({ advertising_id, type }: { advertising_id: string, type: "edit" | "delete" | "save" }) => {
-    if (type === 'edit') {
-      // mutate({ route: RouteAdvertising.AdvertisingEdit, options: { requestData: stateInput.change, extensionRoute: `/${advertising_id}` } })
-      setStateInput((prevState) => ({
-        ...prevState,
-        status: "edit",
-        change: advertisingData?.data.find(e => e.advertising_id === advertising_id)!,
-        advertising_id,
-      }));
-      // openModal(`Deseas Editar?`, handleConfirm, handleCancel);
-    } else if (type === 'delete') {
-      // mutate({ route: RouteAdvertising.AdvertisingDelete, options: { extensionRoute: `/${advertising_id}` } })
-      setStateInput((prevState) => ({
-        ...prevState, status: "delete",
-        change: advertisingData?.data.find(e => e.advertising_id === advertising_id)!,
-        advertising_id,
-      }));
-    } else if (type === 'save') {
-      setStateInput((prevState) => ({ ...prevState, status: "save" }));
-      openModal(`Deseas ${stateInput.status}?`, handleConfirm, handleCancel);
-      // mutate({ route: RouteAdvertising.AdvertisingCreate, options: { requestData: stateInput.change } });
-      // setStateInput(initialStateFormAdvertising);
-      // const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
-      // if (inputElement) inputElement.value = '';
+  const handleItemClick = ({ advertising_id: advertising_id_param, type }: { advertising_id: string, type: "edit" | "delete" | "save" }) => {
+    if (advertisingData?.data && !!advertising_id_param) {
+      const findAdvertising = advertisingData.data.find(e => e.advertising_id === advertising_id_param);
+      console.log({ findAdvertising, advertising_id_param })
+      if (findAdvertising) {
+        const { advertising_id, ...newAdvertising } = findAdvertising;
+        if (type === 'edit') {
+          setStateInput((prevState) => ({
+            ...prevState,
+            status: "edit",
+            change: newAdvertising,
+            advertising_id,
+          }));
+        } else if (type === 'delete') {
+          setStateInput((prevState) => ({
+            ...prevState, status: "delete",
+            change: newAdvertising,
+            advertising_id,
+          }));
+        }
+      }
+      if (type === 'save') {
+        setStateInput((prevState) => ({ ...prevState, status: "save" }));
+        openModal(`Deseas ${stateInput.status}?`, handleConfirm, handleCancel);
+      }
     }
-  };
-
-  const handleChange: HandleChangeText = ({ target }) => {
-    const { name, message, stop } = getValidationErrors({ name: target.name, value: target.value })
-    if (stop) return setStateInput({ ...stateInput, error: { ...stateInput.error, [name]: message } })
-    setStateInput((prevState) => ({ ...prevState, change: { ...prevState.change, [name]: target.value, }, error: { ...prevState.error, [name]: message } }));
   };
 
   return (
@@ -168,30 +90,7 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
       </div>
 
       <div className={`advertising-form__input ${mediaQuery}`}>
-        {(Object.keys(initialStateFormAdvertising.change).filter((key) => ['title', 'redirect', 'text'].includes(key) && key !== 'page' && key !== 'location') as (keyof Pick<InitialStateFormAdvertising['change'], 'title' | 'redirect' | 'text'>)[]).map((item) => (
-          <Input
-            key={item}
-            styleClass={`login--${item}`}
-            errorMessage={stateInput.error[item] || stateInput.error[item]}
-            input={{ type: item, placeholder: item, value: stateInput.change[item], handleOnChange: handleChange, name: item }}
-          />
-        ))}
-        {Object.entries(stateInput.change).filter((e) => ['image_desktop', 'image_phone', 'image_tablet'].includes(e[0])).map(([key, value]: any, index) => (
-          <div key={index} className="advertising-form__input-images">
-            <input id={`input__images`} multiple className={`input__images`} type="file" name={`images_${key}`} onChange={(event) => handleImageChange(key, event.target.files, stateInput, setStateInput)} />
-            <h5>{key}</h5>
-            <div>
-              {!!value && typeof value === 'object' ? <img src={URL.createObjectURL(value)} alt="" /> : <img src={value} height={"100%"} alt={``} />}
-              <Button button={{
-                type: 'dark', text: "Eliminar Imagen", handleClick: () => {
-                  const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
-                  if (inputElement) inputElement.value = '';
-                  setStateInput({ ...stateInput, change: { ...stateInput.change, [key]: "" } })
-                },
-              }} />
-            </div>
-          </div>
-        ))}
+        <FormAdvertisingForm stateInput={stateInput} setStateInput={setStateInput} initialStateFormAdvertising={initialStateFormAdvertising} />
       </div>
 
       {ModalComponent}

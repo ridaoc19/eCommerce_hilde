@@ -1,7 +1,7 @@
 import { IContextData } from '../../../hooks/useContext';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import Svg from '../../assets/icons/Svg';
-import { InitialStateFormAdvertising } from './FormAdvertising';
+import { InitialStateFormAdvertising } from './utils';
 
 interface FormAdvertisingListProps {
   advertising: IContextData['advertising']['advertisingContextState']['advertisingData']['data'];
