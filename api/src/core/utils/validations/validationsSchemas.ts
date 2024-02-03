@@ -139,9 +139,7 @@ const advertisingSchemas: { [key: string]: Yup.Schema } = {
     .min(2, 'Ingrese al menos 2 caracteres para el text')
     .max(50, 'Ingrese máximo 50 caracteres para el text'),
   image_desktop: Yup.string()
-    .required('Debe ingresar un image_desktop')
-    .min(2, 'Ingrese al menos 2 caracteres para el image_desktop')
-    .max(50, 'Ingrese máximo 50 caracteres para el image_desktop'),
+    .required('Debe ingresar un image_desktop'),
   image_tablet: Yup.string(),
   image_phone: Yup.string(),
 }
