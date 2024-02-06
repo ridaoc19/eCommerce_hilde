@@ -26,6 +26,8 @@ const userSchemas: { [key: string]: Yup.Schema } = {
     .min(7, 'Ingrese al menos 7 dígitos para el número telefónico')
     .max(15, 'Ingrese máximo 15 dígitos para el número telefónico')
     .matches(/^[0-9]+$/, 'Ingrese solo números para el número telefónico'),
+  token: Yup.string()
+    .required('Por favor inicie sesión nuevamente'),
 }
 
 const advertisingSchemas: { [key: string]: Yup.Schema } = {

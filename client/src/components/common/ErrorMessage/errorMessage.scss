@@ -12,6 +12,7 @@
   animation       : slideIn 0.5s ease-in-out forwards;
   max-height      : 90vh;
   overflow-y      : auto;
+  z-index         : 8;
 }
 
 /* Establecer animación de salida */
