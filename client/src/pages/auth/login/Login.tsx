@@ -1,3 +1,4 @@
+import Button from '../../../components/common/button/Button';
 import { RouteUser, Svg, useEffect, Spinner, Success, Input, clearUserError, useMutationUser, useNavigate, useState, useValidations, InitialStateLogin, initialStateLogin, HandleChangeText, HandleClick, LoginButtonName } from './index';
 
 function Login() {
@@ -104,15 +105,17 @@ function Login() {
 
             <div className="form__button--content">
               {Object.values(LoginButtonName).map(item => (
-                <button
+                <Button
                   key={item}
-                  id={`button__login--${item}`}
-                  onClick={handleClickLogin}
-                  className={item === LoginButtonName.Reset ? "button_link" : item === LoginButtonName.Back ? 'button_light' : 'button_dark'}
-                  disabled={(status.isLoadingUser || item === LoginButtonName.Login) && status.isUserError} >
-                  {item === LoginButtonName.Login ? (<>{status.isLoadingUser ? <Spinner /> : 'Iniciar Sesión'}</>)
-                    : (<>{item === LoginButtonName.Reset ? 'Restablecer' : item === LoginButtonName.Registre ? 'Crear Cuenta' : 'Volver'}</>)}
-                </button>
+                  button={{
+                    type: item === LoginButtonName.Reset ? "link" : item === LoginButtonName.Back ? 'light' : 'dark',
+                    text: item === LoginButtonName.Login ? (<>{status.isLoadingUser ? <Spinner color='white' /> : 'Iniciar Sesión'}</>)
+                      : (<>{item === LoginButtonName.Reset ? 'Restablecer' : item === LoginButtonName.Registre ? 'Crear Cuenta' : 'Volver'}</>),
+                    handleClick: handleClickLogin,
+                    id: `button__login--${item}`,
+                    disabled: (status.isLoadingUser || item === LoginButtonName.Login) && status.isUserError
+                  }}
+                />
               ))}
             </div>
           </main>

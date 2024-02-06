@@ -1,4 +1,5 @@
 
+import Button from '../../../components/common/button/Button';
 import { HandleChangeText, HandleClick, InitialStateRegistre, Input, RegistreButtonName, RouteUser, Spinner, Success, Svg, clearUserError, initialStateRegistre, useEffect, useMutationUser, useNavigate, useState, useValidations } from './index';
 
 function Registre() {
@@ -24,7 +25,7 @@ function Registre() {
   const handleClickRegistre: HandleClick = (event) => {
     event.preventDefault();
     const id = (event.target as HTMLFormElement).id.split("--")[1] as RegistreButtonName;
-    if (id === RegistreButtonName.Back) return navigate('/');
+    if (id === RegistreButtonName.Back) return navigate('/login');
     tools.fetch(RouteUser.Registre).options({ requestData: stateRegistre.change })
   };
 
@@ -67,14 +68,24 @@ function Registre() {
 
               <div className="form__button--content">
                 {Object.values(RegistreButtonName).map(item => (
-                  <button
+                  <Button
                     key={item}
-                    id={`button__registre--${item}`}
-                    onClick={handleClickRegistre}
-                    className={item === RegistreButtonName.Back ? 'button_light' : 'button_dark'}
-                    disabled={(status.isLoadingUser || RegistreButtonName.Save) && status.isUserError} >
-                    {item === RegistreButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>)}
-                  </button>
+                    button={{
+                      type: item === RegistreButtonName.Back ? 'light' : 'dark',
+                      text: item === RegistreButtonName.Save ? (<>{status.isLoadingUser ? <Spinner color='white' /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>),
+                      handleClick: handleClickRegistre,
+                      id: `button__registre--${item}`,
+                      disabled: (status.isLoadingUser || RegistreButtonName.Save) && status.isUserError
+                    }}
+                  />
+                  // <button
+                  //   key={item}
+                  //   id={`button__registre--${item}`}
+                  //   onClick={handleClickRegistre}
+                  //   className={item === RegistreButtonName.Back ? 'button_light' : 'button_dark'}
+                  //   disabled={(status.isLoadingUser || RegistreButtonName.Save) && status.isUserError} >
+                  //   {item === RegistreButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>)}
+                  // </button>
                 ))}
               </div>
             </main>

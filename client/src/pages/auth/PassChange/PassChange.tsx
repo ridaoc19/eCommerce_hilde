@@ -1,4 +1,5 @@
 
+import Button from '../../../components/common/button/Button';
 import { ChangeButtonName, HandleChangeText, HandleClick, InitialStateChange, Input, RouteUser, Spinner, Success, Svg, clearUserError, useEffect, useMutationUser, useNavigate, useState, useValidations } from './index';
 
 function PassChange() {
@@ -73,14 +74,16 @@ function PassChange() {
 
               <div className="form__button--content">
                 {Object.values(ChangeButtonName).map(item => (
-                  <button
+                  <Button
                     key={item}
-                    id={`button__change--${item}`}
-                    onClick={handleClickChange}
-                    className={item === ChangeButtonName.Back ? 'button_light' : 'button_dark'}
-                    disabled={(status.isLoadingUser || ChangeButtonName.Save) && status.isUserError} >
-                    {item === ChangeButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Cambiar contraseña'}</>) : (<>{'Volver'}</>)}
-                  </button>
+                    button={{
+                      type: item === ChangeButtonName.Back ? 'light' : 'dark',
+                      text: item === ChangeButtonName.Save ? (<>{status.isLoadingUser ? <Spinner color='white' /> : 'Cambiar contraseña'}</>) : (<>{'Volver'}</>),
+                      handleClick: handleClickChange,
+                      id: `button__change--${item}`,
+                      disabled: (status.isLoadingUser || ChangeButtonName.Save) && status.isUserError
+                    }}
+                  />
                 ))}
               </div>
             </main>

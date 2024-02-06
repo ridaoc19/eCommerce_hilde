@@ -1,4 +1,5 @@
 
+import Button from '../../../components/common/button/Button';
 import { HandleChangeText, HandleClick, InitialStateReset, Input, ResetButtonName, RouteUser, Spinner, Success, Svg, clearUserError, initialStateReset, useEffect, useMutationUser, useNavigate, useState, useValidations } from './index';
 
 function Reset() {
@@ -73,14 +74,16 @@ function Reset() {
 
             <div className="form__button--content">
               {Object.values(ResetButtonName).map(item => (
-                <button
+                <Button
                   key={item}
-                  id={`button__reset--${item}`}
-                  onClick={handleClickReset}
-                  className={item === ResetButtonName.Back ? 'button_light' : 'button_dark'}
-                  disabled={(status.isLoadingUser || item === ResetButtonName.Save) && status.isUserError} >
-                  {item === ResetButtonName.Save ? (<>{status.isLoadingUser ? <Spinner /> : 'Restablecer Contraseña'}</>) : (<>{'Volver'}</>)}
-                </button>
+                  button={{
+                    type: item === ResetButtonName.Back ? 'light' : 'dark',
+                    text: item === ResetButtonName.Save ? (<>{status.isLoadingUser ? <Spinner color='white' /> : 'Restablecer Contraseña'}</>) : (<>{'Volver'}</>),
+                    handleClick: handleClickReset,
+                    id: `button__reset--${item}`,
+                    disabled: (status.isLoadingUser || item === ResetButtonName.Save) && status.isUserError
+                  }}
+                />
               ))}
             </div>
           </main>

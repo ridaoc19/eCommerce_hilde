@@ -1,4 +1,5 @@
-import { useNavigate, HandleClick, Svg, useMutationUser } from './index';
+import Button from '../../../components/common/button/Button';
+import { HandleClick, Svg, useMutationUser, useNavigate } from './index';
 
 function Success() {
   const { tools, data: { getUserQueryData } } = useMutationUser();
@@ -27,7 +28,13 @@ function Success() {
         <p>¡Disfruta de todos los beneficios de nuestra página!</p>
         <div className="success--button">
           <div>
-            <button className="button_light" onClick={handleOnClick}>¡Entendido!</button>
+            <Button
+              button={{
+                type: 'light',
+                text: '¡Entendido!',
+                handleClick: handleOnClick
+              }}
+            />
           </div>
         </div>
       </div>

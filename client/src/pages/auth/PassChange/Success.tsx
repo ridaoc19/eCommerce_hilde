@@ -1,3 +1,4 @@
+import Button from '../../../components/common/button/Button';
 import { HandleClick, Svg, useMutationUser, useNavigate } from './index';
 
 function Success() {
@@ -19,7 +20,13 @@ function Success() {
         <p><span>{userData?.name}</span> a partir de ahora, puedes iniciar sesión en tu cuenta con la nueva contraseña.</p>
         <div className="success--button">
           <div>
-            <button className="button_light" onClick={handleOnClick}>¡Entendido!</button>
+            <Button
+              button={{
+                type: 'light',
+                text: '¡Entendido!',
+                handleClick: handleOnClick
+              }}
+            />
           </div>
         </div>
       </div>
