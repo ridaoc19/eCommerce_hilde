@@ -1,9 +1,15 @@
 import * as Yup from 'yup';
 
 const userSchemas: { [key: string]: Yup.Schema } = {
+  _id: Yup.string(),
   email: Yup.string()
     .email('El correo electrónico no es válido')
     .required('El correo electrónico es requerido'),
+  newEmail: Yup.string()
+    .email('El formato del correo electrónico no es válido')
+    .required('El correo electrónico es requerido'),
+  tokenEmail: Yup.string()
+    .required('Existe un problema en la validación del correo, solicita nuevamente el cambio de correo electrónico o después de 10 minutos de la solicitud se cancela el cambio de correo'),
   password: Yup.string()
     .required('La contraseña es requerida')
     .min(6, 'La contraseña debe tener al menos 6 caracteres')

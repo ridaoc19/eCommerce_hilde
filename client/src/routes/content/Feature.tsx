@@ -1,4 +1,5 @@
 import { lazy } from "react";
+import VerifyEmail from "../../pages/dash/account/verifyEmail/VerifyEmail";
 import Layout from "../../pages/layout/Layout";
 import Loadable from "../_tools/Loadable";
 
@@ -26,10 +27,10 @@ const Feature = [
     path: '/product-detail/:id',
     element: <Layout><ProductDetail /></Layout>
   },
-  // {
-  //   path: '/verify/:id',
-  //   element: <VerifyEmail />
-  // },
+  {
+    path: '/verify/:id',
+    element: <VerifyEmail />
+  },
   {
     path: '*',
     element: <NotFoundPage />

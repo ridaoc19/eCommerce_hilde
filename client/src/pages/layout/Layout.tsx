@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import Navbar from './navbar/Navbar';
 import Footer from './footer';
 import Search from '../../components/common/search/Search';
+import { useLocation } from 'react-router-dom';
 
 export namespace ILayout {
   export type LayoutProps = {
@@ -10,6 +11,7 @@ export namespace ILayout {
 }
 
 function Layout({ children }: ILayout.LayoutProps) {
+  const { pathname } = useLocation();
 
   return (
     // <div className={`main__layout--container ${pathname ? 'remove' : 'add'}`}>
@@ -19,7 +21,7 @@ function Layout({ children }: ILayout.LayoutProps) {
           <div className='layout__navbar-content'>
             <Navbar />
           </div>
-          {window.location.pathname !== "/hilde/dashboard" && <div className='layout__navbar-search'>
+          {pathname !== "/dashboard" && <div className='layout__navbar-search'>
             <Search />
           </div>}
         </div>
