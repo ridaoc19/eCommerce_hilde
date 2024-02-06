@@ -4,6 +4,9 @@ const userSchemas: { [key: string]: Yup.Schema } = {
   email: Yup.string()
     .email('El formato del correo electrónico no es válido')
     .required('El correo electrónico es requerido'),
+  newEmail: Yup.string()
+    .email('El formato del correo electrónico no es válido')
+    .required('El correo electrónico es requerido'),
   password: Yup.string()
     .required('La contraseña es requerida')
     .min(6, 'La contraseña debe tener al menos 6 caracteres')
