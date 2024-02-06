@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { generateHashPassword } from '../../core/auth/bcryptUtils';
-import { generateToken } from '../../core/auth/jwtUtils';
+import { generateToken, generateTokenEmail, verifyToken, verifyTokenEmail } from '../../core/auth/jwtUtils';
 import { AppDataSource } from '../../core/db/postgres';
 import { sendEmail } from '../../core/utils/email';
 import { StatusHTTP } from '../../core/utils/enums';
@@ -10,6 +10,7 @@ import { successHandler } from '../../core/utils/send/successHandler';
 import { UserEntity } from './entity';
 import { userCreatedVerified } from './tools/userCreatedVerified';
 import { userResetVerified } from './tools/userResetVerified';
+import { userEmailVerified } from './tools/userEmailVerified';
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
@@ -166,6 +167,207 @@ export default {
       errorHandlerCatch({ req, error, res })
     }
   },
+
+
+  async getAccountAdmin(req: Request, res: Response) {
+    const userRepository = AppDataSource.getRepository(UserEntity);
+
+    try {
+      const dataUserAll = await userRepository.find()
+      if (!dataUserAll) return errorHandlerRes({ req, status: StatusHTTP.notFound_404, status_code: 404, res, errors: [{ field: 'accountAdmin', message: "Fallo el envió de usuarios" }] })
+      successHandler({ dataDB: dataUserAll, res, json: { field: 'accountAdminGet', status: StatusHTTP.success_200, status_code: 200, message: "Se envío todos los usuarios" } })
+    } catch (error) {
+      errorHandlerCatch({ req, error, res })
+    }
+  },
+  async postAccountInfo(req: Request, res: Response) {
+    const userRepository = AppDataSource.getRepository(UserEntity);
+    try {
+      let { _id, name, lastName, email, newEmail, phone } = req.body;
+
+      let verifiedEmailUpdate = true
+      // enviar mensaje para validar correo 
+      if (newEmail !== email) {
+        let token = generateTokenEmail({ _id, email: newEmail })
+        const responseEmail: boolean = await sendEmail({ tokenEmail: token, name, email: newEmail, type: 'validateEmail' })
+        if (!responseEmail) return errorHandlerRes<StatusHTTP.badRequest_400>({
+          status: StatusHTTP.badRequest_400,
+          status_code: 400,
+          errors: [{ field: 'general', message: `${name} se presento un inconveniente al enviar el enlace para cambiar el correo ${newEmail}` }],
+          res, req
+        })
+        userEmailVerified({ _id, newEmail, res, req })
+          .catch(_error => {
+            return errorHandlerRes<StatusHTTP.badRequest_400>({
+              status: StatusHTTP.badRequest_400,
+              status_code: 400,
+              errors: [{ field: 'general', message: `${name} se presento un inconveniente al enviar los recordatorios de cambio correo` }],
+              res, req
+            })
+          });
+        verifiedEmailUpdate = false
+      }
+      const userUpdate = await userRepository.findOne({ where: { _id } })
+      if (!userUpdate) return
+      userUpdate.name = name;
+      userUpdate.lastName = lastName;
+      userUpdate.phone = phone;
+      userUpdate.verifiedEmail = verifiedEmailUpdate
+      await userRepository.save(userUpdate);
+      // const userDB = await User.findByIdAndUpdate(_id, { name, lastName, phone, verifiedEmail: verifiedEmailUpdate }, { new: true })
+      if (!userUpdate) throw new Error(`Se presento un inconveniente al realizar el registro`)
+      await fetchCount({})
+
+      successHandler({
+        dataDB: [userUpdate], res, json: {
+          field: 'accountInfo',
+          message: 'Se actualizo la información con éxito',
+          status: StatusHTTP.updated_200,
+          status_code: 200
+        }
+      })
+    } catch (error: unknown) {
+      errorHandlerCatch({ req, error, res })
+    }
+  },
+
+  async postAccountPass(req: Request, res: Response) {
+    const userRepository = AppDataSource.getRepository(UserEntity);
+
+    try {
+      let { _id, newPassword: temporaryPassword } = req.body;
+      const password = await generateHashPassword(temporaryPassword)
+      // const userDB = await User.findByIdAndUpdate({ _id }, { password, verified: true }, { new: true })
+      const userUpdate = await userRepository.findOne({ where: { _id } })
+      if (!userUpdate) return
+      userUpdate.password = password;
+      userUpdate.verified = true
+      await userRepository.save(userUpdate);
+
+      if (!userUpdate) throw new Error(`Lamentablemente, se produjo un problema al intentar cambiar la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
+      await fetchCount({})
+      successHandler({
+        dataDB: [userUpdate], res, json: {
+          field: 'accountPass',
+          message: 'contraseña cambiada con éxito',
+          status: StatusHTTP.updated_200,
+          status_code: 200
+        }
+      })
+    } catch (error: unknown) {
+      errorHandlerCatch({ req, error, res })
+    }
+  },
+
+
+  async putAccountAdmin(req: Request, res: Response) {
+    const userRepository = AppDataSource.getRepository(UserEntity);
+
+    try {
+      let { _id, roles } = req.body;
+
+      const userUpdate = await userRepository.findOne({ where: { _id } })
+      if (!userUpdate) return
+      userUpdate.roles = roles
+      await userRepository.save(userUpdate);
+      // await User.findByIdAndUpdate(_id, { roles }, { new: true })
+      const userDB = await userRepository.find()
+      if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
+      await fetchCount({})
+
+      successHandler({
+        dataDB: userDB, res, json: {
+          field: 'accountAdminPut',
+          message: 'Se actualizo la información del admin con éxito',
+          status: StatusHTTP.updated_200,
+          status_code: 200
+        }
+      })
+    } catch (error: unknown) {
+      errorHandlerCatch({ req, error, res })
+    }
+  },
+
+  async deleteAccountAdmin(req: Request, res: Response) {
+    const userRepository = AppDataSource.getRepository(UserEntity);
+
+    try {
+      let { _id } = req.params;
+      // await User.findByIdAndDelete(_id)
+      const userDelete = await userRepository.findOne({ where: { _id } })
+      if (!userDelete) return
+      await userRepository.delete(userDelete);
+
+      const userDB = await userRepository.find()
+      if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
+      await fetchCount({})
+
+      successHandler({
+        dataDB: userDB, res, json: {
+          field: 'accountAdminDelete',
+          message: 'Se elimino el usuario con éxito',
+          status: StatusHTTP.success_200,
+          status_code: 200
+        }
+      })
+    } catch (error: unknown) {
+      errorHandlerCatch({ req, error, res })
+    }
+  },
+
+
+  async postLoginToken(req: Request, res: Response) {
+    const userRepository = AppDataSource.getRepository(UserEntity);
+
+    try {
+      const decoded = verifyToken(req.body.token);
+      const user = await userRepository.findOne({ where: { _id: decoded._id } })
+      // const responseDB = await User.findById({ _id: decoded._id })
+      // const dataDB = responseDB!
+      // await fetchCount({ _id, name })
+
+      successHandler({
+        dataDB: [user], res, json: {
+          field: 'token',
+          status_code: 200,
+          status: StatusHTTP.success_200,
+          message: 'Inicio sesión exitoso con token'
+        }
+      })
+
+    } catch (error: unknown) {
+      errorHandlerCatch({ req, error, res })
+    }
+  },
+  async postVerifyEmail(req: Request, res: Response) {
+    const userRepository = AppDataSource.getRepository(UserEntity);
+
+    try {
+      const decoded: { _id: string, email: string, token?: boolean } = verifyTokenEmail(req.body.tokenEmail);
+
+      const userUpdate = await userRepository.findOne({ where: { _id: decoded._id } })
+      if (!userUpdate) return
+      userUpdate.email = decoded.email;
+      userUpdate.verifiedEmail = true;
+      await userRepository.save(userUpdate);
+      // const userDB = await User.findByIdAndUpdate({ _id: decoded._id }, { email: decoded.email, verifiedEmail: true }, { new: true })
+      if (!userUpdate) throw new Error(`Se produjo un error al validar el nuevo correo electrónico, por favor solicita el cambio de correo nuevamente`)
+      successHandler({
+        dataDB: [userUpdate], res, json: {
+          field: 'verifyEmail',
+          message: 'Se valido el correo electrónico con éxito',
+          status: StatusHTTP.success_200,
+          status_code: 200
+        }
+      })
+    } catch (error: unknown) {
+      errorHandlerCatch({ req, error, res })
+    }
+  },
+
+
+
+
 
 
 
