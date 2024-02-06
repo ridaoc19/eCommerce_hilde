@@ -1,10 +1,13 @@
+import { useContext } from "react";
 import { Components, FormAdvertisingProps, InitialStateFormAdvertising, RouterDom, react, } from "./utils";
+import { CreateContext } from "../../../hooks/useContext";
 const { ErrorMessage, FormAdvertisingButton, FormAdvertisingForm, FormAdvertisingList, useMediaQuery, useModalConfirm, useMutationAdvertising } = Components
 const { useEffect, useState, RouteAdvertising } = react;
 const { useLocation } = RouterDom;
 
 
 function FormAdvertising({ advertising: { advertisingData }, location, componentMount, title }: FormAdvertisingProps) {
+  const { dashboard: { state: { permits: { edit } } } } = useContext(CreateContext)!
   const { tools: { mutate, resetError }, isLoading, error, status } = useMutationAdvertising();
   const { ModalComponent, closeModal, openModal } = useModalConfirm()
   const { mediaQuery } = useMediaQuery();
@@ -78,27 +81,29 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
   };
 
   return (
-    <div ref={componentMount} className="advertising-form">
-      {error && <ErrorMessage errors={error.errors} emptyMessage={() => resetError()} />}
-      {isLoading && <div>Loading...</div>}
-      <div className="advertising-form-title">
-        <h3>{title}</h3>
-      </div>
+    <>
+      {edit ? <div ref={componentMount} className="advertising-form">
+        {error && <ErrorMessage errors={error.errors} emptyMessage={() => resetError()} />}
+        {isLoading && <div>Loading...</div>}
+        <div className="advertising-form-title">
+          <h3>{title}</h3>
+        </div>
 
-      <div className={`advertising-form__list`}>
-        {advertisingData?.data && <FormAdvertisingList advertising={advertisingData.data} handleItemClick={handleItemClick} stateInput={stateInput} />}
-      </div>
+        <div className={`advertising-form__list`}>
+          {advertisingData?.data && <FormAdvertisingList advertising={advertisingData.data} handleItemClick={handleItemClick} stateInput={stateInput} />}
+        </div>
 
-      <div className={`advertising-form__input ${mediaQuery}`}>
-        <FormAdvertisingForm stateInput={stateInput} setStateInput={setStateInput} initialStateFormAdvertising={initialStateFormAdvertising} />
-      </div>
+        <div className={`advertising-form__input ${mediaQuery}`}>
+          <FormAdvertisingForm stateInput={stateInput} setStateInput={setStateInput} initialStateFormAdvertising={initialStateFormAdvertising} />
+        </div>
 
-      {ModalComponent}
+        {ModalComponent}
 
-      <div className={`advertising-form__button`} >
-        <FormAdvertisingButton handleItemClick={handleItemClick} handleClickEmpty={() => setStateInput(initialStateFormAdvertising)} status={stateInput.status} />
-      </div>
-    </div>
+        <div className={`advertising-form__button`} >
+          <FormAdvertisingButton handleItemClick={handleItemClick} handleClickEmpty={() => setStateInput(initialStateFormAdvertising)} status={stateInput.status} />
+        </div>
+      </div> : null}
+    </>
   );
 }
 

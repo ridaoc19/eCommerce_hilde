@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { HandleClick } from "../../../interfaces/global.interface";
 import Svg, { SvgType } from "../../assets/icons/Svg";
 
@@ -20,8 +21,9 @@ export interface ButtonProps {
   className?: string;
   button: {
     type: "dark" | "light" | "link" | "highlighter" | "none";
-    text: string;
+    text: string | ReactNode;
     disabled?: boolean;
+    id?: string;
     value?: string | number;
     handleClick: HandleClick;
     dataset_button_extra?: string;
@@ -33,6 +35,7 @@ function Button({ button, svgRight, svgLeft, style, className = "" }: ButtonProp
   return (
     <button
       style={style}
+      id={button.id}
       className={`button button_${button.type} ${className}`}
       onClick={button.handleClick}
       value={button.value}

@@ -7,7 +7,7 @@ import MediaFilesEntity from "../../modules/media/entity";
 import NavigationEntity from "../../modules/navigation/entity";
 import ProductEntity from "../../modules/products/entity";
 import SubcategoryEntity from "../../modules/subcategories/entity";
-import { UserEntity } from "../../modules/users/entity";
+import { UserEntity } from "../../modules/user/entity";
 import VariantEntity from "../../modules/variants/entity";
 
 

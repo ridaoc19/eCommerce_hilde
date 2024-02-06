@@ -31,6 +31,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ errors, emptyMessage }) => 
 
     // Limpiar el primer timeout al desmontar el componente
     return () => clearTimeout(firstTimeout);
+    // eslint-disable-next-line
   }, []);
 
   return isVisible ? (
