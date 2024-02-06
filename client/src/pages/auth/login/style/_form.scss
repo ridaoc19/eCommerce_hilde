@@ -1,0 +1,89 @@
+.login__form--container {
+  min-height      : 100vh;
+  // width        : 100vw;
+  display         : grid;
+  place-content   : center;
+
+  .login__form--content {
+    display  : grid;
+    gap      : 0.5rem;
+    max-width: 18rem;
+    margin   : 2rem 0;
+
+    header {
+      display    : grid;
+      place-items: center;
+
+      >h2 {
+        margin: 0.2rem 0;
+      }
+
+      p {
+        text-align: center;
+      }
+    }
+
+    main {
+      display: grid;
+      gap    : 0.5rem;
+
+      .form__input--content {
+        display: grid;
+        gap    : 0.5rem;
+      }
+
+      .form__error-back--content {
+        ul {
+          margin : 0;
+          padding: 0;
+
+          span {
+            display   : block;
+            text-align: justify;
+            color     : var(--error-6);
+            font-size : small;
+          }
+        }
+      }
+
+      .form__button--content {
+        display: grid;
+        gap    : 1rem;
+      }
+    }
+  }
+}
+
+
+.spinner {
+  animation: rotate 2s linear infinite;
+
+  & .path {
+    stroke-linecap: round;
+    animation     : dash 1.5s ease-in-out infinite;
+  }
+
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray : 1, 150;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray : 90, 150;
+    stroke-dashoffset: -35;
+  }
+
+  100% {
+    stroke-dasharray : 90, 150;
+    stroke-dashoffset: -124;
+  }
+}

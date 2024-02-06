@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { User } from '../../../modules/users/interface';
+import { User } from '../../../modules/user/tools/interface';
 import { templateRegistre } from './template';
 
 type SendEmail = Pick<User.Content, 'name' | 'email' | 'password' | 'type'> & { tokenEmail?: string }

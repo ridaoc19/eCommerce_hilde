@@ -1,0 +1,21 @@
+.login__success--container {
+  background-color: var(--success-2);
+  display         : grid;
+  place-items     : center;
+  position        : fixed;
+  top             : 2%;
+  left            : 20%;
+  right           : 20%;
+  border-radius   : 1rem;
+  border          : 1px solid var(--success-3); // bottom                : 0;
+
+  h2 {
+    color        : var(--success-9);
+    margin-bottom: 0;
+  }
+
+  p {
+    margin-top: 0;
+    color     : var(--success-8);
+  }
+}
