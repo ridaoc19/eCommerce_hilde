@@ -1,0 +1,41 @@
+@import './style/images';
+@import './style/content';
+@import './style/other';
+
+.product-detail {
+  display       : flex;
+  flex-direction: column;
+  max-width     : 100%;
+  /* Asegura que el contenedor no se desborde */
+  overflow-x    : hidden;
+  /* Oculta el desbordamiento horizontal si lo hay */
+  gap           : 1rem;
+  padding       : 2%;
+
+  * {
+    // width     : 100%;
+    box-sizing: border-box;
+    /* Incluye el padding y border en el ancho total */
+  }
+
+  &__breadcrumb {
+    display: block;
+  }
+
+  &__images--content {
+    // display: grid;
+
+    .images-content {
+      display: flex;
+      gap    : 1rem;
+
+      &.phone {
+        flex-direction: column;
+      }
+    }
+  }
+
+  &__other {
+    display: block;
+  }
+}

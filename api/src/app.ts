@@ -1,17 +1,25 @@
-import * as cors from "cors";
+import cors from "cors";
 import 'dotenv/config';
-import * as express from "express";
-import * as morgan from 'morgan';
+import express from "express";
+import morgan from 'morgan';
+import filesMiddleware from "./core/utils/middleware/files";
+import { uploadImages } from "./modules/developer/middleware";
 import routes from './routes';
+import { validatorsMiddlewareGlobal } from './core/utils/validations/validatorsMiddlewareGlobal';
+const { upload } = uploadImages()
 
 const app = express();
 
 app.use(express.json());
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
-app.use('/uploads', express.static('uploads'));
 app.use(morgan('dev'));
 app.use(cors())
+app.use('/uploads', express.static('uploads')); //para mostrar las imágenes
+
+app.use(upload.array('images')) // manipulación de imágenes
+app.use(validatorsMiddlewareGlobal)
+app.use(filesMiddleware) // limpiar imágenes
 
 
 app.use("/", routes)

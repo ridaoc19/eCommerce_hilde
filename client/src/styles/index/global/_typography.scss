@@ -64,7 +64,7 @@ a {
 .link {
   display        : inline-block;
   position       : relative;
-  color          : var(--font-brand);
+  color          : var(--information-6) !important;
   text-decoration: none;
 
   &:after {
@@ -78,7 +78,7 @@ a {
 
   &:hover:after {
     width     : 100%;
-    background: var(--font-brand);
+    background: var(--information-6) !important;
   }
 }
 
@@ -89,7 +89,7 @@ h2,
 h3,
 h4,
 h5,
-h5 {
+h6 {
   margin : 0;
   padding: 0;
 }

@@ -2,8 +2,8 @@ import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 
 @Entity('users')
 export class UserEntity {
-  @PrimaryGeneratedColumn()
-  user_id: string;
+  @PrimaryGeneratedColumn('uuid')
+  _id: string;
 
   @Column()
   name: string;
@@ -23,13 +23,13 @@ export class UserEntity {
   @Column()
   verified: boolean;
 
-  @Column()
+  @Column({ default: true })
   verifiedEmail: boolean;
 
-  @Column()
+  @Column({ default: 'visitant' })
   roles: "super" | "admin" | "edit" | "visitant";
 
-  @Column()
+  @Column({ nullable: true })
   addresses: string;
 
   @DeleteDateColumn({ select: false })

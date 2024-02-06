@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Svg from '../../../components/assets/icons/Svg';
+import Login from '../../../components/common/login/Login';
 import Sidebar from '../sidebar/Sidebar';
 
 export type HandleClickDiv = (event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => void;
@@ -20,7 +21,7 @@ function Navbar() {
         {Svg({ type: "shop", color: "white" })}
       </div> */}
       <div className='navbar__login'>
-        {/* <Login /> */}
+        <Login />
       </div>
     </div>
   );

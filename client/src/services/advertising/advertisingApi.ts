@@ -1,3 +1,4 @@
+import { IAdvertising } from "../../interfaces/advertising.interface";
 import { Method } from "../../interfaces/global.interface";
 import { RequestMapAdvertising, RouteAdvertising } from "./advertisingRequest";
 
@@ -27,7 +28,12 @@ async function apiAdvertising<R extends keyof RequestMapAdvertising>(data: Omit<
       method: method,
       // headers: { 'Content-Type': 'application/json' }
     };
-    if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
+    if (method !== Method.Get && 'requestData' in data) {
+      const convert = convertFromData(data.requestData as Omit<IAdvertising.advertising, 'advertising_id'>)
+
+      fetchOptions.body = convert!
+      // fetchOptions.body = JSON.stringify(data.requestData)
+    };
 
     const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'extensionRoute' in data ? `${data.extensionRoute}` : ""}`, fetchOptions)
     const resJson = await responseApi.json();
@@ -65,4 +71,19 @@ export function advertisingRequest<T extends RouteAdvertising>(route: T): {
       return await apiAdvertising(requestParams);
     },
   };
+}
+
+
+
+export const convertFromData = (requestData: Omit<IAdvertising.advertising, 'advertising_id'>) => {
+  const form = new FormData();
+  Object.entries(requestData).forEach(([key, value]) => {
+    if (typeof value === 'object') {
+      const image: File = value
+      form.append(`images`, value, `${key}.${image.type.split("/")[1]}`);
+    } else {
+      form.append(key, value,);
+    }
+  })
+  return form
 }

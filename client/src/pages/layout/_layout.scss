@@ -42,14 +42,15 @@
       // background-color   : red;
       // max-width          : 100vw;
       // margin          : 0 auto;
+      min-height: 88vh;
       box-sizing: border-box;
 
       .layout__#{$fields_each}-container {
-        height             : 100%;
-        width              : 100%;
-        background-color   : var(--brand-0);
-        margin             : 0 auto;
-        // justify-self    : center;
+        height                : 100%;
+        // width              : 100%;
+        max-width             : 100vw;
+        background-color      : var(--brand-0);
+        margin                : 0 auto;
 
         @media (min-width: 1300px) {
           max-width: 96rem;

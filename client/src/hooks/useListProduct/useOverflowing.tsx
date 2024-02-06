@@ -1,40 +1,32 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-interface ComponentChildrenProps {
-  children: ReactNode;
-  product: string;
-}
-
-const OverflowDetectionComponent = ({ children }: ComponentChildrenProps) => {
-  const myDivRef = useRef<HTMLDivElement>(null);
-  const [isOverflowingVertically, setIsOverflowingVertically] = useState(false);
+const useOverflowDetection = () => {
+  const overflowRef = useRef<HTMLDivElement>(null);
+  const [isOverflowed, setIsOverflowed] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      const myDiv = myDivRef.current;
+      const contentDiv = overflowRef.current;
 
-      if (myDiv) {
-        const overflow = myDiv.scrollHeight > myDiv.clientHeight;
-        setIsOverflowingVertically(overflow);
+      if (contentDiv) {
+        const overflow = contentDiv.scrollHeight > contentDiv.clientHeight;
+        setIsOverflowed(overflow);
       }
     };
 
-    handleResize();
+    const resizeObserver = new ResizeObserver(handleResize);
 
-    // Listen for window resize events
-    window.addEventListener('resize', handleResize);
+    if (overflowRef.current) {
+      resizeObserver.observe(overflowRef.current);
+    }
 
-    // Cleanup the event listener on component unmount
+    // Cleanup the ResizeObserver on component unmount
     return () => {
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
     };
   }, []);
 
-  return (
-    <div className={`overflow-container ${isOverflowingVertically ? 'overflowed' : ''}`} ref={myDivRef}>
-      <div className="content">{children}</div>
-    </div>
-  );
+  return { overflowRef, isOverflowed };
 };
 
-export default OverflowDetectionComponent;
+export default useOverflowDetection;

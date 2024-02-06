@@ -1,8 +1,10 @@
 import app from "./app";
 import { AppDataSource } from "./core/db/postgres";
+import { checkFolderAccess } from "./modules/developer/middleware";
 
 const PORT = process.env.PORT || 3000;
 
+checkFolderAccess({ folderPath: './uploads' }).catch(err => console.log({err: `erro al crear la carpeta ${err}`}))
 AppDataSource.initialize().then(async () => {
 
     

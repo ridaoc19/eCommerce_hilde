@@ -1,13 +1,14 @@
+import { useMemo } from 'react';
 import Button from '../../components/common/button/Button';
-import { HandleClick } from '../../interfaces/global.interface';
+import useMediaQuery from '../useMediaQuery';
 
 interface PaginationButtonProps {
   handleClickPaginationButtonBack: () => void;
   handleClickPaginationButtonNext: () => void;
-  handleClickPaginationButtonSelect: HandleClick;
-  paginationTotal: number;
+  handleClickPaginationButtonSelect: (selectedValue: string) => void;
   disableBack: boolean;
   disableNext: boolean;
+  paginationTotal: number;
   currentIndex: number;
 }
 
@@ -20,37 +21,44 @@ function PaginationButton({
   paginationTotal,
   currentIndex
 }: PaginationButtonProps) {
-  console.log(currentIndex)
+  const { mediaQuery } = useMediaQuery()
+  const visibleRange = useMemo(() => mediaQuery === 'phone' ? 5 : 7, [mediaQuery]) // cuántos números de página quieres mostrar en la barra
+
+  // para crear contenedor numeración paginado
+  const startPage = Math.max(1, currentIndex - Math.floor(visibleRange / 2));
+  const endPage = Math.min(paginationTotal, startPage + visibleRange - 1);
+
   return (
     <div className="pagination-buttons">
-      <div className="pagination-buttons__button pagination-buttons__button--back" >
-        <Button
-          button={{ type: "dark", text: '<', handleClick: handleClickPaginationButtonBack, disabled: disableBack }}
-        />
-      </div>
-      <div className="pagination-numbers">
-        {Array.from({ length: paginationTotal }, (_, index) => {
-          const pageNumber = index + 1;
-          return (
-            <span key={pageNumber} className="pagination-numbers__item">
-              <Button
-                style={{ backgroundColor: pageNumber === currentIndex ? 'orange' : '', color: pageNumber === currentIndex ? 'white' : '' }}
-                button={{
-                  value: String(pageNumber),
-                  type: "light",
-                  text: String(pageNumber),
-                  handleClick: handleClickPaginationButtonSelect
-                }}
-              // className="pagination-numbers__button"
-              />
-            </span>
-          );
-        })}
-      </div>
-      <div className="pagination-buttons__button pagination-buttons__button--next" >
-        <Button
-          button={{ type: "dark", text: '>', handleClick: handleClickPaginationButtonNext, disabled: disableNext }}
-        />
+      <div className='pagination-buttons_container'>
+        <div className="pagination-buttons__button pagination-buttons__button--back">
+          <Button
+            button={{ type: "dark", text: '<', handleClick: handleClickPaginationButtonBack, disabled: disableBack }}
+          />
+        </div>
+        <div className="pagination-numbers">
+          {Array.from({ length: endPage - startPage + 1 }, (_, index) => {
+            const pageNumber = startPage + index;
+            return (
+              <span key={pageNumber} className="pagination-numbers__item">
+                <Button
+                  className={pageNumber === currentIndex ? "pagination-numbers_selected-button" : ""}
+                  button={{
+                    value: String(pageNumber),
+                    type: "highlighter",
+                    text: String(pageNumber),
+                    handleClick: () => handleClickPaginationButtonSelect(String(pageNumber))
+                  }}
+                />
+              </span>
+            );
+          })}
+        </div>
+        <div className="pagination-buttons__button pagination-buttons__button--next">
+          <Button
+            button={{ type: "dark", text: '>', handleClick: handleClickPaginationButtonNext, disabled: disableNext }}
+          />
+        </div>
       </div>
     </div>
   );

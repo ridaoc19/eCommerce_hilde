@@ -1,8 +1,8 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import MediaFilesEntity from '../media/entity';
 
 @Entity('advertising')
-export class AdvertisingEntity {
+export default class AdvertisingEntity {
   @PrimaryGeneratedColumn('uuid')
   advertising_id: string;
 
@@ -21,6 +21,10 @@ export class AdvertisingEntity {
   @Column()
   text: string;
 
+  @OneToOne(() => MediaFilesEntity, media => media.advertising, { cascade: true })
+  @JoinColumn({ name: 'media_id' })
+  media: MediaFilesEntity;
+
   @Column()
   image_desktop: string;
 
@@ -32,6 +36,7 @@ export class AdvertisingEntity {
 
   @DeleteDateColumn({ select: false })
   deletedAt: Date;
+
 }
 
 

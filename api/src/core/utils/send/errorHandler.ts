@@ -1,9 +1,12 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { MapStatusCode, StatusHTTP, StatusHTTPError } from "../enums";
+import { deleteFiles } from "../middleware/files";
 
-export const errorHandlerCatch = ({ res, error }:
-  { res: Response, error: unknown }) => {
-    if (error instanceof Error) {
+export const errorHandlerCatch = ({ req, res, error }: { req: Request, res: Response, error: unknown }) => {
+  if (req?.files && Array.isArray(req.files) && req.files.length > 0) {//eliminar image si hay error
+    deleteFiles(req.files.map(e => e.filename))
+  }
+  if (error instanceof Error) {
     res
       .status(400)
       .json({
@@ -23,14 +26,22 @@ export const errorHandlerCatch = ({ res, error }:
 
 };
 
-export const errorHandlerArray = <T extends StatusHTTPError>({ res, json }: { res: Response, json: MapStatusCode<string>[T] }) => {
+export const errorHandlerArray = <T extends StatusHTTPError>({ req, res, json }: { req: Request, res: Response, json: MapStatusCode<string>[T] }) => {
+  if (req?.files && Array.isArray(req.files) && req.files.length > 0) {//eliminar image si hay error
+    deleteFiles(req.files.map(e => e.filename))
+  }
+
   res
     .status(json.status_code)
     .json(json);
 };
 
 
-export const errorHandlerRes = <T extends StatusHTTPError>({ res, status_code, status, errors }: MapStatusCode<string>[T] & { res: Response }) => {
+export const errorHandlerRes = <T extends StatusHTTPError>({ req, res, status_code, status, errors }: MapStatusCode<string>[T] & { req: Request, res: Response }) => {
+  if (req?.files && Array.isArray(req.files) && req.files.length > 0) {//eliminar image si hay error
+    deleteFiles(req.files.map(e => e.filename))
+  }
+
   res
     .status(status_code)
     .json({

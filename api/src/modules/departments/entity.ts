@@ -1,14 +1,19 @@
-import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { CategoryEntity } from '../categories/entity';
-import { NavigationEntity } from '../navigation/entity';
+import { Column, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import CategoryEntity from '../categories/entity';
+import NavigationEntity from '../navigation/entity';
+import MediaFilesEntity from '../media/entity';
 
 @Entity('department')
-export class DepartmentEntity {
+export default class DepartmentEntity {
   @PrimaryGeneratedColumn("uuid")
   department_id: string;
 
   @Column({ type: 'varchar' })
   department: string;
+
+  @OneToOne(() => MediaFilesEntity, media => media.department, { cascade: true })
+  @JoinColumn({ name: 'media_id' })
+  media: MediaFilesEntity;
 
   @OneToMany(() => CategoryEntity, category => category.department, { cascade: ['soft-remove', 'recover'] })
   categories: CategoryEntity[];

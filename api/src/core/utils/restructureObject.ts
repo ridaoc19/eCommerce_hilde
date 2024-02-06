@@ -1,4 +1,4 @@
-import { IUser, IUsers } from "../../modules/users/model";
+import { IUser, IUsers } from "../../modules/user/model";
 
 export const estructureUserDB = <R extends string | number | symbol, T extends keyof IUsers>({ data, filterDelete, filterAdd }: { data: IUser, filterDelete: T[], filterAdd: Array<{ key: R, value: string | number | boolean }> }): Omit<IUsers, T> & Record<R, string | number | boolean >  => {
   let cleanedUserData = { ...data.toObject() };
