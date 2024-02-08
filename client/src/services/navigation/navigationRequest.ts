@@ -5,6 +5,7 @@ export enum RouteNavigation {
   NavigationMenu = 'get|navigation/menu',
   NavigationListProduct = 'get|navigation/list-product',
   NavigationSearch = 'get|navigation/search',
+  NavigationListProductDashboard = 'get|navigation/list-product-dashboard',
 }
 
 export type RequestMapNavigation = {
@@ -47,11 +48,35 @@ export type RequestMapNavigation = {
       listProduct: (IProduct.ListProduct & { breadcrumb: MapEntityBreadcrumb[BreadcrumbType] })[];
       totalCount: number;
     }
-  }
+  },
+  [RouteNavigation.NavigationListProductDashboard]: {
+    route: RouteNavigation.NavigationListProductDashboard;
+    extensionRoute: `/${string}/${string}/${string}`;
+    data: {
+      breadcrumb: MapEntityBreadcrumb[BreadcrumbType] | null;
+      listProduct: IProduct.ListProduct[] | null;
+      filters: {
+        department: Array<{
+          department: string;
+          department_id: string;
+        }>
+        category: Array<{
+          category: string;
+          category_id: string;
+        }>
+        subcategory: Array<{
+          subcategory: string;
+          subcategory_id: string;
+        }>
+        product: Array<{
+          product: string;
+          product_id: string;
+        }>
+      }
+      totalCount: number | null;
+    }
+  },
 };
-
-
-
 
 
 

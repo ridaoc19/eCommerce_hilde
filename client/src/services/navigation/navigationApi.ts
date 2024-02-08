@@ -28,7 +28,7 @@ async function apiNavigation<R extends keyof RequestMapNavigation>(data: Omit<Re
       // headers: { 'Content-Type': 'application/json' }
     };
     if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
-
+    console.log(data)
     const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'extensionRoute' in data ? `${data.extensionRoute}` : ""}`, fetchOptions)
     const resJson = await responseApi.json();
 
