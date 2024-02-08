@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from "../../../../services/navigation/navigationApi";
 import { RequestMapNavigation, RouteNavigation } from "../../../../services/navigation/navigationRequest";
 import { IProduct } from "../../../../interfaces/product.interface";
+import { RouteProduct } from "../../../../services/product/productRequest";
 
 export interface InitialStateProductCreation {
   type: 'search' | 'selected'
@@ -30,7 +31,9 @@ export interface InitialStateProductCreation {
   }
   mutation: {
     entity: 'department' | 'category' | 'subcategory' | 'product';
-    input: string;
+    // input: string;
+    route: RouteProduct;
+    paramId: string;
   }
 }
 
@@ -43,7 +46,10 @@ export const initialStateProductCreation: InitialStateProductCreation = {
   },
   mutation: {
     entity: 'department',
-    input: ''
+    // input: '',
+    route: RouteProduct.DepartmentCreate,
+    paramId: ''
+
   }
 }
 

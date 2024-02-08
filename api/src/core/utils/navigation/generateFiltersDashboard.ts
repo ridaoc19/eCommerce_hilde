@@ -27,9 +27,19 @@ export const generateFiltersDashboard = async (queryBuilder: SelectQueryBuilder<
     .getRawMany();
 
   const product = await queryBuilder
-    .select(['DISTINCT ON (product.product) product.product, product.product_id'])
+    .select(['DISTINCT ON (product.product) product.product, product.product_id, product.brand, product.description, product.warranty, product.contents, product.specifications, product.benefits'])
     .getRawMany();
 
+
+    // {
+    //   "product": "",
+    //   "brand": "",
+    //   "description": "",
+    //   "warranty": "",
+    //   "contents": "",
+    //   "specifications": {},
+    //   "benefits": []
+    // }
   return {
     department,
     category: categories,

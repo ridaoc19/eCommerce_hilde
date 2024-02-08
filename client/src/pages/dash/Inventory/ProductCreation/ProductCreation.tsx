@@ -1,85 +1,52 @@
-import Select from "../../../../components/common/Select/Select";
-import { RouteProduct } from "../../../../services/product/productRequest";
-import { Input, Svg } from "../../../auth/login";
-import ProductCreationForm from "./ProductCreationForm";
-import useProductCreationQuery, { InitialStateProductCreation } from "./useProductCreationQuery";
+import { useMemo } from "react";
+import ProductCreationForm from "../../../../components/common/ProductForm/ProductForm";
+import ProductCreationList from "./ProductCreationList";
+import ProductCreationSearch from "./ProductCreationSearch";
+import useProductCreationQuery from "./useProductCreationQuery";
+import { initialStateForm } from "./utils";
 
-const options = [
-  { value: 'department', label: 'Departamento' },
-  { value: 'category', label: 'Categoría' },
-  { value: 'subcategory', label: 'Subcategoría' },
-  { value: 'product', label: 'Producto' },
-];
 
 function ProductCreation() {
   // const { mediaQuery } = useMediaQuery();
   const { setStateProductCreation, stateProductCreation, query } = useProductCreationQuery();
+  const { mutation: { entity, paramId, route } } = stateProductCreation;
+
+  const productEdit = useMemo(() => {
+    if (query.data && route.includes('edit')) {
+      const filters = query.data.filters[stateProductCreation.mutation.entity];
+      if (Array.isArray(filters)) {
+        for (const items of filters) {
+          if (Object.values(items).includes(paramId)) {
+            const res = Object.entries(items).reduce((acc: Record<string, any>, [key, value]) => {
+              if (!key.includes('_id')) {
+                acc[key] = value;
+              }
+              return acc;
+            }, {});
+
+            return { requestData: res }
+          }
+        }
+      }
+    }
+    return initialStateForm[route];
+    // eslint-disable-next-line
+  }, [query.data, entity, paramId, route]);
 
   return (
     <div className="product-creation">
       <div className="product-creation__search" style={{ display: 'flex' }}>
-        <div>
-          <Input input={{
-            name: 'search',
-            placeholder: 'id ó nombre',
-            value: stateProductCreation.search.search,
-            handleOnChange: (event) => setStateProductCreation(prevState => ({ ...prevState, search: { ...prevState.search, search: event.target.value }, type: 'search' })),
-          }}
-            errorMessage=""
-            styleClass=""
-          />
-        </div>
-        <div>
-          {/* <h3>Selecciona una opción:</h3> */}
-          <Select
-            options={options}
-            value={stateProductCreation.search.entity}
-            onChange={(value) => setStateProductCreation(prevState => ({ ...prevState, search: { ...prevState.search, entity: value as InitialStateProductCreation['search']['entity'] }, type: 'search' }))} />
-        </div>
+        <ProductCreationSearch stateProductCreation={stateProductCreation} setStateProductCreation={setStateProductCreation} />
       </div>
 
       <div className="product-creation__list" style={{ display: 'flex', maxHeight: '15rem', overflow: 'hidden' }}>
-        {Object.entries(query.data?.filters || {}).map(([key, value], index) => (
-          <div key={index} className="contenedor">
-            <div className="titulo">
-              <h3>{key}</h3>
-              {key === 'department' && <div>{<button onClick={() => { }}>{Svg({ type: "increase", width: 16, height: 16 })}</button>}</div>}
-            </div>
-            <div className="contenido" style={{ overflow: 'auto', height: '100%' }}>
-              {value.map((item, ind) => (
-                <div key={`${ind}abc`} style={{ display: 'flex' }}>
-                  <p>{Object.values(item)[0]}</p>
-                  <div>{<button onClick={() => { }}>{Svg({ type: "edit", width: 16, height: 16 })}</button>}</div>
-                  <div>{<button onClick={() => { }}>{Svg({ type: "delete", width: 16, height: 16 })}</button>}</div>
-                  {key !== 'product' && <div>{<button onClick={() => { }}>{Svg({ type: "increase", width: 16, height: 16 })}</button>}</div>}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+        {query.data && <ProductCreationList data={query.data} setStateProductCreation={setStateProductCreation} stateProductCreation={stateProductCreation} />}
       </div>
 
 
       <div className="product-creation__form">
-        <h3>{stateProductCreation.mutation.entity}</h3>
-        {/* {!!stateProductCreation.mutation.entity &&
-          <>
-            <Input input={{
-              name: stateProductCreation.mutation.entity,
-              placeholder: stateProductCreation.mutation.entity,
-              value: stateProductCreation.mutation.input,
-              handleOnChange: (event) => { setStateProductCreation(prevState => ({ ...prevState, mutation: { ...prevState.mutation, input: event.target.value } })) },
-            }}
-              errorMessage=""
-              styleClass=""
-            />
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <Button button={{ type: 'dark', text: 'Guardar', handleClick: () => { } }} />
-              <Button button={{ type: 'light', text: 'Limpiar', handleClick: () => { } }} />
-            </div>
-          </>
-        } */}
-        <ProductCreationForm route={RouteProduct.ProductCreate} options={{ requestData: { benefits: [], brand: "", contents: "", description: "", product: "", specifications: {}, warranty: "" }, paramId: "" }} />
+        <h3>{entity}</h3>
+        <ProductCreationForm route={stateProductCreation.mutation.route} options={{ ...productEdit, paramId }} />
       </div>
     </div>
   );

@@ -13,12 +13,9 @@ export enum RouteProduct {
   SubCategoryEdit = 'put|subCategory/edit',
   SubCategoryDelete = 'delete|subCategory/delete',
 
-  ProductRequest = 'get|product/request',
   ProductDelete = 'delete|product/delete',
   ProductCreate = 'post|product/create',
   ProductEdit = 'put|product/edit',
-
-  ProductEntry = 'put|product/entry',
 }
 
 export type RequestMapProduct = {
@@ -65,9 +62,6 @@ export type RequestMapProduct = {
   };
 
 
-  [RouteProduct.ProductRequest]: {
-    route: RouteProduct.ProductRequest;
-  };
   [RouteProduct.ProductCreate]: {
     route: RouteProduct.ProductCreate;
     paramId: IProduct.Subcategory['subcategory_id'];
@@ -76,15 +70,11 @@ export type RequestMapProduct = {
   [RouteProduct.ProductEdit]: {
     route: RouteProduct.ProductEdit;
     paramId: IProduct.Product['product_id'];
-    requestData: Omit<IProduct.Product, 'product_id' | 'variants'>;
+    requestData: Omit<IProduct.Product, 'product_id' | 'variants' | 'subcategory'>;
   };
   [RouteProduct.ProductDelete]: {
     route: RouteProduct.ProductDelete;
     paramId: IProduct.Product['product_id'];
   };
 
-  [RouteProduct.ProductEntry]: {
-    route: RouteProduct.ProductEntry;
-    requestData: Omit<IProduct.Product, 'subcategoryId'>
-  };
 };

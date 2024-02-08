@@ -1,9 +1,10 @@
-import { ChangeEvent, useState } from 'react';
-import { RequestMapProduct, RouteProduct } from '../../../../services/product/productRequest';
-import useMutationProduct from '../../../../services/product/useMutationProduct';
-import { HandleClick } from '../../../auth/login';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { RequestMapProduct, RouteProduct } from '../../../services/product/productRequest';
+import useMutationProduct from '../../../services/product/useMutationProduct';
+import { HandleClick } from '../../../pages/auth/login';
 
-function ProductCreationForm<T extends RouteProduct>({ route, options }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'> }) {
+// function ProductForm<T extends RouteProduct>({ route, options }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'> }) {
+function ProductForm<T extends RouteProduct>({ route, options }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'> }) {
   const { executeProductMutation } = useMutationProduct();
 
   // Estado para almacenar los datos del formulario
@@ -13,6 +14,14 @@ function ProductCreationForm<T extends RouteProduct>({ route, options }: { route
   const [objectKey, setObjectKey] = useState<string>("");
   const [objectValue, setObjectValue] = useState<string>("");
   const [array, setArray] = useState<string>("")
+
+  useEffect(() => {
+    if ('requestData' in options) {
+      setRequestData(options.requestData)
+    } else {
+      setRequestData(null)
+    }
+  }, [options])
 
   // Función para manejar cambios en los campos de texto
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -161,4 +170,4 @@ function ProductCreationForm<T extends RouteProduct>({ route, options }: { route
   );
 }
 
-export default ProductCreationForm;
+export default ProductForm;
