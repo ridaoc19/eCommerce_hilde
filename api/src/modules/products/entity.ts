@@ -18,7 +18,7 @@ export default class ProductEntity {
   @Column({ type: 'text' })
   description: string;
 
-  @Column('simple-array')
+  @Column({ type: 'array', default: [] })
   benefits: string[];
 
   @Column({ type: 'text' })
