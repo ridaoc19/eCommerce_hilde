@@ -1,7 +1,7 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import DepartmentEntity from '../departments/entity';
+import DepartmentEntity from '../department/entity';
 import NavigationEntity from '../navigation/entity';
-import SubcategoryEntity from '../subcategories/entity';
+import SubcategoryEntity from '../subcategory/entity';
 
 @Entity('categories')
 export default class CategoryEntity {

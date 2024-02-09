@@ -1,9 +1,9 @@
 import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { objectString, stringEmpty } from '../../core/utils/navigation/functions';
-import CategoryEntity from '../categories/entity';
-import DepartmentEntity from '../departments/entity';
-import ProductEntity from '../products/entity';
-import SubcategoryEntity from '../subcategories/entity';
+import CategoryEntity from '../category/entity';
+import DepartmentEntity from '../department/entity';
+import ProductEntity from '../product/entity';
+import SubcategoryEntity from '../subcategory/entity';
 import VariantEntity from '../variants/entity';
 
 @Entity('navigation')

@@ -9,10 +9,12 @@ interface BreadcrumbProps {
   breadcrumb: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data']['breadcrumb'] | undefined;
   handleOnClick?: HandleClick
   viewHome?: boolean;
+  viewProduct?: boolean;
+  redirect?: boolean;
 }
 
 // Componente Breadcrumb
-function Breadcrumb({ breadcrumb, viewHome = true, handleOnClick }: BreadcrumbProps) {
+function Breadcrumb({ breadcrumb, viewHome = true, viewProduct = true, handleOnClick, redirect = true }: BreadcrumbProps) {
   const navigate = useNavigate()
   const homeObject = {
     name: 'Home',
@@ -20,13 +22,15 @@ function Breadcrumb({ breadcrumb, viewHome = true, handleOnClick }: BreadcrumbPr
     _id: 'home',
   };
 
-  const data = breadcrumb?.data ? viewHome ? [homeObject, ...breadcrumb.data] : breadcrumb.data.filter(e => e.name_id !== 'product') : []
+  const data = breadcrumb?.data ? viewHome ? [homeObject, ...breadcrumb.data] : viewProduct ? breadcrumb.data : breadcrumb.data.filter(e => e.name_id !== 'product') : []
 
   const handleBreadcrumbClick = (e: React.MouseEvent<HTMLButtonElement>, name_id: string, _id: string) => {
     e.stopPropagation();
-    navigate(name_id === 'home' ? `/` : `/list-products/${_id}`);
-    if (handleOnClick) {
-      handleOnClick(e);
+    if (redirect) {
+      navigate(name_id === 'home' ? `/` : `/list-products/${_id}`);
+      if (handleOnClick) {
+        handleOnClick(e);
+      }
     }
   };
 

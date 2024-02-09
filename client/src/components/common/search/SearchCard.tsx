@@ -29,7 +29,7 @@ function SearchCard({ listProduct, handleOnClick }: SearchCardProps) {
   return (
     <div className="search__card-content" onClick={handleCardClick}>
       <div className="card__breadcrumb">
-        <Breadcrumb viewHome={false} handleOnClick={handleOnClick} breadcrumb={{
+        <Breadcrumb viewHome={false} viewProduct={false} handleOnClick={handleOnClick} breadcrumb={{
           entity: BreadcrumbType.Product,
           data: [
             { _id: department.department_id, name: department.department, name_id: 'department' },

@@ -1,6 +1,7 @@
 import { IProduct } from "../../interfaces/product.interface";
 
 export enum RouteProduct {
+  DepartmentRequest = 'get|department/request',
   DepartmentCreate = 'post|department/create',
   DepartmentEdit = 'put|department/edit',
   DepartmentDelete = 'delete|department/delete',
@@ -19,6 +20,17 @@ export enum RouteProduct {
 }
 
 export type RequestMapProduct = {
+  [RouteProduct.DepartmentRequest]: {
+    route: RouteProduct.DepartmentRequest;
+    // requestData: Pick<IProduct.Department, 'department'>;
+    data: (Omit<IProduct.Department, 'categories'> & {
+      categories: (Omit<IProduct.Category, 'subcategories' | 'department'> & {
+        subcategories: (Omit<IProduct.Subcategory, 'products' | 'category'> & {
+          products: Pick<IProduct.Product, 'product_id' | 'product'>[]
+        })[]
+      })[]
+    })[]
+  };
   [RouteProduct.DepartmentCreate]: {
     route: RouteProduct.DepartmentCreate;
     requestData: Pick<IProduct.Department, 'department'>;
@@ -32,6 +44,7 @@ export type RequestMapProduct = {
     route: RouteProduct.DepartmentDelete;
     paramId: IProduct.Department['department_id'];
   };
+
   [RouteProduct.CategoryCreate]: {
     route: RouteProduct.CategoryCreate;
     paramId: IProduct.Department['department_id'];
@@ -46,6 +59,7 @@ export type RequestMapProduct = {
     route: RouteProduct.CategoryDelete;
     paramId: IProduct.Category['category_id'];
   };
+
   [RouteProduct.SubCategoryCreate]: {
     route: RouteProduct.SubCategoryCreate;
     paramId: IProduct.Category['category_id'];
