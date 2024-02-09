@@ -37,13 +37,10 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
     e.preventDefault();
     // Agregar los campos de objeto al estado de datos del formulario
     if (requestData) {
-      setRequestData((prevState: any) => ({
-        ...prevState,
-        // ...object
-      }));
+      executeProductMutation({ route, options: { ...options, requestData } });
+    } else {
+      executeProductMutation({ route, options });
     }
-    // Ejecutar la mutación con los datos del formulario
-    executeProductMutation({ route, options: { ...options, requestData } });
   };
 
   return (

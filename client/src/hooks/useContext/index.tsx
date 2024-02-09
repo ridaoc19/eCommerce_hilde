@@ -5,6 +5,8 @@ import StateNavigation from "./navigation/State";
 import { INavigatorReducer } from "./navigation/reducer";
 import { IAdvertisingReducer } from "./advertising/reducer";
 import StateAdvertising from "./advertising/State";
+import { IErrorReducer } from "./error/reducer";
+import StateError from "./error/State";
 
 export interface IContextData {
   dashboard: {
@@ -22,6 +24,10 @@ export interface IContextData {
     advertisingContextState: IAdvertisingReducer.AppState,
     advertisingContextDispatch: React.Dispatch<IAdvertisingReducer.AppAction<IAdvertisingReducer.AppState>>
   }
+  error: {
+    errorContextState: IErrorReducer.AppState,
+    errorContextDispatch: React.Dispatch<IErrorReducer.AppAction<IErrorReducer.AppState>>
+  }
 }
 
 export interface StoreContextProps {
@@ -34,10 +40,11 @@ export const StoreContext = ({ children }: StoreContextProps) => {
   const dashboard = StateDashboard();
   const navigation = StateNavigation()
   const advertising = StateAdvertising()
+  const error = StateError()
 
   return (
     <CreateContext.Provider
-      value={{ dashboard, navigation, advertising }}>
+      value={{ dashboard, navigation, advertising, error }}>
       {children}
     </CreateContext.Provider>
   );
