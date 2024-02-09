@@ -7,7 +7,6 @@ import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import CategoryEntity from '../categories/entity';
 import DepartmentEntity from '../departments/entity';
-import MediaFilesEntity from '../media/entity';
 import NavigationEntity from '../navigation/entity';
 import ProductEntity from '../products/entity';
 import SubcategoryEntity from '../subcategories/entity';
@@ -56,7 +55,6 @@ export default {
       const productRepository = AppDataSource.getRepository(ProductEntity);
       const variantRepository = AppDataSource.getRepository(VariantEntity);
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
-      const mediaRepository = AppDataSource.getRepository(MediaFilesEntity);
 
 
 
@@ -65,43 +63,33 @@ export default {
         let existingDepartment = await departmentRepository.findOne({ where: { department: dataJson.department } });
 
         if (!existingDepartment) {
-          const newMedia = new MediaFilesEntity();
           existingDepartment = new DepartmentEntity();
           existingDepartment.department = dataJson.department
-          existingDepartment.media = newMedia
           await departmentRepository.save(existingDepartment);
-          await mediaRepository.save(newMedia)
         }
 
         let existingCategory = await categoryRepository.findOne({ where: { category: dataJson.category } });
 
         if (!existingCategory) {
-          const newMedia = new MediaFilesEntity();
           existingCategory = new CategoryEntity();
           existingCategory.category = dataJson.category
           existingCategory.department = existingDepartment
-          existingCategory.media = newMedia
           await categoryRepository.save(existingCategory)
-          await mediaRepository.save(newMedia)
         }
 
 
         let existingSubcategory = await subcategoryRepository.findOne({ where: { subcategory: dataJson.subcategory } });
 
         if (!existingSubcategory) {
-          const newMedia = new MediaFilesEntity();
           existingSubcategory = new SubcategoryEntity();
           existingSubcategory.subcategory = dataJson.subcategory
           existingSubcategory.category = existingCategory
-          existingSubcategory.media = newMedia
           await subcategoryRepository.save(existingSubcategory)
-          await mediaRepository.save(newMedia)
         }
 
         let existingProduct = await productRepository.findOne({ where: { product: dataJson.product } })
 
         if (!existingProduct) {
-          const newMedia = new MediaFilesEntity();
           existingProduct = new ProductEntity();
           existingProduct.product = dataJson.product
           existingProduct.brand = dataJson.brand
@@ -112,9 +100,7 @@ export default {
           existingProduct.warranty = dataJson.warranty
 
           existingProduct.subcategory = existingSubcategory
-          existingProduct.media = newMedia
           await productRepository.save(existingProduct)
-          await mediaRepository.save(newMedia)
 
 
           // Crear entidad de navegación asociada a la variante
@@ -134,7 +120,6 @@ export default {
         for (const jstonVariant of dataJson.variants) {
           let existingNavigation = await navigationRepository.findOne({ where: { product: { product_id: existingProduct.product_id } } });
 
-          const newMedia = new MediaFilesEntity();
 
           const newVariant = new VariantEntity();
           newVariant.attributes = jstonVariant.attributes
@@ -143,13 +128,6 @@ export default {
           newVariant.stock = jstonVariant.stock
           newVariant.videos = jstonVariant.videos
           newVariant.product = existingProduct
-          newVariant.media = newMedia
-
-          // imagenes y videos
-          newMedia.images = jstonVariant.images
-          newMedia.videos = jstonVariant.videos
-          await mediaRepository.save(newMedia)
-          // 
 
           if (existingNavigation) {
             newVariant.navigation = existingNavigation;
@@ -186,7 +164,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
   },
   async clearProduct(_req: Request, res: Response) {

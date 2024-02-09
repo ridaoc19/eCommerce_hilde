@@ -1,5 +1,4 @@
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import MediaFilesEntity from '../media/entity';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import NavigationEntity from '../navigation/entity';
 import SubcategoryEntity from '../subcategories/entity';
 import VariantEntity from '../variants/entity';
@@ -29,10 +28,6 @@ export default class ProductEntity {
 
   @Column({ type: 'jsonb' })
   specifications: Record<string, string>;
-
-  @OneToOne(() => MediaFilesEntity, media => media.product, { cascade: true })
-  @JoinColumn({ name: 'media_id' })
-  media: MediaFilesEntity;
 
   @ManyToOne(() => SubcategoryEntity, subcategory => subcategory.products, { cascade: true })
   @JoinColumn({ name: 'subcategory_id' })
