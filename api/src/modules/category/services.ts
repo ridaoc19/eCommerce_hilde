@@ -3,7 +3,7 @@ import { AppDataSource } from '../../core/db/postgres';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import CategoryEntity from '../categories/entity';
+import CategoryEntity from './entity';
 import DepartmentEntity from '../department/entity';
 
 export default {

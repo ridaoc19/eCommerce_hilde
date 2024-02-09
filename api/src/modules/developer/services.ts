@@ -5,11 +5,11 @@ import { AppDataSource } from '../../core/db/postgres';
 import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import CategoryEntity from '../categories/entity';
+import CategoryEntity from '../category/entity';
 import DepartmentEntity from '../department/entity';
 import NavigationEntity from '../navigation/entity';
-import ProductEntity from '../products/entity';
-import SubcategoryEntity from '../subcategories/entity';
+import ProductEntity from '../product/entity';
+import SubcategoryEntity from '../subcategory/entity';
 import VariantEntity from '../variants/entity';
 
 interface Data {
@@ -56,9 +56,10 @@ export default {
       const variantRepository = AppDataSource.getRepository(VariantEntity);
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
 
+      const data = jsonData
+      // const data = jsonData.slice(0, 20)
 
-
-      for (const dataJson of jsonData) {
+      for (const dataJson of data) {
 
         let existingDepartment = await departmentRepository.findOne({ where: { department: dataJson.department } });
 

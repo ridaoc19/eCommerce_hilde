@@ -3,6 +3,7 @@ import { RequestMapNavigation, RouteNavigation } from "../../../../services/navi
 import { Svg } from "../../../auth/login";
 import { InitialStateProductCreation } from "./useProductCreationQuery";
 import { RouteProduct } from "../../../../services/product/productRequest";
+import Button from "../../../../components/common/button/Button";
 
 interface ProductCreationListProps {
   data: RequestMapNavigation[RouteNavigation.NavigationListProductDashboard]['data'];
@@ -30,7 +31,23 @@ function ProductCreationList({ data, setStateProductCreation }: ProductCreationL
           <div className="contenido" style={{ overflow: 'auto', height: '100%' }}>
             {value.map((item, ind) => (
               <div key={`${ind}abc`} style={{ display: 'flex' }}>
-                <p>{Object.values(item)[0]}</p>{/* nombre */}
+                <Button button={{
+                  type: 'highlighter',
+                  text: Object.values(item)[0],
+                  handleClick: () => {
+                    setStateProductCreation(prevState => ({
+                      ...prevState,
+                      // mutation: { ...prevState.mutation, entity: key === 'department' ? 'department' : key === 'category' ? 'category' : key === 'subcategory' ? 'subcategory' : 'product', paramId: Object.values(item)[1], route: key === 'department' ? RouteProduct.DepartmentEdit : key === 'category' ? RouteProduct.CategoryEdit : key === 'subcategory' ? RouteProduct.SubCategoryEdit : RouteProduct.ProductEdit },
+                      query: {
+                        entity: key === 'department' ? 'department' : key === 'category' ? 'category' : key === 'subcategory' ? 'subcategory' : 'product',
+                        search: Object.values(item)[1],
+                        type: 'selected'
+                      }
+                    }))
+                  }
+                }} />
+                {/* <p onClick={() => {
+                }}>{Object.values(item)[0]}</p>nombre */}
                 <div>{
 
                   <button onClick={() => {

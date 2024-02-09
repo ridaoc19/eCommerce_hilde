@@ -1,5 +1,5 @@
 import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import CategoryEntity from '../categories/entity';
+import CategoryEntity from '../category/entity';
 import NavigationEntity from '../navigation/entity';
 
 @Entity('department')
