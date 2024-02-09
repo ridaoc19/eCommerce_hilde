@@ -18,7 +18,7 @@ export default class ProductEntity {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'array', default: [] })
+  @Column('varchar', { array: true })
   benefits: string[];
 
   @Column({ type: 'text' })

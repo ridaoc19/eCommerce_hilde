@@ -30,8 +30,6 @@ export const generateFiltersDashboard = async (queryBuilder: SelectQueryBuilder<
     .select(['DISTINCT ON (product.product) product.product, product.product_id, product.brand, product.description, product.warranty, product.contents, product.specifications, product.benefits'])
     .getRawMany();
 
-    console.log(product);
-
   return {
     department,
     category: categories,
