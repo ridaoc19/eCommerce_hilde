@@ -4,7 +4,7 @@ import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import CategoryEntity from '../categories/entity';
-import DepartmentEntity from '../departments/entity';
+import DepartmentEntity from '../department/entity';
 
 export default {
   async createCategory(req: Request, res: Response) {

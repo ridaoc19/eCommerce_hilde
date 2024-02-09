@@ -1,5 +1,5 @@
 import CategoryEntity from "../../../modules/categories/entity";
-import DepartmentEntity from "../../../modules/departments/entity";
+import DepartmentEntity from "../../../modules/department/entity";
 import ProductEntity from "../../../modules/products/entity";
 import SubcategoryEntity from "../../../modules/subcategories/entity";
 import VariantEntity from "../../../modules/variants/entity";

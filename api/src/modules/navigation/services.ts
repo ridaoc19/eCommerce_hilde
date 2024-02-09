@@ -8,12 +8,12 @@ import { findParentUUID } from '../../core/utils/navigation/findParentUUID';
 import { stringEmpty } from '../../core/utils/navigation/functions';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import DepartmentEntity from '../departments/entity';
 import NavigationEntity from './entity';
 import { Brackets } from 'typeorm';
 import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
 import { generateFilters } from '../../core/utils/navigation/generateFilters';
 import { generateFiltersDashboard } from '../../core/utils/navigation/generateFiltersDashboard';
+import DepartmentEntity from '../department/entity';
 
 // function fetchCount(info: any) {
 //   return new Promise<{ data: number }>((resolve) =>
