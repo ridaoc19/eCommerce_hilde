@@ -1,6 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { objectString } from '../../core/utils/navigation/functions';
-import MediaFilesEntity from '../media/entity';
 import NavigationEntity from '../navigation/entity';
 import ProductEntity from '../products/entity';
 
@@ -23,10 +22,6 @@ export default class VariantEntity {
 
   @Column('int')
   stock: number;
-
-  @OneToOne(() => MediaFilesEntity, media => media.variant, { cascade: true })
-  @JoinColumn({ name: 'media_id' })
-  media: MediaFilesEntity;
 
   @ManyToOne(() => ProductEntity, product => product.variants, { cascade: true })
   @JoinColumn({ name: 'product_id' })

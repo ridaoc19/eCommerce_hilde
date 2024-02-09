@@ -13,6 +13,7 @@ import NavigationEntity from './entity';
 import { Brackets } from 'typeorm';
 import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
 import { generateFilters } from '../../core/utils/navigation/generateFilters';
+import { generateFiltersDashboard } from '../../core/utils/navigation/generateFiltersDashboard';
 
 // function fetchCount(info: any) {
 //   return new Promise<{ data: number }>((resolve) =>
@@ -76,7 +77,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
   },
 
@@ -94,12 +95,10 @@ export default {
         .getRepository(NavigationEntity)
         .createQueryBuilder('navigation')
         .leftJoinAndSelect('navigation.department', 'department')
-        .leftJoinAndSelect('department.media', 'media_department')
         .leftJoinAndSelect('navigation.category', 'category')
         .leftJoinAndSelect('navigation.subcategory', 'subcategory')
         .leftJoinAndSelect('navigation.product', 'product')
         .leftJoinAndSelect('navigation.variants', 'variants')
-        .leftJoinAndSelect('variants.media', 'media')
 
       const filtersQueryBuilder = queryBuilder.clone();
       const generateFiltersResponse = await generateFilters(filtersQueryBuilder, id, breadcrumb?.entity);
@@ -115,7 +114,7 @@ export default {
       } else {
         const searchTerms = id.split(' ').join('|');
         queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
-        
+
         queryBuilder
           .andWhere(new Brackets(qb => {
             if (Object.keys(req.query).length > 0) {
@@ -167,7 +166,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
   },
   async getListProductStrict(req: Request, res: Response) {
@@ -243,7 +242,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
   },
 
@@ -295,9 +294,73 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
-  }
+  },
+
+  async getListProductDashboard(req: Request, res: Response) {
+    const { id, entity, type } = req.params;
+
+    try {
+
+      const queryBuilder = AppDataSource
+        .getRepository(NavigationEntity)
+        .createQueryBuilder('navigation')
+        .leftJoinAndSelect('navigation.department', 'department')
+        .leftJoinAndSelect('navigation.category', 'category')
+        .leftJoinAndSelect('navigation.subcategory', 'subcategory')
+        .leftJoinAndSelect('navigation.product', 'product')
+        .leftJoinAndSelect('navigation.variants', 'variants')
+
+      let breadcrumb = null
+      let filteredProducts = null
+      let totalCount = null
+      let generateFiltersResponse = null
+      // Condición para el ID de navigation
+      if (findParentUUID(id) && type === 'selected') {
+        breadcrumb = await getBreadcrumbs(id);
+        queryBuilder.where(`navigation.${breadcrumb?.entity}_id = :id`, { id });
+        // Seleccionar campos específicos
+        filteredProducts = await queryBuilder
+          .skip(0)
+          .take(15)
+          .getMany();
+
+        // Obtener el recuento total
+        totalCount = await queryBuilder.getCount();
+
+      } else {
+        if (findParentUUID(id)) {
+          queryBuilder.where(`navigation.${entity}_id = :id`, { id });
+        } else {
+          queryBuilder.where(`${entity}.${entity} ILIKE :productName`, { productName: `%${id}%` });
+        }
+        const filtersQueryBuilder = queryBuilder.clone();
+        generateFiltersResponse = await generateFiltersDashboard(filtersQueryBuilder);
+      }
+
+
+
+
+      successHandler({
+        res,
+        dataDB: {
+          totalCount,
+          filters: generateFiltersResponse,
+          breadcrumb,
+          listProduct: filteredProducts,
+        },
+        json: {
+          field: 'navigation_list-product',
+          message: 'Datos obtenidos',
+          status_code: 200,
+          status: StatusHTTP.success_200,
+        },
+      });
+    } catch (error) {
+      errorHandlerCatch({ req, error, res });
+    }
+  },
 
 
 };

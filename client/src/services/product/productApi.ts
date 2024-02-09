@@ -1,6 +1,6 @@
 import { Method } from "../../interfaces/global.interface";
-import { IUser } from "../../interfaces/user.interface";
-import { RequestMapUser, RouteUser } from "./userRequest";
+import { IProduct } from "../../interfaces/product.interface";
+import { RequestMapProduct, RouteProduct } from "./productRequest";
 
 export type Error = {
   status_code: number;
@@ -11,15 +11,15 @@ export type Error = {
   }>;
 }
 
-export type MakeUserRequestReturn = {
+export type MakeProductRequestReturn = {
   field: string;
   status: string;
   status_code: number;
   message: string;
-  data: IUser.UserData[];
+  data: IProduct.Department[];
 };
 
-async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]): Promise<MakeUserRequestReturn> {
+async function apiProduct<R extends keyof RequestMapProduct>(data: RequestMapProduct[R]): Promise<MakeProductRequestReturn> {
   const parts = data.route.split('|');
   const method = parts[0];
   const route = parts[1];
@@ -31,9 +31,9 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
     };
     if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
 
-    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'routeId' in data ? `/${data.routeId}` : ""}`, fetchOptions)
+    const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'paramId' in data ? `/${data.paramId}` : ""}`, fetchOptions)
     const resJson = await responseApi.json();
-    console.log(resJson)
+
     if (!responseApi.ok) {
       throw resJson;
     } else {
@@ -58,13 +58,11 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
 
 
 // Función que realiza las solicitudes a la API
-export function userRequest<T extends RouteUser>(route: T): { options: (options: Omit<RequestMapUser[T], 'route' | 'method'>) => Promise<MakeUserRequestReturn> } {
+export function productRequest<T extends RouteProduct>(route: T): { options: (options: Omit<RequestMapProduct[T], 'route'>) => Promise<MakeProductRequestReturn> } {
   return {
-    options: async (options: Omit<RequestMapUser[T], 'route' | 'method'>) => {
-      const requestParams = { route, ...options } as RequestMapUser[T];
-      return await apiUser(requestParams);
+    options: async (options: Omit<RequestMapProduct[T], 'route'>) => {
+      const requestParams = { route, ...options } as RequestMapProduct[T];
+      return await apiProduct(requestParams);
     },
   };
 }
-
-

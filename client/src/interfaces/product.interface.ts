@@ -2,7 +2,8 @@ export namespace IProduct {
   export enum QUERY_KEY_PRODUCT {
     SingleProduct = 'user',
     MultipleProducts = 'products',
-    Navigation = 'navigation'
+    Navigation = 'navigation',
+    NavigationDashboard = 'navigationDashboard'
   }
   type Route = "request" | "create" | "edit" | "delete" | "";
   export type Method = "get" | "post" | "put" | "delete";
