@@ -22,8 +22,10 @@ function ProductCreationSearch({ stateProductCreation, setStateProductCreation }
         <Input input={{
           name: 'search',
           placeholder: 'id ó nombre',
-          value: stateProductCreation.search.search,
-          handleOnChange: (event) => setStateProductCreation(prevState => ({ ...prevState, search: { ...prevState.search, search: event.target.value }, type: 'search' })),
+          value: stateProductCreation.query.search,
+          handleOnChange: (event) => {
+            setStateProductCreation(prevState => ({ ...prevState, query: { ...prevState.query, type: 'search', search: event.target.value } }))
+          },
         }}
           errorMessage=""
           styleClass=""
@@ -33,8 +35,13 @@ function ProductCreationSearch({ stateProductCreation, setStateProductCreation }
         {/* <h3>Selecciona una opción:</h3> */}
         <Select
           options={options}
-          value={stateProductCreation.search.entity}
-          onChange={(value) => setStateProductCreation(prevState => ({ ...prevState, search: { ...prevState.search, entity: value as InitialStateProductCreation['search']['entity'] }, type: 'search' }))} />
+          value={stateProductCreation.query.entity}
+          onChange={(value) => {
+            setStateProductCreation(prevState => ({
+              ...prevState,
+              query: { ...prevState.query, type: 'search', entity: value as InitialStateProductCreation['query']['entity'] }
+            }))
+          }} />
       </div>
     </>
   );

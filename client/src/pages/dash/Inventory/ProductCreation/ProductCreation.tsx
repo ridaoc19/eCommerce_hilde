@@ -8,12 +8,12 @@ import { initialStateForm } from "./utils";
 
 function ProductCreation() {
   // const { mediaQuery } = useMediaQuery();
-  const { setStateProductCreation, stateProductCreation, query } = useProductCreationQuery();
+  const { setStateProductCreation, stateProductCreation, query, Breadcrumb } = useProductCreationQuery();
   const { mutation: { entity, paramId, route } } = stateProductCreation;
 
   const productEdit = useMemo(() => {
-    if (query.data && route.includes('edit')) {
-      const filters = query.data.filters[stateProductCreation.mutation.entity];
+    if (query.data && route.includes('edit') && entity) {
+      const filters = query.data.filters[entity];
       if (Array.isArray(filters)) {
         for (const items of filters) {
           if (Object.values(items).includes(paramId)) {
@@ -39,14 +39,16 @@ function ProductCreation() {
         <ProductCreationSearch stateProductCreation={stateProductCreation} setStateProductCreation={setStateProductCreation} />
       </div>
 
+      {Breadcrumb}
       <div className="product-creation__list" style={{ display: 'flex', maxHeight: '15rem', overflow: 'hidden' }}>
         {query.data && <ProductCreationList data={query.data} setStateProductCreation={setStateProductCreation} stateProductCreation={stateProductCreation} />}
       </div>
 
+      <hr />
 
       <div className="product-creation__form">
         <h3>{entity}</h3>
-        <ProductCreationForm route={stateProductCreation.mutation.route} options={{ ...productEdit, paramId }} />
+        {!!entity && <ProductCreationForm route={stateProductCreation.mutation.route} options={{ ...productEdit, paramId }} />}
       </div>
     </div>
   );

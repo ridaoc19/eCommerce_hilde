@@ -8,12 +8,12 @@ import { findParentUUID } from '../../core/utils/navigation/findParentUUID';
 import { stringEmpty } from '../../core/utils/navigation/functions';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import DepartmentEntity from '../departments/entity';
 import NavigationEntity from './entity';
 import { Brackets } from 'typeorm';
 import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
 import { generateFilters } from '../../core/utils/navigation/generateFilters';
 import { generateFiltersDashboard } from '../../core/utils/navigation/generateFiltersDashboard';
+import DepartmentEntity from '../department/entity';
 
 // function fetchCount(info: any) {
 //   return new Promise<{ data: number }>((resolve) =>
@@ -362,7 +362,131 @@ export default {
     }
   },
 
+  async getListProductDashboardEnsayo(req: Request, res: Response) {
+    const { id, entity, type } = req.params;
 
+    try {
+      const dynamicEntity = await import(`../${entity}/entity`);
+
+      // Obtener el objeto queryBuilder
+      const queryBuilder = await AppDataSource
+        .getRepository(dynamicEntity.default)
+        .createQueryBuilder(entity)
+      // .where(`${entity}.${entity}_id = :id`, { id: UUID })
+      // .getOne();
+
+      let breadcrumb = null
+      let totalCount = null
+      // Condición para el ID de navigation
+      if (findParentUUID(id) && type === 'selected') {
+        breadcrumb = await getBreadcrumbs(id);
+        queryBuilder.where(`${entity}.${breadcrumb?.entity}_id = :id`, { id });
+        // Seleccionar campos específicos
+
+
+      } else {
+        if (findParentUUID(id)) {
+          queryBuilder.where(`${entity}.${entity}_id = :id`, { id });
+        } else {
+          const searchTerms = id.split(' ').join('|');
+          queryBuilder.where(`LOWER(${entity}.${entity}::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
+          // queryBuilder.where(`${entity}.${entity} ILIKE :productName`, { productName: `%${id}%` });
+        }
+      }
+
+
+      if (entity === 'department') {
+        queryBuilder.leftJoinAndSelect('department.categories', 'category')
+          .leftJoinAndSelect('category.subcategories', 'subcategory')
+          .leftJoinAndSelect('subcategory.products', 'product')
+        // .select([
+        //   'department.department_id', 'department.department',
+        //   'category.category_id', 'category.category',
+        //   'subcategory.subcategory_id', 'subcategory.subcategory',
+        //   'product.product_id', 'product.product', 'product.brand', 'product.description', 'product.warranty', 'product.contents', 'product.specifications', 'product.benefits',
+        // ]);
+      } else if (entity === 'category') {
+        queryBuilder.leftJoinAndSelect('category.department', 'department')
+          .leftJoinAndSelect('category.subcategories', 'subcategory')
+          .leftJoinAndSelect('subcategory.products', 'product')
+        // .select([
+        //   'department.department_id', 'department.department',
+        //   'category.category_id', 'category.category',
+        //   'subcategory.subcategory_id', 'subcategory.subcategory',
+        //   'product.product_id', 'product.product', 'product.brand', 'product.description', 'product.warranty', 'product.contents', 'product.specifications', 'product.benefits',
+        // ]);
+      } else if (entity === 'subcategory') {
+        queryBuilder.leftJoinAndSelect('subcategory.category', 'category')
+          .leftJoinAndSelect('category.department', 'department')
+          .leftJoinAndSelect('subcategory.products', 'product')
+        // .select([
+        //   'department.department_id', 'department.department',
+        //   'category.category_id', 'category.category',
+        //   'subcategory.subcategory_id', 'subcategory.subcategory',
+        //   'product.product_id', 'product.product', 'product.brand', 'product.description', 'product.warranty', 'product.contents', 'product.specifications', 'product.benefits',
+        // ]);
+      } else if (entity === 'product') {
+        queryBuilder.leftJoinAndSelect('product.subcategory', 'subcategory')
+          .leftJoinAndSelect('subcategory.category', 'category')
+          .leftJoinAndSelect('category.department', 'department')
+        // .select([
+        //   'department.department_id', 'department.department',
+        //   'category.category_id', 'category.category',
+        //   'subcategory.subcategory_id', 'subcategory.subcategory',
+        //   'product.product_id', 'product.product', 'product.brand', 'product.description', 'product.warranty', 'product.contents', 'product.specifications', 'product.benefits',
+        // ]);
+      }
+
+
+      await queryBuilder
+        // .skip(0)
+        // .take(15)
+        .getMany();
+
+      // Obtener el recuento total
+      totalCount = await queryBuilder.getCount();
+
+
+      const department = await queryBuilder
+        .select('DISTINCT ON (department.department) department.department, department.department_id')
+        .getRawMany();
+
+      const category = await queryBuilder
+        .select(['DISTINCT ON (category.category) category.category, category.category_id'])
+        .getRawMany();
+
+      const subcategory = await queryBuilder
+        .select(['DISTINCT ON (subcategory.subcategory) subcategory.subcategory, subcategory.subcategory_id'])
+        .getRawMany();
+
+      const product = await queryBuilder
+        .select(['DISTINCT ON (product.product) product.product, product.product_id, product.brand, product.description, product.warranty, product.contents, product.specifications, product.benefits'])
+        .getRawMany();
+
+      successHandler({
+        res,
+        dataDB: {
+          totalCount,
+          breadcrumb,
+          listProduct: null,
+          filters: {
+            department,
+            category,
+            subcategory,
+            product
+          }
+        },
+        json: {
+          field: 'navigation_list-product',
+          message: 'Datos obtenidos',
+          status_code: 200,
+          status: StatusHTTP.success_200,
+        },
+      });
+    } catch (error) {
+      errorHandlerCatch({ req, error, res });
+    }
+  },
 };
 
 

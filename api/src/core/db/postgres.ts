@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { DataSource } from 'typeorm';
 import AdvertisingEntity from "../../modules/advertising/entity";
-import CategoryEntity from "../../modules/categories/entity";
-import DepartmentEntity from "../../modules/departments/entity";
+import CategoryEntity from "../../modules/category/entity";
+import DepartmentEntity from "../../modules/department/entity";
 import NavigationEntity from "../../modules/navigation/entity";
-import ProductEntity from "../../modules/products/entity";
-import SubcategoryEntity from "../../modules/subcategories/entity";
+import ProductEntity from "../../modules/product/entity";
+import SubcategoryEntity from "../../modules/subcategory/entity";
 import { UserEntity } from "../../modules/user/entity";
 import VariantEntity from "../../modules/variants/entity";
 

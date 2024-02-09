@@ -1,7 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { objectString } from '../../core/utils/navigation/functions';
 import NavigationEntity from '../navigation/entity';
-import ProductEntity from '../products/entity';
+import ProductEntity from '../product/entity';
 
 @Entity('variants')
 export default class VariantEntity {

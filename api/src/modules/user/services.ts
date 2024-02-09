@@ -32,7 +32,7 @@ export default {
         token = generateToken({ _id: responseUserDB._id });
       }
 
-      await fetchCount({ id: responseUserDB?._id })
+      // await fetchCount({ id: responseUserDB?._id })
 
       successHandler({
         dataDB: [{ ...responseUserDB, token }],

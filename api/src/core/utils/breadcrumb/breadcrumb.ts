@@ -1,7 +1,7 @@
-import CategoryEntity from "../../../modules/categories/entity";
-import DepartmentEntity from "../../../modules/departments/entity";
-import ProductEntity from "../../../modules/products/entity";
-import SubcategoryEntity from "../../../modules/subcategories/entity";
+import CategoryEntity from "../../../modules/category/entity";
+import DepartmentEntity from "../../../modules/department/entity";
+import ProductEntity from "../../../modules/product/entity";
+import SubcategoryEntity from "../../../modules/subcategory/entity";
 import VariantEntity from "../../../modules/variants/entity";
 import { AppDataSource } from "../../db/postgres";
 import { findParentUUID } from "../navigation/findParentUUID";

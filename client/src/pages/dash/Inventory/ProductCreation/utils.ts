@@ -1,6 +1,10 @@
 import { RequestMapProduct, RouteProduct } from "../../../../services/product/productRequest";
 
 export const initialStateForm: RequestMapProduct = {
+  "get|department/request": {
+    route: RouteProduct.DepartmentRequest,
+    data: []
+  },
   "post|department/create": {
     route: RouteProduct.DepartmentCreate,
     requestData: {
