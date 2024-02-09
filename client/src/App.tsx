@@ -15,7 +15,7 @@ import { RouteUser } from './services/user/userRequest';
 import './styles/app/App.scss';
 
 function App() {
-  const { navigation: { navigationContextDispatch }, advertising: { advertisingContextDispatch } } = useContext(CreateContext)!
+  const { error: { errorContextDispatch, errorContextState }, navigation: { navigationContextDispatch }, advertising: { advertisingContextDispatch } } = useContext(CreateContext)!
   const token: IUser.UserData['token'] = localStorage?.token || ""
 
   const advertising =
@@ -38,7 +38,12 @@ function App() {
       // enabled: true,
     });
 
-  const { tools, statusUserQuery: { errorUser } } = useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } }, !!token);
+  const { statusUserQuery: { errorUser } } = useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } }, !!token);
+
+  useEffect(() => {
+    errorUser && errorContextDispatch({ type: 'errors', payload: errorUser.errors })
+    // eslint-disable-next-line
+  }, [errorUser])
 
   useEffect(() => {
     navigationContextDispatch({
@@ -50,6 +55,8 @@ function App() {
         errors: error?.errors ? error.errors : []
       }
     })
+
+    error && errorContextDispatch({ type: 'errors', payload: error.errors })
     // eslint-disable-next-line
   }, [isFetching, isLoading, isError, isSuccess])
 
@@ -65,13 +72,14 @@ function App() {
       }
     })
 
+    advertising.error && errorContextDispatch({ type: 'errors', payload: advertising.error.errors })
     // eslint-disable-next-line
   }, [advertising.isLoading, advertising.isFetching, advertising.isError, advertising.isSuccess])
 
 
   return (
     <div className='app'>
-      {errorUser && <ErrorMessage errors={errorUser.errors} emptyMessage={() => tools.removeQuery()} />}
+      {errorContextState.errors.length > 0 && <ErrorMessage errors={errorContextState.errors} emptyMessage={() => errorContextDispatch({ type: 'errors', payload: [] })} />}
       <Routes />
     </div>
   );

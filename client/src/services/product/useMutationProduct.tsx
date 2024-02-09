@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RequestMapProduct, RouteProduct } from "./productRequest";
-import { MakeProductRequestReturn, productRequest } from "./productApi";
+import { MakeProductRequestReturn, productRequest, Error } from "./productApi";
 import { IProduct } from "../../interfaces/product.interface";
+import { useContext } from "react";
+import { CreateContext } from "../../hooks/useContext";
 
 export interface StatusSection {
   isLoadingProduct: boolean;
@@ -16,6 +18,7 @@ export interface StatusSection {
 
 function useMutationProduct() {
   const queryClient = useQueryClient();
+  const { error: { errorContextDispatch } } = useContext(CreateContext)!
 
   const {
     mutate: executeProductMutation,
@@ -31,6 +34,7 @@ function useMutationProduct() {
       return requestData;
     },
     onError(error: Error) {
+      errorContextDispatch({ type: 'errors', payload: error.errors })
       return error;
     },
     onSuccess() {

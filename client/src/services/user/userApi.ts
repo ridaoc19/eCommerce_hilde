@@ -47,7 +47,7 @@ async function apiUser<R extends keyof RequestMapUser>(data: RequestMapUser[R]):
         status: "internal_server_error",
         errors: [{
           field: 'general',
-          message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front".`
+          message: `Por favor, contacte al administrador del sistema e informe sobre este inconveniente. Incluya este mensaje para una mejor asistencia: "Error interno del servidor front" ${route}`
         }]
       })
     } else {

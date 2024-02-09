@@ -1,5 +1,4 @@
-import { Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import MediaFilesEntity from '../media/entity';
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('advertising')
 export default class AdvertisingEntity {
@@ -20,10 +19,6 @@ export default class AdvertisingEntity {
 
   @Column()
   text: string;
-
-  @OneToOne(() => MediaFilesEntity, media => media.advertising, { cascade: true })
-  @JoinColumn({ name: 'media_id' })
-  media: MediaFilesEntity;
 
   @Column()
   image_desktop: string;

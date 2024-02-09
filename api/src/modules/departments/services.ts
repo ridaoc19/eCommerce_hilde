@@ -17,7 +17,7 @@ export default {
 
       if (!newDepartment) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'department_create', message: 'Error al crear el Departamento' }],
@@ -35,7 +35,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -52,7 +52,7 @@ export default {
 
       if (!updateDepartment) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'department_edit', message: 'Departamento no existe' }],
@@ -74,7 +74,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -92,7 +92,7 @@ export default {
 
       if (!existingDepartment) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'department_get', message: 'Departamento no encontrado' }],
@@ -110,7 +110,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -122,7 +122,7 @@ export default {
 
       if (!existingDepartment) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'department_delete', message: 'Departamento no encontrado' }],
@@ -145,7 +145,7 @@ export default {
 
 
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -157,7 +157,7 @@ export default {
 
       if (!existingDepartment) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'department_restore', message: 'Departamento no encontrado' }],
@@ -177,7 +177,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   }, 
 };

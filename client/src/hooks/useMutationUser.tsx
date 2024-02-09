@@ -2,9 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "../interfaces/user.interface";
 import { Error, MakeUserRequestReturn, userRequest } from "../services/user/userApi";
 import { RequestMapUser, RouteUser } from "../services/user/userRequest";
+import { useContext } from "react";
+import { CreateContext } from "./useContext";
 
 function useMutationUser() {
   const queryClient = useQueryClient();
+  const { error: { errorContextDispatch } } = useContext(CreateContext)!
 
   const {
     mutate: executeUserMutation,
@@ -19,6 +22,7 @@ function useMutationUser() {
       return requestData;
     },
     onError(error: Error) {
+      errorContextDispatch({ type: 'errors', payload: error.errors })
       return error;
     },
     onSuccess(data, { route }) {
