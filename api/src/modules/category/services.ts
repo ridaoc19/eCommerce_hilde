@@ -18,7 +18,7 @@ export default {
       const existingDepartment = await departmentRepository.findOne({ where: { department_id } });
 
       if (!existingDepartment) {
-        return errorHandlerRes({ res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_create', message: 'Departamento no encontrado' }] })
+        return errorHandlerRes({ req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_create', message: 'Departamento no encontrado' }] })
       }
 
       const newCategory = new CategoryEntity();
@@ -37,7 +37,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
   async updateCategory(req: Request, res: Response) {
@@ -50,7 +50,7 @@ export default {
       const existingCategory = await categoryRepository.findOne({ where: { category_id } });
 
       if (!existingCategory) {
-        return errorHandlerRes({ res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_edit', message: 'Categoría no existe' }] })
+        return errorHandlerRes({ res, req, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_edit', message: 'Categoría no existe' }] })
       }
 
       existingCategory.category = category;
@@ -68,7 +68,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
   async deleteCategory(req: Request, res: Response) {
@@ -80,7 +80,7 @@ export default {
       const existingCategory = await categoryRepository.findOne({ where: { category_id } });
 
       if (!existingCategory) {
-        return errorHandlerRes({ res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_delete', message: 'Categoría no encontrado' }] })
+        return errorHandlerRes({ req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_delete', message: 'Categoría no encontrado' }] })
       }
 
       await categoryRepository.remove(existingCategory);
@@ -96,7 +96,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
   async getCategory(req: Request, res: Response) {
@@ -108,7 +108,7 @@ export default {
       const category = await categoryRepository.findOne({ where: { category_id }, relations: { department: true } });
 
       if (!category) {
-        return errorHandlerRes({ res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_get', message: 'Categoría no encontrado' }] })
+        return errorHandlerRes({ req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_get', message: 'Categoría no encontrado' }] })
       }
 
       successHandler({
@@ -122,7 +122,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 };

@@ -11,16 +11,16 @@ export default {
   async createProduct(req: Request, res: Response) {
     try {
       const { subcategory_id } = req.params;
-      const { product, brand, description, specification } = req.body;
-
+      const { product, brand, description, specifications, warranty, benefits, contents } = req.body;
+      // console.log(req.body)
       const subcategoryRepository = AppDataSource.getRepository(SubcategoryEntity);
       const productRepository = AppDataSource.getRepository(ProductEntity);
 
-      const existingSubcategory = await subcategoryRepository.findOne({ where: { subcategory_id } });
+      const existingSubcategory = await subcategoryRepository.findOne({ where: { subcategory_id }, relations: { category: { department: true } } });
 
       if (!existingSubcategory) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'product_create', message: 'Subcategoría no encontrada' }],
@@ -28,23 +28,26 @@ export default {
       }
 
       const newProduct = new ProductEntity();
-      newProduct.product = product;
-      newProduct.brand = brand;
-      newProduct.description = description;
-      newProduct.specifications = specification;
-      newProduct.subcategory = existingSubcategory;
+      newProduct.product = product
+      newProduct.brand = brand
+      newProduct.description = description
+      newProduct.specifications = specifications
+      newProduct.benefits = benefits
+      newProduct.contents = contents
+      newProduct.warranty = warranty
 
-      await productRepository.save(newProduct);
+      newProduct.subcategory = existingSubcategory
+      await productRepository.save(newProduct)
 
       // Crear entidad de navegación asociada a la variante
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
       const newNavigation = new NavigationEntity();
 
       // Asignar otras entidades relacionadas
-      newNavigation.product = product;
-      newNavigation.subcategory = newProduct.subcategory;
-      newNavigation.category = newProduct.subcategory.category;
-      newNavigation.department = newProduct.subcategory.category.department;
+      newNavigation.product = newProduct;
+      newNavigation.subcategory = existingSubcategory;
+      newNavigation.category = existingSubcategory.category;
+      newNavigation.department = existingSubcategory.category.department;
 
       // Guardar la entidad de navegación
       await navigationRepository.save(newNavigation);
@@ -60,14 +63,14 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
   async updateProduct(req: Request, res: Response) {
     try {
       const { product_id } = req.params;
-      const { product, brand, description, specification } = req.body;
+      const { product, brand, description, specifications, warranty, benefits, contents } = req.body;
 
       const productRepository = AppDataSource.getRepository(ProductEntity);
 
@@ -75,17 +78,20 @@ export default {
 
       if (!existingProduct) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'product_edit', message: 'Producto no encontrado' }],
         });
       }
 
-      existingProduct.product = product;
-      existingProduct.brand = brand;
-      existingProduct.description = description;
-      existingProduct.specifications = specification;
+      existingProduct.product = product
+      existingProduct.brand = brand
+      existingProduct.description = description
+      existingProduct.specifications = specifications
+      existingProduct.benefits = benefits
+      existingProduct.contents = contents
+      existingProduct.warranty = warranty
 
       await productRepository.save(existingProduct);
 
@@ -100,7 +106,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -110,18 +116,18 @@ export default {
 
       const productRepository = AppDataSource.getRepository(ProductEntity);
 
-      const existingProduct = await productRepository.findOne({ where: { product_id } });
+      const existingProduct = await productRepository.findOne({ where: { product_id }, relations: { variants: true } });
 
       if (!existingProduct) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'product_delete', message: 'Producto no encontrado' }],
         });
       }
 
-      await productRepository.remove(existingProduct);
+      await productRepository.softRemove([existingProduct]);
 
       successHandler({
         res,
@@ -134,7 +140,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -148,7 +154,7 @@ export default {
 
       if (!product) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'product_get', message: 'Producto no encontrado' }],
@@ -166,7 +172,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 };
