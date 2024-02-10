@@ -1,7 +1,7 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import NavigationEntity from '../navigation/entity';
 import SubcategoryEntity from '../subcategory/entity';
-import VariantEntity from '../variants/entity';
+import VariantEntity from '../variant/entity';
 
 @Entity('products')
 export default class ProductEntity {

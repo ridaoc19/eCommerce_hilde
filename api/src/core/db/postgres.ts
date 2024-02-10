@@ -7,7 +7,7 @@ import NavigationEntity from "../../modules/navigation/entity";
 import ProductEntity from "../../modules/product/entity";
 import SubcategoryEntity from "../../modules/subcategory/entity";
 import { UserEntity } from "../../modules/user/entity";
-import VariantEntity from "../../modules/variants/entity";
+import VariantEntity from "../../modules/variant/entity";
 
 
 export const AppDataSource = new DataSource({

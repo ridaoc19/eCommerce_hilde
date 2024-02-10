@@ -30,11 +30,11 @@ export interface InitialStateProductCreation {
   query: {
     type: 'search' | 'selected'
     search: string;
-    entity: 'department' | 'category' | 'subcategory' | 'product';
+    entity: keyof RequestMapNavigation[RouteNavigation.NavigationListProductDashboard]['data']['filters']
 
   }
   mutation: {
-    entity: 'department' | 'category' | 'subcategory' | 'product' | '';
+    entity: keyof RequestMapNavigation[RouteNavigation.NavigationListProductDashboard]['data']['filters'] | ''
     // input: string;
     route: RouteProduct;
     paramId: string;
@@ -74,6 +74,9 @@ function useProductCreationQuery() {
   useEffect(() => {
     setStateProductCreation(prevState => ({ ...prevState, mutation: { ...prevState.mutation, entity: '' } }))
   }, [search])
+
+  console.log({ data });
+
 
   useEffect(() => {
     error?.errors && error.errors.length > 0 && errorContextDispatch({ type: 'errors', payload: error.errors })

@@ -10,7 +10,7 @@ import DepartmentEntity from '../department/entity';
 import NavigationEntity from '../navigation/entity';
 import ProductEntity from '../product/entity';
 import SubcategoryEntity from '../subcategory/entity';
-import VariantEntity from '../variants/entity';
+import VariantEntity from '../variant/entity';
 
 interface Data {
   specification: Specification;
@@ -126,6 +126,7 @@ export default {
           newVariant.attributes = jstonVariant.attributes
           newVariant.images = jstonVariant.images
           newVariant.price = jstonVariant.price
+          newVariant.listPrice = jstonVariant.listPrice
           newVariant.stock = jstonVariant.stock
           newVariant.videos = jstonVariant.videos
           newVariant.product = existingProduct

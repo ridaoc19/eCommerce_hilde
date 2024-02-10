@@ -20,6 +20,9 @@ export default class VariantEntity {
   @Column('float')
   price: number;
 
+  @Column('float')
+  listPrice: number;
+
   @Column('int')
   stock: number;
 

@@ -4,7 +4,7 @@ import CategoryEntity from '../category/entity';
 import DepartmentEntity from '../department/entity';
 import ProductEntity from '../product/entity';
 import SubcategoryEntity from '../subcategory/entity';
-import VariantEntity from '../variants/entity';
+import VariantEntity from '../variant/entity';
 
 @Entity('navigation')
 export default class NavigationEntity {

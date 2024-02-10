@@ -17,6 +17,10 @@ export enum RouteProduct {
   ProductDelete = 'delete|product/delete',
   ProductCreate = 'post|product/create',
   ProductEdit = 'put|product/edit',
+
+  VariantDelete = 'delete|variant/delete',
+  VariantCreate = 'post|variant/create',
+  VariantEdit = 'put|variant/edit',
 }
 
 export type RequestMapProduct = {
@@ -91,4 +95,18 @@ export type RequestMapProduct = {
     paramId: IProduct.Product['product_id'];
   };
 
+  [RouteProduct.VariantCreate]: {
+    route: RouteProduct.VariantCreate;
+    paramId: IProduct.Product['product_id'];
+    requestData: Omit<IProduct.Variant, 'variant_id' | 'product'>;
+  };
+  [RouteProduct.VariantEdit]: {
+    route: RouteProduct.VariantEdit;
+    paramId: IProduct.Variant['variant_id'];
+    requestData: Omit<IProduct.Variant, 'variant_id' | 'product'>;
+  };
+  [RouteProduct.VariantDelete]: {
+    route: RouteProduct.VariantDelete;
+    paramId: IProduct.Variant['variant_id'];
+  };
 };

@@ -53,6 +53,7 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
 
             return (
               <div key={index} className='specification'>
+                <h5>{name}</h5>
                 <div className='list'>
                   {Object.entries(value).map(([key, val], ind) => (
                     <div key={ind} style={{ display: 'flex' }}>
@@ -112,6 +113,7 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
           } else if (Array.isArray(value)) {
             return (
               <div key={index}>
+                <h5>{name}</h5>
                 <ul className='list'>
                   {value.map((item, i) => {
                     return (
@@ -150,6 +152,7 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
             // Renderizar campos de texto
             return (
               <div key={index}>
+                <h5>{name}</h5>
                 <input
                   type="text"
                   name={name}
