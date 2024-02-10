@@ -39,9 +39,10 @@ function ProductCreationList({ data, setStateProductCreation }: ProductCreationL
                       ...prevState,
                       // mutation: { ...prevState.mutation, entity: key === 'department' ? 'department' : key === 'category' ? 'category' : key === 'subcategory' ? 'subcategory' : 'product', paramId: Object.values(item)[1], route: key === 'department' ? RouteProduct.DepartmentEdit : key === 'category' ? RouteProduct.CategoryEdit : key === 'subcategory' ? RouteProduct.SubCategoryEdit : RouteProduct.ProductEdit },
                       query: {
+                        ...prevState.query,
                         entity: key === 'department' ? 'department' : key === 'category' ? 'category' : key === 'subcategory' ? 'subcategory' : 'product',
                         search: Object.values(item)[1],
-                        type: 'selected'
+                        type: 'selected',
                       }
                     }))
                   }

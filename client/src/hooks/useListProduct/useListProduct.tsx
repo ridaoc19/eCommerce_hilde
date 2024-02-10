@@ -61,6 +61,7 @@ const useListProduct = (): ListProductHook => {
 
   useEffect(() => {
     error?.errors && errorContextDispatch({ type: 'errors', payload: error.errors })
+  // eslint-disable-next-line 
   }, [isError])
 
 
