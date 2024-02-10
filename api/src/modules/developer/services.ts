@@ -56,8 +56,9 @@ export default {
       const variantRepository = AppDataSource.getRepository(VariantEntity);
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
 
-      const data = jsonData
-      // const data = jsonData.slice(0, 20)
+      // const data = jsonData
+      const data = jsonData.filter(e => e.variants.some(i => i.videos.length > 0 && Object.keys(i.attributes).length > 0)).slice(0, 3)
+      // const data = jsonData.slice(3, 6)
 
       for (const dataJson of data) {
 

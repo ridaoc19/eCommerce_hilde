@@ -8,13 +8,13 @@ export default class VariantEntity {
   @PrimaryGeneratedColumn("uuid")
   variant_id: string;
 
-  @Column('simple-array')
+  @Column('varchar', { array: true })
   images: string[];
 
   @Column({ type: 'jsonb' })
   attributes: Record<string, string>;
 
-  @Column('simple-array')
+  @Column('varchar', { array: true })
   videos: string[];
 
   @Column('float')

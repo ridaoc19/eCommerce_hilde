@@ -1,7 +1,8 @@
 import { ChangeEvent, useEffect, useState } from 'react';
+import { HandleClick } from '../../../pages/auth/login';
 import { RequestMapProduct, RouteProduct } from '../../../services/product/productRequest';
 import useMutationProduct from '../../../services/product/useMutationProduct';
-import { HandleClick } from '../../../pages/auth/login';
+import Button from '../button/Button';
 
 // function ProductForm<T extends RouteProduct>({ route, options }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'> }) {
 function ProductForm<T extends RouteProduct>({ route, options }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'> }) {
@@ -43,12 +44,111 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
     }
   };
 
+  // Función para manejar el estado de las imágenes
+  const handleImageChange = (name: string, files: FileList | null): void => {
+    if (files && files.length > 0) {
+      setRequestData((prevState: any) => ({
+        ...prevState,
+        [name]: [...prevState[name], ...files]
+      }));
+    }
+  };
+
   return (
     <form >
       {/* Renderizar campos de entrada */}
       {!!requestData &&
         Object.entries(requestData).map(([name, value], index) => {
-          if (typeof value === 'object' && !Array.isArray(value)) {
+          if (name.includes('image') && Array.isArray(value)) {
+            console.log({ name, value });
+
+            return (
+              <div key={index}>
+                <h5>{name}</h5>
+
+                <div key={index} className="advertising-form__input-images">
+                  <input id={`input__images`} multiple className={`input__images`} type="file" name={`images`} onChange={(event) => { handleImageChange(name, event.target.files) }} />
+                  <h5>{name}</h5>
+                  <div>
+                    <div className='list' style={{ display: 'flex' }}>
+                      {value.map((item, i) => {
+                        return (
+                          <div key={i}>
+                            {item instanceof File ? <img src={URL.createObjectURL(item)} alt="" /> : typeof item === 'string' ? <img src={item} height={"100%"} alt={``} /> : ''}
+                            <Button button={{
+                              type: 'dark', text: "Eliminar Imagen", handleClick: (e) => {
+                                e.preventDefault()
+                                setRequestData((prevData: { [x: string]: any[]; }) => ({
+                                  ...prevData,
+                                  [name]: prevData[name].filter((_, index) => index !== i)
+                                }));
+                              },
+                            }} />
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            )
+            {
+              // Object.entries(stateInput.change).filter((e) => ['image_desktop', 'image_phone', 'image_tablet'].includes(e[0])).map(([key, value]: any, index) => (
+
+              // ))
+            }
+          } else if (name.includes('video') && Array.isArray(value)) {
+            return (
+              <div key={index}>
+                <h5>{name}</h5>
+
+                <div key={index} className="advertising-form__input-images">
+                  <input id={`input__images`} multiple className={`input__images`} type="file" name={`images`} onChange={(event) => { handleImageChange(name, event.target.files) }} />
+                  <h5>{name}</h5>
+                  <div>
+                    <div className='list' style={{ display: 'flex' }}>
+                      {value.map((item, i) => {
+                        return (
+                          <div key={i}>
+                            {item instanceof File ?
+                              <video src={URL.createObjectURL(item)} controls width={200} height={100} />
+                              : typeof item === 'string' ?
+                                <iframe
+                                  width="200px"
+                                  height="100px"
+                                  src={item}
+                                  title="video"
+                                  frameBorder="0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                ></iframe>
+                                : ''}
+                            <Button button={{
+                              type: 'dark', text: "Eliminar Imagen", handleClick: (e) => {
+                                e.preventDefault()
+                                setRequestData((prevData: { [x: string]: any[]; }) => ({
+                                  ...prevData,
+                                  [name]: prevData[name].filter((_, index) => index !== i)
+                                }));
+                              },
+                            }} />
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            )
+            {
+              // Object.entries(stateInput.change).filter((e) => ['image_desktop', 'image_phone', 'image_tablet'].includes(e[0])).map(([key, value]: any, index) => (
+
+              // ))
+            }
+          } else if (typeof value === 'object' && !Array.isArray(value)) {
             // Renderizar campos de objeto
 
             return (
