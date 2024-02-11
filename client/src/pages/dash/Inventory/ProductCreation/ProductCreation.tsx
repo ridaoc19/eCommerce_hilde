@@ -35,7 +35,7 @@ function ProductCreation() {
 
   return (
     <div className="product-creation">
-      <div className="product-creation__search" style={{ display: 'flex' }}>
+      <div className="product-creation__search" style={{ display: 'flex', gap: '1rem' }}>
         <ProductCreationSearch stateProductCreation={stateProductCreation} setStateProductCreation={setStateProductCreation} />
       </div>
 

@@ -72,6 +72,10 @@ export type RequestMapNavigation = {
           product: string;
           product_id: string;
         }>
+        variant: Array<{
+          variant: string;
+          variant_id: string;
+        }>
       }
       totalCount: number | null;
     }

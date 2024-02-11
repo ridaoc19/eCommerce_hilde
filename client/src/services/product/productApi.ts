@@ -27,9 +27,20 @@ async function apiProduct<R extends keyof RequestMapProduct>(data: RequestMapPro
   try {
     const fetchOptions: RequestInit = {
       method: method,
-      headers: { 'Content-Type': 'application/json' }
+      // headers: { 'Content-Type': 'application/json' }
     };
-    if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
+    if (method !== Method.Get && 'requestData' in data) {
+      const convert = convertFromData(data.requestData)
+
+      fetchOptions.body = convert!
+      // fetchOptions.body = JSON.stringify(data.requestData)
+    };
+    // try {
+    //   const fetchOptions: RequestInit = {
+    //     method: method,
+    //     headers: { 'Content-Type': 'application/json' }
+    //   };
+    //   if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
 
     const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'paramId' in data ? `/${data.paramId}` : ""}`, fetchOptions)
     const resJson = await responseApi.json();
@@ -66,3 +77,45 @@ export function productRequest<T extends RouteProduct>(route: T): { options: (op
     },
   };
 }
+
+
+
+export const convertFromData = (requestData: any) => {
+  const form = new FormData();
+
+  // Iterar sobre cada par clave-valor en requestData
+  Object.entries(requestData).forEach(([key, value]) => {
+    // Verificar si el valor es un array
+    if (Array.isArray(value)) {
+      // Separar los elementos del array en categorías de archivos y cadenas
+      const files = value.filter((element: any) => element instanceof File);
+      const strings = value.filter((element: any) => typeof element === 'string');
+
+      // Agregar los archivos al FormData
+      files.forEach((file: File) => {
+        form.append(`files`, file, `${key}.${file.type.split("/")[1]}`);
+      });
+
+      // Agregar las cadenas al FormData
+      strings.forEach((string: string, index: number) => {
+        form.append(`${key}[${index}]`, string);
+      });
+    }
+
+    // Verificar si el valor es un objeto
+    else if (typeof value === 'object') {
+      // Convertir el objeto a JSON y agregarlo al FormData
+      form.append(key, JSON.stringify(value));
+    }
+
+    // Verificar si el valor es una cadena o un número
+    else if (typeof value === 'string' || typeof value === 'number') {
+      // Agregar la cadena o el número al FormData
+      form.append(key, String(value));
+    }
+  });
+
+  return form;
+};
+
+

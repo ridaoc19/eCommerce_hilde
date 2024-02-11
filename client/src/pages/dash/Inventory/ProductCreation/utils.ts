@@ -87,6 +87,35 @@ export const initialStateForm: RequestMapProduct = {
   "delete|product/delete": {
     route: RouteProduct.ProductDelete,
     paramId: ''
+  },
+
+  "post|variant/create": {
+    route: RouteProduct.VariantCreate,
+    paramId: '',
+    requestData: {
+      attributes: {},
+      images: [],
+      price: 0,
+      listPrice: 0,
+      stock: 0,
+      videos: []
+    }
+  },
+  "put|variant/edit": {
+    route: RouteProduct.VariantEdit,
+    paramId: '',
+    requestData: {
+      attributes: {},
+      images: [],
+      price: 0,
+      listPrice: 0,
+      stock: 0,
+      videos: []
+    }
+  },
+  "delete|variant/delete": {
+    route: RouteProduct.VariantDelete,
+    paramId: ''
   }
 
 }

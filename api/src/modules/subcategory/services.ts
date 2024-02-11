@@ -19,7 +19,7 @@ export default {
 
       if (!existingCategory) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'subcategory_create', message: 'Categoría no encontrada' }],
@@ -43,7 +43,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -58,7 +58,7 @@ export default {
 
       if (!existingSubcategory) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'subcategory_edit', message: 'Subcategoría no existe' }],
@@ -80,7 +80,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -94,7 +94,7 @@ export default {
 
       if (!existingSubcategory) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'subcategory_delete', message: 'Subcategoría no encontrada' }],
@@ -114,7 +114,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -128,7 +128,7 @@ export default {
 
       if (!subcategory) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'subcategory_get', message: 'Subcategoría no encontrada' }],
@@ -146,7 +146,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 };

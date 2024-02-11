@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 app.use(cors())
 app.use('/uploads', express.static('uploads')); //para mostrar las imágenes
 
-app.use(upload.array('images')) // manipulación de imágenes
+app.use(upload.array('files')) // manipulación de imágenes
 // app.use(validatorsMiddlewareGlobal)
 app.use(filesMiddleware) // limpiar imágenes
 
