@@ -11,68 +11,78 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
     const method = route[1];
     const UUID = route[2];
     const host = req.headers.host;
-    const body = req.body;
+    let body = req.body;
 
     let newBody: any = {};
 
     // Convertir los valores de tipo string que son objetos JSON a objetos
-    for (const key in body) {
-      if (typeof body[key] === 'string') {
-        try {
-          const parsedValue = JSON.parse(body[key]);
-          if (typeof parsedValue === 'object') {
-            newBody[key] = parsedValue;
-          } else {
+    if (!Array.isArray(body)) { // para crear array de items
+      for (const key in body) {
+        if (typeof body[key] === 'string') {
+          try {
+            const parsedValue = JSON.parse(body[key]);
+            if (typeof parsedValue === 'object') {
+              newBody[key] = parsedValue;
+            } else {
+              newBody[key] = body[key];
+            }
+          } catch (error) {
             newBody[key] = body[key];
           }
-        } catch (error) {
+        } else {
           newBody[key] = body[key];
         }
-      } else {
-        newBody[key] = body[key];
       }
+    } else {
+      newBody = body
     }
-
     // Procesar archivos adjuntos si existen
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const files: Record<string, string | string[]> = {};
 
+      // Importar la entidad dinámicamente
+      // let dynamicEntity = await import(`../../../modules/${entity}/entity`);
+      // const metadata = AppDataSource.getRepository(dynamicEntity.default).metadata
+
       for (const file of req.files) {
         const { originalname, path } = file;
         const name = originalname.split(".")[0]; // Obtener el nombre sin la extensión
-        const repeatName = req.files.filter((e: Express.Multer.File) => e.originalname.includes(name)).length;
-
-        if (repeatName > 1 || name === 'videos') {
+        // const repeatName = req.files.filter((e: Express.Multer.File) => e.originalname.includes(name)).length;
+        // const columns = metadata.columns.find((col) => col.propertyName === name);
+        if (name === 'images' || name === 'videos') {
           files[name] = [...(files[name] || []), `http://${host}/${path}`];
         } else {
           files[name] = `http://${host}/${path}`;
         }
       }
       newBody = { ...newBody, ...files };
+    } else {
     }
 
     req.body = newBody
+    body = newBody
+
 
     if (method === 'edit' || method === 'delete') {
       if (findParentUUID(UUID)) {
         try {
           // Importar la entidad dinámicamente
-          const dynamicEntity = await import(`../../../modules/${entity}/entity`);
+          let dynamicEntity = await import(`../../../modules/${entity}/entity`);
 
-          // Obtener el objeto queryBuilder
+          // Obtener el objeto de db
           const queryBuilder = await AppDataSource
             .getRepository(dynamicEntity.default)
             .createQueryBuilder(entity)
             .where(`${entity}.${entity}_id = :id`, { id: UUID })
             .getOne();
 
-          if (!!queryBuilder && Object.keys(queryBuilder).some(e => e.includes('image'))) {
+          if (!!queryBuilder && Object.keys(queryBuilder).some(e => e.includes('image') || e.includes('video'))) {
             // Obtener las imágenes filtradas
             const filteredImages = Object.entries(queryBuilder).flatMap(([key, value]) => {
-              if (key.startsWith('image')) {
+              if (key.startsWith('image') || key.startsWith('video')) {
                 const images = Array.isArray(value) ? value : [value];
                 const filtersImagesLocal = images.filter(e => e.includes(host));
-                const mapFilter = filtersImagesLocal.length > 0 ? filtersImagesLocal.map(e => e.split(`${req.headers.host}/uploads/`)[1]) : [];
+                const mapFilter = filtersImagesLocal.length > 0 ? filtersImagesLocal.map(e => e.split(`${req.headers.host}/uploads\\`)[1]) : [];
                 return mapFilter;
               }
               return [];
@@ -86,13 +96,13 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
             }
 
             if (method === 'edit') {
-              console.log({ body, filteredImages })
+              // console.log({ body, filteredImages })
               if (Object.keys(body).length > 0) {
                 const filterBody = Object.entries(body).flatMap(([key, value]) => {
-                  if (key.startsWith('image')) {
+                  if (key.startsWith('image') || key.startsWith('video')) {
                     const images = Array.isArray(value) ? value : [value];
                     const filtersImagesLocal = images.filter(e => e.includes(host!));
-                    const mapFilter = filtersImagesLocal.length > 0 ? filtersImagesLocal.map(e => e.split(`${req.headers.host}/uploads/`)[1]) : []
+                    const mapFilter = filtersImagesLocal.length > 0 ? filtersImagesLocal.map(e => e.split(`${req.headers.host}/uploads\\`)[1]) : []
                     return mapFilter;
                   }
                   return [];
@@ -100,13 +110,14 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
 
                 const filterDelete = filteredImages.filter(e => !filterBody.includes(e))
 
-                console.log({ filterDelete })
+                // console.log({ filterDelete, filterBody })
                 if (filterDelete.length > 0) {
                   // Eliminar archivos y continuar con el middleware
-                  if (deleteFiles(filteredImages)) {
+                  if (deleteFiles(filterDelete)) {
                     return next();
                   }
                 }
+               return next()
               }
             }
           }
@@ -131,6 +142,7 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
 
 export default filesMiddleware;
 
+
 export const deleteFiles = (filteredImages: string[]): boolean => {
   try {
     let status = false;
@@ -148,7 +160,7 @@ export const deleteFiles = (filteredImages: string[]): boolean => {
         }
       } catch (error) {
         // Manejar errores durante la eliminación de archivos
-        console.error('Error al eliminar archivos:', error);
+        // console.error('Error al eliminar archivos:', error);
         status = false;
       }
     });

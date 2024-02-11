@@ -82,24 +82,40 @@ export function productRequest<T extends RouteProduct>(route: T): { options: (op
 
 export const convertFromData = (requestData: any) => {
   const form = new FormData();
+
+  // Iterar sobre cada par clave-valor en requestData
   Object.entries(requestData).forEach(([key, value]) => {
-    if (value instanceof File) {
-      const image: File = value;
-      form.append(`images`, value, `${key}.${image.type.split("/")[1]}`);
-    } else if (Array.isArray(value)) {
-      value.forEach((element, index) => {
-        if (element instanceof File) {
-          form.append(`images`, element, `${key}.${element.type.split("/")[1]}`);
-        } else {
-          form.append(`${key}[${index}]`, element);
-        }
+    // Verificar si el valor es un array
+    if (Array.isArray(value)) {
+      // Separar los elementos del array en categorías de archivos y cadenas
+      const files = value.filter((element: any) => element instanceof File);
+      const strings = value.filter((element: any) => typeof element === 'string');
+
+      // Agregar los archivos al FormData
+      files.forEach((file: File) => {
+        form.append(`files`, file, `${key}.${file.type.split("/")[1]}`);
       });
-    } else if (typeof value === 'object') {
+
+      // Agregar las cadenas al FormData
+      strings.forEach((string: string, index: number) => {
+        form.append(`${key}[${index}]`, string);
+      });
+    }
+
+    // Verificar si el valor es un objeto
+    else if (typeof value === 'object') {
+      // Convertir el objeto a JSON y agregarlo al FormData
       form.append(key, JSON.stringify(value));
-    } else if (typeof value === 'string') {
-      form.append(key, value);
+    }
+
+    // Verificar si el valor es una cadena o un número
+    else if (typeof value === 'string' || typeof value === 'number') {
+      // Agregar la cadena o el número al FormData
+      form.append(key, String(value));
     }
   });
+
   return form;
 };
+
 

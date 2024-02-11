@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { objectString, stringEmpty } from '../../core/utils/navigation/functions';
 import CategoryEntity from '../category/entity';
 import DepartmentEntity from '../department/entity';
@@ -43,7 +43,7 @@ export default class NavigationEntity {
   deletedAt: Date;
 
   @BeforeInsert()
-  @BeforeUpdate()
+  // @BeforeUpdate()
   updateSearch() {
     // .replace(/[^a-zA-Z0-9 ]/g, ' ') Reemplaza los caracteres no alfanuméricos por espacios antes de aplicar to_tsvector
     // const cleanedProduct = this.product.product.replace(/[^a-zA-Z0-9 ]/g, ' ');
@@ -52,14 +52,29 @@ export default class NavigationEntity {
   }
 
   @BeforeInsert()
-  @BeforeUpdate()
+  // @BeforeUpdate()
   updateFilter() {
+    // Obtener valores a agregar al filtro
+    const departmentValue = `department${stringEmpty(this.department.department)}`;
+    const categoryValue = `category${stringEmpty(this.category.category)}`;
+    const subcategoryValue = `subcategory${stringEmpty(this.subcategory.subcategory)}`;
+    const brandValue = `brand${stringEmpty(this.product.brand)}`;
+    const specificationsValues = objectString(this.product.specifications);
+    const attributesValues = this?.variants && this.variants.length > 0 ? this.variants.reduce((acc, item) => {
+      if (Object.keys(item.attributes).length > 0) {
+        return `${acc} ${objectString(item.attributes)}`
+      }
+      return acc
+    }, '') : ''
+
+    // Agregar nuevos valores al filtro
     this.filter = `
-    department${stringEmpty(this.department.department)}
-    category${stringEmpty(this.category.category)}
-    subcategory${stringEmpty(this.subcategory.subcategory)}
-    brand${stringEmpty(this.product.brand)}
-    ${objectString(this.product.specifications)}
-    `;
+    ${departmentValue}
+    ${categoryValue}
+    ${subcategoryValue}
+    ${brandValue}
+    ${specificationsValues}
+    ${attributesValues}
+    `.trim();
   }
 }

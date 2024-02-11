@@ -70,7 +70,7 @@ function ProductCreationList({ data, setStateProductCreation }: ProductCreationL
                             ...prevState.mutation,
                             entity: typedKey,
                             paramId: id,
-                            route: key === 'department' ? RouteProduct.DepartmentEdit : key === 'category' ? RouteProduct.CategoryEdit : key === 'subcategory' ? RouteProduct.SubCategoryEdit : RouteProduct.ProductEdit
+                            route: key === 'department' ? RouteProduct.DepartmentEdit : key === 'category' ? RouteProduct.CategoryEdit : key === 'subcategory' ? RouteProduct.SubCategoryEdit : key === 'product' ? RouteProduct.ProductEdit : RouteProduct.VariantEdit
                           },
                         }))
                       }}>{Svg({ type: "edit", width: 16, height: 16 })}
@@ -87,7 +87,7 @@ function ProductCreationList({ data, setStateProductCreation }: ProductCreationL
                             ...prevState.mutation,
                             entity: typedKey,
                             paramId: id,
-                            route: key === 'department' ? RouteProduct.DepartmentDelete : key === 'category' ? RouteProduct.CategoryDelete : key === 'subcategory' ? RouteProduct.SubCategoryDelete : RouteProduct.ProductDelete
+                            route: key === 'department' ? RouteProduct.DepartmentDelete : key === 'category' ? RouteProduct.CategoryDelete : key === 'subcategory' ? RouteProduct.SubCategoryDelete : key === 'product' ? RouteProduct.ProductDelete : RouteProduct.VariantDelete
                           },
                         }))
                       }}>{Svg({ type: "delete", width: 16, height: 16 })}

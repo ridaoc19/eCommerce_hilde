@@ -441,7 +441,7 @@ export default {
         .getRawMany();
 
       const variant = await queryBuilder
-        .select(['DISTINCT ON (variants.variant_id) variants.variant_id, variants.images, variants.attributes, variants.videos, variants.price, variants.stock'])
+        .select(['DISTINCT ON (variants.variant_id) variants.variant_id, variants.images, variants.attributes, variants.videos, variants.price, variants.listPrice, variants.stock'])
         .getRawMany();
 
       successHandler({

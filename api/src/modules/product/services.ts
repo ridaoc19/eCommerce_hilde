@@ -106,6 +106,7 @@ export default {
         },
       });
     } catch (error) {
+      console.log(error)
       errorHandlerCatch({ error, res, req });
     }
   },

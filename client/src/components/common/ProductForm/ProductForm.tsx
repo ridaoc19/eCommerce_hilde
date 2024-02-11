@@ -60,7 +60,6 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
       {!!requestData &&
         Object.entries(requestData).map(([name, value], index) => {
           if (name.includes('image') && Array.isArray(value)) {
-            console.log({ name, value });
 
             return (
               <div key={index}>

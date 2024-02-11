@@ -69,7 +69,7 @@ export default {
   async updateVariant(req: Request, res: Response) {
     try {
       const { variant_id } = req.params;
-      const { images, attributes, videos, price, stock } = req.body;
+      const { images, attributes, videos, price, listPrice, stock } = req.body;
 
       const variantRepository = AppDataSource.getRepository(VariantEntity);
 
@@ -83,18 +83,20 @@ export default {
           errors: [{ field: 'variant_edit', message: 'Variante no encontrada' }],
         });
       }
-
+      
+      console.log({existingVariant, body: req.body}, "esto es variant")
       existingVariant.images = images;
       existingVariant.attributes = attributes;
       existingVariant.videos = videos;
-      existingVariant.price = price;
-      existingVariant.stock = stock;
+      existingVariant.price = Number(price);
+      existingVariant.stock = Number(stock);
+      existingVariant.listPrice = Number(listPrice);
 
       await variantRepository.save(existingVariant);
 
       successHandler({
         res,
-        dataDB: [existingVariant],
+        dataDB: [{existingVariant, body: req.body}],
         json: {
           field: 'variant_update',
           message: 'Variante actualizada',
