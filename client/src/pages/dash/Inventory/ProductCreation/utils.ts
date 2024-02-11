@@ -96,6 +96,7 @@ export const initialStateForm: RequestMapProduct = {
       attributes: {},
       images: [],
       price: 0,
+      listPrice: 0,
       stock: 0,
       videos: []
     }
@@ -107,6 +108,7 @@ export const initialStateForm: RequestMapProduct = {
       attributes: {},
       images: [],
       price: 0,
+      listPrice: 0,
       stock: 0,
       videos: []
     }

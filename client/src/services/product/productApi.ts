@@ -27,9 +27,20 @@ async function apiProduct<R extends keyof RequestMapProduct>(data: RequestMapPro
   try {
     const fetchOptions: RequestInit = {
       method: method,
-      headers: { 'Content-Type': 'application/json' }
+      // headers: { 'Content-Type': 'application/json' }
     };
-    if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
+    if (method !== Method.Get && 'requestData' in data) {
+      const convert = convertFromData(data.requestData)
+
+      fetchOptions.body = convert!
+      // fetchOptions.body = JSON.stringify(data.requestData)
+    };
+    // try {
+    //   const fetchOptions: RequestInit = {
+    //     method: method,
+    //     headers: { 'Content-Type': 'application/json' }
+    //   };
+    //   if (method !== Method.Get && 'requestData' in data) fetchOptions.body = JSON.stringify(data.requestData);
 
     const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'paramId' in data ? `/${data.paramId}` : ""}`, fetchOptions)
     const resJson = await responseApi.json();
@@ -66,3 +77,29 @@ export function productRequest<T extends RouteProduct>(route: T): { options: (op
     },
   };
 }
+
+
+
+export const convertFromData = (requestData: any) => {
+  const form = new FormData();
+  Object.entries(requestData).forEach(([key, value]) => {
+    if (value instanceof File) {
+      const image: File = value;
+      form.append(`images`, value, `${key}.${image.type.split("/")[1]}`);
+    } else if (Array.isArray(value)) {
+      value.forEach((element, index) => {
+        if (element instanceof File) {
+          form.append(`images`, element, `${key}.${element.type.split("/")[1]}`);
+        } else {
+          form.append(`${key}[${index}]`, element);
+        }
+      });
+    } else if (typeof value === 'object') {
+      form.append(key, JSON.stringify(value));
+    } else if (typeof value === 'string') {
+      form.append(key, value);
+    }
+  });
+  return form;
+};
+

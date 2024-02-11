@@ -13,6 +13,46 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
     const host = req.headers.host;
     const body = req.body;
 
+    let newBody: any = {};
+
+    // Convertir los valores de tipo string que son objetos JSON a objetos
+    for (const key in body) {
+      if (typeof body[key] === 'string') {
+        try {
+          const parsedValue = JSON.parse(body[key]);
+          if (typeof parsedValue === 'object') {
+            newBody[key] = parsedValue;
+          } else {
+            newBody[key] = body[key];
+          }
+        } catch (error) {
+          newBody[key] = body[key];
+        }
+      } else {
+        newBody[key] = body[key];
+      }
+    }
+
+    // Procesar archivos adjuntos si existen
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      const files: Record<string, string | string[]> = {};
+
+      for (const file of req.files) {
+        const { originalname, path } = file;
+        const name = originalname.split(".")[0]; // Obtener el nombre sin la extensión
+        const repeatName = req.files.filter((e: Express.Multer.File) => e.originalname.includes(name)).length;
+
+        if (repeatName > 1 || name === 'videos') {
+          files[name] = [...(files[name] || []), `http://${host}/${path}`];
+        } else {
+          files[name] = `http://${host}/${path}`;
+        }
+      }
+      newBody = { ...newBody, ...files };
+    }
+
+    req.body = newBody
+
     if (method === 'edit' || method === 'delete') {
       if (findParentUUID(UUID)) {
         try {
@@ -46,7 +86,7 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
             }
 
             if (method === 'edit') {
-              console.log({body, filteredImages})
+              console.log({ body, filteredImages })
               if (Object.keys(body).length > 0) {
                 const filterBody = Object.entries(body).flatMap(([key, value]) => {
                   if (key.startsWith('image')) {
@@ -60,7 +100,7 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
 
                 const filterDelete = filteredImages.filter(e => !filterBody.includes(e))
 
-                console.log({filterDelete})
+                console.log({ filterDelete })
                 if (filterDelete.length > 0) {
                   // Eliminar archivos y continuar con el middleware
                   if (deleteFiles(filteredImages)) {
