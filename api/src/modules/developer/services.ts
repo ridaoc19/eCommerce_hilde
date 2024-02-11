@@ -10,7 +10,7 @@ import DepartmentEntity from '../department/entity';
 import NavigationEntity from '../navigation/entity';
 import ProductEntity from '../product/entity';
 import SubcategoryEntity from '../subcategory/entity';
-import VariantEntity from '../variants/entity';
+import VariantEntity from '../variant/entity';
 
 interface Data {
   specification: Specification;
@@ -56,8 +56,9 @@ export default {
       const variantRepository = AppDataSource.getRepository(VariantEntity);
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
 
-      const data = jsonData
-      // const data = jsonData.slice(0, 20)
+      // const data = jsonData
+      const data = jsonData.filter(e => e.variants.some(i => i.videos.length > 0 && Object.keys(i.attributes).length > 0)).slice(0, 3)
+      // const data = jsonData.slice(3, 6)
 
       for (const dataJson of data) {
 
@@ -126,6 +127,7 @@ export default {
           newVariant.attributes = jstonVariant.attributes
           newVariant.images = jstonVariant.images
           newVariant.price = jstonVariant.price
+          newVariant.listPrice = jstonVariant.listPrice
           newVariant.stock = jstonVariant.stock
           newVariant.videos = jstonVariant.videos
           newVariant.product = existingProduct

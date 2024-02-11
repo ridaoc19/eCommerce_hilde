@@ -9,33 +9,14 @@ import Breadcrumb from "../../../../components/common/breadcrumb/Breadcrumb";
 import { BreadcrumbType } from "../../../../interfaces/global.interface";
 
 export interface InitialStateProductCreation {
-  // filters: {
-  //   department: Array<{
-  //     department: string;
-  //     department_id: string;
-  //   }>
-  //   category: Array<{
-  //     category: string;
-  //     category_id: string;
-  //   }>
-  //   subcategory: Array<{
-  //     subcategory: string;
-  //     subcategory_id: string;
-  //   }>
-  //   product: Array<{
-  //     product: string;
-  //     product_id: string;
-  //   }>
-  // } | null
   query: {
     type: 'search' | 'selected'
     search: string;
-    entity: 'department' | 'category' | 'subcategory' | 'product';
+    entity: keyof RequestMapNavigation[RouteNavigation.NavigationListProductDashboard]['data']['filters']
 
   }
   mutation: {
-    entity: 'department' | 'category' | 'subcategory' | 'product' | '';
-    // input: string;
+    entity: keyof RequestMapNavigation[RouteNavigation.NavigationListProductDashboard]['data']['filters'] | ''
     route: RouteProduct;
     paramId: string;
   }
@@ -49,7 +30,6 @@ export const initialStateProductCreation: InitialStateProductCreation = {
   },
   mutation: {
     entity: '',
-    // input: '',
     route: RouteProduct.DepartmentCreate,
     paramId: ''
   }

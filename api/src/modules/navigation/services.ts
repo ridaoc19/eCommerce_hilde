@@ -368,22 +368,17 @@ export default {
     try {
       const dynamicEntity = await import(`../${entity}/entity`);
 
-      // Obtener el objeto queryBuilder
-      const queryBuilder = await AppDataSource
+      const queryBuilder = AppDataSource
         .getRepository(dynamicEntity.default)
         .createQueryBuilder(entity)
-      // .where(`${entity}.${entity}_id = :id`, { id: UUID })
-      // .getOne();
+
 
       let breadcrumb = null
       let totalCount = null
-      // Condición para el ID de navigation
+
       if (findParentUUID(id) && type === 'selected') {
         breadcrumb = await getBreadcrumbs(id);
         queryBuilder.where(`${entity}.${breadcrumb?.entity}_id = :id`, { id });
-        // Seleccionar campos específicos
-
-
       } else {
         if (findParentUUID(id)) {
           queryBuilder.where(`${entity}.${entity}_id = :id`, { id });
@@ -394,49 +389,32 @@ export default {
         }
       }
 
-
       if (entity === 'department') {
         queryBuilder.leftJoinAndSelect('department.categories', 'category')
           .leftJoinAndSelect('category.subcategories', 'subcategory')
           .leftJoinAndSelect('subcategory.products', 'product')
-        // .select([
-        //   'department.department_id', 'department.department',
-        //   'category.category_id', 'category.category',
-        //   'subcategory.subcategory_id', 'subcategory.subcategory',
-        //   'product.product_id', 'product.product', 'product.brand', 'product.description', 'product.warranty', 'product.contents', 'product.specifications', 'product.benefits',
-        // ]);
+          .leftJoinAndSelect('product.variants', 'variants')
       } else if (entity === 'category') {
         queryBuilder.leftJoinAndSelect('category.department', 'department')
           .leftJoinAndSelect('category.subcategories', 'subcategory')
           .leftJoinAndSelect('subcategory.products', 'product')
-        // .select([
-        //   'department.department_id', 'department.department',
-        //   'category.category_id', 'category.category',
-        //   'subcategory.subcategory_id', 'subcategory.subcategory',
-        //   'product.product_id', 'product.product', 'product.brand', 'product.description', 'product.warranty', 'product.contents', 'product.specifications', 'product.benefits',
-        // ]);
+          .leftJoinAndSelect('product.variants', 'variants')
       } else if (entity === 'subcategory') {
         queryBuilder.leftJoinAndSelect('subcategory.category', 'category')
           .leftJoinAndSelect('category.department', 'department')
           .leftJoinAndSelect('subcategory.products', 'product')
-        // .select([
-        //   'department.department_id', 'department.department',
-        //   'category.category_id', 'category.category',
-        //   'subcategory.subcategory_id', 'subcategory.subcategory',
-        //   'product.product_id', 'product.product', 'product.brand', 'product.description', 'product.warranty', 'product.contents', 'product.specifications', 'product.benefits',
-        // ]);
+          .leftJoinAndSelect('product.variants', 'variants')
       } else if (entity === 'product') {
         queryBuilder.leftJoinAndSelect('product.subcategory', 'subcategory')
           .leftJoinAndSelect('subcategory.category', 'category')
           .leftJoinAndSelect('category.department', 'department')
-        // .select([
-        //   'department.department_id', 'department.department',
-        //   'category.category_id', 'category.category',
-        //   'subcategory.subcategory_id', 'subcategory.subcategory',
-        //   'product.product_id', 'product.product', 'product.brand', 'product.description', 'product.warranty', 'product.contents', 'product.specifications', 'product.benefits',
-        // ]);
+          .leftJoinAndSelect('product.variants', 'variants')
+      } else if (entity === 'variant') {
+        queryBuilder.leftJoinAndSelect('variants.product', 'product')
+          .leftJoinAndSelect('product.subcategory', 'subcategory')
+          .leftJoinAndSelect('subcategory.category', 'category')
+          .leftJoinAndSelect('category.department', 'department')
       }
-
 
       await queryBuilder
         // .skip(0)
@@ -445,7 +423,6 @@ export default {
 
       // Obtener el recuento total
       totalCount = await queryBuilder.getCount();
-
 
       const department = await queryBuilder
         .select('DISTINCT ON (department.department) department.department, department.department_id')
@@ -463,6 +440,10 @@ export default {
         .select(['DISTINCT ON (product.product) product.product, product.product_id, product.brand, product.description, product.warranty, product.contents, product.specifications, product.benefits'])
         .getRawMany();
 
+      const variant = await queryBuilder
+        .select(['DISTINCT ON (variants.variant_id) variants.variant_id, variants.images, variants.attributes, variants.videos, variants.price, variants.listPrice, variants.stock'])
+        .getRawMany();
+
       successHandler({
         res,
         dataDB: {
@@ -473,7 +454,8 @@ export default {
             department,
             category,
             subcategory,
-            product
+            product,
+            variant
           }
         },
         json: {

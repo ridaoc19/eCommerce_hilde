@@ -30,8 +30,10 @@ export const uploadImages = () => {
     },
     filename: function (req, file, cb) {
       const imageName = `${uuidv4()}-${file.originalname}`;
-      file.path = `uploads/${imageName}`
-      req.body = { ...req.body, [file.originalname.split('.')[0]]: `http://${req.headers.host}/uploads/${imageName}` };
+      file.path =`http://${req.headers.host}/uploads/${imageName}`
+      // const key = file.originalname.split('.')[0]
+      // req.body = { ...req.body, [file.originalname.split('.')[0]]: `http://${req.headers.host}/uploads/${imageName}` };
+
       cb(null, imageName);
       // cb(null, file.originalname);
     },

@@ -4,39 +4,52 @@ import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import ProductEntity from '../product/entity';
-import VariantEntity from '../variants/entity';
+import VariantEntity from './entity';
+import NavigationEntity from '../navigation/entity';
 
 export default {
   async createVariant(req: Request, res: Response) {
     try {
       const { product_id } = req.params;
-      const { images, attributes, videos, price, stock } = req.body;
+      const { images, attributes, videos, price, listPrice, stock } = req.body;
 
       const productRepository = AppDataSource.getRepository(ProductEntity);
       const variantRepository = AppDataSource.getRepository(VariantEntity);
+      const navigationRepository = AppDataSource.getRepository(NavigationEntity);
 
-      const existingProduct = await productRepository.findOne({ where: { product_id } });
+      let existingProduct = await productRepository.findOne({ where: { product_id } });
 
       if (!existingProduct) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'variant_create', message: 'Producto no encontrado' }],
         });
       }
 
+      let existingNavigation = await navigationRepository.findOne({ where: { product: { product_id: existingProduct.product_id } } });
+
+      if (!existingNavigation) {
+        return errorHandlerRes({
+          res, req,
+          status_code: 404,
+          status: StatusHTTP.notFound_404,
+          errors: [{ field: 'variant_create', message: 'Navegación no encontrada' }],
+        });
+      }
+
       const newVariant = new VariantEntity();
-      newVariant.images = images;
-      newVariant.attributes = attributes;
-      newVariant.videos = videos;
-      newVariant.price = price;
-      newVariant.stock = stock;
-      newVariant.product = existingProduct;
+      newVariant.attributes = attributes
+      newVariant.images = images
+      newVariant.price = price
+      newVariant.listPrice = listPrice
+      newVariant.stock = stock
+      newVariant.videos = videos
+      newVariant.product = existingProduct
+      newVariant.navigation = existingNavigation;
 
-      // Después de guardar la variante
-      await variantRepository.save(newVariant);
-
+      await variantRepository.save(newVariant)
 
       successHandler({
         res,
@@ -49,14 +62,14 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
   async updateVariant(req: Request, res: Response) {
     try {
       const { variant_id } = req.params;
-      const { images, attributes, videos, price, stock } = req.body;
+      const { images, attributes, videos, price, listPrice, stock } = req.body;
 
       const variantRepository = AppDataSource.getRepository(VariantEntity);
 
@@ -64,24 +77,26 @@ export default {
 
       if (!existingVariant) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'variant_edit', message: 'Variante no encontrada' }],
         });
       }
-
+      
+      console.log({existingVariant, body: req.body}, "esto es variant")
       existingVariant.images = images;
       existingVariant.attributes = attributes;
       existingVariant.videos = videos;
-      existingVariant.price = price;
-      existingVariant.stock = stock;
+      existingVariant.price = Number(price);
+      existingVariant.stock = Number(stock);
+      existingVariant.listPrice = Number(listPrice);
 
       await variantRepository.save(existingVariant);
 
       successHandler({
         res,
-        dataDB: [existingVariant],
+        dataDB: [{existingVariant, body: req.body}],
         json: {
           field: 'variant_update',
           message: 'Variante actualizada',
@@ -90,7 +105,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -104,7 +119,7 @@ export default {
 
       if (!existingVariant) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'variant_delete', message: 'Variante no encontrada' }],
@@ -124,7 +139,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 
@@ -138,7 +153,7 @@ export default {
 
       if (!variant) {
         return errorHandlerRes({
-          res,
+          res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'variant_get', message: 'Variante no encontrada' }],
@@ -156,7 +171,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({ error, res });
+      errorHandlerCatch({ error, res, req });
     }
   },
 };

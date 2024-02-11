@@ -80,7 +80,7 @@ export const convertFromData = (requestData: Omit<IAdvertising.advertising, 'adv
   Object.entries(requestData).forEach(([key, value]) => {
     if (typeof value === 'object') {
       const image: File = value
-      form.append(`images`, value, `${key}.${image.type.split("/")[1]}`);
+      form.append(`files`, value, `${key}.${image.type.split("/")[1]}`);
     } else {
       form.append(key, value,);
     }

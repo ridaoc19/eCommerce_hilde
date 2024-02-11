@@ -19,6 +19,7 @@ export namespace IProduct {
     attributes: Attributes;
     videos: string[];
     price: number;
+    listPrice: number;
     stock: number;
     product: Product;
   }

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { BreadcrumbType } from '../../interfaces/global.interface';
 import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from '../../services/navigation/navigationApi';
@@ -8,6 +8,7 @@ import Filters from './Filters';
 import PaginationButton from './PaginationButton';
 import { InitialStateListProduct, ListProductHook } from './types';
 import { useQuery } from '@tanstack/react-query';
+import { CreateContext } from '../useContext';
 
 
 const initialStateListProduct: InitialStateListProduct = {
@@ -27,6 +28,7 @@ const initialStateListProduct: InitialStateListProduct = {
 const useListProduct = (): ListProductHook => {
   const params = useParams();
   let location = useLocation()
+  const { error: { errorContextDispatch } } = useContext(CreateContext)!
   // eslint-disable-next-line
   const [_, setSearchParams] = useSearchParams();
 
@@ -56,6 +58,11 @@ const useListProduct = (): ListProductHook => {
     refetchOnMount: false,
   }
   );
+
+  useEffect(() => {
+    error?.errors && errorContextDispatch({ type: 'errors', payload: error.errors })
+  // eslint-disable-next-line 
+  }, [isError])
 
 
   useEffect(() => { //limpiar si se cambia se filtro strict y flex
