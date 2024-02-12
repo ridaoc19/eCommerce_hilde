@@ -87,19 +87,25 @@ export const convertFromData = (requestData: any) => {
   Object.entries(requestData).forEach(([key, value]) => {
     // Verificar si el valor es un array
     if (Array.isArray(value)) {
-      // Separar los elementos del array en categorías de archivos y cadenas
-      const files = value.filter((element: any) => element instanceof File);
-      const strings = value.filter((element: any) => typeof element === 'string');
+      if (value.length === 0) {
+        [''].forEach((string: string, index: number) => {
+          form.append(`${key}[${index}]`, string);
+        });
+      } else {
+        // Separar los elementos del array en categorías de archivos y cadenas
+        const files = value.filter((element: any) => element instanceof File);
+        const strings = value.filter((element: any) => typeof element === 'string');
 
-      // Agregar los archivos al FormData
-      files.forEach((file: File) => {
-        form.append(`files`, file, `${key}.${file.type.split("/")[1]}`);
-      });
+        // Agregar los archivos al FormData
+        files.forEach((file: File) => {
+          form.append(`files`, file, `${key}.${file.type.split("/")[1]}`);
+        });
 
-      // Agregar las cadenas al FormData
-      strings.forEach((string: string, index: number) => {
-        form.append(`${key}[${index}]`, string);
-      });
+        // Agregar las cadenas al FormData
+        strings.forEach((string: string, index: number) => {
+          form.append(`${key}[${index}]`, string);
+        });
+      }
     }
 
     // Verificar si el valor es un objeto
