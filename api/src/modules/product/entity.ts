@@ -87,7 +87,7 @@ export default class ProductEntity {
     // Guarda los cambios en la base de datos
     await navigationRepository.save(updatedProduct);
     
-    console.log(updatedProduct, 'entro')
+    // console.log(updatedProduct, 'entro')
 
   }
 }

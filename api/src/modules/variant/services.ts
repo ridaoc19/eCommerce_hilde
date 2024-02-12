@@ -73,7 +73,7 @@ export default {
 
       const variantRepository = AppDataSource.getRepository(VariantEntity);
 
-      const existingVariant = await variantRepository.findOne({ where: { variant_id } });
+      const existingVariant = await variantRepository.findOne({ where: { variant_id }, relations: { product: true } });
 
       if (!existingVariant) {
         return errorHandlerRes({
@@ -83,8 +83,7 @@ export default {
           errors: [{ field: 'variant_edit', message: 'Variante no encontrada' }],
         });
       }
-      
-      console.log({existingVariant, body: req.body}, "esto es variant")
+
       existingVariant.images = images;
       existingVariant.attributes = attributes;
       existingVariant.videos = videos;
@@ -96,7 +95,7 @@ export default {
 
       successHandler({
         res,
-        dataDB: [{existingVariant, body: req.body}],
+        dataDB: [{ existingVariant, body: req.body }],
         json: {
           field: 'variant_update',
           message: 'Variante actualizada',
@@ -115,7 +114,7 @@ export default {
 
       const variantRepository = AppDataSource.getRepository(VariantEntity);
 
-      const existingVariant = await variantRepository.findOne({ where: { variant_id } });
+      const existingVariant = await variantRepository.findOne({ where: { variant_id }, relations: { product: true } });
 
       if (!existingVariant) {
         return errorHandlerRes({
