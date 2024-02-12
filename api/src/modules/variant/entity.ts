@@ -1,7 +1,8 @@
-import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { objectString, stringEmpty } from '../../core/utils/navigation/functions';
+import { BeforeInsert, BeforeRemove, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import NavigationEntity from '../navigation/entity';
 import ProductEntity from '../product/entity';
+import { AppDataSource } from '../../core/db/postgres';
+import { objectString, stringEmpty } from '../../core/utils/navigation/functions';
 
 @Entity('variants')
 export default class VariantEntity {
@@ -38,17 +39,24 @@ export default class VariantEntity {
   deletedAt: Date;
 
   @BeforeInsert()
-  @BeforeUpdate()
-  updateFilter() {
-    // const variantAttributesString = objectString(this.attributes);
+  async insertFilter() {
+    // Obtén el repositorio de NavigationEntity
+    const navigationRepository = AppDataSource.getRepository(NavigationEntity);
 
-    // Obtener valores a agregar al filtro
-    const departmentValue = `department${stringEmpty(this.product.subcategory.category.department.department)}`;
-    const categoryValue = `category${stringEmpty(this.product.subcategory.category.category)}`;
-    const subcategoryValue = `subcategory${stringEmpty(this.product.subcategory.subcategory)}`;
-    const brandValue = `brand${stringEmpty(this.product.brand)}`;
-    const specificationsValues = objectString(this.product.specifications);
-    const attributesValues = this?.product.variants && this.product.variants.length > 0 ? this.product.variants.reduce((acc, item) => {
+    // Obtén el producto actualizado
+    const updatedProduct = await navigationRepository.findOne({ where: { product: { product_id: this.product.product_id } }, relations: { department: true, category: true, subcategory: true, product: true, variants: true } });
+
+    // Verifica si se encontró el producto
+    if (!updatedProduct) {
+      throw new Error('Producto no encontrado');
+    }
+
+    const departmentValue = `department${stringEmpty(updatedProduct.department.department)}`;
+    const categoryValue = `category${stringEmpty(updatedProduct.category.category)}`;
+    const subcategoryValue = `subcategory${stringEmpty(updatedProduct.subcategory.subcategory)}`;
+    const brandValue = `brand${stringEmpty(updatedProduct.product.brand)}`;
+    const specificationsValues = objectString(updatedProduct.product.specifications);
+    const attributesValues = updatedProduct?.variants && updatedProduct.variants.length > 0 ? updatedProduct.variants.reduce((acc, item) => {
       if (Object.keys(item.attributes).length > 0) {
         return `${acc} ${objectString(item.attributes)}`
       }
@@ -56,19 +64,113 @@ export default class VariantEntity {
     }, '') : ''
 
     // Agregar nuevos valores al filtro
-    this.navigation.filter = `
-        ${departmentValue}
-        ${categoryValue}
-        ${subcategoryValue}
-        ${brandValue}
-        ${specificationsValues}
-        ${attributesValues}
-        `.trim();
+    const filter = `
+    ${departmentValue}
+    ${categoryValue}
+    ${subcategoryValue}
+    ${brandValue}
+    ${specificationsValues}
+    ${attributesValues} ${objectString(this.attributes)}
+    `.trim();
+
+    // Actualiza el filtro en la navegación
+    updatedProduct.filter = filter;
+
+    // Guarda los cambios en la base de datos
+    await navigationRepository.save(updatedProduct);
+
   }
 
-  // Si ya hay información en la propiedad filter, entonces concatena con un espacio adicional
-  // this.navigation.filter = `${this.navigation.filter || ''} ${variantAttributesString} `;
-  // }
+  @BeforeUpdate()
+  async updateFilter() {
+    // Obtén el repositorio de NavigationEntity
+    const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+
+    // Obtén el producto actualizado
+    const updatedProduct = await navigationRepository.findOne({ where: { product: { product_id: this.product.product_id } }, relations: { department: true, category: true, subcategory: true, product: true, variants: true } });
+
+    // Verifica si se encontró el producto
+    if (!updatedProduct) {
+      throw new Error('Producto no encontrado');
+    }
+
+    const filterVariants = updatedProduct.variants.filter(v => v.variant_id !== this.variant_id)
+
+    const departmentValue = `department${stringEmpty(updatedProduct.department.department)}`;
+    const categoryValue = `category${stringEmpty(updatedProduct.category.category)}`;
+    const subcategoryValue = `subcategory${stringEmpty(updatedProduct.subcategory.subcategory)}`;
+    const brandValue = `brand${stringEmpty(updatedProduct.product.brand)}`;
+    const specificationsValues = objectString(updatedProduct.product.specifications);
+    const attributesValues = updatedProduct?.variants &&
+      filterVariants.length > 0 ? filterVariants.reduce((acc, item) => {
+        if (Object.keys(item.attributes).length > 0) {
+          return `${acc} ${objectString(item.attributes)}`
+        }
+        return acc
+      }, '') : ''
+
+    // Agregar nuevos valores al filtro
+    const filter = `
+   ${departmentValue}
+   ${categoryValue}
+   ${subcategoryValue}
+   ${brandValue}
+   ${specificationsValues}
+   ${attributesValues} ${objectString(this.attributes)}
+   `.trim();
+
+    // Actualiza el filtro en la navegación
+    updatedProduct.filter = filter;
+
+    // Guarda los cambios en la base de datos
+    await navigationRepository.save(updatedProduct);
+
+  }
+
+  @BeforeRemove()
+  async deleteFilter() {
+    // Obtén el repositorio de NavigationEntity
+    const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+
+    // Obtén el producto actualizado
+    const updatedProduct = await navigationRepository.findOne({ where: { product: { product_id: this.product.product_id } }, relations: { department: true, category: true, subcategory: true, product: true, variants: true } });
+
+    // Verifica si se encontró el producto
+    if (!updatedProduct) {
+      throw new Error('Producto no encontrado');
+    }
+
+    const filterVariants = updatedProduct.variants.filter(v => v.variant_id !== this.variant_id)
+
+    const departmentValue = `department${stringEmpty(updatedProduct.department.department)}`;
+    const categoryValue = `category${stringEmpty(updatedProduct.category.category)}`;
+    const subcategoryValue = `subcategory${stringEmpty(updatedProduct.subcategory.subcategory)}`;
+    const brandValue = `brand${stringEmpty(updatedProduct.product.brand)}`;
+    const specificationsValues = objectString(updatedProduct.product.specifications);
+    const attributesValues = updatedProduct?.variants &&
+      filterVariants.length > 0 ? filterVariants.reduce((acc, item) => {
+        if (Object.keys(item.attributes).length > 0) {
+          return `${acc} ${objectString(item.attributes)}`
+        }
+        return acc
+      }, '') : ''
+
+    // Agregar nuevos valores al filtro
+    const filter = `
+   ${departmentValue}
+   ${categoryValue}
+   ${subcategoryValue}
+   ${brandValue}
+   ${specificationsValues}
+   ${attributesValues}
+   `.trim();
+
+    // Actualiza el filtro en la navegación
+    updatedProduct.filter = filter;
+
+    // Guarda los cambios en la base de datos
+    await navigationRepository.save(updatedProduct);
+
+  }
 
 }
-
