@@ -13,6 +13,8 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
     const host = req.headers.host;
     let body = req.body;
 
+
+
     let newBody: any = {};
 
     // Convertir los valores de tipo string que son objetos JSON a objetos
@@ -38,7 +40,7 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
     }
     // Procesar archivos adjuntos si existen
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-      const files: Record<string, string | string[]> = {};
+      // const files: Record<string, string | string[]> = {};
 
       // Importar la entidad dinámicamente
       // let dynamicEntity = await import(`../../../modules/${entity}/entity`);
@@ -50,17 +52,17 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
         // const repeatName = req.files.filter((e: Express.Multer.File) => e.originalname.includes(name)).length;
         // const columns = metadata.columns.find((col) => col.propertyName === name);
         if (name === 'images' || name === 'videos') {
-          files[name] = [...(files[name] || []), `http://${host}/${path}`];
+          newBody[name] = [...(newBody[name] || []), `http://${host}/${path}`];
         } else {
-          files[name] = `http://${host}/${path}`;
+          newBody[name] = `http://${host}/${path}`;
         }
       }
-      newBody = { ...newBody, ...files };
-    } else {
     }
 
     req.body = newBody
     body = newBody
+
+    console.log({ body });
 
 
     if (method === 'edit' || method === 'delete') {
@@ -96,7 +98,7 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
             }
 
             if (method === 'edit') {
-              // console.log({ body, filteredImages })
+              console.log({ filteredImages, body })
               if (Object.keys(body).length > 0) {
                 const filterBody = Object.entries(body).flatMap(([key, value]) => {
                   if (key.startsWith('image') || key.startsWith('video')) {
@@ -110,14 +112,14 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
 
                 const filterDelete = filteredImages.filter(e => !filterBody.includes(e))
 
-                // console.log({ filterDelete, filterBody })
+                console.log({ filterDelete, filterBody })
                 if (filterDelete.length > 0) {
                   // Eliminar archivos y continuar con el middleware
                   if (deleteFiles(filterDelete)) {
                     return next();
                   }
                 }
-               return next()
+                return next()
               }
             }
           }

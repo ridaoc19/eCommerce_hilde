@@ -139,7 +139,6 @@ export default class VariantEntity {
     if (!updatedProduct) {
       throw new Error('Producto no encontrado');
     }
-    console.log(updatedProduct);
 
     const filterVariants = updatedProduct.variants.filter(v => v.variant_id !== this.variant_id)
 
