@@ -53,24 +53,21 @@ export default class ProductEntity {
     const updatedProduct = await navigationRepository.findOne({ where: { product: { product_id: this.product_id } }, relations: { department: true, category: true, subcategory: true, variants: true } });
 
     // Verifica si se encontró el producto
-    if (!updatedProduct) {
-      throw new Error('Producto no encontrado');
-    }
+    if (updatedProduct) {
+      const departmentValue = `department${stringEmpty(updatedProduct.department.department)}`;
+      const categoryValue = `category${stringEmpty(updatedProduct.category.category)}`;
+      const subcategoryValue = `subcategory${stringEmpty(updatedProduct.subcategory.subcategory)}`;
+      const brandValue = `brand${stringEmpty(this.brand)}`;
+      const specificationsValues = objectString(this.specifications);
+      const attributesValues = updatedProduct?.variants && updatedProduct.variants.length > 0 ? updatedProduct.variants.reduce((acc, item) => {
+        if (Object.keys(item.attributes).length > 0) {
+          return `${acc} ${objectString(item.attributes)}`
+        }
+        return acc
+      }, '') : ''
 
-    const departmentValue = `department${stringEmpty(updatedProduct.department.department)}`;
-    const categoryValue = `category${stringEmpty(updatedProduct.category.category)}`;
-    const subcategoryValue = `subcategory${stringEmpty(updatedProduct.subcategory.subcategory)}`;
-    const brandValue = `brand${stringEmpty(this.brand)}`;
-    const specificationsValues = objectString(this.specifications);
-    const attributesValues = updatedProduct?.variants && updatedProduct.variants.length > 0 ? updatedProduct.variants.reduce((acc, item) => {
-      if (Object.keys(item.attributes).length > 0) {
-        return `${acc} ${objectString(item.attributes)}`
-      }
-      return acc
-    }, '') : ''
-
-    // Agregar nuevos valores al filtro
-    const filter = `
+      // Agregar nuevos valores al filtro
+      const filter = `
     ${departmentValue}
     ${categoryValue}
     ${subcategoryValue}
@@ -78,17 +75,17 @@ export default class ProductEntity {
     ${specificationsValues}
     ${attributesValues}
     `.trim();
-    
-    // Actualiza el filtro en la navegación
-    updatedProduct.filter = filter;
-    updatedProduct.search = `${this.product} ${this.brand}`;
-    
-    
-    // Guarda los cambios en la base de datos
-    await navigationRepository.save(updatedProduct);
-    
-    // console.log(updatedProduct, 'entro')
 
+      // Actualiza el filtro en la navegación
+      updatedProduct.filter = filter;
+      updatedProduct.search = `${this.product} ${this.brand}`;
+
+
+      // Guarda los cambios en la base de datos
+      await navigationRepository.save(updatedProduct);
+
+      // console.log(updatedProduct, 'entro')
+    }
   }
 }
 
