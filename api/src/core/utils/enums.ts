@@ -166,11 +166,6 @@ export type MapStatusCode<TData> = {
 //     status: StatusHTTP.forbidden_403;
 //     errors: Errors;
 //   };
-//   [StatusHTTP.notFound_404]: {
-//     status_code: 404;
-//     status: StatusHTTP.notFound_404;
-//     errors: Errors;
-//   };
 //   [StatusHTTP.methodNotAllowed_405]: {
 //     status_code: 405;
 //     status: StatusHTTP.methodNotAllowed_405;
