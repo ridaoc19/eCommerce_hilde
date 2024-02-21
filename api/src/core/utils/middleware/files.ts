@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
-import { AppDataSource } from '../../db/postgres';
-import { findParentUUID } from '../navigation/findParentUUID';
+import * as fs from 'fs';
+import * as path from 'path';
+import { findParentUUID } from '../findParentUUID';
+import { AppDataSource } from '../../../data-source';
 
 const filesMiddleware = async (req: Request, _res: Response, next: NextFunction) => {
   try {

@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import { User } from '../../../modules/user/tools/interface';
 import { templateRegistre } from './template';
 

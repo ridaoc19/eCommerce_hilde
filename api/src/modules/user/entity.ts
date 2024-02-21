@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')

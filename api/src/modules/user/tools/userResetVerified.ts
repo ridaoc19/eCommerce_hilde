@@ -1,8 +1,8 @@
+import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { generateHashPassword } from "../../../core/auth/bcryptUtils";
 import { sendEmail } from "../../../core/utils/email";
-import { Response } from 'express';
-import { AppDataSource } from '../../../core/db/postgres';
+import { AppDataSource } from '../../../data-source';
 import { UserEntity } from '../entity';
 
 
