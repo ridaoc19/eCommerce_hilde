@@ -10,7 +10,6 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
     const entity = route[0];
     const method = route[1];
     const UUID = route[2];
-    const host = req.headers.host;
     let body = req.body;
 
     // console.log({ viejo: req.body });
@@ -55,9 +54,9 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
         // const repeatName = req.files.filter((e: Express.Multer.File) => e.originalname.includes(name)).length;
         // const columns = metadata.columns.find((col) => col.propertyName === name);
         if (name === 'images' || name === 'videos') {
-          newBody[name] = [...(newBody[name] || []), `http://${host}/${path}`];
+          newBody[name] = [...(newBody[name] || []), `${process.env.URL_SERVER}/${path}`];
         } else {
-          newBody[name] = `http://${host}/${path}`;
+          newBody[name] = `${process.env.URL_SERVER}/${path}`;
         }
       }
     }
@@ -65,29 +64,28 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
     req.body = newBody
     body = newBody
 
-    // console.log({ body });
-
-
+    
+    
     if (method === 'edit' || method === 'delete') {
       if (findParentUUID(UUID)) {
         try {
           // Importar la entidad dinámicamente
           let dynamicEntity = await import(`../../../modules/${entity}/entity`);
-
+          
           // Obtener el objeto de db
           const queryBuilder = await AppDataSource
-            .getRepository(dynamicEntity.default)
-            .createQueryBuilder(entity)
-            .where(`${entity}.${entity}_id = :id`, { id: UUID })
-            .getOne();
-
+          .getRepository(dynamicEntity.default)
+          .createQueryBuilder(entity)
+          .where(`${entity}.${entity}_id = :id`, { id: UUID })
+          .getOne();
+          
           if (!!queryBuilder && Object.keys(queryBuilder).some(e => e.includes('image') || e.includes('video'))) {
             // Obtener las imágenes filtradas
             const filteredImages = Object.entries(queryBuilder).flatMap(([key, value]) => {
               if (key.startsWith('image') || key.startsWith('video')) {
                 const images = Array.isArray(value) ? value : [value];
-                const filtersImagesLocal = images.filter(e => e.includes(host));
-                const mapFilter = filtersImagesLocal.length > 0 ? filtersImagesLocal.map(e => e.split(`${req.headers.host}/uploads\\`)[1]) : [];
+                const filtersImagesLocal = images.filter(e => e.includes(process.env.URL_SERVER));
+                const mapFilter = filtersImagesLocal.length > 0 ? filtersImagesLocal.map(e => e.split(`${process.env.FILES_FILTER_IMAGES}`)[1]) : [];
                 return mapFilter;
               }
               return [];
@@ -106,8 +104,8 @@ const filesMiddleware = async (req: Request, _res: Response, next: NextFunction)
                 const filterBody = Object.entries(body).flatMap(([key, value]) => {
                   if (key.startsWith('image') || key.startsWith('video')) {
                     const images = Array.isArray(value) ? value : [value];
-                    const filtersImagesLocal = images.filter(e => e.includes(host!));
-                    const mapFilter = filtersImagesLocal.length > 0 ? filtersImagesLocal.map(e => e.split(`${req.headers.host}/uploads\\`)[1]) : []
+                    const filtersImagesLocal = images.filter(e => e.includes(process.env.URL_SERVER!));
+                    const mapFilter = filtersImagesLocal.length > 0 ? filtersImagesLocal.map(e => e.split(`${process.env.FILES_FILTER_IMAGES}`)[1]) : []
                     return mapFilter;
                   }
                   return [];
