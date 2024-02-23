@@ -2,6 +2,12 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { UserEntity } from "./modules/user/entity"
 import AdvertisingEntity from "./modules/advertising/entity"
+import DepartmentEntity from "./modules/department/entity"
+import CategoryEntity from "./modules/category/entity"
+import SubcategoryEntity from "./modules/subcategory/entity"
+import ProductEntity from "./modules/product/entity"
+import VariantEntity from "./modules/variant/entity"
+import NavigationEntity from "./modules/navigation/entity"
 // import { User } from "./entity/User"
 
 export const AppDataSource = new DataSource({
@@ -16,6 +22,12 @@ export const AppDataSource = new DataSource({
     entities: [
         UserEntity,
         AdvertisingEntity,
+        DepartmentEntity,
+        CategoryEntity,
+        SubcategoryEntity,
+        ProductEntity,
+        VariantEntity,
+        NavigationEntity
     ],
     migrations: [],
     subscribers: [],

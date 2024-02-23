@@ -13,7 +13,7 @@ export async function sendEmail({ name, email, password, type, tokenEmail }: Sen
     // Construir el cuerpo del correo electrónico utilizando el template
     const { subject, html }: { subject: string, html: string } = templateRegistre({ tokenEmail, name, password, type });
 
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'ecommerce.hilde@ridaoc.es',
       to: [email],
       subject,
