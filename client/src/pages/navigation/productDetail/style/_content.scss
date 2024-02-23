@@ -3,6 +3,14 @@
   flex-direction: column;
   gap           : 0.5rem;
 
+  &.desktop {
+    width: 60%;
+  }
+
+  &.tablet {
+    width: 50%;
+  }
+
   &__attributes {
 
     &-card {
