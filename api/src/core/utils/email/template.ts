@@ -86,7 +86,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                     <div class="container">
                         <div class="content">
                             <div class="header">
-                                <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                                <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                             </div>
                             <div class="main">
                                 <h1>Verificación de correo electrónico</h1>
@@ -104,7 +104,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                             </div>
                         </div>
                         <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                            Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                            Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                         </p>
                     </div>
                 </body>
@@ -195,7 +195,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                     <div class="container">
                         <div class="content">
                             <div class="header">
-                                <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                                <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                             </div>
                             <div class="main">
                                 <h1>Tu contraseña cambió</h1>
@@ -208,14 +208,14 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                                 </div>
                                 <h6>(Esta contraseña es válida durante 10 minutos)</h6>
                                 <hr>
-                                <p>Haz clic <a href="https://e-commerce-hilde.vercel.app/hilde/login">aca</a> y te llevara a Iniciar
+                                <p>Haz clic <a href="${process.env.URL_CLIENT}/login">aca</a> y te llevara a Iniciar
                                     sesión</p>
                                 <p>Nunca se enviará un correo electrónico o se solicitará que revele o verifique su contraseña
                                     personal, tarjeta de crédito o número de cuenta bancaria.</p>
                             </div>
                         </div>
                         <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                            Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                            Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                         </p>
                     </div>
                 </body>
@@ -290,7 +290,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                 <div class="container">
                     <div class="content">
                         <div class="header">
-                            <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                            <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                         </div>
                         <div class="main">
                             <h1>Tu registro está próximo a vencer</h1>
@@ -309,7 +309,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                         </div>
                     </div>
                     <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                        Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                        Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                     </p>
                 </div>
             </body>
@@ -385,7 +385,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                 <div class="container">
                     <div class="content">
                         <div class="header">
-                            <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                            <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                         </div>
                         <div class="main">
                             <h1>Tu registro ha vencido</h1>
@@ -393,7 +393,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                                 deberás crear nuevamente una cuenta siguiendo estos pasos:</p>
                             <ol>
                                 <li>Ingresa al siguiente enlace para crear una nueva cuenta: <a
-                                        href="https://e-commerce-hilde.vercel.app/hilde/registre">Crear cuenta</a></li>
+                                        href="${process.env.URL_CLIENT}/registre">Crear cuenta</a></li>
                                 <li>Una vez creada la cuenta, asegúrate de activarla dentro de un lapso de 10 minutos para
                                     evitar que sea eliminada.</li>
                             </ol>
@@ -405,7 +405,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                         </div>
                     </div>
                     <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                        Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                        Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                     </p>
                 </div>
             </body>
@@ -480,7 +480,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                 <div class="container">
                     <div class="content">
                         <div class="header">
-                            <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                            <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                         </div>
                         <div class="main">
                         <h1>Tu restablecimiento de contraseña está próximo a vencer</h1>
@@ -498,7 +498,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                         </div>
                     </div>
                     <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                        Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                        Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                     </p>
                 </div>
             </body>
@@ -573,13 +573,13 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                 <div class="container">
                     <div class="content">
                         <div class="header">
-                            <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                            <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                         </div>
                         <div class="main">
                         <h1>El tiempo para restablecer la contraseña ha vencido</h1>
                         <p>${name}, te informamos que el período para restablecer tu contraseña ha vencido. Si aún necesitas cambiar tu contraseña, deberás volver a solicitar el restablecimiento siguiendo estos pasos:</p>
                         <ol>
-                        <li>Haz clic <a href="https://e-commerce-hilde.vercel.app/hilde/reset">aquí</a> para solicitar nuevamente el restablecimiento de contraseña.</li>
+                        <li>Haz clic <a href="${process.env.URL_CLIENT}/reset">aquí</a> para solicitar nuevamente el restablecimiento de contraseña.</li>
                         <li>Ingresa tu correo electrónico y recibirás una contraseña temporal en tu bandeja de entrada.</li>
                         <li>Tienes 10 minutos para cambiar la contraseña temporal por una personal y segura.</li>
                         </ol>
@@ -590,7 +590,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                         </div>
                     </div>
                     <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                        Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                        Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                     </p>
                 </div>
             </body>
@@ -681,12 +681,12 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                     <div class="container">
                         <div class="content">
                             <div class="header">
-                                <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                                <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                             </div>
                             <div class="main">
                                 <h1>Verificación de correo electrónico</h1>
                                 <p>${name}, para verificar su cuenta, haga clic en el siguiente enlace:</p>
-                                <a href="http://localhost:3000/hilde/verify/${tokenEmail}">Verificar mi cuenta</a>
+                                <a href="${process.env.URL_CLIENT}/verify/${tokenEmail}">Verificar mi cuenta</a>
                                 <p>Si no desea cambiar el correo electrónico, puede omitir este mensaje.</p>
                                 <p><em>Nota: Este enlace de verificación es válido durante 10 minutos, a partir de este tiempo se omitirá el cambio de correo electrónico.</em></p>
                                 <hr>
@@ -694,7 +694,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                                 </div>
                         </div>
                         <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                            Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                            Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                         </p>
                     </div>
                 </body>
@@ -769,7 +769,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                         <div class="container">
                             <div class="content">
                                 <div class="header">
-                                    <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                                    <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                                 </div>
                                 <div class="main">
                                     <h1>Tu cambio de correo electrónico esta próximo a vencer</h1>
@@ -783,7 +783,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                                 </div>
                             </div>
                             <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                                Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                                Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                             </p>
                         </div>
                     </body>
@@ -859,7 +859,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                         <div class="container">
                             <div class="content">
                                 <div class="header">
-                                    <img src="https://e-commerce-hilde.vercel.app/favicon.ico" alt="">
+                                    <img src="${process.env.URL_CLIENT}/favicon.ico" alt="">
                                 </div>
                                 <div class="main">
                                     <h1>Tu cambio de correo electrónico ha vencido</h1>
@@ -872,7 +872,7 @@ export const templateRegistre = ({ name, password, type, tokenEmail }: Pick<User
                                 </div>
                             </div>
                             <p>Calle 30. Anorí, Antioquia, Colombia. © 2023, e-commerce.
-                                Todos los derechos reservados. <a href="https://e-commerce-hilde.vercel.app/hilde">E-commerce Hilde.</a>
+                                Todos los derechos reservados. <a href="${process.env.URL_CLIENT}/hilde">E-commerce Hilde.</a>
                             </p>
                         </div>
                     </body>

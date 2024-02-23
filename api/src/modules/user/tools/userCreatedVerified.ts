@@ -1,5 +1,5 @@
-import { AppDataSource } from "../../../core/db/postgres";
 import { sendEmail } from "../../../core/utils/email";
+import { AppDataSource } from "../../../data-source";
 import { UserEntity } from "../entity";
 
 function stopExecutionTemporarily() {

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import * as yup from 'yup';
-import { MapStatusCode, StatusHTTP } from '../enums';
-import { deleteFiles } from '../middleware/files';
+import { deleteFiles } from '../../middleware/files';
 import { validationSchemas } from './validationsSchemas';
+import { MapStatusCode, StatusHTTP } from '../../send/enums';
 
 export const validatorsMiddlewareGlobal = async (req: Request, res: Response, next: NextFunction) => {
   const requestBody: Record<string, unknown> = req.body;

@@ -11,12 +11,6 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
-      "resolveJsonModule": true,
-      "allowJs": true,
-      "noEmit": true,
-      "isolatedModules": true,
-      "allowSyntheticDefaultImports": true,
-      "forceConsistentCasingInFileNames": true,
       "noImplicitAny": true,
       "strictNullChecks": true,
       "noUnusedLocals": true,
@@ -24,7 +18,5 @@
       "noImplicitReturns": true,
       "noFallthroughCasesInSwitch": true,
       "skipLibCheck": true,
-      "esModuleInterop": true,   
-      "downlevelIteration": true
    }
 }

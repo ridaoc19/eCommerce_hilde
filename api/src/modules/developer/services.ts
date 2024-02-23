@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { AppDataSource } from '../../core/db/postgres';
-import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import CategoryEntity from '../category/entity';
@@ -11,6 +9,8 @@ import NavigationEntity from '../navigation/entity';
 import ProductEntity from '../product/entity';
 import SubcategoryEntity from '../subcategory/entity';
 import VariantEntity from '../variant/entity';
+import { AppDataSource } from '../../data-source';
+import { StatusHTTP } from '../../core/utils/send/enums';
 
 interface Data {
   specification: Specification;
@@ -56,8 +56,8 @@ export default {
       const variantRepository = AppDataSource.getRepository(VariantEntity);
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
 
-      // const data = jsonData
-      const data = jsonData.filter(e => e.variants.some(i => i.videos.length > 0 && Object.keys(i.attributes).length > 0)).slice(0, 3)
+      const data = jsonData
+      // const data = jsonData.filter(e => e.variants.some(i => i.videos.length > 0 && Object.keys(i.attributes).length > 0)).slice(0, 3)
       // const data = jsonData.slice(3, 6)
 
       for (const dataJson of data) {

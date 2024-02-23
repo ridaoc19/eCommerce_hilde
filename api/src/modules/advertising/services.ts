@@ -1,12 +1,9 @@
 import { Request, Response } from 'express';
-import { AppDataSource } from '../../core/db/postgres';
-import { StatusHTTP } from '../../core/utils/enums';
+import { StatusHTTP } from '../../core/utils/send/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
+import { AppDataSource } from '../../data-source';
 import AdvertisingEntity from './entity';
-
-
-
 
 export default {
   async createAdvertising(req: Request, res: Response) {
@@ -31,7 +28,7 @@ export default {
       });
 
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
   },
   async updateAdvertising(req: Request, res: Response) {
@@ -42,7 +39,7 @@ export default {
       const existingAdvertising = await advertisingRepository.findOne({ where: { advertising_id } });
 
       if (!existingAdvertising) {
-        return errorHandlerRes({req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_edit', message: 'Categoría no existe' }] })
+        return errorHandlerRes({ req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'category_edit', message: 'Categoría no existe' }] })
       }
 
       advertisingRepository.merge(existingAdvertising, req.body);
@@ -61,11 +58,11 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
   },
   async deleteAdvertising(req: Request, res: Response) {
-    
+
     try {
       const { advertising_id } = req.params;
       const advertisingRepository = AppDataSource.getRepository(AdvertisingEntity);
@@ -73,7 +70,7 @@ export default {
       const existingAdvertising = await advertisingRepository.findOne({ where: { advertising_id } });
 
       if (!existingAdvertising) {
-        return errorHandlerRes({req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'advertising_delete', message: 'Anuncio no encontrado' }] })
+        return errorHandlerRes({ req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'advertising_delete', message: 'Anuncio no encontrado' }] })
       }
 
       await advertisingRepository.delete(existingAdvertising);
@@ -93,7 +90,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
   },
   async getAdvertising(req: Request, res: Response) {
@@ -110,7 +107,7 @@ export default {
         },
       });
     } catch (error) {
-      errorHandlerCatch({req, error, res });
+      errorHandlerCatch({ req, error, res });
     }
   },
 };

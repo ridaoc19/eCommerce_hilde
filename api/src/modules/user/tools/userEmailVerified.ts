@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { sendEmail } from "../../../core/utils/email";
 import { errorHandlerCatch } from "../../../core/utils/send/errorHandler";
-import { AppDataSource } from "../../../core/db/postgres";
+import { AppDataSource } from "../../../data-source";
 import { UserEntity } from "../entity";
 
 function stopExecutionTemporarily() {

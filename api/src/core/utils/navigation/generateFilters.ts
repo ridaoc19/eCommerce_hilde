@@ -1,6 +1,6 @@
 import { SelectQueryBuilder } from "typeorm";
 import NavigationEntity from "../../../modules/navigation/entity";
-import { findParentUUID } from "./findParentUUID";
+import { findParentUUID } from "../findParentUUID";
 
 
 export interface GenerateFiltersReturn {

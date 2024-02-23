@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 // Clave secreta para firmar los tokens (puedes cambiarla por tu propia clave)
 const secretKey = process.env.SECRET_KEY_JWT!;

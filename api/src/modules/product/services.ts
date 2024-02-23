@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { StatusHTTP } from '../../core/utils/enums';
+import { StatusHTTP } from '../../core/utils/send/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import ProductEntity from './entity';
-import SubcategoryEntity from '../subcategory/entity';
-import { AppDataSource } from '../../core/db/postgres';
+import { AppDataSource } from '../../data-source';
 import NavigationEntity from '../navigation/entity';
+import SubcategoryEntity from '../subcategory/entity';
+import ProductEntity from './entity';
 
 export default {
   async createProduct(req: Request, res: Response) {

@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 const saltRounds = 10; // Número de rondas de hashing (puedes ajustarlo según tus necesidades)
 

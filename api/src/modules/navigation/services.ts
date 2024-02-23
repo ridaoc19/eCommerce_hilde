@@ -1,19 +1,22 @@
 import { Request, Response } from 'express';
 // import { v4 as uuidv4 } from 'uuid';
-import { AppDataSource } from '../../core/db/postgres';
-import { getBreadcrumbs } from '../../core/utils/breadcrumb/breadcrumb';
-import { StatusHTTP } from '../../core/utils/enums';
+
 // import { findParentProperty } from '../../core/utils/navigation/findParentProperty';
-import { findParentUUID } from '../../core/utils/navigation/findParentUUID';
-import { stringEmpty } from '../../core/utils/navigation/functions';
+
 import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import NavigationEntity from './entity';
 import { Brackets } from 'typeorm';
-import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
-import { generateFilters } from '../../core/utils/navigation/generateFilters';
-import { generateFiltersDashboard } from '../../core/utils/navigation/generateFiltersDashboard';
+
 import DepartmentEntity from '../department/entity';
+import { AppDataSource } from '../../data-source';
+import { StatusHTTP } from '../../core/utils/send/enums';
+import { stringEmpty } from '../../core/utils/functionsGlobal';
+import { getBreadcrumbs } from '../../core/utils/breadcrumb/breadcrumb';
+import { generateFilters } from '../../core/utils/navigation/generateFilters';
+import { findParentUUID } from '../../core/utils/findParentUUID';
+import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
+import { generateFiltersDashboard } from '../../core/utils/navigation/generateFiltersDashboard';
 
 // function fetchCount(info: any) {
 //   return new Promise<{ data: number }>((resolve) =>

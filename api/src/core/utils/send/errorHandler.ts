@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { MapStatusCode, StatusHTTP, StatusHTTPError } from "../enums";
 import { deleteFiles } from "../middleware/files";
+import { MapStatusCode, StatusHTTP, StatusHTTPError } from "./enums";
 
 export const errorHandlerCatch = ({ req, res, error }: { req: Request, res: Response, error: unknown }) => {
   if (req?.files && Array.isArray(req.files) && req.files.length > 0) {//eliminar image si hay error

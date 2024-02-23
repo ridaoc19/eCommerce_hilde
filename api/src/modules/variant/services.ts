@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { AppDataSource } from '../../core/db/postgres';
-import { StatusHTTP } from '../../core/utils/enums';
+import { StatusHTTP } from '../../core/utils/send/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
+import { AppDataSource } from '../../data-source';
+import NavigationEntity from '../navigation/entity';
 import ProductEntity from '../product/entity';
 import VariantEntity from './entity';
-import NavigationEntity from '../navigation/entity';
 
 export default {
   async createVariant(req: Request, res: Response) {

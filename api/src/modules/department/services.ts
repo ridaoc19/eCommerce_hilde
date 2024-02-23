@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { AppDataSource } from '../../core/db/postgres';
-import { StatusHTTP } from '../../core/utils/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import DepartmentEntity from './entity';
+import { AppDataSource } from '../../data-source';
+import { StatusHTTP } from '../../core/utils/send/enums';
 
 export default {
   async createDepartment(req: Request, res: Response) {
