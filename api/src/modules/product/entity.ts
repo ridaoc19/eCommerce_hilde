@@ -2,8 +2,9 @@ import { BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, 
 import NavigationEntity from '../navigation/entity';
 import SubcategoryEntity from '../subcategory/entity';
 import VariantEntity from '../variant/entity';
-import { objectString, stringEmpty } from '../../core/utils/navigation/functions';
-import { AppDataSource } from '../../core/db/postgres';
+import { AppDataSource } from '../../data-source';
+import { objectString, stringEmpty } from '../../core/utils/functionsGlobal';
+
 
 @Entity('products')
 export default class ProductEntity {

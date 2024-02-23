@@ -1,5 +1,5 @@
-import fsExtra from 'fs-extra';
-import multer from "multer";
+import * as fsExtra from 'fs-extra';
+import * as multer from "multer";
 import { v4 as uuidv4 } from 'uuid';
 
 export const folderPath = './uploads'; // ruta de carpeta
@@ -28,9 +28,9 @@ export const uploadImages = () => {
     destination: async function (_req, _file, cb) {
       cb(null, 'uploads');
     },
-    filename: function (req, file, cb) {
+    filename: function (_req, file, cb) {
       const imageName = `${uuidv4()}-${file.originalname}`;
-      file.path =`http://${req.headers.host}/uploads/${imageName}`
+      file.path = `${process.env.URL_SERVER}/uploads/${imageName}`
       // const key = file.originalname.split('.')[0]
       // req.body = { ...req.body, [file.originalname.split('.')[0]]: `http://${req.headers.host}/uploads/${imageName}` };
 

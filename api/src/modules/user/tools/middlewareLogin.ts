@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import * as yup from 'yup';
 import { comparePassword } from '../../../core/auth/bcryptUtils';
 import { verifyToken, verifyTokenEmail } from '../../../core/auth/jwtUtils';
-import { StatusHTTP } from '../../../core/utils/enums';
 import { errorHandlerArray } from '../../../core/utils/send/errorHandler';
-import { validatorsLocal } from "../../../core/utils/validations/validatorsLocal";
-import { AppDataSource } from '../../../core/db/postgres';
 import { UserEntity } from '../entity';
+import { AppDataSource } from '../../../data-source';
+import { validatorsLocal } from '../../../core/utils/validations/validatorsLocal';
+import { StatusHTTP } from '../../../core/utils/send/enums';
 
 
 

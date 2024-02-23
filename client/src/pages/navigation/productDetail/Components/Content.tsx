@@ -1,4 +1,5 @@
 import ShowcaseMin from "../../../../components/common/ShowcaseMain/ShowcaseMin";
+import useMediaQuery from "../../../../hooks/useMediaQuery";
 import { IProduct } from "../../../../interfaces/product.interface";
 import { UseProductDetail } from "../useProductDetail";
 
@@ -9,12 +10,13 @@ interface ContentProps {
 }
 
 function Content({ handleClick, stateProductDetail, listProductsData: { listProducts } }: ContentProps) {
+  const { mediaQuery } = useMediaQuery();
 
   if (listProducts.length === 0 || !stateProductDetail.selectedVariant) return null
   const { product: { product, brand, benefits } } = listProducts[0];
 
   return (
-    <div className='content'>
+    <div className={`content ${mediaQuery}`}>
 
       <div className='content__attributes'>
         <ShowcaseMin>

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { StatusHTTP } from '../../core/utils/enums';
+import { StatusHTTP } from '../../core/utils/send/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
+import { AppDataSource } from '../../data-source';
 import CategoryEntity from '../category/entity';
 import SubcategoryEntity from './entity';
-import { AppDataSource } from '../../core/db/postgres';
 
 export default {
   async createSubcategory(req: Request, res: Response) {

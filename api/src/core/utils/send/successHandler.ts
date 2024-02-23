@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { MapStatusCode, StatusHTTPSuccess } from "../enums";
+import { MapStatusCode, StatusHTTPSuccess } from "./enums";
 
 export const successHandler = <T extends StatusHTTPSuccess, R>({
   res,
