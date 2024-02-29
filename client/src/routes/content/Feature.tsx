@@ -2,6 +2,7 @@ import { lazy } from "react";
 import VerifyEmail from "../../pages/dash/account/verifyEmail/VerifyEmail";
 import Layout from "../../pages/layout/Layout";
 import Loadable from "../_tools/Loadable";
+import Ensayo from "../../pages/ensayo/Ensayo";
 
 
 function NotFoundPage() {
@@ -30,6 +31,10 @@ const Feature = [
   {
     path: '/verify/:id',
     element: <VerifyEmail />
+  },
+  {
+    path: '/ensayo',
+    element: <Ensayo />
   },
   {
     path: '*',

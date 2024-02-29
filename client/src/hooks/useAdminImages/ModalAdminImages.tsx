@@ -12,7 +12,7 @@ interface ModalAdminImagesProps {
   isOpen: boolean,
   onClose: () => void,
   setModalOpen: Dispatch<SetStateAction<boolean>>
-  allImages: { media: string, location: string }[]
+  allImages: string[]
 }
 
 function ModalAdminImages({ handleDeleteImage, setModalOpen, handleSaveImages, allImages, handleUploadImage, files, isOpen, onClose }: ModalAdminImagesProps) {
@@ -38,7 +38,7 @@ function ModalAdminImages({ handleDeleteImage, setModalOpen, handleSaveImages, a
             <div className='modal-main__images-stored'>
               <h3>Imágenes Almacenadas</h3>
               <ul>
-                {allImages.map(({ media }, index) => (
+                {allImages.map((media, index) => (
                   <img key={index} src={media} alt="" />
                 ))}
               </ul>
