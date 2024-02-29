@@ -101,7 +101,7 @@ export default {
           const images: string[] = [];
 
           for (const img of variant.images) {
-              images.push(`${process.env.URL_SERVER}/files/${img}`);
+              images.push(`${process.env.FILES_FILTER_IMAGES}/files/${img}`);
           }
 
           variants.push({ ...variant, images });
