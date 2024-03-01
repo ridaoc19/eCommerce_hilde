@@ -82,7 +82,7 @@ export default {
     }
 
   },
-  async searchImages(_req: Request, res: Response) {
+  async searchImagesOld(_req: Request, res: Response) {
     try {
       const currentDirectory = __dirname;
       const one = path.join(currentDirectory, '..', '..', 'core', 'db', 'newData.json');
@@ -101,7 +101,7 @@ export default {
           const images: string[] = [];
 
           for (const img of variant.images) {
-              images.push(`${process.env.FILES_FILTER_IMAGES}/files/${img}`);
+            images.push(`${process.env.FILES_FILTER_IMAGES}/files/${img}`);
           }
 
           variants.push({ ...variant, images });
@@ -111,6 +111,81 @@ export default {
       }
 
       res.json({ newData });
+
+    } catch (error) {
+      console.error('Error al descargar imágenes:', error);
+      res.status(500).json({ error: 'Error al descargar imágenes' });
+    }
+
+  },
+  async searchImages(_req: Request, res: Response) {
+    try {
+      const currentDirectory = __dirname;
+      const one = path.join(currentDirectory, '..', '..', 'core', 'db', 'newData.json');
+      const two = path.join(currentDirectory, '..', '..', 'core', 'db', 'newData2.json');
+
+      const jsonDataOne: Data[][] = JSON.parse(fs.readFileSync(one, 'utf-8'));
+      const jsonDataTwo: Data[][] = JSON.parse(fs.readFileSync(two, 'utf-8'));
+
+      const data = [...jsonDataOne.flat(), ...jsonDataTwo.flat()]
+
+      const newData: Data[] = [];
+
+      for (let item of data) {
+        item.breadcrumb = [item.department, item.category, item.subcategory]
+        const variants: Variant[] = [];
+        for (const variant of item.variants) {
+          const images: string[] = [];
+
+          for (const img of variant.images) {
+            images.push(`${process.env.FILES_FILTER_IMAGES}/files/${img}`);
+          }
+
+          variants.push({ ...variant, images });
+        }
+
+        newData.push({ ...item, variants });
+      }
+
+      const department = [...new Set(newData.map(({ department }) => department))]
+
+      const totalIdCategory = newData.map(({ breadcrumb }) => breadcrumb);
+
+      const conjunto: Set<string> = new Set(totalIdCategory.map((arr: string[]): string => JSON.stringify(arr)));
+      const arraysUnicos: string[][] = Array.from(conjunto).map((str: string): string[] => JSON.parse(str));
+
+      const newResult = department.reduce((acc, dept) => {
+        const filter = arraysUnicos.filter(item => item[0] === dept)
+
+        const newSubcategory = filter.map(([dep, cat, sub]) => {
+          const breadcrumb = JSON.stringify([dep, cat, sub])
+          return {
+            subcategory: sub,
+            children: newData.filter(e => JSON.stringify(e.breadcrumb) === breadcrumb)
+          }
+        })
+
+        const newCategoryName = [...new Set(filter.map(([_dep, cat]) => cat))]
+        const newCategory = newCategoryName.map((cat) => {
+          return {
+            category: cat,
+            children: newSubcategory.filter(e => e.children.some(b => b.category === cat))
+          }
+        }, [])
+
+        return [...acc, {
+          department: dept,
+          children: newCategory
+          // newCategory,
+          // newSubcategory
+          // // product: newData.filter(e => e.department === dept)
+        }]
+      }, [])
+
+
+
+      res.json({ newData, newResult });
+
 
     } catch (error) {
       console.error('Error al descargar imágenes:', error);
@@ -235,6 +310,7 @@ export const deleteFiles = (filteredImages: string[]): boolean => {
 
 export interface Data {
   productId: string;
+  breadcrumb: string[];
   specification: Specification;
   product: string;
   brand: string;
@@ -261,3 +337,4 @@ interface Variant {
 type Attributes = Record<string, string>
 
 type Specification = Record<string, string>
+

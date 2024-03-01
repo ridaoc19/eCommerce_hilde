@@ -59,10 +59,18 @@ function Ensayo() {
       .catch(err => console.log(err))
   }
 
+  const handleBack = () => {
+    fetch('http://localhost:8004/files/search')
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .catch(err => console.log(err))
+  }
+
 
   return (
     <div>
       <button onClick={handleClick} >Cargar</button>
+      <button onClick={handleBack} >back</button>
     </div>
   );
 }
