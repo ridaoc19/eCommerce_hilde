@@ -3,10 +3,13 @@ import { HandleClick } from '../../../pages/auth/login';
 import { RequestMapProduct, RouteProduct } from '../../../services/product/productRequest';
 import useMutationProduct from '../../../services/product/useMutationProduct';
 import Button from '../button/Button';
+import useAdminImages from '../../../hooks/useAdminImages/useAdminImages';
+import { InitialStateProductCreation } from '../../../pages/dash/Inventory/ProductCreation/useProductCreationQuery';
 
 // function ProductForm<T extends RouteProduct>({ route, options }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'> }) {
-function ProductForm<T extends RouteProduct>({ route, options }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'> }) {
+function ProductForm<T extends RouteProduct>({ route, options, entity }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'>, entity: InitialStateProductCreation['mutation']['entity'] }) {
   const { executeProductMutation } = useMutationProduct();
+  const { ModalAdminImages, openModal, selectedFiles, typeFile } = useAdminImages({ entity, location: 'admin' })
 
   // Estado para almacenar los datos del formulario
   const [requestData, setRequestData] = useState('requestData' in options ? options.requestData : null);
@@ -23,6 +26,19 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
       setRequestData(null)
     }
   }, [options])
+
+  useEffect(() => {
+    if (selectedFiles.img.length > 0) {
+      setRequestData((prevState: any) => {
+        const urls = [...new Set([...prevState[typeFile], ...selectedFiles.img])]
+        return {
+          ...prevState,
+          [typeFile]: urls
+        };
+      });
+    }
+
+  }, [selectedFiles])
 
   // Función para manejar cambios en los campos de texto
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -45,17 +61,18 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
   };
 
   // Función para manejar el estado de las imágenes
-  const handleImageChange = (name: string, files: FileList | null): void => {
-    if (files && files.length > 0) {
-      setRequestData((prevState: any) => ({
-        ...prevState,
-        [name]: [...prevState[name], ...files]
-      }));
-    }
-  };
+  // const handleImageChange = (name: string, files: FileList | null): void => {
+  //   if (files && files.length > 0) {
+  //     setRequestData((prevState: any) => ({
+  //       ...prevState,
+  //       [name]: [...prevState[name], ...files]
+  //     }));
+  //   }
+  // };
 
   return (
     <form >
+      {ModalAdminImages}
       {/* Renderizar campos de entrada */}
       {!!requestData &&
         Object.entries(requestData).map(([name, value], index) => {
@@ -66,14 +83,19 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
                 <h5>{name}</h5>
 
                 <div key={index} className="advertising-form__input-images">
-                  <input id={`input__images`} multiple className={`input__images`} type="file" name={`images`} onChange={(event) => { handleImageChange(name, event.target.files) }} />
+                  <button onClick={(e) => {
+                    e.preventDefault()
+                    openModal(entity, 'images')
+                  }}>Agregar Imágenes a {entity}</button>
+                  {/* <input id={`input__images`} multiple className={`input__images`} type="file" name={`images`} onChange={(event) => { handleImageChange(name, event.target.files) }} /> */}
                   <h5>{name}</h5>
                   <div>
                     <div className='list' style={{ display: 'flex' }}>
                       {value.map((item, i) => {
                         return (
                           <div key={i}>
-                            {item instanceof File ? <img src={URL.createObjectURL(item)} alt="" /> : typeof item === 'string' ? <img src={item} height={"100%"} alt={``} /> : ''}
+                            {<img src={item} height={"100%"} alt={``} />}
+                            {/* {item instanceof File ? <img src={URL.createObjectURL(item)} alt="" /> : typeof item === 'string' ? <img src={item} height={"100%"} alt={``} /> : ''} */}
                             <Button button={{
                               type: 'dark', text: "Eliminar Imagen", handleClick: (e) => {
                                 e.preventDefault()
@@ -103,14 +125,28 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
                 <h5>{name}</h5>
 
                 <div key={index} className="advertising-form__input-images">
-                  <input id={`input__images`} multiple className={`input__images`} type="file" name={`images`} onChange={(event) => { handleImageChange(name, event.target.files) }} />
+                  {/* <input id={`input__images`} multiple className={`input__images`} type="file" name={`images`} onChange={(event) => { handleImageChange(name, event.target.files) }} /> */}
+                  <button onClick={(e) => {
+                    e.preventDefault()
+                    openModal(entity, 'videos')
+                  }}>Agregar Videos a {entity}</button>
                   <h5>{name}</h5>
                   <div>
                     <div className='list' style={{ display: 'flex' }}>
                       {value.map((item, i) => {
                         return (
                           <div key={i}>
-                            {item instanceof File ?
+                            {<iframe
+                              width="200px"
+                              height="100px"
+                              src={item}
+                              title="video"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            ></iframe>
+                            }
+                            {/* {item instanceof File ?
                               <video src={URL.createObjectURL(item)} controls width={200} height={100} />
                               : typeof item === 'string' ?
                                 <iframe
@@ -122,7 +158,7 @@ function ProductForm<T extends RouteProduct>({ route, options }: { route: T, opt
                                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                   allowFullScreen
                                 ></iframe>
-                                : ''}
+                                : ''} */}
                             <Button button={{
                               type: 'dark', text: "Eliminar Imagen", handleClick: (e) => {
                                 e.preventDefault()

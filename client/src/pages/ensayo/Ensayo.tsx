@@ -1,4 +1,8 @@
+import { useEffect } from "react"
+import useAdminImages from "../../hooks/useAdminImages/useAdminImages"
+
 function Ensayo() {
+  const { ModalAdminImages, selectedFiles } = useAdminImages({ location: 'ensayo', entity: 'variant' })
 
   const handleClick = () => {
     fetch('data.json')
@@ -66,11 +70,16 @@ function Ensayo() {
       .catch(err => console.log(err))
   }
 
+  useEffect(() => {
+    console.log(selectedFiles);
+  }, [selectedFiles])
 
   return (
     <div>
       <button onClick={handleClick} >Cargar</button>
       <button onClick={handleBack} >back</button>
+      <hr />
+      {ModalAdminImages}
     </div>
   );
 }

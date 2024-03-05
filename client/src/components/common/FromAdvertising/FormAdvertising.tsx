@@ -55,7 +55,6 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
   const handleItemClick = ({ advertising_id: advertising_id_param, type }: { advertising_id: string, type: "edit" | "delete" | "save" }) => {
     if (advertisingData?.data && !!advertising_id_param) {
       const findAdvertising = advertisingData.data.find(e => e.advertising_id === advertising_id_param);
-      console.log({ findAdvertising, advertising_id_param })
       if (findAdvertising) {
         const { advertising_id, ...newAdvertising } = findAdvertising;
         if (type === 'edit') {

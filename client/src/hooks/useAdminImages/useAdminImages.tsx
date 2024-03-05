@@ -1,120 +1,172 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { ReactNode, useState } from 'react';
+import { IFiles } from '../../interfaces/files.interface';
 import { HandleChangeText, HandleClick } from '../../interfaces/global.interface';
-// import { imagesAdmin } from '../../services/images/imagesApi';
-// import { media_tempoApi } from '../../services/images/media-tempo';
-import { useMutation } from '@tanstack/react-query';
-import { FilesAdmin, filesAdmin } from '../../services/files/imagesApi';
+import { filesRequest } from '../../services/files/filesApi';
+import { RequestMapFiles, RouteFiles } from '../../services/files/filesRequest';
 import ModalAdminImages from './ModalAdminImages';
-
 interface UseAdminImagesReturnProps {
-  ModalAdminImages: ReactNode
+  ModalAdminImages: ReactNode;
+  selectedFiles: {
+    nameComponent: string,
+    img: string[]
+  };
+  typeFile: 'images' | 'videos'
+  openModal: (data: string, typeFile: InitialStateAdminFiles['requestData']['toStore']['typeFile']) => void
 }
 
-function useAdminImages(): UseAdminImagesReturnProps {
-  const [files, setFiles] = useState<File[]>([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [allImages, setAllImages] = useState<string[]>([])
-  console.log(files, "files")
-  // const queryClient = useQueryClient();
+export interface InitialStateAdminFiles {
+  requestData: RequestMapFiles[RouteFiles.FilesCreateDelete]['requestData']
+  responseData: IFiles.Files[]
+  selectedFiles: {
+    nameComponent: string,
+    img: string[]
+  };
+}
 
-  const mutationSaveServerImages = useMutation({
-    mutationFn: async (data: FilesAdmin) => await filesAdmin(data),
-    onSuccess: (response) => {
-      const { data } = response
-      setAllImages(data.imagesCreated)
-      // La primera mutación fue exitosa, ahora ejecutamos la segunda mutación
-      // mutationSaveImages.mutate({ media, location });
+function useAdminImages({ location, entity }: { location: string, entity: string }): UseAdminImagesReturnProps {
+  const queryClient = useQueryClient();
+  const initialStateAdminFiles: InitialStateAdminFiles = {
+    requestData: {
+      toStore: {
+        entity,
+        file: [],
+        location,
+        typeFile: 'images',
+        name: '',
+        selected: false
+      },
+      toDelete: []
+    },
+    responseData: [],
+    selectedFiles: {
+      nameComponent: "",
+      img: []
+    }
+  }
+  const [modalOpen, setModalOpen] = useState(false);
+  const [stateAdminFiles, setStateAdminFiles] = useState<InitialStateAdminFiles>(initialStateAdminFiles);
+  const { requestData, selectedFiles } = stateAdminFiles;
+  const { mutate } = useMutation({
+    mutationFn: async ({ route, options }: { route: RouteFiles, options: Omit<RequestMapFiles[RouteFiles], 'route' | 'data'> }) => {
+      const requestData = await filesRequest(route).options(options);
+      return requestData;
+    },
+    onSuccess({ data }, { route }) {
+      setStateAdminFiles({
+        ...stateAdminFiles,
+        responseData: data.data,
+        requestData: {
+          ...stateAdminFiles.requestData,
+          toStore: { ...initialStateAdminFiles.requestData.toStore, entity, location, name: requestData.toStore.name, typeFile: requestData.toStore.typeFile }
+        }
+      })
+      if (route === RouteFiles.FilesRequest) {
+        queryClient.setQueryData([IFiles.QUERY_KEY_FILES.Files], data);
+      } else {
+        const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
+        if (inputElement) inputElement.value = '';
+        queryClient.invalidateQueries({ queryKey: [IFiles.QUERY_KEY_FILES.Files] })
+      }
     },
   });
 
-  // const mutationSaveImages = useMutation({
-  //   mutationFn: ({ media, location }: { media: string[], location: string }) => {
-  //     const dataMedia = media.length > 0 ? media.map(el => `${process.env.REACT_APP_SERVER_FILE}/${el}`) : []
-  //     return media_tempoApi({ media: dataMedia, location })
-  //   },
-  //   onSuccess: (data) => {
-  //     // Actualizar los datos en caché después de la segunda mutación
-  //     setFiles([])
-  //     const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
-  //     if (inputElement) inputElement.value = '';
-  //     setAllImages(data.data)
-  //     queryClient.invalidateQueries('posts');
-  //   },
-  // });
-
-
-
-  // useEffect(() => {
-  //   console.log({ mutationSaveImages, allImages })
-  //   console.log()
-  // }, [mutationSaveImages])
-
-  useEffect(() => {
-    // mutationSaveImages.mutate({ media: [], location })
-  }, [])
-
-
+  function requestMutation<T extends RouteFiles>({ route, options }: { route: T, options: Omit<RequestMapFiles[T], 'route' | 'data'> }) {
+    mutate({ route, options })
+  }
 
   const handleSaveImages: HandleClick = async (event) => {
     event.preventDefault();
-    mutationSaveServerImages
-    
-    // mutationSaveServerImages.mutate({
-    //   file: files, name: location
-    // })
-    // const { value } = event.target as HTMLButtonElement;
-    // const save = await imagesAdmin({
-    //   toRequest: {
-    //     file: images,
-    //     name: "ensayo"
-    //   }
-    // })
-
-    // console.log(save)
-
-
+    if (requestData.toStore) {
+      console.log(requestData)
+      requestMutation({
+        route: RouteFiles.FilesCreateDelete,
+        options: {
+          requestData,
+          extensionRoute: `?entity=${requestData.toStore.entity}&location=${requestData.toStore.location}&selected=${requestData.toStore.selected}&name=${requestData.toStore.name}&typeFile=${requestData.toStore.typeFile}`
+        }
+      })
+    }
   }
-
 
   const handleUploadImage: HandleChangeText = (event) => {
     const { files } = event.target;
     if (files && files.length > 0) {
-      const inputElement = document.getElementById(`input__images-`) as HTMLInputElement | null; //limpia input files
       const fileList = Array.from(files) as File[];
-
-      if (fileList.length > 3) {
-        if (inputElement) inputElement.value = '';
-        // const messageImage = imagesString > 0 ? `Tienes almacenadas ${imagesString} imágenes y quieres agregar ${imagesFile}, solo puedes agregar un total 3 imágenes` : `Solo se puede subir tres imágenes y estas cargando ${totalImages}`
-        // setState({ ...state, error: { ...state.error, images: messageImage } })
-      } else if (fileList.length === 0) {
-        // setState({ ...state, error: { ...state.error, images: 'Debes subir al menos una imagen' } })
-      } else {
-        setFiles(prevState => ([...prevState, ...fileList]))
-      }
+      setStateAdminFiles(prevState => ({ ...prevState, requestData: { ...prevState.requestData, toStore: { ...prevState.requestData.toStore, file: [...prevState.requestData.toStore.file, ...fileList] } } }))
     }
   };
 
   const handleDeleteImage: HandleClick = (event) => {
     event.preventDefault();
     const { value } = event.target as HTMLButtonElement;
-    // Crear una nueva copia del array sin el elemento a eliminar
-    const updatedImages = [...files];
-    updatedImages.splice(+value, 1);
+    const inputElement = document.getElementById(`input__images`) as HTMLInputElement | null; //limpia input files
+    if (inputElement) inputElement.value = '';
 
-    setFiles(updatedImages);
+    // Crear una nueva copia del array sin el elemento a eliminar
+    const updatedImages = [...requestData.toStore.file];
+    updatedImages.splice(+value, 1);
+    setStateAdminFiles(prevState => ({ ...prevState, requestData: { ...prevState.requestData, toStore: { ...prevState.requestData.toStore, file: updatedImages } } }))
+  };
+
+  const handleSelectedFiles = (url: string) => {
+    setStateAdminFiles(prevState => {
+      // Verificar si la URL ya existe en el array selectedFiles
+      const urlExists = prevState.selectedFiles.img.includes(url);
+
+      if (urlExists) {
+        // Si la URL ya existe, eliminarla del array
+        return {
+          ...prevState,
+          selectedFiles: { ...prevState.selectedFiles, img: prevState.selectedFiles.img.filter(fileUrl => fileUrl !== url) }
+        };
+      } else {
+        // Si la URL no existe, agregarla al array
+        return {
+          ...prevState,
+          selectedFiles: { ...prevState.selectedFiles, img: [...prevState.selectedFiles.img, url] }
+        };
+      }
+    });
+  };
+
+  const openModal = (nameComponent: string, typeFiles: InitialStateAdminFiles['requestData']['toStore']['typeFile']) => {
+    console.log(typeFiles)
+    setStateAdminFiles(prevState => ({
+      ...prevState,
+      selectedFiles: { ...prevState.selectedFiles, nameComponent: nameComponent },
+      requestData: { ...prevState.requestData, toStore: { ...prevState.requestData.toStore, name: nameComponent, typeFile: typeFiles } }
+    }))
+    if (requestData.toStore) {
+      requestMutation({
+        route: RouteFiles.FilesRequest,
+        options: {
+          extensionRoute: `?entity=${requestData.toStore.entity}&location=${requestData.toStore.location}&selected=${requestData.toStore.selected}&name=${nameComponent}&typeFile=${typeFiles}`
+        }
+      })
+    }
+    setModalOpen(true);
   };
 
   return {
-    ModalAdminImages: <ModalAdminImages
-      handleDeleteImage={handleDeleteImage}
-      handleSaveImages={handleSaveImages}
-      handleUploadImage={handleUploadImage}
-      files={files}
-      isOpen={modalOpen}
-      onClose={() => setModalOpen(false)}
-      setModalOpen={setModalOpen}
-      allImages={allImages}
-    />
+    ModalAdminImages: modalOpen ? (
+      <ModalAdminImages
+        setStateAdminFiles={setStateAdminFiles}
+        handleDeleteImage={handleDeleteImage}
+        handleSaveImages={handleSaveImages}
+        handleUploadImage={handleUploadImage}
+        handleSelectedFiles={handleSelectedFiles}
+        isOpen={modalOpen}
+        onClose={() => {
+          setStateAdminFiles(initialStateAdminFiles)
+          setModalOpen(false)
+        }}
+        setModalOpen={setModalOpen}
+        stateAdminFiles={stateAdminFiles}
+      />) : null,
+    selectedFiles,
+    openModal,
+    typeFile: requestData.toStore.typeFile
   };
 }
 

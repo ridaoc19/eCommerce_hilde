@@ -15,5 +15,14 @@ export default class FilesEntity {
   name: string;
 
   @Column({ type: 'varchar' })
+  typeFile: string;
+
+  @Column({ type: 'varchar' })
   url: string;
+
+  @Column({ type: 'varchar' })
+  fileId: string;
+
+  @Column({ type: 'boolean', default: false })
+  selected: boolean;
 }
