@@ -13,9 +13,15 @@ function Account() {
       <header className="user-form__header--content">
         <h2>Información de la cuenta</h2>
       </header>
-      <Information />
-      <Password />
-      {admin && <AdminUser />}
+      <div>
+        <Information />
+      </div>
+      <div>
+        <Password />
+      </div>
+      <div>
+        {admin && <AdminUser />}
+      </div>
     </div>
   );
 }
