@@ -10,9 +10,9 @@ export enum RouteProduct {
   CategoryEdit = 'put|category/edit',
   CategoryDelete = 'delete|category/delete',
 
-  SubCategoryCreate = 'post|subCategory/create',
-  SubCategoryEdit = 'put|subCategory/edit',
-  SubCategoryDelete = 'delete|subCategory/delete',
+  SubCategoryCreate = 'post|subcategory/create',
+  SubCategoryEdit = 'put|subcategory/edit',
+  SubCategoryDelete = 'delete|subcategory/delete',
 
   ProductDelete = 'delete|product/delete',
   ProductCreate = 'post|product/create',

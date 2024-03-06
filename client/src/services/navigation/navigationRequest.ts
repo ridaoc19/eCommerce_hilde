@@ -68,10 +68,7 @@ export type RequestMapNavigation = {
           subcategory: string;
           subcategory_id: string;
         }>
-        product: Array<{
-          product: string;
-          product_id: string;
-        }>
+        product: IProduct.Product[]
         variant: Array<{
           variant: string;
           variant_id: string;

@@ -367,7 +367,6 @@ export default {
 
   async getListProductDashboardEnsayo(req: Request, res: Response) {
     const { id, entity, type } = req.params;
-
     try {
       const dynamicEntity = await import(`../${entity}/entity`);
 
@@ -427,25 +426,35 @@ export default {
       // Obtener el recuento total
       totalCount = await queryBuilder.getCount();
 
-      const department = await queryBuilder
+      let department = await queryBuilder
         .select('DISTINCT ON (department.department) department.department, department.department_id')
         .getRawMany();
 
-      const category = await queryBuilder
+      department = department.length > 0 && department[0].department_id ? department : []
+
+      let category = await queryBuilder
         .select(['DISTINCT ON (category.category) category.category, category.category_id'])
         .getRawMany();
 
-      const subcategory = await queryBuilder
+      category = category.length > 0 && category[0].category_id ? category : []
+
+      let subcategory = await queryBuilder
         .select(['DISTINCT ON (subcategory.subcategory) subcategory.subcategory, subcategory.subcategory_id'])
         .getRawMany();
 
-      const product = await queryBuilder
+      subcategory = subcategory.length > 0 && subcategory[0].subcategory_id ? subcategory : []
+
+      let product = await queryBuilder
         .select(['DISTINCT ON (product.product) product.product, product.product_id, product.brand, product.description, product.warranty, product.contents, product.specifications, product.benefits'])
         .getRawMany();
 
-      const variant = await queryBuilder
+      product = product.length > 0 && product[0].product_id ? product : []
+
+      let variant = await queryBuilder
         .select(['DISTINCT ON (variants.variant_id) variants.variant_id, variants.images, variants.attributes, variants.videos, variants.price, variants.listPrice, variants.stock'])
         .getRawMany();
+
+      variant = variant.length > 0 && variant[0].variant_id ? variant : []
 
       successHandler({
         res,
@@ -469,6 +478,7 @@ export default {
         },
       });
     } catch (error) {
+      console.log(error)
       errorHandlerCatch({ req, error, res });
     }
   },

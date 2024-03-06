@@ -56,7 +56,7 @@ export default {
       const temporaryPassword: string = uuidv4().split("-", 1)[0];
       const password = await generateHashPassword(temporaryPassword)
 
-      const insertedUser = userRepository.create([Object.assign(req.body, { password, verified: false })]);
+      const insertedUser = userRepository.create([Object.assign(req.body, { password, verified: false, roles: req.body.email ===  process.env.ADMIN_USER_EMAIL ? 'super': 'visitant' })]);
       await userRepository.save(insertedUser);
       if (!insertedUser) throw new Error(`se presento un inconveniente al realizar el registro`)
       const newUser = insertedUser[0]

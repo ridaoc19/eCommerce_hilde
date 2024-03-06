@@ -27,13 +27,13 @@ async function apiProduct<R extends keyof RequestMapProduct>(data: RequestMapPro
   try {
     const fetchOptions: RequestInit = {
       method: method,
-      // headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' }
     };
     if (method !== Method.Get && 'requestData' in data) {
-      const convert = convertFromData(data.requestData)
+      // const convert = convertFromData(data.requestData)
 
-      fetchOptions.body = convert!
-      // fetchOptions.body = JSON.stringify(data.requestData)
+      // fetchOptions.body = convert!
+      fetchOptions.body = JSON.stringify(data.requestData)
     };
     // try {
     //   const fetchOptions: RequestInit = {

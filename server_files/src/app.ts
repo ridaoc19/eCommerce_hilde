@@ -1,5 +1,4 @@
 import * as cors from "cors";
-import 'dotenv/config';
 import * as express from "express";
 import * as morgan from 'morgan';
 import { uploadImages } from "./modules/files/services";

@@ -40,21 +40,21 @@ export const initialStateForm: RequestMapProduct = {
     route: RouteProduct.CategoryDelete,
     paramId: ''
   },
-  "post|subCategory/create": {
+  "post|subcategory/create": {
     route: RouteProduct.SubCategoryCreate,
     requestData: {
       subcategory: '',
     },
     paramId: ''
   },
-  "put|subCategory/edit": {
+  "put|subcategory/edit": {
     route: RouteProduct.SubCategoryEdit,
     requestData: {
       subcategory: ''
     },
     paramId: ''
   },
-  "delete|subCategory/delete": {
+  "delete|subcategory/delete": {
     route: RouteProduct.SubCategoryDelete,
     paramId: ''
   },
