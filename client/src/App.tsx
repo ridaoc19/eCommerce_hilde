@@ -38,8 +38,7 @@ function App() {
       // enabled: true,
     });
 
-  const { statusUserQuery: { errorUser, dataUser } } = useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } }, !!token);
-    console.log({errorUser, dataUser, error})
+  const { statusUserQuery: { errorUser } } = useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } }, !!token);
   useEffect(() => {
     errorUser && errorContextDispatch({ type: 'errors', payload: errorUser.errors })
     // eslint-disable-next-line

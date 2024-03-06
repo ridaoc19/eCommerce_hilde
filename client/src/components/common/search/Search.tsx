@@ -31,9 +31,6 @@ function Search() {
     refetchOnMount: false,
   })
 
-  // console.log({ data, isLoading, isError, error, isSuccess, isFetching });
-
-
   return (
     <div className="search">
       <div className="search-input">

@@ -71,7 +71,6 @@ function Login() {
                       type: 'highlighter',
                       text: 'Dashboard',
                       handleClick: () => {
-                        console.log("tiene")
                         navigate('/dashboard')
                       }
                     }}

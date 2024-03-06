@@ -37,10 +37,8 @@ function Sidebar() {
           <div className='sidebar__section'>
             {pathname === "/dashboard"
               ? <SidebarAdmin handleOnClick={handleOnClick} isOpenMenu={isOpenMenu} />
-              // : <SidebarNavigation isOpenMenu={isOpenMenu} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
               : <SidebarNavigation isOpenMenu={isOpenMenu} handleOnSelectedId={() => setSelectedIdBoolean(true)} selectedIdBoolean={selectedIdBoolean} handleOnClick={handleOnClick} />
             }
-            {/* {<SidebarNavigation handleOnClick={handleOnClick} isOpenMenu={isOpenMenu} />} */}
           </div>
         </div>
       </div>

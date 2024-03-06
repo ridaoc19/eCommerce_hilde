@@ -26,13 +26,13 @@ async function apiAdvertising<R extends keyof RequestMapAdvertising>(data: Omit<
   try {
     const fetchOptions: RequestInit = {
       method: method,
-      // headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' }
     };
     if (method !== Method.Get && 'requestData' in data) {
-      const convert = convertFromData(data.requestData as Omit<IAdvertising.advertising, 'advertising_id'>)
+      // const convert = convertFromData(data.requestData as Omit<IAdvertising.advertising, 'advertising_id'>)
 
-      fetchOptions.body = convert!
-      // fetchOptions.body = JSON.stringify(data.requestData)
+      // fetchOptions.body = convert!
+      fetchOptions.body = JSON.stringify(data.requestData)
     };
 
     const responseApi = await fetch(`${process.env.REACT_APP_URL_API}/${route}${'extensionRoute' in data ? `${data.extensionRoute}` : ""}`, fetchOptions)

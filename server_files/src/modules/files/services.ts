@@ -8,31 +8,73 @@ import { v4 as uuidv4 } from 'uuid';
 import { StatusHTTP } from '../../core/utils/send/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
+import { AppDataSource } from '../../data-source';
+import FilesEntity from './entity';
+
+interface Files {
+  file_id: string,
+  entity: string,
+  location: string,
+  name: string,
+  typeFile: string,
+  url: string,
+  selected: boolean
+};
 
 export default {
   async imagesCreateAndDelete(req: Request, res: Response) {
+    const entity = req.query.entity as string
+    const location = req.query.location as string
+    const name = req.query.name as string
+    const typeFile = req.query.typeFile as string
+    const deleteBody: string[] = req.body.delete
+    const filesRepository = AppDataSource.getRepository(FilesEntity);
+
     try {
+      const imagesCreated: Omit<Files, 'file_id' | 'selected'>[] | [] = req.files && Array.isArray(req.files) ? req.files.map(file => {
+        // const imagesCreated: { fileId: string, url: string, entity: string, location: string, name: string }[] | [] = req.files && Array.isArray(req.files) ? req.files.map(file => {
+        return {
+          fileId: file.filename,
+          url: `${process.env.FILES_FILTER_IMAGES}/files/${file.filename}`,
+          entity,
+          location,
+          typeFile,
+          name,
+        }
+      }) : []
 
-      const imagesCreated: string[] | [] = req.files && Array.isArray(req.files) ? req.files.map(file => file.path) : []
       if (imagesCreated.length > 0) {
-
+        const newFiles = filesRepository.create(imagesCreated);
+        await filesRepository.save(newFiles);
       }
 
-      if (Array.isArray(req.body.url) && req.body.url.length > 0) {
-        if (!deleteFiles(req.body.url)) return errorHandlerRes({
+      if (Array.isArray(deleteBody) && deleteBody.length > 0) {
+        const findDelete = await filesRepository
+          .createQueryBuilder('files')
+          .where('files.url IN (:...url)', { url: deleteBody })
+          .getMany();
+
+        if (!deleteFiles(findDelete.map(e => e.fileId))) return errorHandlerRes({
           res, req,
           status_code: 404,
           status: StatusHTTP.notFound_404,
           errors: [{ field: 'file_delete', message: 'Error al eliminar imágenes' }],
         });
+        await filesRepository
+          .createQueryBuilder('files')
+          .delete()
+          // .from(FilesEntity) // Reemplaza YourEntity con el nombre de tu entidad
+          .where('files.file_id IN (:...ids)', { ids: findDelete.map(e => e.file_id) })
+          .execute();
       }
 
+      const files = await getFiles({ entity, location, name, typeFile, selected: false })
 
       successHandler({
         res,
         dataDB: {
-          imagesCreated,
-          imagesDeleted: req.body.url,
+          data: files,
+          delete: deleteBody,
         },
         json: {
           field: 'file_create',
@@ -46,6 +88,71 @@ export default {
       errorHandlerCatch(error)
     }
   },
+  async requestFiles(req: Request, res: Response) {
+    const { entity, location, name, selected, typeFile } = req.query;
+    try {
+
+      const files = await getFiles({
+        entity: entity as string,
+        location: location as string,
+        name: name as string,
+        typeFile: typeFile as string,
+        selected: selected === 'false' ? false : true
+      })
+
+      successHandler({
+        res,
+        dataDB: {
+          data: files,
+          delete: [],
+        },
+        json: {
+          field: 'file_create',
+          message: 'Imágenes actualizadas correctamente',
+          status_code: 201,
+          status: StatusHTTP.created_201,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      errorHandlerCatch(error);
+    }
+  },
+  async addSelected(req: Request, res: Response) {
+    try {
+      const selected = req.query.selected === 'false' ? false : true
+
+
+      if (Array.isArray(req.body.add) && req.body.add.length > 0) {
+        await AppDataSource
+          .getRepository(FilesEntity)
+          .createQueryBuilder('files')
+          .update(FilesEntity)
+          .set({ selected })
+          .where('files.url IN (:...url)', { url: req.body.add })
+          .execute();
+      }
+
+      successHandler({
+        res,
+        dataDB: {
+          data: [],
+          delete: [],
+        },
+        json: {
+          field: 'file_create',
+          message: 'Imágenes actualizadas correctamente',
+          status_code: 201,
+          status: StatusHTTP.created_201,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      errorHandlerCatch(error);
+    }
+  },
+
+  ////////////////////////////////
   async downloadImages(_req: Request, res: Response) {
     try {
       const currentDirectory = __dirname;
@@ -95,13 +202,14 @@ export default {
 
       const newData: Data[] = [];
 
-      for (const item of data) {
+      for (let item of data) {
+        item.breadcrumb = [item.department, item.category, item.subcategory]
         const variants: Variant[] = [];
         for (const variant of item.variants) {
           const images: string[] = [];
 
           for (const img of variant.images) {
-              images.push(`${process.env.FILES_FILTER_IMAGES}/files/${img}`);
+            images.push(`${process.env.FILES_FILTER_IMAGES}/files/${img}`);
           }
 
           variants.push({ ...variant, images });
@@ -110,7 +218,101 @@ export default {
         newData.push({ ...item, variants });
       }
 
-      res.json({ newData });
+
+      // Define el tipo del objeto que estás creando dentro del reducer
+      type ImageFile = {
+        fileId: string;
+        url: string;
+        entity: string;
+        location: string;
+        typeFile: string;
+        name: string;
+      };
+
+      // Inicializa el acumulador con el tipo adecuado utilizando la función genérica reduce
+      const variantsTotal = data.reduce<ImageFile[]>((acc, item) => {
+        item.variants.forEach(el => {
+          el.images.forEach(img => {
+            if (!!img) {
+              acc.push({
+                fileId: img,
+                url: `${process.env.FILES_FILTER_IMAGES}/files/${img}`,
+                entity: 'variant',
+                location: 'admin',
+                typeFile: 'images',
+                name: item.product,
+              });
+            }
+          });
+        });
+        return acc;
+      }, []);
+
+
+
+
+      // return [...acc, ...item.variants.map(el => {
+      //   return {
+      //     fileId: el.images
+      //   }
+      // })]
+
+      //////////////////////////////////////////
+      const department = [...new Set(newData.map(({ department }) => department))]
+
+      const totalIdCategory = newData.map(({ breadcrumb }) => breadcrumb);
+
+      const conjunto: Set<string> = new Set(totalIdCategory.map((arr: string[]): string => JSON.stringify(arr)));
+      const arraysUnicos: string[][] = Array.from(conjunto).map((str: string): string[] => JSON.parse(str));
+
+      const newResult = department.reduce((acc, dept) => {
+        const filter = arraysUnicos.filter(item => item[0] === dept)
+
+        const newSubcategory = filter.map(([dep, cat, sub]) => {
+          const breadcrumb = JSON.stringify([dep, cat, sub])
+          return {
+            subcategory: sub,
+            children: newData.filter(e => JSON.stringify(e.breadcrumb) === breadcrumb)
+          }
+        })
+
+        const newCategoryName = [...new Set(filter.map(([_dep, cat]) => cat))]
+        const newCategory = newCategoryName.map((cat) => {
+          return {
+            category: cat,
+            children: newSubcategory.filter(e => e.children.some(b => b.category === cat))
+          }
+        }, [])
+
+        return [...acc, {
+          department: dept,
+          children: newCategory
+          // newCategory,
+          // newSubcategory
+          // // product: newData.filter(e => e.department === dept)
+        }]
+      }, [])
+      /////////////////////////////////////////////////////////
+
+      ///////// cargar base datos
+      const filesRepository = AppDataSource.getRepository(FilesEntity);
+      if (variantsTotal.length > 0) {
+        for (const { entity, fileId, location, name, typeFile, url } of variantsTotal) {
+          const files = new FilesEntity();
+          files.entity = entity
+          files.fileId = fileId
+          files.location = location
+          files.name = name
+          files.typeFile = typeFile
+          files.url = url
+          await filesRepository.save(files);
+        }
+      }
+      ///////
+
+
+      res.json({ newData, newResult, variantsTotal });
+
 
     } catch (error) {
       console.error('Error al descargar imágenes:', error);
@@ -119,6 +321,43 @@ export default {
 
   },
 };
+
+
+const getFiles = async ({ entity, location, name, selected, typeFile }: Omit<Files, 'file_id' | 'url'>): Promise<Files[]> => {
+  try {
+
+    let queryBuilder = AppDataSource
+      .createQueryBuilder(FilesEntity, 'files')
+
+    if (selected === false) {
+      queryBuilder = queryBuilder.where('files.selected IS false')
+    }
+
+    if (selected === true) {
+      queryBuilder.where('files.selected IS true')
+    }
+
+    if (entity) {
+      queryBuilder = queryBuilder.andWhere('files.entity = :entity', { entity });
+    }
+    if (location) {
+      queryBuilder = queryBuilder.andWhere('files.location = :location', { location });
+    }
+    if (name) {
+      queryBuilder = queryBuilder.andWhere('files.name = :name', { name });
+    }
+
+    if (typeFile) {
+      queryBuilder = queryBuilder.andWhere('files.typeFile = :typeFile', { typeFile });
+    }
+
+    const files = await queryBuilder.getMany();
+
+    return files
+  } catch (error) {
+    throw Error
+  }
+}
 
 
 ////////////////////////////////////////////////////////////////////
@@ -190,14 +429,13 @@ export const uploadImages = () => {
     throw error;
   }
 };
-
 export const deleteFiles = (filteredImages: string[]): boolean => {
   try {
     let status = false;
 
     filteredImages.forEach((url: string) => {
       try {
-        const absolutePath = path.resolve(__dirname, '../../../../files', url);
+        const absolutePath = path.resolve(__dirname, '..', '..', '..', 'files', url);
         if (fs.existsSync(absolutePath)) {
           console.log(`El archivo ${url} sí existe en ${absolutePath}`);
           fs.unlinkSync(absolutePath);
@@ -235,6 +473,7 @@ export const deleteFiles = (filteredImages: string[]): boolean => {
 
 export interface Data {
   productId: string;
+  breadcrumb: string[];
   specification: Specification;
   product: string;
   brand: string;
@@ -261,3 +500,4 @@ interface Variant {
 type Attributes = Record<string, string>
 
 type Specification = Record<string, string>
+
