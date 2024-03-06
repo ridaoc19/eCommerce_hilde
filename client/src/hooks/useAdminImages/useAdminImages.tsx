@@ -78,7 +78,7 @@ function useAdminImages({ location, entity }: { location: string, entity: string
   const handleSaveImages: HandleClick = async (event) => {
     event.preventDefault();
     if (requestData.toStore) {
-      console.log(requestData)
+
       requestMutation({
         route: RouteFiles.FilesCreateDelete,
         options: {
@@ -131,7 +131,6 @@ function useAdminImages({ location, entity }: { location: string, entity: string
   };
 
   const openModal = (nameComponent: string, typeFiles: InitialStateAdminFiles['requestData']['toStore']['typeFile']) => {
-    console.log(typeFiles)
     setStateAdminFiles(prevState => ({
       ...prevState,
       selectedFiles: { ...prevState.selectedFiles, nameComponent: nameComponent },

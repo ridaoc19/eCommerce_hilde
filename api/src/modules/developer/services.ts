@@ -11,6 +11,7 @@ import SubcategoryEntity from '../subcategory/entity';
 import VariantEntity from '../variant/entity';
 import { AppDataSource } from '../../data-source';
 import { StatusHTTP } from '../../core/utils/send/enums';
+import FilesEntity from './entity';
 
 interface Data {
   specification: Specification;
@@ -55,6 +56,7 @@ export default {
       const productRepository = AppDataSource.getRepository(ProductEntity);
       const variantRepository = AppDataSource.getRepository(VariantEntity);
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+
 
       // const data = jsonData
       // const data = jsonData.filter(e => e.variants.some(i => i.videos.length > 0 && Object.keys(i.attributes).length > 0)).slice(0, 3)
@@ -105,6 +107,20 @@ export default {
               await navigationRepository.save(newNavigation);
 
               for (const variant of product.variants) {
+
+                //////////////////////////
+                for (const img of variant.images) {
+                  const photoRepository = AppDataSource.getRepository(FilesEntity)
+                  const photoToUpdate = await photoRepository.findOneBy({
+                    url: img,
+                  })
+                  if (!!photoToUpdate) {
+                    photoToUpdate.selected = true
+                    await photoRepository.save(photoToUpdate)
+                  }
+                }
+                ////////////////////
+
                 const newVariant = new VariantEntity();
                 newVariant.attributes = variant.attributes
                 newVariant.images = variant.images

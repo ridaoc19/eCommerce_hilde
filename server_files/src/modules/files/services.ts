@@ -189,42 +189,6 @@ export default {
     }
 
   },
-  async searchImagesOld(_req: Request, res: Response) {
-    try {
-      const currentDirectory = __dirname;
-      const one = path.join(currentDirectory, '..', '..', 'core', 'db', 'newData.json');
-      const two = path.join(currentDirectory, '..', '..', 'core', 'db', 'newData2.json');
-
-      const jsonDataOne: Data[][] = JSON.parse(fs.readFileSync(one, 'utf-8'));
-      const jsonDataTwo: Data[][] = JSON.parse(fs.readFileSync(two, 'utf-8'));
-
-      const data = [...jsonDataOne.flat(), ...jsonDataTwo.flat()]
-
-      const newData: Data[] = [];
-
-      for (const item of data) {
-        const variants: Variant[] = [];
-        for (const variant of item.variants) {
-          const images: string[] = [];
-
-          for (const img of variant.images) {
-            images.push(`${process.env.FILES_FILTER_IMAGES}/files/${img}`);
-          }
-
-          variants.push({ ...variant, images });
-        }
-
-        newData.push({ ...item, variants });
-      }
-
-      res.json({ newData });
-
-    } catch (error) {
-      console.error('Error al descargar imágenes:', error);
-      res.status(500).json({ error: 'Error al descargar imágenes' });
-    }
-
-  },
   async searchImages(_req: Request, res: Response) {
     try {
       const currentDirectory = __dirname;
@@ -254,6 +218,46 @@ export default {
         newData.push({ ...item, variants });
       }
 
+
+      // Define el tipo del objeto que estás creando dentro del reducer
+      type ImageFile = {
+        fileId: string;
+        url: string;
+        entity: string;
+        location: string;
+        typeFile: string;
+        name: string;
+      };
+
+      // Inicializa el acumulador con el tipo adecuado utilizando la función genérica reduce
+      const variantsTotal = data.reduce<ImageFile[]>((acc, item) => {
+        item.variants.forEach(el => {
+          el.images.forEach(img => {
+            if (!!img) {
+              acc.push({
+                fileId: img,
+                url: `${process.env.FILES_FILTER_IMAGES}/files/${img}`,
+                entity: 'variant',
+                location: 'admin',
+                typeFile: 'images',
+                name: item.product,
+              });
+            }
+          });
+        });
+        return acc;
+      }, []);
+
+
+
+
+      // return [...acc, ...item.variants.map(el => {
+      //   return {
+      //     fileId: el.images
+      //   }
+      // })]
+
+      //////////////////////////////////////////
       const department = [...new Set(newData.map(({ department }) => department))]
 
       const totalIdCategory = newData.map(({ breadcrumb }) => breadcrumb);
@@ -288,10 +292,26 @@ export default {
           // // product: newData.filter(e => e.department === dept)
         }]
       }, [])
+      /////////////////////////////////////////////////////////
+
+      ///////// cargar base datos
+      const filesRepository = AppDataSource.getRepository(FilesEntity);
+      if (variantsTotal.length > 0) {
+        for (const { entity, fileId, location, name, typeFile, url } of variantsTotal) {
+          const files = new FilesEntity();
+          files.entity = entity
+          files.fileId = fileId
+          files.location = location
+          files.name = name
+          files.typeFile = typeFile
+          files.url = url
+          await filesRepository.save(files);
+        }
+      }
+      ///////
 
 
-
-      res.json({ newData, newResult });
+      res.json({ newData, newResult, variantsTotal });
 
 
     } catch (error) {

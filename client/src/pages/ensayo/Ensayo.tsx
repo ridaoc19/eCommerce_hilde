@@ -77,7 +77,7 @@ function Ensayo() {
   return (
     <div>
       <button onClick={handleClick} >Cargar</button>
-      <button onClick={handleBack} >back</button>
+      <button onClick={handleBack} >Ultima lista buenas de productos JSON</button>
       <hr />
       {ModalAdminImages}
     </div>

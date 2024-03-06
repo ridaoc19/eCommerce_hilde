@@ -22,7 +22,7 @@ async function apiAdvertising<R extends keyof RequestMapAdvertising>(data: Omit<
   const parts = data.route.split('|');
   const method = parts[0];
   const route = parts[1];
-console.log(data)
+
   try {
     const fetchOptions: RequestInit = {
       method: method,

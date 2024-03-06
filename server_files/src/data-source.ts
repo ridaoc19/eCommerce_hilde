@@ -1,5 +1,6 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
+import '../dotenv'
 import FilesEntity from "./modules/files/entity"
 
 export const AppDataSource = new DataSource({
