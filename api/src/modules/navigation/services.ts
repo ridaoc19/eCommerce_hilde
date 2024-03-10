@@ -482,7 +482,79 @@ export default {
       errorHandlerCatch({ req, error, res });
     }
   },
+
+  async postFavorites(req: Request, res: Response) {
+    try {
+
+    } catch (error) {
+      errorHandlerCatch({ error, req, res })
+    }
+  },
+
+  async postCart(req: Request, res: Response) {
+    try {
+
+    } catch (error) {
+      errorHandlerCatch({ error, req, res })
+    }
+  }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // // busqueda de filtros

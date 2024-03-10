@@ -1,9 +1,10 @@
-import { BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { objectString, stringEmpty } from '../../core/utils/functionsGlobal';
+import { AppDataSource } from '../../data-source';
 import NavigationEntity from '../navigation/entity';
 import SubcategoryEntity from '../subcategory/entity';
 import VariantEntity from '../variant/entity';
-import { AppDataSource } from '../../data-source';
-import { objectString, stringEmpty } from '../../core/utils/functionsGlobal';
+import UserEntity from '../user/entity';
 
 
 @Entity('products')
@@ -41,6 +42,9 @@ export default class ProductEntity {
 
   @OneToMany(() => NavigationEntity, navigation => navigation.product, { cascade: ['soft-remove', 'recover'] })
   navigations: NavigationEntity[];
+
+  @ManyToMany(() => UserEntity, user => user.favorite)
+  usersInFavorites: UserEntity[];
 
   @DeleteDateColumn({ select: false })
   deletedAt: Date;

@@ -1,6 +1,6 @@
 import { sendEmail } from "../../../core/utils/email";
 import { AppDataSource } from "../../../data-source";
-import { UserEntity } from "../entity";
+import UserEntity from "../entity";
 
 function stopExecutionTemporarily() {
   return new Promise(resolve => {
@@ -33,7 +33,7 @@ export async function userCreatedVerified({ _id }: UserCreatedVerified) {
     if (!userDBTwo.verified) {
       const responseEmailTwo: boolean = await sendEmail({ name: userDBTwo.name, email: userDBTwo?.email, type: 'secondNotificationRegistre' })
       if (!responseEmailTwo) throw new Error(`Error al enviar el segundo correo`)
-      await userRepository.delete(userDBTwo);
+      await userRepository.softRemove(userDBTwo);
       // await User.findByIdAndDelete(_id)
     } else if (userDBOne?.verified) return
 

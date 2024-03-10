@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { sendEmail } from "../../../core/utils/email";
 import { errorHandlerCatch } from "../../../core/utils/send/errorHandler";
 import { AppDataSource } from "../../../data-source";
-import { UserEntity } from "../entity";
+import UserEntity from "../entity";
 
 function stopExecutionTemporarily() {
   return new Promise(resolve => {

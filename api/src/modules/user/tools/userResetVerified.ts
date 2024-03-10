@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { generateHashPassword } from "../../../core/auth/bcryptUtils";
 import { sendEmail } from "../../../core/utils/email";
 import { AppDataSource } from '../../../data-source';
-import { UserEntity } from '../entity';
+import UserEntity from '../entity';
 
 
 function stopExecutionTemporarily() {

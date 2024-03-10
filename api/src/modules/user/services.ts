@@ -3,14 +3,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { generateHashPassword } from '../../core/auth/bcryptUtils';
 import { generateToken, generateTokenEmail, verifyToken, verifyTokenEmail } from '../../core/auth/jwtUtils';
 import { sendEmail } from '../../core/utils/email';
+import { StatusHTTP } from '../../core/utils/send/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { UserEntity } from './entity';
-import { userCreatedVerified } from './tools/userCreatedVerified';
-import { userResetVerified } from './tools/userResetVerified';
-import { userEmailVerified } from './tools/userEmailVerified';
 import { AppDataSource } from '../../data-source';
-import { StatusHTTP } from '../../core/utils/send/enums';
+import UserEntity from './entity';
+import { userCreatedVerified } from './tools/userCreatedVerified';
+import { userEmailVerified } from './tools/userEmailVerified';
+import { userResetVerified } from './tools/userResetVerified';
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
@@ -298,7 +298,7 @@ export default {
       // await User.findByIdAndDelete(_id)
       const userDelete = await userRepository.findOne({ where: { _id } })
       if (!userDelete) return
-      await userRepository.delete(userDelete);
+      await userRepository.softRemove(userDelete);
 
       const userDB = await userRepository.find()
       if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
