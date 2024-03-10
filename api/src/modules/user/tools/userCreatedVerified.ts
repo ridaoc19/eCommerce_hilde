@@ -9,15 +9,15 @@ function stopExecutionTemporarily() {
 }
 
 interface UserCreatedVerified {
-  _id: string,
+  user_id: string,
 }
 
-export async function userCreatedVerified({ _id }: UserCreatedVerified) {
+export async function userCreatedVerified({ user_id }: UserCreatedVerified) {
   const userRepository = AppDataSource.getRepository(UserEntity);
   try {
     await stopExecutionTemporarily();
     // const userDBOne = await User.findById(_id)
-    const responseUserOne = await userRepository.findBy({ _id })
+    const responseUserOne = await userRepository.findBy({ user_id })
     if (!responseUserOne) throw new Error(`se presento un inconveniente al solicitar información del usuario`)
     const userDBOne = responseUserOne[0]
     if (!userDBOne?.verified) {
@@ -27,7 +27,7 @@ export async function userCreatedVerified({ _id }: UserCreatedVerified) {
 
     await stopExecutionTemporarily();
     // const userDBTwo = await User.findById(_id)
-    const responseUserTwo = await userRepository.findBy({ _id })
+    const responseUserTwo = await userRepository.findBy({ user_id })
     if (!responseUserTwo) throw new Error(`se presento un inconveniente al solicitar información del usuario en la segunda notificación`)
     const userDBTwo = responseUserOne[0]
     if (!userDBTwo.verified) {

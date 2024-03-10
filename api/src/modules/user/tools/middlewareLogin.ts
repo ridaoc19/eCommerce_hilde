@@ -71,7 +71,7 @@ const schemaLogin: { [key: string]: yup.Schema } = ({
 
     const userDB = await AppDataSource
       .getRepository(UserEntity)
-      .findOne({ where: { _id: decoded._id } });
+      .findOne({ where: { user_id: decoded.user_id } });
 
     if (!userDB) {
       return ctx.createError({

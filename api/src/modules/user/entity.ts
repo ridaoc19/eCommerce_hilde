@@ -5,7 +5,7 @@ import ProductEntity from '../product/entity';
 @Entity('users')
 export default class UserEntity {
   @PrimaryGeneratedColumn('uuid')
-  _id: string;
+  user_id: string;
 
   @Column()
   name: string;
@@ -34,12 +34,21 @@ export default class UserEntity {
   @Column({ nullable: true })
   addresses: string;
 
-  @ManyToMany(() => ProductEntity, product => product.usersInFavorites)
-  @JoinTable()
+  @ManyToMany(() => ProductEntity, product => product.favorites)
+  @JoinTable({
+    name: 'favorites',
+    joinColumn: {
+      name: 'user',
+      referencedColumnName: 'user_id'
+    },
+    inverseJoinColumn: {
+      name: 'product',
+      referencedColumnName: 'product_id'
+    }
+  })
   favorite: ProductEntity[];
 
-  @ManyToMany(() => CartEntity, cart => cart.user_id)
-  @JoinTable()
+  @ManyToMany(() => CartEntity, cart => cart.user)
   cart: CartEntity[];
 
   @DeleteDateColumn({ select: false })

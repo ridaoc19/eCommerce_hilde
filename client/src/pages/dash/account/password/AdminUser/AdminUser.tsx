@@ -15,7 +15,7 @@ type InitialStateUserAdmin = {
 }
 
 const initialStateUserAdmin: InitialStateUserAdmin = {
-  change: { _id: "", roles: "" },
+  change: { user_id: "", roles: "" },
   error: { roles: "" }
 }
 
@@ -41,7 +41,7 @@ function AdminUser() {
     } else if (id === UserAdminButtonName.Empty) {
       setStateUserAdmin(initialStateUserAdmin)
     } else {
-      tools.fetch(RouteUser.AccountAdminDelete).options({ routeId: stateUserAdmin.change._id })
+      tools.fetch(RouteUser.AccountAdminDelete).options({ routeId: stateUserAdmin.change.user_id })
     }
   }
 
@@ -56,8 +56,8 @@ function AdminUser() {
         {dataSuccess?.data.map(user => {
 
           return (
-            <li key={user._id} style={stateUserAdmin.change._id === user._id ? { color: 'blue' } : { color: 'black' }} onClick={() => {
-              setStateUserAdmin(prevState => ({ ...prevState, change: { _id: user._id, roles: user.roles } }))
+            <li key={user.user_id} style={stateUserAdmin.change.user_id === user.user_id ? { color: 'blue' } : { color: 'black' }} onClick={() => {
+              setStateUserAdmin(prevState => ({ ...prevState, change: { user_id: user.user_id, roles: user.roles } }))
             }}>
               <span>{user.name} {user.lastName}</span>
               <span> {user.email}</span>
@@ -98,9 +98,9 @@ function AdminUser() {
       </div>
 
       <div className="form__button--content">
-        <button id='button__user-admin--save' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError || !stateUserAdmin.change.roles || stateUserAdmin.change.roles === dataSuccess?.data.find(u => u._id === stateUserAdmin.change._id)?.roles} >{status.isLoadingUser ? <Spinner /> : "Actualizar"}</button>
+        <button id='button__user-admin--save' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError || !stateUserAdmin.change.roles || stateUserAdmin.change.roles === dataSuccess?.data.find(u => u.user_id === stateUserAdmin.change.user_id)?.roles} >{status.isLoadingUser ? <Spinner /> : "Actualizar"}</button>
         <button id='button__user-admin--empty' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError} >{"Limpiar"}</button>
-        <button id='button__user-admin--delete' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError || !stateUserAdmin.change._id} >{status.isLoadingUser ? <Spinner /> : "Eliminar Usuario"}</button>
+        <button id='button__user-admin--delete' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError || !stateUserAdmin.change.user_id} >{status.isLoadingUser ? <Spinner /> : "Eliminar Usuario"}</button>
       </div>
     </div>
   );

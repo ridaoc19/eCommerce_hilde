@@ -3,8 +3,8 @@ import { objectString, stringEmpty } from '../../core/utils/functionsGlobal';
 import { AppDataSource } from '../../data-source';
 import NavigationEntity from '../navigation/entity';
 import SubcategoryEntity from '../subcategory/entity';
-import VariantEntity from '../variant/entity';
 import UserEntity from '../user/entity';
+import VariantEntity from '../variant/entity';
 
 
 @Entity('products')
@@ -44,7 +44,7 @@ export default class ProductEntity {
   navigations: NavigationEntity[];
 
   @ManyToMany(() => UserEntity, user => user.favorite)
-  usersInFavorites: UserEntity[];
+  favorites: UserEntity[];
 
   @DeleteDateColumn({ select: false })
   deletedAt: Date;

@@ -13,10 +13,15 @@ export default class CartEntity {
   @Column()
   variant_id: string
 
+  @Column()
+  quantity: number;
+
   @ManyToOne(() => UserEntity, (cart) => cart.cart)
+  // @JoinColumn({ name: 'user' })
   user: UserEntity
 
   @ManyToOne(() => VariantEntity, (variant) => variant.cart)
+  // @JoinColumn({ name: 'variant' })
   variant: VariantEntity
 
   @DeleteDateColumn({ select: false })
