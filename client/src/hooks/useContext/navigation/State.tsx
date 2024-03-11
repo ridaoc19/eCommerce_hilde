@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { initialState, reducer } from './reducer';
+import { initialStateNavigation, reducer } from './reducer';
 
 function StateNavigation() {
   // const { isFetching, isLoading, data, error, isSuccess, isError } =
@@ -21,7 +21,7 @@ function StateNavigation() {
   //     // enabled: true,
   //   });
 
-  const [navigationContextState, navigationContextDispatch] = useReducer(reducer, initialState);
+  const [navigationContextState, navigationContextDispatch] = useReducer(reducer, initialStateNavigation);
 
   // useEffect(() => {
 
@@ -37,14 +37,14 @@ function StateNavigation() {
 
 
 
-  const tools = {
-    solicitud() {
+  // const tools = {
+  //   solicitud() {
 
-    }
+  //   }
 
-  }
+  // }
 
-  return { navigationContextState, navigationContextDispatch, tools };
+  return { navigationContextState, navigationContextDispatch };
 }
 
 export default StateNavigation;

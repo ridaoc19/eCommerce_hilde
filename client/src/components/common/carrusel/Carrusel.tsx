@@ -1,21 +1,22 @@
 // src/Carrusel.tsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import InputAdvertising from '../FromAdvertising/FormAdvertising';
-import { IContextData } from '../../../hooks/useContext';
+import { ParamsChildren } from '../../../hooks/useAdvertising/useAdvertising';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { IAdvertising } from '../../../interfaces/advertising.interface';
+import InputAdvertising from '../FromAdvertising/FormAdvertising';
 import Button from '../button/Button';
 // import './principal.scss'; // Importa tu archivo de estilos
 
-interface CarruselProps {
+interface CarruselProps extends ParamsChildren {
   // advertising: IAdvertising.advertising[];
   itemPerPage?: number
-  advertising: IContextData['advertising']['advertisingContextState'],
-  location: IAdvertising.TotalLocation
+  // advertising: IContextData['advertising']['advertisingContextState']['advertising']['data']['dataAdvertising'],
+  // location: IAdvertising.TotalLocation
 }
-const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage = 3 }) => {
-  const advertisingData = { ...advertising.advertisingData, data: advertising.advertisingData.data.filter(e => e.location === location) }
+const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage = 3, isFetching, isLoading }) => {
+  // const advertising = advertising.filter(e => e.location === location)
+  // const advertising = { ...advertising.advertising, data: advertising.advertising.data.dataAdvertising.filter(e => e.location === location) }
   const { mediaQuery } = useMediaQuery();
   // Estado para controlar si el mouse está sobre la vitrina
   const [isMouseOverVitrine, setIsMouseOverVitrine] = useState(false);
@@ -31,7 +32,7 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage 
   // const advertisingPerPage = 1;
 
   // Número total de páginas
-  const pageCount = Math.ceil(advertisingData.data.length / advertisingPerPage);
+  const pageCount = Math.ceil(advertising.length / advertisingPerPage);
 
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage 
 
   // Efecto para actualizar los productos paginados cuando cambian los productos originales
   useEffect(() => {
-    const adve = advertisingData.data.map(({ advertising_id, redirect, title, image_desktop, image_phone, image_tablet }) => {
+    const adve = advertising.map(({ advertising_id, redirect, title, image_desktop, image_phone, image_tablet }) => {
       const resultImage = mediaQuery === 'phone' ? image_phone : mediaQuery === 'tablet' ? image_tablet : image_desktop
       const image = resultImage ? resultImage : image_desktop
       return {
@@ -69,11 +70,11 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage 
   }, [isMouseOverVitrine, allAdvertising]);
 
   // Renderizar el componente principal
-  // if (advertisingData.data.length === 0) return null
+  // if (advertising.data.length === 0) return null
   return (
     <>
-      {advertisingData.data.length > 0 && <div
-        className={`${advertisingData.data[0]?.location || "advertising"} carrusel`}
+      {advertising.length > 0 && <div
+        className={`${advertising[0]?.location || "advertising"} carrusel`}
         onMouseEnter={() => setIsMouseOverVitrine(true)}
         onMouseLeave={() => setIsMouseOverVitrine(false)}
       >
@@ -118,7 +119,7 @@ const Carrusel: React.FC<CarruselProps> = ({ advertising, location, itemPerPage 
           />
         </div>
       </div>}
-      <InputAdvertising advertising={{ advertisingData }} location={location} title={location} />
+      <InputAdvertising advertising={advertising} isFetching={isFetching} isLoading={isLoading} location={location} title={location} />
     </>
   );
 };

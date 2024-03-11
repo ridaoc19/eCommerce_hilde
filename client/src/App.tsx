@@ -66,7 +66,7 @@ function App() {
       payload: {
         isLoading: advertising.isLoading,
         isFetching: advertising.isFetching,
-        data: advertising.data?.data ? advertising.data.data : [],
+        data: advertising.data?.data ? advertising.data.data : { dataAdvertising: [], topViewedProducts: [] },
         errors: advertising.error?.errors ? advertising.error.errors : []
       }
     })
