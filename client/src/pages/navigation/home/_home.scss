@@ -1,5 +1,15 @@
 .home {
   display: grid;
-  gap    : 1rem;
+  gap    : 4rem;
   padding: 2%;
+
+  &.tablet {
+    gap: 2rem;
+  }
+
+  &.phone {
+    gap: 1rem;
+  }
+
+
 }
