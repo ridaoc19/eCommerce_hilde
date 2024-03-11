@@ -10,7 +10,7 @@ import InputAdvertising from "../FromAdvertising/FormAdvertising";
 function BannerBox({ advertising, location, isFetching, isLoading }: ParamsChildren) {
   // const advertisingData = { ...advertising.advertisingData, data: advertising.advertisingData.data.filter(e => e.location === location) }
   // const { isFetching, isLoading, data } = advertisingData;
-  if (advertising.length === 0) return null
+  // if (advertising.length === 0) return null
   return (
     <>
       <div className="banner-box">
