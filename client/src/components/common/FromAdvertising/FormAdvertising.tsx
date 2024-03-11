@@ -1,12 +1,19 @@
-import { useContext } from "react";
-import { Components, FormAdvertisingProps, InitialStateFormAdvertising, RouterDom, react, } from "./utils";
+import { RefObject, useContext } from "react";
+import { Components, InitialStateFormAdvertising, RouterDom, react, } from "./utils";
 import { CreateContext } from "../../../hooks/useContext";
+import { ParamsChildren } from "../../../hooks/useAdvertising/useAdvertising";
 const { ErrorMessage, FormAdvertisingButton, FormAdvertisingForm, FormAdvertisingList, useMediaQuery, useModalConfirm, useMutationAdvertising } = Components
 const { useEffect, useState, RouteAdvertising } = react;
 const { useLocation } = RouterDom;
 
+interface FormAdvertisingProps extends ParamsChildren {
+  // advertising: Partial<IContextData['advertising']['advertisingContextState']['advertisingData']['data']['dataAdvertising']>;
+  // location: IAdvertising.TotalLocation;
+  componentMount?: RefObject<HTMLDivElement>;
+  title: string
+}
 
-function FormAdvertising({ advertising: { advertisingData }, location, componentMount, title }: FormAdvertisingProps) {
+function FormAdvertising({ advertising, location, componentMount, title }: FormAdvertisingProps) {
   const { dashboard: { state: { permits: { edit } } } } = useContext(CreateContext)!
   const { tools: { mutate, resetError }, isLoading, error, status } = useMutationAdvertising();
   const { ModalComponent, closeModal, openModal } = useModalConfirm()
@@ -53,8 +60,8 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
   }
 
   const handleItemClick = ({ advertising_id: advertising_id_param, type }: { advertising_id: string, type: "edit" | "delete" | "save" }) => {
-    if (advertisingData?.data && !!advertising_id_param) {
-      const findAdvertising = advertisingData.data.find(e => e.advertising_id === advertising_id_param);
+    if (advertising && !!advertising_id_param) {
+      const findAdvertising = advertising.find(e => e?.advertising_id === advertising_id_param);
       if (findAdvertising) {
         const { advertising_id, ...newAdvertising } = findAdvertising;
         if (type === 'edit') {
@@ -89,7 +96,7 @@ function FormAdvertising({ advertising: { advertisingData }, location, component
         </div>
 
         <div className={`advertising-form__list`}>
-          {advertisingData?.data && <FormAdvertisingList advertising={advertisingData.data} handleItemClick={handleItemClick} stateInput={stateInput} />}
+          {advertising && <FormAdvertisingList advertising={advertising} handleItemClick={handleItemClick} stateInput={stateInput} />}
         </div>
 
         <div className={`advertising-form__input ${mediaQuery}`}>

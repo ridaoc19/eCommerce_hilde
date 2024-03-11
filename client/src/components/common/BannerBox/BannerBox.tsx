@@ -1,21 +1,20 @@
 import { Link } from "react-router-dom";
+import { ParamsChildren } from "../../../hooks/useAdvertising/useAdvertising";
 import InputAdvertising from "../FromAdvertising/FormAdvertising";
-import { IContextData } from "../../../hooks/useContext";
-import { IAdvertising } from "../../../interfaces/advertising.interface";
 
-interface BannerBoxProps {
-  advertising: IContextData['advertising']['advertisingContextState'],
-  location: IAdvertising.TotalLocation
-}
+// interface BannerBoxProps {
+//   advertising: IContextData['advertising']['advertisingContextState'],
+//   location: IAdvertising.TotalLocation
+// }
 
-function BannerBox({ advertising, location }: BannerBoxProps) {
-  const advertisingData = { ...advertising.advertisingData, data: advertising.advertisingData.data.filter(e => e.location === location) }
-  const { isFetching, isLoading, data } = advertisingData;
-  if (advertisingData.data.length === 0) return null
+function BannerBox({ advertising, location, isFetching, isLoading }: ParamsChildren) {
+  // const advertisingData = { ...advertising.advertisingData, data: advertising.advertisingData.data.filter(e => e.location === location) }
+  // const { isFetching, isLoading, data } = advertisingData;
+  if (advertising.length === 0) return null
   return (
     <>
       <div className="banner-box">
-        {isFetching || isLoading ? <div>Cargando...</div> : advertisingData.data.length > 0 && data.map(item => {
+        {isFetching || isLoading ? <div>Cargando...</div> : advertising.length > 0 && advertising.map(item => {
           return (
             <Link key={item.advertising_id} to={item.redirect} className="banner-box__item">
               <img src={item.image_desktop} alt="" />
@@ -24,7 +23,7 @@ function BannerBox({ advertising, location }: BannerBoxProps) {
           )
         })}
       </div>
-      <InputAdvertising advertising={{ advertisingData }} location={location} title={location} />
+      <InputAdvertising advertising={advertising} isFetching={isFetching} isLoading={isLoading} location={location} title={location} />
     </>
 
   );

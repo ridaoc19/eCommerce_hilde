@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { generateHashPassword } from "../../../core/auth/bcryptUtils";
 import { sendEmail } from "../../../core/utils/email";
 import { AppDataSource } from '../../../data-source';
-import { UserEntity } from '../entity';
+import UserEntity from '../entity';
 
 
 function stopExecutionTemporarily() {
@@ -13,17 +13,17 @@ function stopExecutionTemporarily() {
 }
 
 interface UserResetVerified {
-  _id: string,
+  user_id: string,
   res: Response
 }
 
-export async function userResetVerified({ _id }: UserResetVerified) {
+export async function userResetVerified({ user_id }: UserResetVerified) {
   try {
     const userRepository = AppDataSource.getRepository(UserEntity);
 
     await stopExecutionTemporarily();
     // const userDBOne = await User.findById(_id)
-    const userDBOne = await userRepository.findOne({ where: { _id } })
+    const userDBOne = await userRepository.findOne({ where: { user_id } })
 
     if (!userDBOne) throw new Error(`se presento un inconveniente al solicitar información del usuario`)
     if (!userDBOne?.verified) {
@@ -33,7 +33,7 @@ export async function userResetVerified({ _id }: UserResetVerified) {
 
     await stopExecutionTemporarily();
     // const userDBTwo = await User.findById(_id)
-    const userDBTwo = await userRepository.findOne({ where: { _id } })
+    const userDBTwo = await userRepository.findOne({ where: { user_id } })
 
     if (!userDBTwo) throw new Error(`se presento un inconveniente al solicitar información del usuario en la segunda notificación`)
     if (!userDBTwo.verified) {

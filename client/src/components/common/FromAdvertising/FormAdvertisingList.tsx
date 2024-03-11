@@ -4,7 +4,7 @@ import Svg from '../../assets/icons/Svg';
 import { InitialStateFormAdvertising } from './utils';
 
 interface FormAdvertisingListProps {
-  advertising: IContextData['advertising']['advertisingContextState']['advertisingData']['data'];
+  advertising: IContextData['advertising']['advertisingContextState']['advertisingData']['data']['dataAdvertising'];
   handleItemClick: (data: { advertising_id: string, type: "edit" | "delete" | "save" }) => void
   stateInput: InitialStateFormAdvertising
 }

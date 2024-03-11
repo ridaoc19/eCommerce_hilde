@@ -23,8 +23,8 @@ function Information() {
   const [success, setSuccess] = useState(false)
 
   const initialStateAccountPass: InitialStateAccountPass = {
-    change: { _id: userData?._id || "", password: "", newPassword: "" },
-    error: { _id: "", password: "", newPassword: "" },
+    change: { user_id: userData?.user_id || "", password: "", newPassword: "" },
+    error: { user_id: "", password: "", newPassword: "" },
   }
   const [stateAccountPass, setStateAccountPass] = useState<InitialStateAccountPass>(initialStateAccountPass);
 

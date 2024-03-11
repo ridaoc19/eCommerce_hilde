@@ -1,8 +1,9 @@
-import { BeforeInsert, BeforeRemove, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeRemove, BeforeUpdate, Column, DeleteDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { objectString, stringEmpty } from '../../core/utils/functionsGlobal';
+import { AppDataSource } from '../../data-source';
+import CartEntity from '../cart/entity';
 import NavigationEntity from '../navigation/entity';
 import ProductEntity from '../product/entity';
-import { AppDataSource } from '../../data-source';
-import { objectString, stringEmpty } from '../../core/utils/functionsGlobal';
 
 
 @Entity('variants')
@@ -35,6 +36,9 @@ export default class VariantEntity {
   @ManyToOne(() => NavigationEntity, navigation => navigation.variants, { cascade: true })
   @JoinColumn({ name: 'navigation_id' })
   navigation: NavigationEntity;
+
+  @ManyToMany(() => CartEntity, cart => cart.variant)
+  cart: CartEntity[];
 
   @DeleteDateColumn({ select: false })
   deletedAt: Date;

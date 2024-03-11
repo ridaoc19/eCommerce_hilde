@@ -5,6 +5,10 @@
   .carrusel__button-left {
     position: absolute;
     top     : 50%;
+
+    >button {
+      width: 2rem;
+    }
   }
 
   .carrusel__image_container {
@@ -26,5 +30,9 @@
     position: absolute;
     top     : 50%;
     right   : 0;
+
+    >button {
+      width: 2rem;
+    }
   }
 }

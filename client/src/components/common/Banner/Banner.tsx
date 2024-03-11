@@ -1,28 +1,27 @@
 import { Link } from "react-router-dom";
+import { ParamsChildren } from "../../../hooks/useAdvertising/useAdvertising";
 import InputAdvertising from "../FromAdvertising/FormAdvertising";
-import { IContextData } from "../../../hooks/useContext";
-import { IAdvertising } from "../../../interfaces/advertising.interface";
 
-interface BannerProps {
-  advertising: IContextData['advertising']['advertisingContextState'],
-  location: IAdvertising.TotalLocation
-}
+// interface BannerProps {
+//   advertising: IContextData['advertising']['advertisingContextState'],
+//   location: IAdvertising.TotalLocation
+// }
 
-function Banner({ advertising, location }: BannerProps) {
-  const advertisingData = { ...advertising.advertisingData, data: advertising.advertisingData.data.filter(e => e.location === location) }
-  const { isFetching, isLoading, data } = advertisingData;
+function Banner({ advertising, isFetching, isLoading, location }: ParamsChildren) {
+  // const advertisingData = { ...advertising.advertisingData, data: advertising.advertisingData.data.filter(e => e.location === location) }
+  // const { isFetching, isLoading, data } = advertisingData;
   // if (advertisingData.data.length === 0) return null
 
   return (
-    <div className={`${advertisingData?.data[0]?.location || 'banner'} banner`}>
-      {isFetching || isLoading ? <div>Cargando...</div> : advertisingData.data.length > 0 && data.map(item => {
+    <div className={`${advertising[0]?.location || 'banner'} banner`}>
+      {isFetching || isLoading ? <div>Cargando...</div> : advertising.length > 0 && advertising.map(item => {
         return (
           <Link key={item.advertising_id} to={item.redirect}>
             <img src={item.image_desktop} alt="" />
           </Link>
         )
       })}
-      <InputAdvertising advertising={{ advertisingData }} location={location} title={location} />
+      <InputAdvertising advertising={advertising} isFetching={isFetching} isLoading={isLoading} location={location} title={location} />
     </div>
   );
 }

@@ -8,8 +8,9 @@ import FilesEntity from "./modules/developer/entity"
 import NavigationEntity from "./modules/navigation/entity"
 import ProductEntity from "./modules/product/entity"
 import SubcategoryEntity from "./modules/subcategory/entity"
-import { UserEntity } from "./modules/user/entity"
+import UserEntity from "./modules/user/entity"
 import VariantEntity from "./modules/variant/entity"
+import CartEntity from "./modules/cart/entity"
 // import { User } from "./entity/User"
 
 export const AppDataSource = new DataSource({
@@ -30,7 +31,8 @@ export const AppDataSource = new DataSource({
         ProductEntity,
         VariantEntity,
         NavigationEntity,
-        FilesEntity
+        FilesEntity,
+        CartEntity
     ],
     migrations: [],
     subscribers: [],

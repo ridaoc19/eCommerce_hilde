@@ -3,14 +3,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { generateHashPassword } from '../../core/auth/bcryptUtils';
 import { generateToken, generateTokenEmail, verifyToken, verifyTokenEmail } from '../../core/auth/jwtUtils';
 import { sendEmail } from '../../core/utils/email';
+import { StatusHTTP } from '../../core/utils/send/enums';
 import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
-import { UserEntity } from './entity';
-import { userCreatedVerified } from './tools/userCreatedVerified';
-import { userResetVerified } from './tools/userResetVerified';
-import { userEmailVerified } from './tools/userEmailVerified';
 import { AppDataSource } from '../../data-source';
-import { StatusHTTP } from '../../core/utils/send/enums';
+import UserEntity from './entity';
+import { userCreatedVerified } from './tools/userCreatedVerified';
+import { userEmailVerified } from './tools/userEmailVerified';
+import { userResetVerified } from './tools/userResetVerified';
 
 function fetchCount(info: any) {
   return new Promise<{ data: number }>((resolve) =>
@@ -29,7 +29,7 @@ export default {
       let token = "";
 
       if (responseUserDB && responseUserDB.verified) {
-        token = generateToken({ _id: responseUserDB._id });
+        token = generateToken({ user_id: responseUserDB.user_id });
       }
 
       // await fetchCount({ id: responseUserDB?._id })
@@ -61,7 +61,7 @@ export default {
       if (!insertedUser) throw new Error(`se presento un inconveniente al realizar el registro`)
       const newUser = insertedUser[0]
 
-      await fetchCount({ _id: newUser._id, name: newUser.name, lastName: newUser.lastName, email: newUser.email })
+      await fetchCount({ _id: newUser.user_id, name: newUser.name, lastName: newUser.lastName, email: newUser.email })
 
       const responseEmail: boolean = await sendEmail({ name: newUser.name, email: newUser.email, password: temporaryPassword, type: 'registre' })
       if (!responseEmail) return errorHandlerRes<StatusHTTP.badRequest_400>({
@@ -71,7 +71,7 @@ export default {
         res, req
       })
 
-      userCreatedVerified({ _id: newUser._id })
+      userCreatedVerified({ user_id: newUser.user_id })
         .catch(_error => {
           return errorHandlerRes<StatusHTTP.badRequest_400>({
             status: StatusHTTP.badRequest_400,
@@ -135,8 +135,8 @@ export default {
       await userRepository.save(userUpdate);
 
       if (!userUpdate) throw new Error(`Se produjo un problema al restablecer la contraseña. Por favor, inténtalo de nuevo más tarde o ponte en contacto con nosotros al correo hilde.ecommerce@outlook.com. Disculpa las molestias.`)
-      const { _id, name, email } = userUpdate;
-      await fetchCount({ _id, name }) ///////////
+      const { user_id, name, email } = userUpdate;
+      await fetchCount({ user_id, name }) ///////////
 
       const responseEmail: boolean = await sendEmail({ name, email, password: temporaryPassword, type: "reset" })
       if (!responseEmail) return errorHandlerRes<StatusHTTP.badRequest_400>({
@@ -146,7 +146,7 @@ export default {
         res, req
       })
 
-      userResetVerified({ _id, res })
+      userResetVerified({ user_id, res })
         .catch(_error => {
           return errorHandlerRes<StatusHTTP.badRequest_400>({
             status: StatusHTTP.badRequest_400,
@@ -185,12 +185,12 @@ export default {
   async postAccountInfo(req: Request, res: Response) {
     const userRepository = AppDataSource.getRepository(UserEntity);
     try {
-      let { _id, name, lastName, email, newEmail, phone } = req.body;
+      let { user_id, name, lastName, email, newEmail, phone } = req.body;
 
       let verifiedEmailUpdate = true
       // enviar mensaje para validar correo 
       if (newEmail !== email) {
-        let token = generateTokenEmail({ _id, email: newEmail })
+        let token = generateTokenEmail({ user_id, email: newEmail })
         const responseEmail: boolean = await sendEmail({ tokenEmail: token, name, email: newEmail, type: 'validateEmail' })
         if (!responseEmail) return errorHandlerRes<StatusHTTP.badRequest_400>({
           status: StatusHTTP.badRequest_400,
@@ -198,7 +198,7 @@ export default {
           errors: [{ field: 'general', message: `${name} se presento un inconveniente al enviar el enlace para cambiar el correo ${newEmail}` }],
           res, req
         })
-        userEmailVerified({ _id, newEmail, res, req })
+        userEmailVerified({ user_id, newEmail, res, req })
           .catch(_error => {
             return errorHandlerRes<StatusHTTP.badRequest_400>({
               status: StatusHTTP.badRequest_400,
@@ -209,7 +209,7 @@ export default {
           });
         verifiedEmailUpdate = false
       }
-      const userUpdate = await userRepository.findOne({ where: { _id } })
+      const userUpdate = await userRepository.findOne({ where: { user_id } })
       if (!userUpdate) return
       userUpdate.name = name;
       userUpdate.lastName = lastName;
@@ -237,10 +237,10 @@ export default {
     const userRepository = AppDataSource.getRepository(UserEntity);
 
     try {
-      let { _id, newPassword: temporaryPassword } = req.body;
+      let { user_id, newPassword: temporaryPassword } = req.body;
       const password = await generateHashPassword(temporaryPassword)
       // const userDB = await User.findByIdAndUpdate({ _id }, { password, verified: true }, { new: true })
-      const userUpdate = await userRepository.findOne({ where: { _id } })
+      const userUpdate = await userRepository.findOne({ where: { user_id } })
       if (!userUpdate) return
       userUpdate.password = password;
       userUpdate.verified = true
@@ -266,9 +266,9 @@ export default {
     const userRepository = AppDataSource.getRepository(UserEntity);
 
     try {
-      let { _id, roles } = req.body;
+      let { user_id, roles } = req.body;
 
-      const userUpdate = await userRepository.findOne({ where: { _id } })
+      const userUpdate = await userRepository.findOne({ where: { user_id } })
       if (!userUpdate) return
       userUpdate.roles = roles
       await userRepository.save(userUpdate);
@@ -294,11 +294,11 @@ export default {
     const userRepository = AppDataSource.getRepository(UserEntity);
 
     try {
-      let { _id } = req.params;
+      let { user_id } = req.params;
       // await User.findByIdAndDelete(_id)
-      const userDelete = await userRepository.findOne({ where: { _id } })
+      const userDelete = await userRepository.findOne({ where: { user_id } })
       if (!userDelete) return
-      await userRepository.delete(userDelete);
+      await userRepository.softRemove(userDelete);
 
       const userDB = await userRepository.find()
       if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
@@ -323,7 +323,7 @@ export default {
 
     try {
       const decoded = verifyToken(req.body.token);
-      const user = await userRepository.findOne({ where: { _id: decoded._id } })
+      const user = await userRepository.findOne({ where: { user_id: decoded._id } })
       // const responseDB = await User.findById({ _id: decoded._id })
       // const dataDB = responseDB!
       // await fetchCount({ _id, name })
@@ -347,7 +347,7 @@ export default {
     try {
       const decoded: { _id: string, email: string, token?: boolean } = verifyTokenEmail(req.body.tokenEmail);
 
-      const userUpdate = await userRepository.findOne({ where: { _id: decoded._id } })
+      const userUpdate = await userRepository.findOne({ where: { user_id: decoded._id } })
       if (!userUpdate) return
       userUpdate.email = decoded.email;
       userUpdate.verifiedEmail = true;
@@ -509,7 +509,7 @@ export default {
 
       const userRepository = AppDataSource.getRepository(UserEntity);
 
-      const existingUser = await userRepository.findOne({ where: { _id: user_id } });
+      const existingUser = await userRepository.findOne({ where: { user_id } });
 
       if (!existingUser) {
         return errorHandlerRes({ req, res, status_code: 404, status: StatusHTTP.notFound_404, errors: [{ field: 'user_get', message: 'Usuario no encontrado' }] })

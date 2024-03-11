@@ -33,7 +33,7 @@ export default class NavigationEntity {
   @Column({ type: 'tsvector' }) // Select false evita que la columna aparezca en las consultas por defecto
   filter: string;
 
-  @Column({ default: 0, select: false }) // Select false evita que la columna aparezca en las consultas por defecto
+  @Column({ default: 0 }) // Select false evita que la columna aparezca en las consultas por defecto
   product_view: number;
 
   @OneToMany(() => VariantEntity, variant => variant.navigation, { cascade: ['soft-remove', 'recover'] })

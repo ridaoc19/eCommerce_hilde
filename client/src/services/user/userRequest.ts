@@ -45,12 +45,12 @@ export type RequestMapUser = {
   [RouteUser.AccountInfo]: {
     route: RouteUser.AccountInfo;
     method: Method.Post;
-    requestData: Pick<IUser.UserData, 'name' | 'lastName' | 'email' | 'phone' | '_id'> & { newEmail: string };
+    requestData: Pick<IUser.UserData, 'name' | 'lastName' | 'email' | 'phone' | 'user_id'> & { newEmail: string };
   };
   [RouteUser.AccountPass]: {
     route: RouteUser.AccountPass;
     method: Method.Post;
-    requestData: Pick<IUser.UserData, '_id'> & { password: string, newPassword: string };
+    requestData: Pick<IUser.UserData, 'user_id'> & { password: string, newPassword: string };
   };
   [RouteUser.AccountAdminGet]: {
     route: RouteUser.AccountAdminGet;
@@ -59,7 +59,7 @@ export type RequestMapUser = {
   [RouteUser.AccountAdminPut]: {
     route: RouteUser.AccountAdminPut;
     method: Method.Put;
-    requestData: Pick<IUser.UserData, '_id' | 'roles'>;
+    requestData: Pick<IUser.UserData, 'user_id' | 'roles'>;
   };
   [RouteUser.AccountAdminDelete]: {
     route: RouteUser.AccountAdminDelete;

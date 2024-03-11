@@ -4,7 +4,7 @@ import { RequestMapAdvertising, RouteAdvertising } from "../../../services/adver
 export namespace IAdvertisingReducer {
   export type AppState = {
     advertisingData: {
-      data: RequestMapAdvertising[RouteAdvertising.AdvertisingRequest]['data'] | []
+      data: RequestMapAdvertising[RouteAdvertising.AdvertisingRequest]['data']
       isLoading: boolean
       isFetching: boolean
       errors: ErrorAdvertising['errors'] | []
@@ -19,11 +19,11 @@ export namespace IAdvertisingReducer {
   export type Reducer = (state: AppState, action: AppAction<AppState>) => AppState
 }
 
-const initialState: IAdvertisingReducer.AppState = {
+const initialStateAdvertising: IAdvertisingReducer.AppState = {
   advertisingData: {
     isLoading: false,
     isFetching: false,
-    data: [],
+    data: { dataAdvertising: [], topViewedProducts: [] },
     errors: []
   }
 };
@@ -38,5 +38,5 @@ const reducer: IAdvertisingReducer.Reducer = (state, action) => {
   }
 };
 
-export { initialState, reducer };
+export { initialStateAdvertising, reducer };
 

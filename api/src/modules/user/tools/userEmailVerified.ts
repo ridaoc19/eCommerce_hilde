@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { sendEmail } from "../../../core/utils/email";
 import { errorHandlerCatch } from "../../../core/utils/send/errorHandler";
 import { AppDataSource } from "../../../data-source";
-import { UserEntity } from "../entity";
+import UserEntity from "../entity";
 
 function stopExecutionTemporarily() {
   return new Promise(resolve => {
@@ -10,13 +10,13 @@ function stopExecutionTemporarily() {
   });
 }
 
-export async function userEmailVerified({ _id, newEmail, res, req }: { _id: string, newEmail: string, res: Response, req: Request }) {
+export async function userEmailVerified({ user_id, newEmail, res, req }: { user_id: string, newEmail: string, res: Response, req: Request }) {
   const userRepository = AppDataSource.getRepository(UserEntity);
 
   try {
     await stopExecutionTemporarily();
     // const userDBOne = await User.findById(_id)
-    const userDBOne = await userRepository.findOne({ where: { _id } })
+    const userDBOne = await userRepository.findOne({ where: { user_id } })
 
     if (!userDBOne) throw new Error(`se presento un inconveniente al solicitar información del usuario`)
 
@@ -27,7 +27,7 @@ export async function userEmailVerified({ _id, newEmail, res, req }: { _id: stri
 
     await stopExecutionTemporarily();
     // const userDBTwo = await User.findById(_id)
-    const userDBTwo = await userRepository.findOne({ where: { _id } })
+    const userDBTwo = await userRepository.findOne({ where: { user_id } })
 
     if (!userDBTwo) throw new Error(`se presento un inconveniente al solicitar información del usuario en la segunda notificación`)
     userDBTwo.verifiedEmail = true

@@ -1,8 +1,8 @@
 import { useReducer } from 'react';
-import { initialState, reducer } from './reducer';
+import { initialStateError, reducer } from './reducer';
 
 function StateError() {
-  const [errorContextState, errorContextDispatch] = useReducer(reducer, initialState);
+  const [errorContextState, errorContextDispatch] = useReducer(reducer, initialStateError);
 
   return { errorContextState, errorContextDispatch };
 }

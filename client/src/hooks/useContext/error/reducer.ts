@@ -15,7 +15,7 @@ export namespace IErrorReducer {
   export type Reducer = (state: AppState, action: AppAction<AppState>) => AppState
 }
 
-const initialState: IErrorReducer.AppState = {
+const initialStateError: IErrorReducer.AppState = {
   errors: []
 };
 
@@ -30,5 +30,5 @@ const reducer: IErrorReducer.Reducer = (state, action) => {
   }
 };
 
-export { initialState, reducer };
+export { initialStateError, reducer };
 

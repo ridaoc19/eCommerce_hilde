@@ -1,38 +1,38 @@
 // src/Showcase.tsx
-import React, { useEffect, useState } from 'react';
-import './principal.scss'; // Importa tu archivo de estilos
-import { IProduct } from '../../../interfaces/product.interface';
+import React, { useEffect, useMemo, useState } from 'react';
+import { RequestMapAdvertising, RouteAdvertising } from '../../../services/advertising/advertisingRequest';
+import './showcase.scss'; // Importa tu archivo de estilos
 import Card from '../card/Card';
+import useMediaQuery from '../../../hooks/useMediaQuery';
+import Button from '../button/Button';
 
 interface ShowcaseProps {
-  products: IProduct.Product[];
+  products: RequestMapAdvertising[RouteAdvertising.AdvertisingRequest]['data']['topViewedProducts'];
+  title: string;
 }
 
-const Showcase: React.FC<ShowcaseProps> = ({ products }) => {
+const Showcase: React.FC<ShowcaseProps> = ({ products, title }) => {
+  const { mediaQuery } = useMediaQuery();
   // Estado para controlar si el mouse está sobre la vitrina
   const [isMouseOverVitrine, setIsMouseOverVitrine] = useState(false);
 
   // Estado para almacenar todos los productos paginados
-  const [allProducts, setAllProducts] = useState<IProduct.Product[][]>([]);
+  const [allProducts, setAllProducts] = useState<ShowcaseProps['products'][]>([]);
 
   // Estado para controlar el índice actual de los productos mostrados
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Número de productos por página
-  const productsPerPage = 1;
+  const productsPerPage = useMemo(() => mediaQuery === 'desktop' ? 5 : mediaQuery === 'tablet' ? 3 : 2, [mediaQuery]);
+  // const productsPerPage = mediaQuery === 'desktop' ? 5 : mediaQuery === 'tablet' ? 3 : 2;
 
   // Número total de páginas
   const pageCount = Math.ceil(products.length / productsPerPage);
 
-  // Efecto para inicializar componentes al montar el componente
-  useEffect(() => {
-    // console.log(productos, "tiene")
-  }, []);
-
   // Efecto para actualizar los productos paginados cuando cambian los productos originales
   useEffect(() => {
     setAllProducts(updateVisibleProducts2({ allProducts: products, productsPerPage, pageCount }));
-  }, [products]);
+  }, [products, productsPerPage]);
 
   // Efecto para cambiar automáticamente el índice de la vitrina cada 3 segundos
   useEffect(() => {
@@ -62,32 +62,60 @@ const Showcase: React.FC<ShowcaseProps> = ({ products }) => {
   // Renderizar el componente principal
   return (
     <div
-      className="vitrine"
+      className="showcase__container"
       onMouseEnter={() => setIsMouseOverVitrine(true)}
       onMouseLeave={() => setIsMouseOverVitrine(false)}
     >
-      {/* Botón para retroceder al producto anterior */}
-      <button onClick={() => setCurrentIndex((prevIndex) => {
-        const newIndex = prevIndex - 1;
-        // Si el nuevo índice es menor que cero, vuelve al final de la vitrina
-        return newIndex < 0 ? allProducts.length - 1 : newIndex;
-      })}>&lt;</button>
 
-      {/* Mapear y renderizar los productos en la vitrina */}
-      {allProducts[currentIndex]?.map((item, index) => {
-        return (
-          <Card
-            key={index}
-            product_id={item.product_id}
-            brand={item.brand}
-            images={item.variants[0].images}
-            product={item.product}
-            price={item.variants.map(e => e.price)} />
-        )
-      })}
+      <div className='showcase__title'>
+        <h3>{title}</h3>
+      </div>
 
-      {/* Botón para avanzar al siguiente producto */}
-      <button onClick={() => setCurrentIndex((prevIndex) => (prevIndex + 1) % allProducts.length)}>&gt;</button>
+      <div className='showcase__button-left'>
+        {/* Botón para retroceder al producto anterior */}
+        <Button
+          button={{
+            type: 'dark',
+            text: "<",
+            handleClick: () => setCurrentIndex((prevIndex) => {
+              const newIndex = prevIndex - 1;
+              // Si el nuevo índice es menor que cero, vuelve al final de la vitrina
+              return newIndex < 0 ? allProducts.length - 1 : newIndex;
+            })
+          }}
+        />
+        {/* <button onClick={() => setCurrentIndex((prevIndex) => {
+          const newIndex = prevIndex - 1;
+          // Si el nuevo índice es menor que cero, vuelve al final de la vitrina
+          return newIndex < 0 ? allProducts.length - 1 : newIndex;
+        })}>&lt;</button> */}
+      </div>
+
+      <div className='showcase__main'>
+        {/* Mapear y renderizar los productos en la vitrina */}
+        {allProducts[currentIndex]?.map((item, index) => {
+          return (
+            <Card
+              key={index}
+              product_id={item.product_id}
+              brand={item.brand}
+              images={[item.images]}
+              product={item.product}
+              price={item.price} />
+          )
+        })}
+      </div>
+
+      <div className='showcase__button-right'>
+        {/* Botón para avanzar al siguiente producto */}
+        <Button
+          button={{
+            type: 'dark',
+            text: `>`,
+            handleClick: () => setCurrentIndex((prevIndex) => (prevIndex + 1) % allProducts.length)
+          }}
+        />
+      </div>
     </div>
   );
 };
@@ -95,7 +123,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ products }) => {
 export default Showcase;
 
 // Función para actualizar los productos visibles en función de la paginación y el cambio de tamaño de la ventana
-const updateVisibleProducts2 = ({ allProducts, productsPerPage, pageCount }: { allProducts: IProduct.Product[], productsPerPage: number, pageCount: number }) => {
+const updateVisibleProducts2 = ({ allProducts, productsPerPage, pageCount }: { allProducts: ShowcaseProps['products'], productsPerPage: number, pageCount: number }) => {
 
   const paginatedProducts = Array.from({ length: pageCount }, (_, pageIndex) => {
     // Calcular los índices de inicio y fin de la página actual

@@ -4,6 +4,7 @@ import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorH
 import { successHandler } from '../../core/utils/send/successHandler';
 import { AppDataSource } from '../../data-source';
 import AdvertisingEntity from './entity';
+import NavigationEntity from '../navigation/entity';
 
 export default {
   async createAdvertising(req: Request, res: Response) {
@@ -113,21 +114,39 @@ export default {
 };
 
 
-const getAllAdvertising = async (): Promise<{
-  advertising_id: string;
-  page: string;
-  location: string;
-  title: string;
-  redirect: string;
-  text: string;
-  image_desktop: string;
-  image_tablet: string;
-  image_phone: string;
-}[]> => {
+// const getAllAdvertising = async (): Promise<{
+//   advertising_id: string;
+//   page: string;
+//   location: string;
+//   title: string;
+//   redirect: string;
+//   text: string;
+//   image_desktop: string;
+//   image_tablet: string;
+//   image_phone: string;
+// }[]> => {
+const getAllAdvertising = async () => {
   const advertisingRepository = AppDataSource.getRepository(AdvertisingEntity);
   const allAdvertising = await advertisingRepository.find();
 
-  return allAdvertising
+  const getTopViewedProducts = await AppDataSource
+    .getRepository(NavigationEntity)
+    .createQueryBuilder("navigation")
+    .orderBy("navigation.product_view", "DESC")
+    .leftJoinAndSelect('navigation.product', 'product')
+    .leftJoinAndSelect('product.variants', 'variants')
+    .take(15)
+    .getMany();
+
+  const topViewedProducts = getTopViewedProducts.map(({ product: { product_id, brand, product, variants } }) => {
+    return {
+      product_id, product, brand,
+      images: variants[0].images[0],
+      price: variants.map(e => e.price)
+    }
+  })
+
+  return { dataAdvertising: allAdvertising, topViewedProducts }
 }
 
 

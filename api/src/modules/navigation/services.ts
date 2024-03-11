@@ -3,20 +3,20 @@ import { Request, Response } from 'express';
 
 // import { findParentProperty } from '../../core/utils/navigation/findParentProperty';
 
-import { errorHandlerCatch } from '../../core/utils/send/errorHandler';
+import { Brackets } from 'typeorm';
+import { errorHandlerCatch, errorHandlerRes } from '../../core/utils/send/errorHandler';
 import { successHandler } from '../../core/utils/send/successHandler';
 import NavigationEntity from './entity';
-import { Brackets } from 'typeorm';
 
-import DepartmentEntity from '../department/entity';
-import { AppDataSource } from '../../data-source';
-import { StatusHTTP } from '../../core/utils/send/enums';
-import { stringEmpty } from '../../core/utils/functionsGlobal';
 import { getBreadcrumbs } from '../../core/utils/breadcrumb/breadcrumb';
-import { generateFilters } from '../../core/utils/navigation/generateFilters';
 import { findParentUUID } from '../../core/utils/findParentUUID';
-import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
+import { stringEmpty } from '../../core/utils/functionsGlobal';
+import { generateFilters } from '../../core/utils/navigation/generateFilters';
 import { generateFiltersDashboard } from '../../core/utils/navigation/generateFiltersDashboard';
+import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
+import { StatusHTTP } from '../../core/utils/send/enums';
+import { AppDataSource } from '../../data-source';
+import DepartmentEntity from '../department/entity';
 
 // function fetchCount(info: any) {
 //   return new Promise<{ data: number }>((resolve) =>
@@ -482,7 +482,159 @@ export default {
       errorHandlerCatch({ req, error, res });
     }
   },
+  async postFavorites(req: Request, res: Response) {
+    try {
+
+    } catch (error) {
+      errorHandlerCatch({ error, req, res })
+    }
+  },
+  /////PRODUCT VIEW
+  async postProductView(req: Request, res: Response) {
+    const { productId } = req.params;
+    try {
+      const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+      const navigation = await navigationRepository.findOne({ where: { product: { product_id: productId } } });
+      console.log({ navigation, productId })
+      if (!navigation) {
+        return errorHandlerRes({
+          status_code: 400, status: StatusHTTP.badRequest_400, req, res, errors: [{
+            field: 'product_view_post',
+            message: 'producto no encontrado'
+          }]
+        });
+      }
+
+      navigation.product_view += 1;
+      await navigationRepository.save(navigation);
+
+      const productView = await getProductViews()
+
+      successHandler({
+        res,
+        dataDB: productView,
+        json: {
+          field: 'product_view_get',
+          message: 'Los productos con mas vistas',
+          status_code: 200,
+          status: StatusHTTP.success_200,
+        },
+      });
+
+
+    } catch (error) {
+      errorHandlerCatch({ error, req, res })
+    }
+  },
+
+  async getProductView(req: Request, res: Response) {
+    try {
+      const productView = await getProductViews()
+
+      successHandler({
+        res,
+        dataDB: productView,
+        json: {
+          field: 'product_view_get',
+          message: 'Los productos con mas vistas',
+          status_code: 200,
+          status: StatusHTTP.success_200,
+        },
+      });
+
+    } catch (error) {
+      errorHandlerCatch({ error, req, res })
+    }
+  },
+  /////PRODUCT VIEW
+
+  async postCart(req: Request, res: Response) {
+    try {
+
+    } catch (error) {
+      errorHandlerCatch({ error, req, res })
+    }
+  }
 };
+
+
+
+
+const getProductViews = async () => {
+  // const navigationRepository = AppDataSource.getRepository(NavigationEntity);
+  // const topViewedProducts = await navigationRepository
+  //   .createQueryBuilder("navigation")
+  //   .orderBy("navigation.product_view", "DESC")
+  //   .leftJoinAndSelect('navigation.product', 'product')
+  //   .take(20)
+  //   .getMany();
+
+
+  const getTopViewedProducts = await AppDataSource
+    .getRepository(NavigationEntity)
+    .createQueryBuilder("navigation")
+    .orderBy("navigation.product_view", "DESC")
+    .leftJoinAndSelect('navigation.product', 'product')
+    .take(15)
+    .getMany();
+
+
+  const topViewedProducts = getTopViewedProducts.map(product => product.product)
+
+  return topViewedProducts;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // // busqueda de filtros
