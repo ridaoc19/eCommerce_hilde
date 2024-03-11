@@ -1,15 +1,24 @@
 .banner-box {
-  display         : flex;
-  flex-wrap       : wrap;
-  gap             : 1rem;
-  justify-content : space-around;
-  background-color: var(--brand-3);
-  padding         : 2rem;
-  border-radius   : 0.5rem;
+  display            : flex;
+  flex-wrap          : wrap;
+  gap                : 1rem;
+  justify-content    : space-around;
+  // background-color: var(--brand-3);
+  padding            : 2rem;
+  border-radius      : 0.5rem;
 
   .banner-box__item {
     display      : grid;
     justify-items: center;
+    max-width    : 16rem;
+
+    &.tablet {
+      max-width: 10rem;
+    }
+
+    &.phone {
+      max-width: 7rem;
+    }
 
     img {
       border-radius: 0.5rem;
