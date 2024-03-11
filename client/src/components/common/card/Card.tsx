@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import { IProduct } from '../../../interfaces/product.interface';
-import Button from '../button/Button';
+import useMediaQuery from '../../../hooks/useMediaQuery';
 
 export type CardProps = Pick<IProduct.Product, 'product_id' | 'product' | 'brand'> & { price: number[], images: string[] }
 
 function Card({ product_id, images, price, product, brand }: CardProps) {
+  const { mediaQuery } = useMediaQuery();
   const uniqueVariants = [...new Set(price)];
   const minValue = Math.min(...uniqueVariants).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0, });
   const maxValue = Math.max(...uniqueVariants).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0, });
@@ -14,7 +15,7 @@ function Card({ product_id, images, price, product, brand }: CardProps) {
   return (
     <Link to={`/product-detail/${product_id}`} className="global__card-container" >
 
-      <div className='global__card-content'>
+      <div className={`global__card-content ${mediaQuery}`}>
 
         <div className="card__images">
           {urlRegex.test(images[0])
@@ -30,11 +31,11 @@ function Card({ product_id, images, price, product, brand }: CardProps) {
         </div>
 
         <div className="card__button">
-          <Button button={{
+          {/* <Button button={{
             type: 'dark',
             text: 'Agregar',
             handleClick: () => { }
-          }} />
+          }} /> */}
         </div>
 
       </div>

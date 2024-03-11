@@ -1,0 +1,36 @@
+.showcase__container {
+  display : grid;
+  gap     : 1rem;
+  position: relative;
+
+  .showcase__button-left {
+    position: absolute;
+    top     : 50%;
+
+
+    >button {
+      width: 2rem;
+    }
+  }
+
+  .showcase__main {
+    display           : grid;
+    grid-auto-flow    : column;
+    /* Distribuye los elementos en columnas */
+    grid-auto-columns : 1fr;
+    /* Columnas automáticas */
+    grid-template-rows: 1fr;
+    /* Una sola fila */
+    gap               : 1rem;
+  }
+
+  .showcase__button-right {
+    position: absolute;
+    top     : 50%;
+    right   : 0;
+
+    >button {
+      width: 2rem;
+    }
+  }
+}

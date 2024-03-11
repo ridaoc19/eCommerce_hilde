@@ -1,8 +1,8 @@
 import { useReducer } from 'react';
-import { initialState, reducer } from './reducer';
+import { initialStateDashboard, reducer } from './reducer';
 
 function StateDashboard() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialStateDashboard);
 
   return { state, dispatch };
 }

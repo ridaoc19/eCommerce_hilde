@@ -23,8 +23,8 @@ function Information() {
   const [success, setSuccess] = useState(false)
 
   const initialStateAccountInfo: InitialStateAccountInfo = {
-    change: { _id: userData?._id || "", name: userData?.name || "", lastName: userData?.lastName || "", email: userData?.email || "", newEmail: userData?.email || "", phone: userData?.phone || "" },
-    error: { _id: "", name: "", lastName: "", email: "", newEmail: "", phone: "" },
+    change: { user_id: userData?.user_id || "", name: userData?.name || "", lastName: userData?.lastName || "", email: userData?.email || "", newEmail: userData?.email || "", phone: userData?.phone || "" },
+    error: { user_id: "", name: "", lastName: "", email: "", newEmail: "", phone: "" },
   }
   const [stateAccountInfo, setStateAccountInfo] = useState<InitialStateAccountInfo>(initialStateAccountInfo);
 
@@ -85,7 +85,7 @@ function Information() {
 
                 <div className="user-form__input--content">
 
-                  {(Object.keys(stateAccountInfo.change).filter(key => !['_id', 'email'].includes(key)) as (keyof Omit<InitialStateAccountInfo['change'], 'email' | '_id'>)[]).map((item) => (
+                  {(Object.keys(stateAccountInfo.change).filter(key => !['user_id', 'email'].includes(key)) as (keyof Omit<InitialStateAccountInfo['change'], 'email' | 'user_id'>)[]).map((item) => (
                     <Input
                       key={item}
                       svg={{ type: item }}

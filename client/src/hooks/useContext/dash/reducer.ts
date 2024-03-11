@@ -30,7 +30,7 @@ export enum ActionTypeDashboard {
   LOGOUT = "LOGOUT"
 }
 
-const initialState: IDashReducer.AppState = {
+const initialStateDashboard: IDashReducer.AppState = {
   component: '',
   account: {
     information: false,
@@ -56,11 +56,11 @@ const reducer: IDashReducer.Reducer = (state, action) => {
     case ActionTypeDashboard.PERMITS_ROLES:
       return { ...state, permits: { ...state.permits, [action.payload.value]: true } }
     case ActionTypeDashboard.LOGOUT:
-      return initialState
+      return initialStateDashboard
     default:
       return state;
   }
 };
 
-export { initialState, reducer };
+export { initialStateDashboard, reducer };
 

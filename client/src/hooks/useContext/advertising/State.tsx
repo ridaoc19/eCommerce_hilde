@@ -1,8 +1,8 @@
 import { useReducer } from 'react';
-import { initialState, reducer } from './reducer';
+import { initialStateAdvertising, reducer } from './reducer';
 
 function StateAdvertising() {
-  const [advertisingContextState, advertisingContextDispatch] = useReducer(reducer, initialState);
+  const [advertisingContextState, advertisingContextDispatch] = useReducer(reducer, initialStateAdvertising);
 
   return { advertisingContextState, advertisingContextDispatch };
 }

@@ -1,6 +1,6 @@
 import { sendEmail } from "../../../core/utils/email";
 import { AppDataSource } from "../../../data-source";
-import { UserEntity } from "../entity";
+import UserEntity from "../entity";
 
 function stopExecutionTemporarily() {
   return new Promise(resolve => {
@@ -9,15 +9,15 @@ function stopExecutionTemporarily() {
 }
 
 interface UserCreatedVerified {
-  _id: string,
+  user_id: string,
 }
 
-export async function userCreatedVerified({ _id }: UserCreatedVerified) {
+export async function userCreatedVerified({ user_id }: UserCreatedVerified) {
   const userRepository = AppDataSource.getRepository(UserEntity);
   try {
     await stopExecutionTemporarily();
     // const userDBOne = await User.findById(_id)
-    const responseUserOne = await userRepository.findBy({ _id })
+    const responseUserOne = await userRepository.findBy({ user_id })
     if (!responseUserOne) throw new Error(`se presento un inconveniente al solicitar información del usuario`)
     const userDBOne = responseUserOne[0]
     if (!userDBOne?.verified) {
@@ -27,13 +27,13 @@ export async function userCreatedVerified({ _id }: UserCreatedVerified) {
 
     await stopExecutionTemporarily();
     // const userDBTwo = await User.findById(_id)
-    const responseUserTwo = await userRepository.findBy({ _id })
+    const responseUserTwo = await userRepository.findBy({ user_id })
     if (!responseUserTwo) throw new Error(`se presento un inconveniente al solicitar información del usuario en la segunda notificación`)
     const userDBTwo = responseUserOne[0]
     if (!userDBTwo.verified) {
       const responseEmailTwo: boolean = await sendEmail({ name: userDBTwo.name, email: userDBTwo?.email, type: 'secondNotificationRegistre' })
       if (!responseEmailTwo) throw new Error(`Error al enviar el segundo correo`)
-      await userRepository.delete(userDBTwo);
+      await userRepository.softRemove(userDBTwo);
       // await User.findByIdAndDelete(_id)
     } else if (userDBOne?.verified) return
 

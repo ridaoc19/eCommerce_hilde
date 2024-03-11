@@ -19,7 +19,7 @@ export namespace INavigatorReducer {
   export type Reducer = (state: AppState, action: AppAction<AppState>) => AppState
 }
 
-const initialState: INavigatorReducer.AppState = {
+const initialStateNavigation: INavigatorReducer.AppState = {
   hierarchicalData: {
     isLoading: false,
     isFetching: false,
@@ -38,5 +38,5 @@ const reducer: INavigatorReducer.Reducer = (state, action) => {
   }
 };
 
-export { initialState, reducer };
+export { initialStateNavigation, reducer };
 

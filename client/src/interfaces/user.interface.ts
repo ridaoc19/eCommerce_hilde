@@ -8,7 +8,7 @@ export namespace IUser {
   type Roles = "super" | "admin" | "edit" | "visitant" | "";
 
   export interface UserData {
-    _id: string;
+    user_id: string;
     name: string;
     lastName: string;
     email: string;
