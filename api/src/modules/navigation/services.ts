@@ -118,17 +118,20 @@ export default {
         const searchTerms = id.split(' ').join('|');
         queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
 
-        queryBuilder
-          .andWhere(new Brackets(qb => {
-            if (Object.keys(req.query).length > 0) {
-              filtersQuery.forEach((el, i) => {
-                qb.orWhere(`navigation.filter::text ILIKE :${el}${i}`, { [`${el}${i}`]: `%${el}%` })
-              })
-              // queryBuilder.andWhere('to_tsvector(\'simple\', CAST(navigation.filter AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: filtersQuery.join(' ') })
-            }
+        if (Object.keys(req.query).length > 0) {
+          queryBuilder.andWhere(new Brackets(qb => {
+            filtersQuery.forEach((term, index) => {
+              qb.orWhere(`navigation.filter::text ILIKE :term${index}`, { [`term${index}`]: `%${term}%` });
+            });
           }));
+        }
       }
 
+      // queryBuilder.andWhere('to_tsvector(\'simple\', CAST(navigation.filter AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: filtersQuery.join(' ') })
+      // filtersQuery.forEach((el, i) => {
+      //   console.log({el})
+      //   qb.orWhere(`navigation.filter::text ILIKE :${el}${i}`, { [`${el}${i}`]: `%${el}%` })
+      // })
       // if (Object.keys(req.query).length > 0) {
       //   const filters = Object.entries(req.query).map(([key, value]) => {
       //     const values = Array.isArray(value) ? value : [value];
@@ -169,6 +172,7 @@ export default {
         },
       });
     } catch (error) {
+      console.log(error)
       errorHandlerCatch({ req, error, res });
     }
   },

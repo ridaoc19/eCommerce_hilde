@@ -32,7 +32,7 @@ function Search() {
   })
 
   return (
-    <div className="search">
+    <div className="search" onMouseLeave={() => setSearch("")}>
       <div className="search-input">
         <Input input={{
           handleOnChange: (event) => { setSearch(event.target.value) },

@@ -45,10 +45,10 @@ function ListProducts() {
                 setStateListProduct(prevState => ({ ...prevState, filterType: 'strict' }))
               }
             }} />
-            <Button button={{ type: "light", text: "Orden", handleClick: () => { } }} />
+            {/* <Button button={{ type: "light", text: "Orden", handleClick: () => { } }} />
             <div className={`header__button-close ${isButtonFilter ? "open" : "close"}`}>
               <Button button={{ type: "dark", text: "", handleClick: () => setIsButtonFilter(false) }} svgLeft={{ type: "close", color: 'white' }} />
-            </div>
+            </div> */}
           </div>}
 
           <div className="header__pagination">

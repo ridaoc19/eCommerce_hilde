@@ -25,7 +25,9 @@ function Content({ handleClick, stateProductDetail, listProductsData: { listProd
               <div key={e.variant_id}>
                 <button disabled={e.price === 0} className={`content__attributes-card ${e.price === 0 ? 'disabled' : ''}`} onClick={() => handleClick(e)}>
                   {e.price === 0 && <span className="no-stock">AGOTADO</span>}
-                  <img src={e.images[0]} width={60} alt="" />
+                  <div className="content__attributes-card-image">
+                    <img src={e.images[0]} alt="" />
+                  </div>
                   {Object.values(e.attributes).map((attribute, index) => {
                     return (
                       <div key={index}>

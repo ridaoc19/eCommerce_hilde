@@ -3,7 +3,6 @@ import { BreadcrumbType } from "../../../interfaces/global.interface";
 import { IProduct } from "../../../interfaces/product.interface";
 import { validateRouteImage } from "../../utils/validateRouteImage";
 import Breadcrumb from "../breadcrumb/Breadcrumb";
-import Button from "../button/Button";
 
 interface SearchCardProps {
   listProduct: IProduct.ListProduct;
@@ -52,9 +51,9 @@ function SearchCard({ listProduct, handleOnClick }: SearchCardProps) {
             <div className="card__utils-price">
               <h4>{uniqueVariants.length > 1 ? `${minValue} - ${maxValue}` : minValue}</h4>
             </div>
-            <div className="card__utils-button">
-              <Button button={{ type: "dark", text: 'Agregar', handleClick: () => { } }} />
-            </div>
+            {/* <div className="card__utils-button"> */}
+              {/* <Button button={{ type: "dark", text: 'Agregar', handleClick: () => { } }} /> */}
+            {/* </div> */}
           </div>
         </div>
       </div>

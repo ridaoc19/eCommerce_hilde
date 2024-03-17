@@ -7,7 +7,7 @@ function ProductDetail() {
   const { components } = useProductDetail()
 
   return (
-    <div className="product-detail">
+    <div className={`product-detail ${mediaQuery}`}>
 
       <div className="product-detail__breadcrumb">
         {components.BreadcrumbComponent}
