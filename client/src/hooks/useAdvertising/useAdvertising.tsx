@@ -24,7 +24,6 @@ export interface ParamsChildren {
 
 function useAdvertising(): UseAdvertising {
   const { advertising: { advertisingContextState: { advertisingData: { data: { dataAdvertising, topViewedProducts }, isFetching, isLoading } } } } = useContext(CreateContext);
-console.log(topViewedProducts)
   return {
     BannerBox: <BannerBox advertising={dataAdvertising.filter(e => e.location === IAdvertising.LOCATION.banner_box)} isFetching={isFetching} isLoading={isLoading} location={IAdvertising.LOCATION.banner_box} />,
     Carrusel: <Carrusel itemPerPage={1} location={IAdvertising.LOCATION.carrusel} isFetching={isFetching} isLoading={isLoading} advertising={dataAdvertising.filter(e => e.location === IAdvertising.LOCATION.carrusel)} />,

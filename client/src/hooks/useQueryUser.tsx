@@ -12,6 +12,7 @@ function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.Ac
     refetchOnMount: false,
     enabled,
     retry: (_failureCount, error) => { //retry se configura para repetir si sale error y cuantas veces
+      console.log(error, "user error")
       if (error.status_code === 401) localStorage.removeItem("token")
       return false
     },
