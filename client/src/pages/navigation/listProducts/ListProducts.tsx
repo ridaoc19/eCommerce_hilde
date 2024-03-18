@@ -6,7 +6,7 @@ import useListProduct from "../../../hooks/useListProduct/useListProduct";
 import useMediaQuery from "../../../hooks/useMediaQuery";
 
 function ListProducts() {
-  const { listProducts, PaginationButton, BreadcrumbComponent, Filters, currentIndex, paginationTotal, setStateListProduct, totalProduct } = useListProduct()
+  const { filterType, listProducts, PaginationButton, BreadcrumbComponent, Filters, currentIndex, paginationTotal, setStateListProduct, totalProduct } = useListProduct()
   const { mediaQuery } = useMediaQuery()
   const [isButtonFilter, setIsButtonFilter] = useState(false)
 
@@ -34,13 +34,13 @@ function ListProducts() {
           {<div className="header__button">
             {/* {mediaQuery === 'phone' && <div className="header__button"> */}
             <Button button={{
-              type: "light", text: "filtro flexible", handleClick: () => {
+              type: filterType === 'flexible' ? 'dark' : "light", text: "filtro flexible", handleClick: () => {
                 setIsButtonFilter(true)
                 setStateListProduct(prevState => ({ ...prevState, filterType: 'flexible' }))
               }
             }} />
             <Button button={{
-              type: "light", text: "filtro estricto", handleClick: () => {
+              type: filterType === 'strict' ? 'dark' : "light", text: "filtro estricto", handleClick: () => {
                 setIsButtonFilter(true)
                 setStateListProduct(prevState => ({ ...prevState, filterType: 'strict' }))
               }
