@@ -27,10 +27,8 @@ function useMutationUser() {
     },
     onSuccess(data, { route }) {
       if (route === RouteUser.AccountAdminGet || route === RouteUser.AccountAdminDelete || route === RouteUser.AccountAdminPut) {
-        console.log(route, "entro muchos")
         queryClient.invalidateQueries({ queryKey: [IUser.QUERY_KEY_USER.MultipleUsers] })
       } else {
-        console.log(route, "entro uno")
         queryClient.setQueryData([IUser.QUERY_KEY_USER.SingleUser], data);
       }
     },

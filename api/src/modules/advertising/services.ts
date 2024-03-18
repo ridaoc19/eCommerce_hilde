@@ -125,7 +125,7 @@ export default {
 //   image_tablet: string;
 //   image_phone: string;
 // }[]> => {
-const getAllAdvertising = async () => {
+export const getAllAdvertising = async () => {
   const advertisingRepository = AppDataSource.getRepository(AdvertisingEntity);
   const allAdvertising = await advertisingRepository.find();
 

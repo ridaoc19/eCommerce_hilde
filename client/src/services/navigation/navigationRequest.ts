@@ -6,6 +6,7 @@ export enum RouteNavigation {
   NavigationListProduct = 'get|navigation/list-product',
   NavigationSearch = 'get|navigation/search',
   NavigationListProductDashboard = 'get|navigation/list-product-dashboard',
+  NavigationProductView = 'post|navigation/product_view',
 }
 
 export type RequestMapNavigation = {
@@ -76,6 +77,11 @@ export type RequestMapNavigation = {
       }
       totalCount: number | null;
     }
+  },
+  [RouteNavigation.NavigationProductView]: {
+    route: RouteNavigation.NavigationProductView;
+    extensionRoute: `/${string}`;
+    data: []
   },
 };
 
