@@ -7,11 +7,13 @@ import { HandleClick } from '../../../interfaces/global.interface';
 import { permitsRoles } from '../../../interfaces/user.interface';
 import Button from '../button/Button';
 import Svg from '../../assets/icons/Svg';
+import useMediaQuery from '../../../hooks/useMediaQuery';
 
 function Login() {
 
 
   const navigate = useNavigate()
+  const { mediaQuery } = useMediaQuery();
   const { dashboard: { dispatch: dispatchContext } }: IContextData = useContext(CreateContext)!;
   const { data: { getUserQueryData }, tools: { removeQuery } } = useMutationUser()
   const { userData, isFetchingUser } = getUserQueryData()
@@ -49,11 +51,11 @@ function Login() {
         <div className='navbar__login-logo'>
           {Svg({ type: 'user', color: "white", height: 20, width: 20 })}
         </div>
-        <div className='navbar__login-text'>
+        {mediaQuery !== 'phone' && <div className='navbar__login-text'>
           <div>
             <span>{userData?.name ? `!Hola¡ ${userData.name}` : 'Inicia sesión'}</span>
           </div>
-        </div>
+        </div>}
 
       </button>
 

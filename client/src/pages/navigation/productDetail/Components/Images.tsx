@@ -13,8 +13,8 @@ function Images({ handleClick, stateProductDetail: { selectedVariant, currentIma
 
   return (
     <div className={`images ${mediaQuery}`}>
-      <div className='images__parent'>
-        <img width={"100%"} src={selectedVariant.images[currentImage]} alt="" />
+      <div className={`images__parent ${mediaQuery}`}>
+        <img src={selectedVariant.images[currentImage]} alt="" />
       </div>
 
       <div className='images__children'>
@@ -22,7 +22,7 @@ function Images({ handleClick, stateProductDetail: { selectedVariant, currentIma
           {selectedVariant.images.map((e, index) => {
             return (
               <button key={index} className="images__children-button" onClick={() => handleClick(index)}>
-                <img src={e} width={"100%"} alt="" />
+                <img src={e} alt="" />
               </button>
             )
           })}

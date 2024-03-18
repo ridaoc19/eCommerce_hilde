@@ -29,7 +29,6 @@ function ShowcaseMin({ children }: { children: ReactNode[], isButton?: boolean }
       const contentDiv = containerRef.current;
 
       if (contentDiv) {
-        console.log(contentDiv.scrollWidth > contentDiv.clientWidth)
         const overflow = contentDiv.scrollWidth > contentDiv.clientWidth;
         setIsOverflowed(overflow);
       }

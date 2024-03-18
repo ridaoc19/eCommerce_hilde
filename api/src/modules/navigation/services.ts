@@ -16,6 +16,7 @@ import { generateFiltersDashboard } from '../../core/utils/navigation/generateFi
 import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
 import { StatusHTTP } from '../../core/utils/send/enums';
 import { AppDataSource } from '../../data-source';
+import { getAllAdvertising } from '../advertising/services';
 import DepartmentEntity from '../department/entity';
 
 // function fetchCount(info: any) {
@@ -118,17 +119,20 @@ export default {
         const searchTerms = id.split(' ').join('|');
         queryBuilder.where(`LOWER(navigation.search::text) ~ LOWER(:regex)`, { regex: `(${searchTerms})` })
 
-        queryBuilder
-          .andWhere(new Brackets(qb => {
-            if (Object.keys(req.query).length > 0) {
-              filtersQuery.forEach((el, i) => {
-                qb.orWhere(`navigation.filter::text ILIKE :${el}${i}`, { [`${el}${i}`]: `%${el}%` })
-              })
-              // queryBuilder.andWhere('to_tsvector(\'simple\', CAST(navigation.filter AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: filtersQuery.join(' ') })
-            }
+        if (Object.keys(req.query).length > 0) {
+          queryBuilder.andWhere(new Brackets(qb => {
+            filtersQuery.forEach((term, index) => {
+              qb.orWhere(`navigation.filter::text ILIKE :term${index}`, { [`term${index}`]: `%${term}%` });
+            });
           }));
+        }
       }
 
+      // queryBuilder.andWhere('to_tsvector(\'simple\', CAST(navigation.filter AS text)) @@ plainto_tsquery(\'simple\', CAST(:query AS text))', { query: filtersQuery.join(' ') })
+      // filtersQuery.forEach((el, i) => {
+      //   console.log({el})
+      //   qb.orWhere(`navigation.filter::text ILIKE :${el}${i}`, { [`${el}${i}`]: `%${el}%` })
+      // })
       // if (Object.keys(req.query).length > 0) {
       //   const filters = Object.entries(req.query).map(([key, value]) => {
       //     const values = Array.isArray(value) ? value : [value];
@@ -169,6 +173,7 @@ export default {
         },
       });
     } catch (error) {
+      console.log(error)
       errorHandlerCatch({ req, error, res });
     }
   },
@@ -495,7 +500,6 @@ export default {
     try {
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
       const navigation = await navigationRepository.findOne({ where: { product: { product_id: productId } } });
-      console.log({ navigation, productId })
       if (!navigation) {
         return errorHandlerRes({
           status_code: 400, status: StatusHTTP.badRequest_400, req, res, errors: [{
@@ -508,19 +512,17 @@ export default {
       navigation.product_view += 1;
       await navigationRepository.save(navigation);
 
-      const productView = await getProductViews()
-
+      const allAdvertising = await getAllAdvertising()
       successHandler({
         res,
-        dataDB: productView,
+        dataDB: allAdvertising,
         json: {
-          field: 'product_view_get',
-          message: 'Los productos con mas vistas',
+          field: 'advertising_get',
+          message: 'Actualizado correctamente productos con mas vistas',
           status_code: 200,
           status: StatusHTTP.success_200,
         },
       });
-
 
     } catch (error) {
       errorHandlerCatch({ error, req, res })

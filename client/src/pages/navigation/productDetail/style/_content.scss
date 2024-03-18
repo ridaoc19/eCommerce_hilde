@@ -15,11 +15,20 @@
 
     &-card {
       all            : unset;
-      padding        : 1rem;
+      padding        : 0.3rem;
       display        : grid;
       justify-content: center;
       text-align     : center;
       cursor         : pointer;
+      width          : 100%;
+
+      &-image {
+
+        >img {
+          height   : 6rem;
+          // width : auto;
+        }
+      }
 
       &.disabled {
         opacity: 0.5;
