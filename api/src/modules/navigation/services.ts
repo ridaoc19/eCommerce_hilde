@@ -16,6 +16,7 @@ import { generateFiltersDashboard } from '../../core/utils/navigation/generateFi
 import { generateFiltersStrict } from '../../core/utils/navigation/generateFiltersStrict';
 import { StatusHTTP } from '../../core/utils/send/enums';
 import { AppDataSource } from '../../data-source';
+import { getAllAdvertising } from '../advertising/services';
 import DepartmentEntity from '../department/entity';
 
 // function fetchCount(info: any) {
@@ -499,7 +500,6 @@ export default {
     try {
       const navigationRepository = AppDataSource.getRepository(NavigationEntity);
       const navigation = await navigationRepository.findOne({ where: { product: { product_id: productId } } });
-      console.log({ navigation, productId })
       if (!navigation) {
         return errorHandlerRes({
           status_code: 400, status: StatusHTTP.badRequest_400, req, res, errors: [{
@@ -512,19 +512,17 @@ export default {
       navigation.product_view += 1;
       await navigationRepository.save(navigation);
 
-      const productView = await getProductViews()
-
+      const allAdvertising = await getAllAdvertising()
       successHandler({
         res,
-        dataDB: productView,
+        dataDB: allAdvertising,
         json: {
-          field: 'product_view_get',
-          message: 'Los productos con mas vistas',
+          field: 'advertising_get',
+          message: 'Actualizado correctamente productos con mas vistas',
           status_code: 200,
           status: StatusHTTP.success_200,
         },
       });
-
 
     } catch (error) {
       errorHandlerCatch({ error, req, res })
