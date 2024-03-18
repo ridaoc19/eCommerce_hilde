@@ -20,6 +20,7 @@ Cuenta esta dividido en tres carpetas: `api` (backend), `server_files` (servidor
 ## Tecnologías
 
 #### Frontend
+Esta desplegado en Vercel
 
 ```json
  "dependencies": {
@@ -33,6 +34,7 @@ Cuenta esta dividido en tres carpetas: `api` (backend), `server_files` (servidor
 ```
 
 #### Backend
+Esta desplegado en AWS
 
 ```json
  "dependencies": {
@@ -58,6 +60,7 @@ Cuenta esta dividido en tres carpetas: `api` (backend), `server_files` (servidor
 ```
 
 #### Server Files
+Esta desplegado en AWS
 
 ```json
 "dependencies": {
@@ -78,6 +81,7 @@ Cuenta esta dividido en tres carpetas: `api` (backend), `server_files` (servidor
 ```
 
 ## Base de datos
+Esta desplegado en AWS
 
 La base de datos que se esta utilizando es PostgreSQL
 
