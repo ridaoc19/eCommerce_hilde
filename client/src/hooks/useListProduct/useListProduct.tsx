@@ -108,6 +108,7 @@ const useListProduct = (): ListProductHook => {
   const preListoProduct = allProducts.find(item => item.allProducts_id === currentIndex)?.allProducts_data
 
   return {
+    filterType: stateListProduct.filterType,
     listProducts: preListoProduct ? preListoProduct : [],
     paginationTotal,
     totalProduct: data?.data.totalCount || 0,
