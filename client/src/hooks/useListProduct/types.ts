@@ -3,6 +3,7 @@ import { ErrorNavigation } from "../../services/navigation/navigationApi";
 import { RequestMapNavigation, RouteNavigation } from "../../services/navigation/navigationRequest";
 
 export interface ListProductHook {
+  filterType: InitialStateListProduct['filterType']
   listProducts: RequestMapNavigation[RouteNavigation.NavigationListProduct]['data']['listProduct'];
   currentIndex: number;
   isLoading: boolean;
