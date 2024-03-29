@@ -7,6 +7,7 @@ import { RouteProduct } from "../../../../services/product/productRequest";
 import { CreateContext } from "../../../../hooks/useContext";
 import Breadcrumb from "../../../../components/common/breadcrumb/Breadcrumb";
 import { BreadcrumbType } from "../../../../interfaces/global.interface";
+import { IErrorReducer } from "../../../../hooks/useContext/error/reducer";
 
 export interface InitialStateProductCreation {
   query: {
@@ -56,7 +57,7 @@ function useProductCreationQuery() {
   }, [search])
 
   useEffect(() => {
-    error?.errors && error.errors.length > 0 && errorContextDispatch({ type: 'errors', payload: error.errors })
+    error?.errors && error.errors.length > 0 && errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
     // eslint-disable-next-line
   }, [error])
 

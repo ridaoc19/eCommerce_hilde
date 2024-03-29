@@ -4,6 +4,7 @@ import { advertisingRequest, ErrorAdvertising } from "../services/advertising/ad
 import { RequestMapAdvertising, RouteAdvertising } from "../services/advertising/advertisingRequest";
 import { useContext } from "react";
 import { CreateContext } from "./useContext";
+import { IErrorReducer } from "./useContext/error/reducer";
 
 
 function useMutationAdvertising() {
@@ -15,7 +16,7 @@ function useMutationAdvertising() {
       return advertisingRequest(route).options(options)
     },
     onError(error: ErrorAdvertising) {
-      errorContextDispatch({ type: 'errors', payload: error.errors })
+      errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
       return error
     },
     onSuccess() {

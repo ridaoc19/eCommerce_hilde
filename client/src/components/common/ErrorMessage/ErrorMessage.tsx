@@ -1,50 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import './errorMessage.scss';
+import { IErrorReducer } from '../../../hooks/useContext/error/reducer';
+import { CreateContext } from '../../../hooks/useContext';
 
 interface ErrorMessageProps {
-  errors: Array<{ field: string | 'general'; message: string }>;
-  emptyMessage: () => void
+  errors: Array<{
+    field: string | 'general';
+    status_code: number,
+    message: string | React.ReactNode
+  }>;
+  // emptyMessage: () => void;
 }
 
-const ErrorMessage: React.FC<ErrorMessageProps> = ({ errors, emptyMessage }) => {
-  const [isVisible, setIsVisible] = useState(true);
+const ErrorMessage: React.FC<ErrorMessageProps> = ({ errors }) => {
+  const { error: { errorContextDispatch } } = useContext(CreateContext)
+
+  const closeMessage = (index: number) => {
+    const filterMessage = errors.filter((_e, i) => i !== index)
+    errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_DELETE, payload: filterMessage })
+
+    // const errorContainer = document.querySelector('.error-container');
+    // if (errorContainer) {
+    //   document.body.classList.remove('body-scroll-locked');
+    //   errorContainer.classList.add('hide');
+    // setTimeout(() => {
+    //   emptyMessage();
+    // }, 4000);
+    // }
+  };
+
 
   useEffect(() => {
-    const errorContainer = document.querySelector('.error-container');
-    document.body.classList.add('body-scroll-locked');
+    // document.body.classList.add('body-scroll-locked');
 
     const firstTimeout = setTimeout(() => {
-      false && setIsVisible(false);
-      if (errorContainer) {
-        document.body.classList.remove('body-scroll-locked');
-        errorContainer.classList.add('hide');
-      }
+      // const errorContainer = document.querySelector('.error-container');
 
-      // Agregar el segundo setTimeout aquí
-      const secondTimeout = setTimeout(() => {
-        emptyMessage()
-      }, 4000);
-
-      // Limpiar el segundo timeout al desmontar el componente
-      return () => clearTimeout(secondTimeout);
+      // if (errorContainer) {
+      // closeMessage();
+      // }
     }, 10000);
 
-    // Limpiar el primer timeout al desmontar el componente
     return () => clearTimeout(firstTimeout);
     // eslint-disable-next-line
   }, []);
 
-  return isVisible ? (
-    <div className="error-container">
-      {errors.map(({ field, message }, index) => {
-        return (
-          <div key={index}>
-            <h3>{field}:</h3>{" "}<p>{message}</p>
+  return (
+    <div className="messages-general__container">
+      {errors.map(({ message, status_code }, index) => (
+        <div key={index} className={`messages-general__card ${getStatusColor(status_code)}`}>
+          <button className="close-button" onClick={() => closeMessage(index)}>X</button>
+          <div >
+            <div>{message}</div>
           </div>
-        )
-      })}
+        </div>
+      ))}
     </div>
-  ) : null;
+  );
+};
+
+// Función para obtener el color según el código de estado
+const getStatusColor = (status_code: number): string => {
+  if (status_code >= 100 && status_code <= 199) {
+    return 'information';
+  } else if (status_code >= 200 && status_code <= 299) {
+    return 'success';
+  } else if (status_code >= 300 && status_code <= 399) {
+    return 'warning';
+  } else {
+    return 'error';
+  }
 };
 
 export default ErrorMessage;

@@ -1,8 +1,8 @@
 import { RefObject, useContext } from "react";
-import { Components, InitialStateFormAdvertising, RouterDom, react, } from "./utils";
-import { CreateContext } from "../../../hooks/useContext";
 import { ParamsChildren } from "../../../hooks/useAdvertising/useAdvertising";
-const { ErrorMessage, FormAdvertisingButton, FormAdvertisingForm, FormAdvertisingList, useMediaQuery, useModalConfirm, useMutationAdvertising } = Components
+import { CreateContext } from "../../../hooks/useContext";
+import { Components, InitialStateFormAdvertising, RouterDom, react, } from "./utils";
+const { FormAdvertisingButton, FormAdvertisingForm, FormAdvertisingList, useMediaQuery, useModalConfirm, useMutationAdvertising } = Components
 const { useEffect, useState, RouteAdvertising } = react;
 const { useLocation } = RouterDom;
 
@@ -14,8 +14,9 @@ interface FormAdvertisingProps extends ParamsChildren {
 }
 
 function FormAdvertising({ advertising, location, componentMount, title }: FormAdvertisingProps) {
-  const { dashboard: { state: { permits: { edit } } } } = useContext(CreateContext)!
-  const { tools: { mutate, resetError }, isLoading, error, status } = useMutationAdvertising();
+  const { dashboard: { stateDashboard: { permits: { edit } } } } = useContext(CreateContext)
+  const { tools: { mutate }, isLoading, error, status } = useMutationAdvertising();
+  // const { tools: { mutate, resetError }, isLoading, error, status } = useMutationAdvertising();
   const { ModalComponent, closeModal, openModal } = useModalConfirm()
   const { mediaQuery } = useMediaQuery();
   const { pathname } = useLocation();
@@ -89,7 +90,7 @@ function FormAdvertising({ advertising, location, componentMount, title }: FormA
   return (
     <>
       {edit ? <div ref={componentMount} className="advertising-form">
-        {error && <ErrorMessage errors={error.errors} emptyMessage={() => resetError()} />}
+        {/* {error && <ErrorMessage errors={error.errors.map(e => { return { ...e, status_code: error.status_code } })} emptyMessage={() => resetError()} />} */}
         {isLoading && <div>Loading...</div>}
         <div className="advertising-form-title">
           <h3>{title}</h3>

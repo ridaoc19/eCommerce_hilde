@@ -1,21 +1,22 @@
-import { useParams } from "react-router-dom";
-import { RouteUser, useMutationUser } from "../../../auth/login";
+import { useContext } from "react";
+import { CreateContext } from "../../../../hooks/useContext";
 
 
 function VerifyEmail() {
-  const { id } = useParams();
-  const { tools, data: { getUserQueryData }, status } = useMutationUser();
-  const { userQueryData, isFetchingUser } = getUserQueryData()
+  // const { id } = useParams();
+  // const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  // const { userQueryData, isFetchingUser } = getUserQueryData()
+  const { dashboard: { stateDashboard: { login } } } = useContext(CreateContext)
 
   return (
     <div>
-      {isFetchingUser && <div>Cargando...</div>}
-      {userQueryData && <p>{userQueryData.message}</p>}
+      {login.isLoading && <div>Cargando...</div>}
+      {/* {userQueryData && <p>{userQueryData.message}</p>} */}
       <h2>Valida el correo electrónico</h2>
       <button onClick={() => {
-        tools.fetch(RouteUser.Verify).options({ requestData: { tokenEmail: id || "" } })
+        // tools.fetch(RouteUser.Verify).options({ requestData: { tokenEmail: id || "" } })
       }}>Validar</button>
-      {status.isUserError && status.userError?.errors[0].message}
+      {login.isError && login?.errors[0].message}
     </div>
   );
 }

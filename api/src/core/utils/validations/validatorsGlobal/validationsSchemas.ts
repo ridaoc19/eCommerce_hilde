@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 const userSchemas: { [key: string]: Yup.Schema } = {
-  _id: Yup.string(),
+  user_id: Yup.string(),
   email: Yup.string()
     .email('El correo electrónico no es válido')
     .required('El correo electrónico es requerido'),

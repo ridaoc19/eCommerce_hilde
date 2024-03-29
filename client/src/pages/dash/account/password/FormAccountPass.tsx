@@ -1,12 +1,12 @@
 import { InitialStateAccountPass } from ".";
-import { Error } from "../../../../services/user/userApi";
+import { StateDashboard } from "../../../../interfaces/user.interface";
 import { HandleChangeText, HandleClick, Input, Spinner } from "../../../auth/login";
 import Success from "./Success";
 
 interface FormAccountPassProps {
   success: boolean;
   stateAccountPass: InitialStateAccountPass;
-  errorUser: Error | null;
+  errorUser: StateDashboard['login']['errors'];
   handleChangeAccountPass: HandleChangeText;
   handleClickAccountPass: HandleClick;
   isLoadingUser: boolean;
@@ -24,23 +24,23 @@ function FormAccountPass({ stateAccountPass, success, errorUser, isErrorUser, is
 
           <div className="user-form__input--content">
             {
-            (Object.keys(stateAccountPass.change).filter(key => !['_id'].includes(key)) as (keyof Omit<InitialStateAccountPass['change'], 'email' | '_id'>)[]).map((item) => (
-              <Input
-                key={item}
-                svg={{ type: 'padlock' }}
-                svgTwo={{ type: 'eye' }}
-                styleClass={`login__account-pass--${item}`}
-                errorMessage={stateAccountPass.error[item] || errorUser?.errors.find(e => e.field === item)?.message}
-                input={{ type: 'password', placeholder: item === 'password' ? 'nueva contraseña' : 'Confirma contraseña', value: stateAccountPass.change[item], handleOnChange: handleChangeAccountPass, name: item }}
-              />
-            ))
+              (Object.keys(stateAccountPass.change).filter(key => !['_id'].includes(key)) as (keyof Omit<InitialStateAccountPass['change'], 'email' | '_id'>)[]).map((item) => (
+                <Input
+                  key={item}
+                  svg={{ type: 'padlock' }}
+                  svgTwo={{ type: 'eye' }}
+                  styleClass={`login__account-pass--${item}`}
+                  errorMessage={stateAccountPass.error[item] || errorUser?.find(e => e.field === item)?.message}
+                  input={{ type: 'password', placeholder: item === 'password' ? 'nueva contraseña' : 'Confirma contraseña', value: stateAccountPass.change[item], handleOnChange: handleChangeAccountPass, name: item }}
+                />
+              ))
             }
           </div>
 
           <div className="form__error-back--content">
-            {errorUser?.errors.some(e => e.field === 'general') &&
+            {errorUser?.some(e => e.field === 'general') &&
               <ul>
-                {errorUser?.errors.filter(e => e.field === 'general').map((e, i) => (
+                {errorUser?.filter(e => e.field === 'general').map((e, i) => (
                   <span key={i}>{e.message}</span>
                 ))}
               </ul>

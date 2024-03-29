@@ -1,22 +1,25 @@
 
+import { useContext } from 'react';
 import Button from '../../../components/common/button/Button';
-import { HandleChangeText, HandleClick, InitialStateRegistre, Input, RegistreButtonName, RouteUser, Spinner, Success, Svg, clearUserError, initialStateRegistre, useEffect, useMutationUser, useNavigate, useState, useValidations } from './index';
+import { CreateContext } from '../../../hooks/useContext';
+import { HandleChangeText, HandleClick, InitialStateRegistre, Input, RegistreButtonName, Spinner, Success, Svg, initialStateRegistre, useEffect, useNavigate, useState, useValidations } from './index';
 
 function Registre() {
   const navigate = useNavigate()
   const { getValidationErrors } = useValidations();
-  const { tools, data: { getUserQueryData }, status } = useMutationUser();
-  const { userData } = getUserQueryData()
+  const { dashboard: { stateDashboard: { login } } } = useContext(CreateContext)
+  // const { tools, data: { getUserQueryData }, status } = useMutationUser();
+  // const { userData } = getUserQueryData()
   const [stateRegistre, setStateRegistre] = useState<InitialStateRegistre>(initialStateRegistre);
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    if (userData) setSuccess(true)
+    if (login.user.name) setSuccess(true)
     // eslint-disable-next-line
-  }, [status.isUserSuccess])
+  }, [login.isSuccess])
 
   const handleChangeRegistre: HandleChangeText = ({ target: { name, value } }) => {
-    clearUserError(() => tools.resetError(), (state) => setStateRegistre(state), initialStateRegistre, stateRegistre)
+    // clearUserError(() => tools.resetError(), (state) => setStateRegistre(state), initialStateRegistre, stateRegistre)
     const { message, stop } = getValidationErrors({ name, value })
     if (stop) return setStateRegistre(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
     setStateRegistre(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
@@ -26,7 +29,7 @@ function Registre() {
     event.preventDefault();
     const id = (event.target as HTMLFormElement).id.split("--")[1] as RegistreButtonName;
     if (id === RegistreButtonName.Back) return navigate('/login');
-    tools.fetch(RouteUser.Registre).options({ requestData: stateRegistre.change })
+    // tools.fetch(RouteUser.Registre).options({ requestData: stateRegistre.change })
   };
 
   return (
@@ -49,7 +52,7 @@ function Registre() {
                     key={item}
                     svg={{ type: item === 'name' || item === 'lastName' ? 'user' : item }}
                     styleClass={`login--${item}`}
-                    errorMessage={stateRegistre.error[item] || status.userError?.errors.find(e => e.field === item)?.message}
+                    errorMessage={stateRegistre.error[item] || login?.errors.find(e => e.field === item)?.message}
                     input={{ type: item, placeholder: item === 'name' ? 'Nombres' : item === 'lastName' ? 'Apellidos' : item === 'email' ? 'Correo Electrónico' : 'Teléfono', value: stateRegistre.change[item], handleOnChange: handleChangeRegistre, name: item }}
                   />
                 ))}
@@ -57,9 +60,9 @@ function Registre() {
               </div>
 
               <div className="form__error-back--content">
-                {status.userError?.errors.some(e => e.field === 'general') &&
+                {login?.errors.some(e => e.field === 'general') &&
                   <ul>
-                    {status.userError?.errors.filter(e => e.field === 'general').map((e, i) => (
+                    {login?.errors.filter(e => e.field === 'general').map((e, i) => (
                       <span key={i}>{e.message}</span>
                     ))}
                   </ul>
@@ -72,10 +75,10 @@ function Registre() {
                     key={item}
                     button={{
                       type: item === RegistreButtonName.Back ? 'light' : 'dark',
-                      text: item === RegistreButtonName.Save ? (<>{status.isLoadingUser ? <Spinner color='white' /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>),
+                      text: item === RegistreButtonName.Save ? (<>{login.isLoading ? <Spinner color='white' /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>),
                       handleClick: handleClickRegistre,
                       id: `button__registre--${item}`,
-                      disabled: (status.isLoadingUser || RegistreButtonName.Save) && status.isUserError
+                      disabled: (login.isLoading || RegistreButtonName.Save) && login.isError
                     }}
                   />
                   // <button

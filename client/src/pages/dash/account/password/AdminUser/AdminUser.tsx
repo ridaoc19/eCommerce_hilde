@@ -1,7 +1,9 @@
+import { useContext } from "react";
+import { CreateContext } from "../../../../../hooks/useContext";
 import useQueryUser from "../../../../../hooks/useQueryUser";
 import { handleSelectChange } from "../../../../../interfaces/global.interface";
 import { RequestMapUser } from "../../../../../services/user/userRequest";
-import { HandleClick, RouteUser, Spinner, clearUserError, useMutationUser, useState, useValidations } from "../../../../auth/login";
+import { HandleClick, RouteUser, Spinner, useState, useValidations } from "../../../../auth/login";
 
 export enum UserAdminButtonName {
   Save = 'save',
@@ -22,12 +24,14 @@ const initialStateUserAdmin: InitialStateUserAdmin = {
 function AdminUser() {
   const { getValidationErrors } = useValidations();
   const { statusUserQuery: { dataSuccess } } = useQueryUser(RouteUser.AccountAdminGet, {}, true)
-  const { tools, status } = useMutationUser()
+  // const { tools, status } = useMutationUser()
+  const { dashboard: { stateDashboard: { login } } } = useContext(CreateContext)
+
 
   const [stateUserAdmin, setStateUserAdmin] = useState<InitialStateUserAdmin>(initialStateUserAdmin)
 
   const handleChangeUserAdmin: handleSelectChange = ({ target: { name, value } }) => {
-    clearUserError(() => tools.resetError(), (state) => setStateUserAdmin(state), initialStateUserAdmin, stateUserAdmin)
+    // clearUserError(() => tools.resetError(), (state) => setStateUserAdmin(state), initialStateUserAdmin, stateUserAdmin)
     const { message, stop } = getValidationErrors({ name, value })
     if (stop) return setStateUserAdmin(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
     setStateUserAdmin(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
@@ -37,11 +41,11 @@ function AdminUser() {
     event.preventDefault();
     const id = (event.target as HTMLFormElement).id.split("--")[1] as UserAdminButtonName;
     if (id === UserAdminButtonName.Save) {
-      tools.fetch(RouteUser.AccountAdminPut).options({ requestData: stateUserAdmin.change })
+      // tools.fetch(RouteUser.AccountAdminPut).options({ requestData: stateUserAdmin.change })
     } else if (id === UserAdminButtonName.Empty) {
       setStateUserAdmin(initialStateUserAdmin)
     } else {
-      tools.fetch(RouteUser.AccountAdminDelete).options({ routeId: stateUserAdmin.change.user_id })
+      // tools.fetch(RouteUser.AccountAdminDelete).options({ routeId: stateUserAdmin.change.user_id })
     }
   }
 
@@ -76,8 +80,8 @@ function AdminUser() {
           <option value="edit">Edit</option>
           <option value="visitant">Visitant</option>
         </select>
-        {status.userError?.errors.some(e => e.field === 'roles') &&
-          status.userError?.errors.filter(e => e.field === 'roles').map((e, i) => (
+        {login?.errors.some(e => e.field === 'roles') &&
+          login?.errors.filter(e => e.field === 'roles').map((e, i) => (
             <span key={i}>{e.message}</span>
           ))
         }
@@ -88,9 +92,9 @@ function AdminUser() {
       </div >
 
       <div className="form__error-back--content">
-        {status.userError?.errors.some(e => e.field === 'general') &&
+        {login?.errors.some(e => e.field === 'general') &&
           <ul>
-            {status.userError?.errors.filter(e => e.field === 'general').map((e, i) => (
+            {login?.errors.filter(e => e.field === 'general').map((e, i) => (
               <span key={i}>{e.message}</span>
             ))}
           </ul>
@@ -98,9 +102,9 @@ function AdminUser() {
       </div>
 
       <div className="form__button--content">
-        <button id='button__user-admin--save' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError || !stateUserAdmin.change.roles || stateUserAdmin.change.roles === dataSuccess?.data.find(u => u.user_id === stateUserAdmin.change.user_id)?.roles} >{status.isLoadingUser ? <Spinner /> : "Actualizar"}</button>
-        <button id='button__user-admin--empty' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError} >{"Limpiar"}</button>
-        <button id='button__user-admin--delete' onClick={handleClickUserAdmin} className="button_dark" disabled={status.isLoadingUser || status.isUserError || !stateUserAdmin.change.user_id} >{status.isLoadingUser ? <Spinner /> : "Eliminar Usuario"}</button>
+        <button id='button__user-admin--save' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading || login.isError || !stateUserAdmin.change.roles || stateUserAdmin.change.roles === dataSuccess?.data.find(u => u.user_id === stateUserAdmin.change.user_id)?.roles} >{login.isLoading ? <Spinner /> : "Actualizar"}</button>
+        <button id='button__user-admin--empty' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading || login.isError} >{"Limpiar"}</button>
+        <button id='button__user-admin--delete' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading || login.isError || !stateUserAdmin.change.user_id} >{login.isLoading ? <Spinner /> : "Eliminar Usuario"}</button>
       </div>
     </div>
   );

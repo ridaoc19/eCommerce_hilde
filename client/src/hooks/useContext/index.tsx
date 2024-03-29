@@ -1,18 +1,20 @@
 import { ReactNode, createContext } from "react";
-import { IDashReducer, initialStateDashboard } from "../../hooks/useContext/dash/reducer";
 import StateAdvertising from "./advertising/State";
 import { IAdvertisingReducer, initialStateAdvertising } from "./advertising/reducer";
-import StateDashboard from "./dash/State";
 import StateError from "./error/State";
 import { IErrorReducer, initialStateError } from "./error/reducer";
 import StateNavigation from "./navigation/State";
 import { INavigatorReducer, initialStateNavigation } from "./navigation/reducer";
+import StateContextDashboard, { initialStateDashboard } from "./dash/State";
 
+// Obtén el tipo de retorno de la función StateDashboard
+type StateDashboardReturnType = ReturnType<typeof StateContextDashboard>;
 export interface IContextData {
-  dashboard: {
-    state: IDashReducer.AppState;
-    dispatch: React.Dispatch<IDashReducer.AppAction>;
-  };
+  dashboard: StateDashboardReturnType
+  // dashboard: {
+  //   state: IDashReducer.AppState;
+  //   dispatch: React.Dispatch<IDashReducer.AppAction>;
+  // };
   navigation: {
     navigationContextState: INavigatorReducer.AppState,
     navigationContextDispatch: React.Dispatch<INavigatorReducer.AppAction<INavigatorReducer.AppState>>
@@ -26,7 +28,7 @@ export interface IContextData {
   }
   error: {
     errorContextState: IErrorReducer.AppState,
-    errorContextDispatch: React.Dispatch<IErrorReducer.AppAction<IErrorReducer.AppState>>
+    errorContextDispatch: React.Dispatch<IErrorReducer.AppAction>
   }
 }
 
@@ -40,8 +42,9 @@ const initialContext: IContextData = {
     advertisingContextState: initialStateAdvertising
   },
   dashboard: {
-    dispatch: () => { },
-    state: initialStateDashboard
+    dispatchDashboard: () => { },
+    stateDashboard: initialStateDashboard,
+    clearUser: () => { }
   },
   error: {
     errorContextDispatch: () => { },
@@ -56,7 +59,7 @@ const initialContext: IContextData = {
 export const CreateContext = createContext<IContextData>(initialContext);
 
 export const StoreContext = ({ children }: StoreContextProps) => {
-  const dashboard = StateDashboard();
+  const dashboard = StateContextDashboard();
   const navigation = StateNavigation()
   const advertising = StateAdvertising()
   const error = StateError()

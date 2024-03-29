@@ -6,7 +6,7 @@ import Password from './password';
 import AdminUser from './password/AdminUser/AdminUser';
 
 function Account() {
-  const { dashboard: { state: { permits: { admin } } } }: IContextData = useContext(CreateContext)!
+  const { dashboard: { stateDashboard: { permits: { admin } } } }: IContextData = useContext(CreateContext)!
 
   return (
     <div>

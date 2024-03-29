@@ -4,6 +4,7 @@ import { MakeProductRequestReturn, productRequest, Error } from "./productApi";
 import { IProduct } from "../../interfaces/product.interface";
 import { useContext } from "react";
 import { CreateContext } from "../../hooks/useContext";
+import { IErrorReducer } from "../../hooks/useContext/error/reducer";
 
 export interface StatusSection {
   isLoadingProduct: boolean;
@@ -34,7 +35,7 @@ function useMutationProduct() {
       return requestData;
     },
     onError(error: Error) {
-      errorContextDispatch({ type: 'errors', payload: error.errors })
+      errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
       return error;
     },
     onSuccess() {

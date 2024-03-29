@@ -1,12 +1,10 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { PermitsRoles } from '../../../interfaces/user.interface';
 import Svg from '../../../components/assets/icons/Svg';
-import SidebarIcon from '../../../components/common/sidebarIcon/SidebarIcon';
-import { useMutationUser } from '../../auth/login';
-import { CreateContext, IContextData } from '../../../hooks/useContext';
-import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
 import Button from '../../../components/common/button/Button';
+import SidebarIcon from '../../../components/common/sidebarIcon/SidebarIcon';
+import { CreateContext, IContextData } from '../../../hooks/useContext';
+import { PermitsRoles } from '../../../interfaces/user.interface';
 
 export namespace ISidebar {
   export type ItemRole = {
@@ -25,9 +23,9 @@ const item: ISidebar.ItemRole[] = [
 ];
 
 function SidebarAdmin({ handleOnClick, isOpenMenu }: { handleOnClick: () => void, isOpenMenu: boolean }) {
-  const { dashboard: { state: { permits }, dispatch } }: IContextData = useContext(CreateContext)!
-  const { data: { getUserQueryData } } = useMutationUser();
-  const { userData } = getUserQueryData()
+  const { dashboard: { stateDashboard: { permits, login } } }: IContextData = useContext(CreateContext)!
+  // const { data: { getUserQueryData } } = useMutationUser();
+  // const { userData } = getUserQueryData()
 
   return (
     <div className='sidebar__section-left'>
@@ -42,7 +40,7 @@ function SidebarAdmin({ handleOnClick, isOpenMenu }: { handleOnClick: () => void
 
       <div className='sidebar__section-left-main'>
         {item.map((e, i) => {
-          if (userData?.roles) {
+          if (login.user.roles) {
             return permits[e.id] && (
               // <div key={i} onClick={() => {
               //   dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: { name: null, value: e.value } })
@@ -55,7 +53,7 @@ function SidebarAdmin({ handleOnClick, isOpenMenu }: { handleOnClick: () => void
                 type: "highlighter",
                 text: e.type,
                 handleClick: () =>{ 
-                  dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: { name: null, value: e.value } })
+                  // dispatch({ type: ActionTypeDashboard.SELECT_COMPONENT, payload: { name: null, value: e.value } })
                   handleOnClick()
                 }
               }}

@@ -13,6 +13,7 @@ import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from 
 import { RequestMapNavigation, RouteNavigation } from './services/navigation/navigationRequest';
 import { RouteUser } from './services/user/userRequest';
 import './styles/app/App.scss';
+import { IErrorReducer } from './hooks/useContext/error/reducer';
 
 function App() {
   const { error: { errorContextDispatch, errorContextState }, navigation: { navigationContextDispatch }, advertising: { advertisingContextDispatch } } = useContext(CreateContext)!
@@ -38,11 +39,8 @@ function App() {
       // enabled: true,
     });
 
-  const { statusUserQuery: { errorUser } } = useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } }, !!token);
-  useEffect(() => {
-    errorUser && errorContextDispatch({ type: 'errors', payload: errorUser.errors })
-    // eslint-disable-next-line
-  }, [errorUser])
+  useQueryUser<RouteUser.Token>(RouteUser.Token, { requestData: { token } }, !!token);
+
 
   useEffect(() => {
     navigationContextDispatch({
@@ -55,7 +53,7 @@ function App() {
       }
     })
 
-    error && errorContextDispatch({ type: 'errors', payload: error.errors })
+    error && errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
     // eslint-disable-next-line
   }, [isFetching, isLoading, isError, isSuccess])
 
@@ -71,14 +69,13 @@ function App() {
       }
     })
 
-    advertising.error && errorContextDispatch({ type: 'errors', payload: advertising.error.errors })
+    advertising.error && errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: advertising.error.errors.map(e => { return { ...e, status_code: advertising.error.status_code } }) })
     // eslint-disable-next-line
   }, [advertising.isLoading, advertising.isFetching, advertising.isError, advertising.isSuccess])
 
-
   return (
     <div className='app'>
-      {errorContextState.errors.length > 0 && <ErrorMessage errors={errorContextState.errors} emptyMessage={() => errorContextDispatch({ type: 'errors', payload: [] })} />}
+      {errorContextState.errors.length > 0 && <ErrorMessage errors={errorContextState.errors} />}
       <Routes />
     </div>
   );

@@ -1,14 +1,15 @@
+import { useQuery } from '@tanstack/react-query';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import Breadcrumb from '../../components/common/breadcrumb/Breadcrumb';
 import { BreadcrumbType } from '../../interfaces/global.interface';
 import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from '../../services/navigation/navigationApi';
 import { RequestMapNavigation, RouteNavigation } from '../../services/navigation/navigationRequest';
-import Breadcrumb from '../../components/common/breadcrumb/Breadcrumb';
+import { CreateContext } from '../useContext';
+import { IErrorReducer } from '../useContext/error/reducer';
 import Filters from './Filters';
 import PaginationButton from './PaginationButton';
 import { InitialStateListProduct, ListProductHook } from './types';
-import { useQuery } from '@tanstack/react-query';
-import { CreateContext } from '../useContext';
 
 
 const initialStateListProduct: InitialStateListProduct = {
@@ -60,7 +61,7 @@ const useListProduct = (): ListProductHook => {
   );
 
   useEffect(() => {
-    error?.errors && errorContextDispatch({ type: 'errors', payload: error.errors })
+    error?.errors && errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
   // eslint-disable-next-line 
   }, [isError])
 

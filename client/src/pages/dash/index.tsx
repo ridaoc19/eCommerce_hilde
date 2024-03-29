@@ -4,7 +4,7 @@ import Account from './account';
 import ProductCreation from './Inventory/ProductCreation/ProductCreation';
 
 function Dashboard() {
-  const { dashboard: { state: { component } } }: IContextData = useContext(CreateContext)!
+  const { dashboard: { stateDashboard: { component } } }: IContextData = useContext(CreateContext)!
 
   switch (component) {
     case "user":

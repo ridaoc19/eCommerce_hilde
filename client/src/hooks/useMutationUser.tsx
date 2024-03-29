@@ -1,38 +1,65 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { IUser } from "../interfaces/user.interface";
+import { useContext, useEffect } from "react";
+import { IUser, TypeDashboard } from "../interfaces/user.interface";
 import { Error, MakeUserRequestReturn, userRequest } from "../services/user/userApi";
 import { RequestMapUser, RouteUser } from "../services/user/userRequest";
-import { useContext } from "react";
 import { CreateContext } from "./useContext";
+import { IErrorReducer } from "./useContext/error/reducer";
 
 function useMutationUser() {
   const queryClient = useQueryClient();
-  const { error: { errorContextDispatch } } = useContext(CreateContext)!
+  const { error: { errorContextDispatch }, dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)!
 
   const {
-    mutate: executeUserMutation,
-    reset: resetUserMutation,
-    isPending: isLoadingUser,
-    error: userError,
-    isSuccess: isUserSuccess,
-    isError: isUserError,
+    mutate,
+    isPending,
+    error,
+    isSuccess,
+    isError,
+    data
   } = useMutation({
     mutationFn: ({ route, options }: { route: RouteUser, options: Omit<RequestMapUser[RouteUser], 'route' | 'method'> }) => {
       const requestData = userRequest(route).options(options);
       return requestData;
     },
     onError(error: Error) {
-      errorContextDispatch({ type: 'errors', payload: error.errors })
+      errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
       return error;
     },
     onSuccess(data, { route }) {
-      if (route === RouteUser.AccountAdminGet || route === RouteUser.AccountAdminDelete || route === RouteUser.AccountAdminPut) {
+      if (route === RouteUser.AccountAdminGet || route === RouteUser.AccountAdminDelete || route === RouteUser.AccountAdminPut) {// para admin de usuarios
         queryClient.invalidateQueries({ queryKey: [IUser.QUERY_KEY_USER.MultipleUsers] })
       } else {
         queryClient.setQueryData([IUser.QUERY_KEY_USER.SingleUser], data);
       }
+
     },
   });
+
+  useEffect(() => {
+    const userQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>([IUser.QUERY_KEY_USER.SingleUser]);
+    const allUserQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>([IUser.QUERY_KEY_USER.MultipleUsers]);
+    dispatchDashboard({
+      type: TypeDashboard.DASHBOARD_LOGIN, payload: {
+        status: data?.status || "",
+        isLoading: isPending,
+        isLogin: login.isLogin,
+        isSuccess,
+        errors: error?.errors ? error.errors.filter(e => e.field !== 'general') : [],
+        user: userQueryData?.data[0] || IUser.userDataEmpty,
+        userAll: allUserQueryData?.data || []
+      }
+    })
+  }, [isPending, isError])
+
+
+  // useEffect(() => {
+  //   if (login.isLogin) {
+  //     errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: 'general', message: <Success />, status_code: 200 }] })
+  //   }
+  // }, [login.isLogin])
+
+
 
   const dataSection = {
     getUserQueryData() {
@@ -48,17 +75,17 @@ function useMutationUser() {
   };
 
   const statusSection = {
-    isLoadingUser,
-    isUserSuccess,
-    userError,
-    isUserError,
+    isLoadingUser: isPending,
+    isUserSuccess: isSuccess,
+    userError: error,
+    isUserError: isError,
   };
 
   const toolsSection = {
     fetch<T extends RouteUser>(route: T): { options: (options: Omit<RequestMapUser[T], 'route' | 'method'>) => void } {
       return {
         options: async (options: Omit<RequestMapUser[T], 'route' | 'method'>) => {
-          executeUserMutation({ route, options });
+          mutate({ route, options });
         },
       };
     },
@@ -69,13 +96,24 @@ function useMutationUser() {
       queryClient.removeQueries({ queryKey: [IUser.QUERY_KEY_USER.SingleUser] });
     },
     resetError() {
-      resetUserMutation();
+      queryClient.resetQueries({ queryKey: [IUser.QUERY_KEY_USER.SingleUser] })
+      // reset();
     },
   }
 
+  false && console.log(dataSection, statusSection, toolsSection)
+  function mutateUser<T extends RouteUser>(route: T): { options: (options: Omit<RequestMapUser[T], 'route' | 'method'>) => void } {
+    return {
+      options: async (options: Omit<RequestMapUser[T], 'route' | 'method'>) => {
+        mutate({ route, options });
+      },
+    };
+  }
+
   return {
-    data: dataSection,
-    status: statusSection,
+    mutateUser,
+    // data: dataSection,
+    // status: statusSection,
     tools: toolsSection,
   };
 }
