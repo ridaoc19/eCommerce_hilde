@@ -4,11 +4,11 @@ import { IUser, TypeDashboard } from "../interfaces/user.interface";
 import { Error, MakeUserRequestReturn, userRequest } from "../services/user/userApi";
 import { RequestMapUser, RouteUser } from "../services/user/userRequest";
 import { CreateContext } from "./useContext";
-import { IErrorReducer } from "./useContext/error/reducer";
+import { IMessagesReducer } from "./useContext/messages/reducer";
 
 function useMutationUser() {
   const queryClient = useQueryClient();
-  const { error: { errorContextDispatch }, dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)!
+  const { messages: { messagesContextDispatch }, dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)
 
   const {
     mutate,
@@ -23,7 +23,7 @@ function useMutationUser() {
       return requestData;
     },
     onError(error: Error) {
-      errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
+      messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
       return error;
     },
     onSuccess(data, { route }) {
@@ -55,7 +55,7 @@ function useMutationUser() {
 
   // useEffect(() => {
   //   if (login.isLogin) {
-  //     errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: 'general', message: <Success />, status_code: 200 }] })
+  //     messagesContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: 'general', message: <Success />, status_code: 200 }] })
   //   }
   // }, [login.isLogin])
 

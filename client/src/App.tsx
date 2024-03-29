@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext, useEffect } from 'react';
 import ErrorMessage from './components/common/ErrorMessage/ErrorMessage';
 import { CreateContext } from './hooks/useContext';
+import { IMessagesReducer } from './hooks/useContext/messages/reducer';
 import useQueryUser from './hooks/useQueryUser';
 import { IAdvertising } from './interfaces/advertising.interface';
 import { IProduct } from './interfaces/product.interface';
@@ -13,10 +14,9 @@ import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from 
 import { RequestMapNavigation, RouteNavigation } from './services/navigation/navigationRequest';
 import { RouteUser } from './services/user/userRequest';
 import './styles/app/App.scss';
-import { IErrorReducer } from './hooks/useContext/error/reducer';
 
 function App() {
-  const { error: { errorContextDispatch, errorContextState }, navigation: { navigationContextDispatch }, advertising: { advertisingContextDispatch } } = useContext(CreateContext)!
+  const { messages: { messagesContextDispatch, messagesContextState }, navigation: { navigationContextDispatch }, advertising: { advertisingContextDispatch } } = useContext(CreateContext)!
   const token: IUser.UserData['token'] = localStorage?.token || ""
 
   const advertising =
@@ -53,7 +53,7 @@ function App() {
       }
     })
 
-    error && errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
+    error && messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
     // eslint-disable-next-line
   }, [isFetching, isLoading, isError, isSuccess])
 
@@ -69,13 +69,13 @@ function App() {
       }
     })
 
-    advertising.error && errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: advertising.error.errors.map(e => { return { ...e, status_code: advertising.error.status_code } }) })
+    advertising.error && messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: advertising.error.errors.map(e => { return { ...e, status_code: advertising.error.status_code } }) })
     // eslint-disable-next-line
   }, [advertising.isLoading, advertising.isFetching, advertising.isError, advertising.isSuccess])
 
   return (
     <div className='app'>
-      {errorContextState.errors.length > 0 && <ErrorMessage errors={errorContextState.errors} />}
+      {messagesContextState.messages.length > 0 && <ErrorMessage messages={messagesContextState.messages} />}
       <Routes />
     </div>
   );

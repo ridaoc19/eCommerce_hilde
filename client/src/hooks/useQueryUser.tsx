@@ -5,11 +5,11 @@ import { Success } from "../pages/auth/login";
 import { Error, MakeUserRequestReturn, userRequest } from "../services/user/userApi";
 import { RequestMapUser, RouteUser } from "../services/user/userRequest";
 import { CreateContext } from "./useContext";
-import { IErrorReducer } from "./useContext/error/reducer";
+import { IMessagesReducer } from "./useContext/messages/reducer";
 
 function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.AccountAdminGet>(route: T, options: Omit<RequestMapUser[T], 'route' | 'method'>, enabled: boolean = false) {
   const queryClient = useQueryClient();
-  const { error: { errorContextDispatch }, dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)
+  const { messages: { messagesContextDispatch }, dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)
   const { isLoading, data, error, isSuccess, isError, } = useQuery<MakeUserRequestReturn, Error>({
     queryKey: route === RouteUser.AccountAdminGet ? [IUser.QUERY_KEY_USER.MultipleUsers] : [IUser.QUERY_KEY_USER.SingleUser],
     queryFn: () => userRequest(route).options(options),
@@ -37,13 +37,13 @@ function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.Ac
   }, [isLoading, isError, isSuccess])
 
   useEffect(() => {
-    error && errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
+    error && messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
     // eslint-disable-next-line
   }, [error])
 
   useEffect(() => {
     if (login.isLogin) {
-      errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: 'general', message: <Success />, status_code: 200 }] })
+      messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: 'general', message: <Success />, status_code: 200 }] })
     }
   }, [login.isLogin])
 

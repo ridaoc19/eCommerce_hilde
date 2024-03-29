@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import * as Yup from 'yup';
 import { CreateContext } from '../useContext';
-import { IErrorReducer } from '../useContext/error/reducer';
+import { IMessagesReducer } from '../useContext/messages/reducer';
 import { validationSchemas } from './validationsSchemas';
 
 export interface ResponseError { name: string | 'general', message: string, stop: boolean }
@@ -9,14 +9,14 @@ export interface ResponseError { name: string | 'general', message: string, stop
 type GetValidationErrors = (data: { name: string, value: unknown }) => ResponseError;
 
 function useValidations() {
-  const { error: { errorContextDispatch } } = useContext(CreateContext)!
+  const { messages: { messagesContextDispatch } } = useContext(CreateContext)!
 
   const getValidationErrors: GetValidationErrors = ({ name, value }) => {
     try {
       const schema = validationSchemas[name];
 
       if (!schema) {
-        errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: name, status_code: 400, message: `El campo "${name}" falta por validar` }] })
+        messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: name, status_code: 400, message: `El campo "${name}" falta por validar` }] })
         return { name, message: `El campo "${name}" falta por validar`, stop: true }
       }
       schema.validateSync(value);
@@ -24,7 +24,7 @@ function useValidations() {
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         if (error.type && error.type === 'max') {
-          errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: name, status_code: 400, message: error.message }] })
+          messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: name, status_code: 400, message: error.message }] })
           return { name, message: error.message, stop: true };
         } else {
           return { name, message: error.message, stop: false }

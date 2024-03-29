@@ -1,11 +1,11 @@
 import { ReactNode, createContext } from "react";
 import StateAdvertising from "./advertising/State";
 import { IAdvertisingReducer, initialStateAdvertising } from "./advertising/reducer";
-import StateError from "./error/State";
-import { IErrorReducer, initialStateError } from "./error/reducer";
+import StateContextDashboard, { initialStateDashboard } from "./dash/State";
+import StateMessages from "./messages/State";
 import StateNavigation from "./navigation/State";
 import { INavigatorReducer, initialStateNavigation } from "./navigation/reducer";
-import StateContextDashboard, { initialStateDashboard } from "./dash/State";
+import { IMessagesReducer, initialStateMessages } from "./messages/reducer";
 
 // Obtén el tipo de retorno de la función StateDashboard
 type StateDashboardReturnType = ReturnType<typeof StateContextDashboard>;
@@ -26,9 +26,9 @@ export interface IContextData {
     advertisingContextState: IAdvertisingReducer.AppState,
     advertisingContextDispatch: React.Dispatch<IAdvertisingReducer.AppAction<IAdvertisingReducer.AppState>>
   }
-  error: {
-    errorContextState: IErrorReducer.AppState,
-    errorContextDispatch: React.Dispatch<IErrorReducer.AppAction>
+  messages: {
+    messagesContextState: IMessagesReducer.AppState,
+    messagesContextDispatch: React.Dispatch<IMessagesReducer.AppAction>
   }
 }
 
@@ -46,9 +46,9 @@ const initialContext: IContextData = {
     stateDashboard: initialStateDashboard,
     clearUser: () => { }
   },
-  error: {
-    errorContextDispatch: () => { },
-    errorContextState: initialStateError
+  messages: {
+    messagesContextDispatch: () => { },
+    messagesContextState: initialStateMessages
   },
   navigation: {
     navigationContextDispatch: () => { },
@@ -62,11 +62,10 @@ export const StoreContext = ({ children }: StoreContextProps) => {
   const dashboard = StateContextDashboard();
   const navigation = StateNavigation()
   const advertising = StateAdvertising()
-  const error = StateError()
-
+  const messages = StateMessages()
   return (
     <CreateContext.Provider
-      value={{ dashboard, navigation, advertising, error }}>
+      value={{ dashboard, navigation, advertising, messages }}>
       {children}
     </CreateContext.Provider>
   );

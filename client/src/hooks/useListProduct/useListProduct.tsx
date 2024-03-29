@@ -6,7 +6,7 @@ import { BreadcrumbType } from '../../interfaces/global.interface';
 import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from '../../services/navigation/navigationApi';
 import { RequestMapNavigation, RouteNavigation } from '../../services/navigation/navigationRequest';
 import { CreateContext } from '../useContext';
-import { IErrorReducer } from '../useContext/error/reducer';
+import { IMessagesReducer } from '../useContext/messages/reducer';
 import Filters from './Filters';
 import PaginationButton from './PaginationButton';
 import { InitialStateListProduct, ListProductHook } from './types';
@@ -29,7 +29,7 @@ const initialStateListProduct: InitialStateListProduct = {
 const useListProduct = (): ListProductHook => {
   const params = useParams();
   let location = useLocation()
-  const { error: { errorContextDispatch } } = useContext(CreateContext)!
+  const { messages: { messagesContextDispatch } } = useContext(CreateContext)!
   // eslint-disable-next-line
   const [_, setSearchParams] = useSearchParams();
 
@@ -61,8 +61,8 @@ const useListProduct = (): ListProductHook => {
   );
 
   useEffect(() => {
-    error?.errors && errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
-  // eslint-disable-next-line 
+    error?.errors && messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
+    // eslint-disable-next-line 
   }, [isError])
 
 

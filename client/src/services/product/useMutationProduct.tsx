@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RequestMapProduct, RouteProduct } from "./productRequest";
-import { MakeProductRequestReturn, productRequest, Error } from "./productApi";
-import { IProduct } from "../../interfaces/product.interface";
 import { useContext } from "react";
 import { CreateContext } from "../../hooks/useContext";
-import { IErrorReducer } from "../../hooks/useContext/error/reducer";
+import { IMessagesReducer } from "../../hooks/useContext/messages/reducer";
+import { IProduct } from "../../interfaces/product.interface";
+import { Error, MakeProductRequestReturn, productRequest } from "./productApi";
+import { RequestMapProduct, RouteProduct } from "./productRequest";
 
 export interface StatusSection {
   isLoadingProduct: boolean;
@@ -19,7 +19,7 @@ export interface StatusSection {
 
 function useMutationProduct() {
   const queryClient = useQueryClient();
-  const { error: { errorContextDispatch } } = useContext(CreateContext)!
+  const { messages: { messagesContextDispatch } } = useContext(CreateContext)
 
   const {
     mutate: executeProductMutation,
@@ -35,7 +35,7 @@ function useMutationProduct() {
       return requestData;
     },
     onError(error: Error) {
-      errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
+      messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
       return error;
     },
     onSuccess() {

@@ -1,23 +1,14 @@
 import React, { useContext, useEffect } from 'react';
-import './errorMessage.scss';
-import { IErrorReducer } from '../../../hooks/useContext/error/reducer';
 import { CreateContext } from '../../../hooks/useContext';
+import { IMessagesReducer } from '../../../hooks/useContext/messages/reducer';
+import './errorMessage.scss';
 
-interface ErrorMessageProps {
-  errors: Array<{
-    field: string | 'general';
-    status_code: number,
-    message: string | React.ReactNode
-  }>;
-  // emptyMessage: () => void;
-}
-
-const ErrorMessage: React.FC<ErrorMessageProps> = ({ errors }) => {
-  const { error: { errorContextDispatch } } = useContext(CreateContext)
+const ErrorMessage: React.FC<IMessagesReducer.AppState> = ({ messages }) => {
+  const { messages: { messagesContextDispatch } } = useContext(CreateContext)
 
   const closeMessage = (index: number) => {
-    const filterMessage = errors.filter((_e, i) => i !== index)
-    errorContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_DELETE, payload: filterMessage })
+    const filterMessage = messages.filter((_e, i) => i !== index)
+    messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_DELETE, payload: filterMessage })
 
     // const errorContainer = document.querySelector('.error-container');
     // if (errorContainer) {
@@ -47,7 +38,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ errors }) => {
 
   return (
     <div className="messages-general__container">
-      {errors.map(({ message, status_code }, index) => (
+      {messages.map(({ message, status_code }, index) => (
         <div key={index} className={`messages-general__card ${getStatusColor(status_code)}`}>
           <button className="close-button" onClick={() => closeMessage(index)}>X</button>
           <div >
