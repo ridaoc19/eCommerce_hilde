@@ -1,13 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { IUser, TypeDashboard } from "../interfaces/user.interface";
 import { Error, MakeUserRequestReturn, userRequest } from "../services/user/userApi";
 import { RequestMapUser, RouteUser } from "../services/user/userRequest";
 import { CreateContext } from "./useContext";
 import { IMessagesReducer } from "./useContext/messages/reducer";
+import Success from "../pages/auth/registre/Success";
 
 function useMutationUser() {
   const queryClient = useQueryClient();
+  const { pathname } = useLocation()
   const { messages: { messagesContextDispatch }, dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)
 
   const {
@@ -31,11 +34,13 @@ function useMutationUser() {
         queryClient.invalidateQueries({ queryKey: [IUser.QUERY_KEY_USER.MultipleUsers] })
       } else {
         queryClient.setQueryData([IUser.QUERY_KEY_USER.SingleUser], data);
+        if (pathname !== 'login') {
+          messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: data.field, status_code: data.status_code, message: pathname === '/registre' ? <Success /> : '' }] })
+        }
       }
-
     },
   });
-
+  console.log(pathname)
   useEffect(() => {
     const userQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>([IUser.QUERY_KEY_USER.SingleUser]);
     const allUserQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>([IUser.QUERY_KEY_USER.MultipleUsers]);

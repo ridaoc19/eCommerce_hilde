@@ -1,6 +1,8 @@
 import { InitialStateAccountPass } from ".";
+import Input from "../../../../components/common/Input/Input";
+import Spinner from "../../../../components/common/spinner";
+import { HandleChangeText, HandleClick } from "../../../../interfaces/global.interface";
 import { StateDashboard } from "../../../../interfaces/user.interface";
-import { HandleChangeText, HandleClick, Input, Spinner } from "../../../auth/login";
 import Success from "./Success";
 
 interface FormAccountPassProps {

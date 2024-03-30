@@ -1,8 +1,31 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import Svg from '../../../components/assets/icons/Svg';
 import Button from '../../../components/common/button/Button';
+import Input from '../../../components/common/Input/Input';
+import Spinner from '../../../components/common/spinner';
 import { CreateContext } from '../../../hooks/useContext';
+import useMutationUser from '../../../hooks/useMutationUser';
+import useValidations from '../../../hooks/useValidations/useValidations';
+import { HandleChangeText, HandleClick } from '../../../interfaces/global.interface';
 import { TypeDashboard } from '../../../interfaces/user.interface';
-import { HandleChangeText, HandleClick, InitialStateLogin, initialStateLogin, Input, LoginButtonName, RouteUser, Spinner, Svg, useMutationUser, useState, useValidations } from './index';
+import { RequestMapUser, RouteUser } from '../../../services/user/userRequest';
+
+export enum LoginButtonName {
+  Reset = 'reset',
+  Login = 'login',
+  Registre = 'registre',
+  Back = 'back',
+}
+interface InitialStateLogin {
+  change: RequestMapUser[RouteUser.Login]['requestData']
+  error: RequestMapUser[RouteUser.Login]['requestData']
+}
+
+const initialStateLogin: InitialStateLogin = {
+  change: { email: "", password: "" },
+  error: { email: "", password: "" }
+}
+
 
 function Login() {
   const { getValidationErrors } = useValidations();

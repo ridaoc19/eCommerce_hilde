@@ -2,10 +2,10 @@ import { lazy } from 'react';
 import Loadable from '../_tools/Loadable';
 import ProtectedAuth from '../_tools/ProtectedAuth';
 
-const Login = Loadable(lazy(() => import('../../pages/auth/login')))
-const Registre = Loadable(lazy(() => import('../../pages/auth/registre')))
-const PassChange = Loadable(lazy(() => import('../../pages/auth/PassChange')))
-const Reset = Loadable(lazy(() => import('../../pages/auth/reset')))
+const Login = Loadable(lazy(() => import('../../pages/auth/login/Login')))
+const Registre = Loadable(lazy(() => import('../../pages/auth/registre/Registre')))
+const PassChange = Loadable(lazy(() => import('../../pages/auth/PassChange/PassChange')))
+const Reset = Loadable(lazy(() => import('../../pages/auth/reset/Reset')))
 
 const Auth = {
   path: "/",

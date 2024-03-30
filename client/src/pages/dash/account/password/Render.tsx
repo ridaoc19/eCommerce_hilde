@@ -1,4 +1,4 @@
-import { Svg } from "../../../auth/login";
+import Svg from "../../../../components/assets/icons/Svg";
 
 function Render() {
 

@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CreateContext } from "../../../../../hooks/useContext";
 import useQueryUser from "../../../../../hooks/useQueryUser";
-import { handleSelectChange } from "../../../../../interfaces/global.interface";
-import { RequestMapUser } from "../../../../../services/user/userRequest";
-import { HandleClick, RouteUser, Spinner, useState, useValidations } from "../../../../auth/login";
+import { HandleClick, handleSelectChange } from "../../../../../interfaces/global.interface";
+import { RequestMapUser, RouteUser } from "../../../../../services/user/userRequest";
+import useValidations from "../../../../../hooks/useValidations/useValidations";
+import Spinner from "../../../../../components/common/spinner";
 
 export enum UserAdminButtonName {
   Save = 'save',

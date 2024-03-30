@@ -1,11 +1,11 @@
 import { useContext } from 'react';
+import Svg from '../../../../components/assets/icons/Svg';
 import { CreateContext } from '../../../../hooks/useContext';
-import { Svg } from '../../../auth/login';
 
 function Render() {
   // const { data: { getUserQueryData } } = useMutationUser();
   // const { user } = getUserQueryData()
-  const { dashboard: { stateDashboard: { login: {user} } } } = useContext(CreateContext)
+  const { dashboard: { stateDashboard: { login: { user } } } } = useContext(CreateContext)
 
 
   return (

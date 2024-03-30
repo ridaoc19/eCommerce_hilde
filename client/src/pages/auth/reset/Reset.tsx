@@ -1,8 +1,29 @@
-
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Svg from '../../../components/assets/icons/Svg';
 import Button from '../../../components/common/button/Button';
+import Input from '../../../components/common/Input/Input';
+import Spinner from '../../../components/common/spinner';
 import { CreateContext } from '../../../hooks/useContext';
-import { HandleChangeText, HandleClick, InitialStateReset, Input, ResetButtonName, Spinner, Success, Svg, initialStateReset, useEffect, useNavigate, useState, useValidations } from './index';
+import useValidations from '../../../hooks/useValidations/useValidations';
+import { HandleChangeText, HandleClick } from '../../../interfaces/global.interface';
+import { RequestMapUser, RouteUser } from '../../../services/user/userRequest';
+import Success from './Success';
+
+
+export enum ResetButtonName {
+  Save = 'save',
+  Back = 'back',
+}
+interface InitialStateReset {
+  change: RequestMapUser[RouteUser.Reset]['requestData']
+  error: RequestMapUser[RouteUser.Reset]['requestData']
+}
+
+const initialStateReset: InitialStateReset = {
+  change: { email: "" },
+  error: { email: "" }
+}
 
 function Reset() {
   const navigate = useNavigate()

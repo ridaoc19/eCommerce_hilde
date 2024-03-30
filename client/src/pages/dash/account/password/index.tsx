@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react';
 import { CreateContext, IContextData } from '../../../../hooks/useContext';
+import useValidations from '../../../../hooks/useValidations/useValidations';
+import { HandleChangeText, HandleClick } from '../../../../interfaces/global.interface';
 import { RequestMapUser, RouteUser } from '../../../../services/user/userRequest';
-import { HandleChangeText, HandleClick, useValidations } from '../../../auth/login';
 import FormAccountPass from './FormAccountPass';
 import Render from './Render';
 

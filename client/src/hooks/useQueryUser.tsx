@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
 import { IUser, TypeDashboard } from "../interfaces/user.interface";
-import { Success } from "../pages/auth/login";
 import { Error, MakeUserRequestReturn, userRequest } from "../services/user/userApi";
 import { RequestMapUser, RouteUser } from "../services/user/userRequest";
 import { CreateContext } from "./useContext";
 import { IMessagesReducer } from "./useContext/messages/reducer";
+import Success from "../pages/auth/login/Success";
 
 function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.AccountAdminGet>(route: T, options: Omit<RequestMapUser[T], 'route' | 'method'>, enabled: boolean = false) {
   const queryClient = useQueryClient();

@@ -1,8 +1,11 @@
 import { useContext, useState } from 'react';
+import Input from '../../../../components/common/Input/Input';
 import Message from '../../../../components/common/Message/Message';
+import Spinner from '../../../../components/common/spinner';
 import { CreateContext, IContextData } from '../../../../hooks/useContext';
+import useValidations from '../../../../hooks/useValidations/useValidations';
+import { HandleChangeText, HandleClick } from '../../../../interfaces/global.interface';
 import { RequestMapUser, RouteUser } from '../../../../services/user/userRequest';
-import { HandleChangeText, HandleClick, Input, Spinner, useValidations } from '../../../auth/login';
 import Render from './Render';
 import Success from './Success';
 

@@ -1,7 +1,9 @@
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Svg from '../../../components/assets/icons/Svg';
 import Button from '../../../components/common/button/Button';
 import { CreateContext } from '../../../hooks/useContext';
-import { HandleClick, Svg, useNavigate } from './index';
+import { HandleClick } from '../../../interfaces/global.interface';
 
 function Success() {
   // const { tools, data: { getUserQueryData } } = useMutationUser();
