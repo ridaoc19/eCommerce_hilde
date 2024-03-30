@@ -26,6 +26,8 @@ export default {
         .getRepository(UserEntity)
         .findOne({ where: { email: req.body.email } });
 
+      if (!responseUserDB) return
+
       let token = "";
 
       if (responseUserDB && responseUserDB.verified) {
@@ -41,7 +43,7 @@ export default {
           status_code: 200,
           status: StatusHTTP.success_200,
           field: 'login',
-          message: 'Inicio de sesión exitoso'
+          message: !responseUserDB.verified ? `${responseUserDB.name} debes cambiar la contraseña por una de tú preferencia` : !responseUserDB.verifiedEmail ? `${responseUserDB.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${responseUserDB.email}` : `¡Inicio de sesión exitoso! \n\n ${responseUserDB?.name},Te damos la bienvenida de vuelta a nuestro sitio web.`
         }
       })
 
@@ -56,7 +58,7 @@ export default {
       const temporaryPassword: string = uuidv4().split("-", 1)[0];
       const password = await generateHashPassword(temporaryPassword)
 
-      const insertedUser = userRepository.create([Object.assign(req.body, { password, verified: false, roles: req.body.email ===  process.env.ADMIN_USER_EMAIL ? 'super': 'visitant' })]);
+      const insertedUser = userRepository.create([Object.assign(req.body, { password, verified: false, roles: req.body.email === process.env.ADMIN_USER_EMAIL ? 'super' : 'visitant' })]);
       await userRepository.save(insertedUser);
       if (!insertedUser) throw new Error(`se presento un inconveniente al realizar el registro`)
       const newUser = insertedUser[0]
@@ -83,7 +85,10 @@ export default {
 
       successHandler({
         dataDB: [newUser], res,
-        json: { field: 'registre', message: 'registro exitoso', status: StatusHTTP.success_200, status_code: 200 },
+        json: {
+          field: 'registre', message: `¡Registro exitoso! \n\n Hola ${newUser.name}, tu registro ha sido exitoso. Por favor, revisa tu cuenta de correo electrónico ${newUser.email} donde encontrarás una contraseña temporal que podrás utilizar para iniciar sesión. Una vez que hayas ingresado a tu cuenta, podrás cambiar la contraseña por una de tu preferencia.
+        `, status: StatusHTTP.success_200, status_code: 200
+        },
       })
 
     } catch (error: unknown) {
@@ -110,7 +115,7 @@ export default {
       successHandler({
         res, dataDB: [userDB], json: {
           field: 'change',
-          message: 'Cambio de contraseña fue exitoso',
+          message: `¡Contraseña cambiada con éxito! \n\n ${userDB.name} a partir de ahora, puedes iniciar sesión en tu cuenta con la nueva contraseña.`,
           status: StatusHTTP.updated_200,
           status_code: 200
         }
@@ -159,7 +164,7 @@ export default {
       successHandler({
         dataDB: [userUpdate], res, json: {
           field: 'reset',
-          message: 'Restablecimiento de contraseña exitoso',
+          message: `¡Restablecimiento exitoso! \n\n ${userUpdate.name}, revisa tu bandeja de entrada de correo electrónico ${userUpdate.email}. Pronto recibirás una contraseña temporal.`,
           status: StatusHTTP.success_200,
           status_code: 200
         }

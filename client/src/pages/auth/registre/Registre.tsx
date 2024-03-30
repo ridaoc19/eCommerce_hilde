@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import Svg from '../../../components/assets/icons/Svg';
 import Button from '../../../components/common/button/Button';
 import Input from '../../../components/common/Input/Input';
@@ -9,7 +9,6 @@ import useValidations from '../../../hooks/useValidations/useValidations';
 import { HandleChangeText, HandleClick } from '../../../interfaces/global.interface';
 import { IUser, TypeDashboard } from '../../../interfaces/user.interface';
 import { RouteUser } from '../../../services/user/userRequest';
-import Success from './Success';
 
 export enum RegistreButtonName {
   Save = 'save',
@@ -30,12 +29,6 @@ function Registre() {
   const { dashboard: { stateDashboard: { login }, clearUser, dispatchDashboard } } = useContext(CreateContext)
   const { tools } = useMutationUser();
   const [stateRegistre, setStateRegistre] = useState<InitialStateRegistre>(initialStateRegistre);
-  const [success, setSuccess] = useState(false)
-
-  useEffect(() => {
-    if (login.user.name) setSuccess(true)
-    // eslint-disable-next-line
-  }, [login.isSuccess])
 
   const handleChangeRegistre: HandleChangeText = ({ target: { name, value } }) => {
     dispatchDashboard({ type: TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR, payload: { field: name } })
@@ -53,7 +46,7 @@ function Registre() {
 
   return (
     <>
-      {success ? <Success /> :
+      {
         <div className="registre__form--container">
           <div className="registre__form--content">
 

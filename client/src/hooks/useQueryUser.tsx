@@ -5,7 +5,6 @@ import { Error, MakeUserRequestReturn, userRequest } from "../services/user/user
 import { RequestMapUser, RouteUser } from "../services/user/userRequest";
 import { CreateContext } from "./useContext";
 import { IMessagesReducer } from "./useContext/messages/reducer";
-import Success from "../pages/auth/login/Success";
 
 function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.AccountAdminGet>(route: T, options: Omit<RequestMapUser[T], 'route' | 'method'>, enabled: boolean = false) {
   const queryClient = useQueryClient();
@@ -23,17 +22,19 @@ function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.Ac
   });
 
   useEffect(() => {
-    dispatchDashboard({
-      type: TypeDashboard.DASHBOARD_LOGIN, payload: {
-        status: data?.status || "",
-        isLoading,
-        isLogin: login.isLogin,
-        isSuccess,
-        errors: error?.errors ? error.errors.filter(e => e.field !== 'general') : [],
-        user: data ? data.data[0] : IUser.userDataEmpty,
-        userAll: []
-      }
-    })
+    if (data?.data && data.field !== 'login') {
+      dispatchDashboard({
+        type: TypeDashboard.DASHBOARD_LOGIN, payload: {
+          field: data?.field || "",
+          isLoading,
+          isLogin: login.isLogin,
+          isSuccess,
+          errors: error?.errors ? error.errors.filter(e => e.field !== 'general') : [],
+          user: data?.data && data.data.length > 0 ? data.data[0] : IUser.userDataEmpty,
+          userAll: []
+        }
+      })
+    }
   }, [isLoading, isError, isSuccess])
 
   useEffect(() => {
@@ -42,8 +43,8 @@ function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.Ac
   }, [error])
 
   useEffect(() => {
-    if (login.isLogin) {
-      messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: 'general', message: <Success />, status_code: 200 }] })
+    if (data && login.isLogin && login.field !== 'login') {
+      messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: data.field, message: data.message, status_code: data.status_code }] })
     }
   }, [login.isLogin])
 

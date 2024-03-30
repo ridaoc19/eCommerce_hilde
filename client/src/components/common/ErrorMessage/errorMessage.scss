@@ -19,8 +19,10 @@
   outline         : none;
 
   .messages-general__card {
-    padding : 1rem;
-    position: relative;
+    padding    : 1rem;
+    position   : relative;
+    white-space: pre-line;
+    text-align : justify;
 
     &.success {
       background-color: var(--success-6);

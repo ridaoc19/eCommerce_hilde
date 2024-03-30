@@ -13,7 +13,7 @@ export const initialStateDashboard: StateDashboard = {
     visitant: false,
   },
   login: {
-    status: "",
+    field: "",
     isLogin: false,
     isLoading: false,
     isSuccess: false,
@@ -49,18 +49,18 @@ function StateContextDashboard() {
         return;
       case TypeDashboard.DASHBOARD_LOGIN:
         let payloadValue = payload as StateDashboard[TypeDashboard.DASHBOARD_LOGIN]
-        const { errors, isLoading, isLogin, isSuccess, user } = payloadValue;
+        const { errors, isLoading, isLogin, isSuccess, user, field } = payloadValue;
         if ((!isLoading && !isLogin && !isSuccess && errors.length === 0)) return
         const token = localStorage.token
-        if (!isLogin && isSuccess && !isLoading && !stateDashboard.login.isSuccess) { //login
+        if (!isLogin && isSuccess && !isLoading && !stateDashboard.login.isSuccess && (field === 'login' || field === 'token')) { //login
           if (user.verified) {// usuario sin verificar
             if (user.verifiedEmail) {// usuario sin confirmar correo
-              if (!token) localStorage.token = user.token;
               const updatedPermits = permitsRoles.reduce((acc, item) => { // verifica los roles que tiene el usuario
                 const hasRole = user.roles.includes(item.id);
                 return { ...acc, [item.id]: hasRole };
               }, {}) as StateDashboard['permits'];
               setStateDashboard({ ...stateDashboard, login: { ...payloadValue, isLogin: true }, permits: updatedPermits })
+              if (!token) localStorage.token = user.token;
               return navigate('/')
 
             } else { // el usuario no ha confirmado correo
@@ -74,6 +74,9 @@ function StateContextDashboard() {
             setStateDashboard({ ...stateDashboard, login: { ...payloadValue, isLogin: false } })
             return navigate('/change');
           }
+        } if (!isLogin && isSuccess && !isLoading && !stateDashboard.login.isSuccess && (field === 'registre' || field === 'reset' || field === 'change')) { //registre 
+          clearUser({ pathname: '/login' })
+          return
         } else { // actualización de is y error
           setStateDashboard(prevState => ({ ...prevState, login: { ...prevState.login, errors: [...prevState.login.errors, ...errors], isLoading } }))
         }
@@ -83,10 +86,8 @@ function StateContextDashboard() {
         return clearUser({ pathname: '/' })
 
       case TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR:
-        // login.errors.filter((_e, i) => i !== indexError) 
-        // 
-        let { field } = payload as PayloadDashboard[TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR]
-        const updateError = stateDashboard.login.errors.filter(e => e.field !== field)
+        let payloadError = payload as PayloadDashboard[TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR]
+        const updateError = stateDashboard.login.errors.filter(e => e.field !== payloadError.field)
         if (stateDashboard.login.errors.length > 0) {
           setStateDashboard({ ...stateDashboard, login: { ...stateDashboard.login, errors: updateError } })
         }

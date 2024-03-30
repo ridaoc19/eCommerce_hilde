@@ -41,7 +41,7 @@ export type StateDashboard = {
     [keyDashboard in PermitsRoles['id']]: boolean;
   },
   login: {
-    status: string,
+    field: string,
     isLogin: boolean;
     isLoading: boolean;
     isSuccess: boolean;

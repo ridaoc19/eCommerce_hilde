@@ -1,15 +1,15 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Svg from '../../../components/assets/icons/Svg';
 import Button from '../../../components/common/button/Button';
 import Input from '../../../components/common/Input/Input';
 import Spinner from '../../../components/common/spinner';
 import { CreateContext } from '../../../hooks/useContext';
+import useMutationUser from '../../../hooks/useMutationUser';
 import useValidations from '../../../hooks/useValidations/useValidations';
 import { HandleChangeText, HandleClick } from '../../../interfaces/global.interface';
+import { TypeDashboard } from '../../../interfaces/user.interface';
 import { RequestMapUser, RouteUser } from '../../../services/user/userRequest';
-import Success from './Success';
-
 
 export enum ResetButtonName {
   Save = 'save',
@@ -28,25 +28,12 @@ const initialStateReset: InitialStateReset = {
 function Reset() {
   const navigate = useNavigate()
   const { getValidationErrors } = useValidations();
-  // const { tools, data: { getUserQueryData }, status } = useMutationUser();
-  // const { userData } = getUserQueryData();
-  const { dashboard: { stateDashboard: { login } } } = useContext(CreateContext)
+  const { tools } = useMutationUser();
+  const { dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)
   const [stateReset, setStateReset] = useState<InitialStateReset>(initialStateReset);
-  const [success, setSuccess] = useState(false)
-
-  useEffect(() => {
-    if (login.isLogin) {
-      setSuccess(true)
-      setTimeout(() => {
-        // tools.removeQuery()
-        return navigate('/login')
-      }, 10000);
-    }
-    // eslint-disable-next-line
-  }, [login.isSuccess])
 
   const handleChangeReset: HandleChangeText = ({ target: { name, value } }) => {
-    // clearUserError(() => tools.resetError(), (state) => setStateReset(state), initialStateReset, stateReset)
+    dispatchDashboard({ type: TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR, payload: { field: name } })
     const { message, stop } = getValidationErrors({ name, value })
     if (stop) return setStateReset(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
     setStateReset(prevState => ({ ...prevState, change: { ...prevState.change, [name]: value }, error: { ...prevState.error, [name]: message } }))
@@ -56,12 +43,11 @@ function Reset() {
     event.preventDefault();
     const id = (event.target as HTMLFormElement).id.split("--")[1] as ResetButtonName;
     if (id === ResetButtonName.Back) return navigate('/login');
-    // tools.fetch(RouteUser.Reset).options({ requestData: stateReset.change })
+    tools.fetch(RouteUser.Reset).options({ requestData: stateReset.change })
   };
 
   return (
     <>
-      {success && <Success />}
       <div className="reset__form--container">
         <div className="reset__form--content">
 
@@ -84,16 +70,6 @@ function Reset() {
                 />
               ))}
 
-            </div>
-
-            <div className="form__error-back--content">
-              {login?.errors.some(e => e.field === 'general') &&
-                <ul>
-                  {login?.errors.filter(e => e.field === 'general').map((e, i) => (
-                    <span key={i}>{e.message}</span>
-                  ))}
-                </ul>
-              }
             </div>
 
             <div className="form__button--content">

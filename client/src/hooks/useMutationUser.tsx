@@ -1,16 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { IUser, TypeDashboard } from "../interfaces/user.interface";
 import { Error, MakeUserRequestReturn, userRequest } from "../services/user/userApi";
 import { RequestMapUser, RouteUser } from "../services/user/userRequest";
 import { CreateContext } from "./useContext";
 import { IMessagesReducer } from "./useContext/messages/reducer";
-import Success from "../pages/auth/registre/Success";
 
 function useMutationUser() {
   const queryClient = useQueryClient();
-  const { pathname } = useLocation()
   const { messages: { messagesContextDispatch }, dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)
 
   const {
@@ -22,6 +19,7 @@ function useMutationUser() {
     data
   } = useMutation({
     mutationFn: ({ route, options }: { route: RouteUser, options: Omit<RequestMapUser[RouteUser], 'route' | 'method'> }) => {
+      dispatchDashboard({ type: TypeDashboard.DASHBOARD_LOGIN, payload: { ...login, isLoading: true } })
       const requestData = userRequest(route).options(options);
       return requestData;
     },
@@ -34,24 +32,22 @@ function useMutationUser() {
         queryClient.invalidateQueries({ queryKey: [IUser.QUERY_KEY_USER.MultipleUsers] })
       } else {
         queryClient.setQueryData([IUser.QUERY_KEY_USER.SingleUser], data);
-        if (pathname !== 'login') {
-          messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: data.field, status_code: data.status_code, message: pathname === '/registre' ? <Success /> : '' }] })
-        }
       }
+      messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: data.field, status_code: data.status_code, message: data.message }] })
     },
   });
-  console.log(pathname)
+
   useEffect(() => {
     const userQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>([IUser.QUERY_KEY_USER.SingleUser]);
     const allUserQueryData = queryClient.getQueryData<MakeUserRequestReturn | undefined>([IUser.QUERY_KEY_USER.MultipleUsers]);
     dispatchDashboard({
       type: TypeDashboard.DASHBOARD_LOGIN, payload: {
-        status: data?.status || "",
+        field: data?.field || "",
         isLoading: isPending,
         isLogin: login.isLogin,
         isSuccess,
         errors: error?.errors ? error.errors.filter(e => e.field !== 'general') : [],
-        user: userQueryData?.data[0] || IUser.userDataEmpty,
+        user: userQueryData?.data && userQueryData.data.length > 0 ? userQueryData.data[0] : IUser.userDataEmpty,
         userAll: allUserQueryData?.data || []
       }
     })
