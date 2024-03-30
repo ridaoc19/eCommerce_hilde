@@ -84,7 +84,7 @@ function PassChange() {
                       text: item === ChangeButtonName.Save ? (<>{login.isLoading ? <Spinner color='white' /> : 'Cambiar contraseña'}</>) : (<>{'Volver'}</>),
                       handleClick: handleClickChange,
                       id: `button__change--${item}`,
-                      disabled: (login.isLoading || ChangeButtonName.Save) && login.isError
+                      disabled: login.isLoading
                     }}
                   />
                 ))}

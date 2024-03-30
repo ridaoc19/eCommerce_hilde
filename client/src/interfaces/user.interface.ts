@@ -34,25 +34,16 @@ export namespace IUser {
   }
 }
 
-// export namespace IUserContext {
-export enum keyDashboard {
-  DASHBOARD_COMPONENTS = 'component',
-  DASHBOARD_ACCOUNT = 'account',
-  DASHBOARD_PERMITS = 'permits',
-  DASHBOARD_LOGIN = 'login',
-}
-
 export type StateDashboard = {
-  [keyDashboard.DASHBOARD_COMPONENTS]: 'user' | 'newDeptCatSubProdData' | '',
-  [keyDashboard.DASHBOARD_ACCOUNT]: 'information' | 'password' | '',
-  [keyDashboard.DASHBOARD_PERMITS]: {
+  component: 'user' | 'newDeptCatSubProdData' | '',
+  account: 'information' | 'password' | '',
+  permits: {
     [keyDashboard in PermitsRoles['id']]: boolean;
   },
-  [keyDashboard.DASHBOARD_LOGIN]: {
+  login: {
     status: string,
     isLogin: boolean;
     isLoading: boolean;
-    isError: boolean;
     isSuccess: boolean;
     errors: Array<{
       field: string | 'general';
@@ -69,36 +60,16 @@ export enum TypeDashboard {
   DASHBOARD_PERMITS = 'permits',
   DASHBOARD_LOGIN = 'login',
   DASHBOARD_LOGOUT = 'logout',
-  DASHBOARD_LOGIN_UPDATE_ERROR = 'DASHBOARD_LOGIN_UPDATE_ERROR',
+  DASHBOARD_LOGIN_DELETE_ERROR = 'DASHBOARD_LOGIN_DELETE_ERROR',
 }
 
 export type PayloadDashboard = {
-  [TypeDashboard.DASHBOARD_COMPONENTS]: 'user' | 'newDeptCatSubProdData' | '',
-  [TypeDashboard.DASHBOARD_ACCOUNT]: 'information' | 'password' | '',
-  [TypeDashboard.DASHBOARD_PERMITS]: {
-    [TypeDashboard in PermitsRoles['id']]: boolean;
-  },
-  [TypeDashboard.DASHBOARD_LOGIN]: {
-    status: string,
-    isLogin: boolean;
-    isLoading: boolean;
-    isSuccess: boolean;
-    errors: Array<{
-      field: string | 'general';
-      message: string
-    }>;
-    user: IUser.UserData;
-    userAll: IUser.UserData[];
-  },
-  [TypeDashboard.DASHBOARD_LOGOUT]: {
-    isLogin: false;
-  },
-  [TypeDashboard.DASHBOARD_LOGIN_UPDATE_ERROR]: {
-    errors: Array<{
-      field: string | 'general';
-      message: string
-    }>;
-  }
+  [TypeDashboard.DASHBOARD_COMPONENTS]: StateDashboard['component'],
+  [TypeDashboard.DASHBOARD_ACCOUNT]: StateDashboard['account'],
+  [TypeDashboard.DASHBOARD_PERMITS]: StateDashboard['permits'],
+  [TypeDashboard.DASHBOARD_LOGIN]: StateDashboard['login'],
+  [TypeDashboard.DASHBOARD_LOGOUT]: { isLogin: false },
+  [TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR]: { field: string }
 }
 
 

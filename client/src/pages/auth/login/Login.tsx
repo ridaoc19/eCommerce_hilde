@@ -12,9 +12,7 @@ function Login() {
   const [stateLogin, setStateLogin] = useState<InitialStateLogin>(initialStateLogin);
 
   const handleChangeLogin: HandleChangeText = ({ target: { name, value } }) => {
-    // clearUserError(() => tools.resetError(), (state) => setStateLogin(state), initialStateLogin, stateLogin)
-    const indexError = login.errors.findIndex(e => e.field === name)
-    indexError && dispatchDashboard({ type: TypeDashboard.DASHBOARD_LOGIN_UPDATE_ERROR, payload: { errors: login.errors.filter((_e, i) => i !== indexError) } })
+    dispatchDashboard({ type: TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR, payload: { field: name } })
     console.log(login.errors.findIndex(e => e.field === name))
     const { message, stop } = getValidationErrors({ name, value })
     if (stop) {
@@ -76,7 +74,8 @@ function Login() {
                       : (<>{item === LoginButtonName.Reset ? 'Restablecer' : item === LoginButtonName.Registre ? 'Crear Cuenta' : 'Volver'}</>),
                     handleClick: handleClickLogin,
                     id: `button__login--${item}`,
-                    disabled: (login.isLoading || item === LoginButtonName.Login) && login.isError
+                    disabled: login.isLoading
+                    // disabled: (login.isLoading || item === LoginButtonName.Login) && login.errors.length > 0
                   }}
                 />
               ))}

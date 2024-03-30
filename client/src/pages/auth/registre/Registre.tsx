@@ -78,7 +78,7 @@ function Registre() {
                       text: item === RegistreButtonName.Save ? (<>{login.isLoading ? <Spinner color='white' /> : 'Crear Usuario'}</>) : (<>{'Volver'}</>),
                       handleClick: handleClickRegistre,
                       id: `button__registre--${item}`,
-                      disabled: (login.isLoading || RegistreButtonName.Save) && login.isError
+                      disabled: login.isLoading
                     }}
                   />
                   // <button

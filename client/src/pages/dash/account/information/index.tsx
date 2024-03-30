@@ -114,7 +114,7 @@ function Information() {
                 </div>
 
                 <div className="form__button--content">
-                  <button id='button__information--save' onClick={handleClickAccountInfo} className="button_dark" disabled={login.isLoading || login.isError} >{login.isLoading ? <Spinner /> : "Editar Usuario"}</button>
+                  <button id='button__information--save' onClick={handleClickAccountInfo} className="button_dark" disabled={login.isLoading} >{login.isLoading ? <Spinner /> : "Editar Usuario"}</button>
                 </div>
               </main>
             </div>

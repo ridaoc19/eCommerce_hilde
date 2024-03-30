@@ -50,16 +50,7 @@ function useMutationUser() {
         userAll: allUserQueryData?.data || []
       }
     })
-  }, [isPending, isError])
-
-
-  // useEffect(() => {
-  //   if (login.isLogin) {
-  //     messagesContextDispatch({ type: IErrorReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: 'general', message: <Success />, status_code: 200 }] })
-  //   }
-  // }, [login.isLogin])
-
-
+  }, [isPending, isError, isSuccess])
 
   const dataSection = {
     getUserQueryData() {

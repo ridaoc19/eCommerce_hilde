@@ -84,7 +84,7 @@ function Reset() {
                     text: item === ResetButtonName.Save ? (<>{login.isLoading ? <Spinner color='white' /> : 'Restablecer Contraseña'}</>) : (<>{'Volver'}</>),
                     handleClick: handleClickReset,
                     id: `button__reset--${item}`,
-                    disabled: (login.isLoading || item === ResetButtonName.Save) && login.isError
+                    disabled: (login.isLoading)
                   }}
                 />
               ))}

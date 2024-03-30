@@ -77,7 +77,7 @@ function Information() {
             success={true}
             // success={userQueryData?.field === "accountPass"}
             errorUser={login.errors}
-            isErrorUser={login.isError}
+            isErrorUser={login.errors.length > 0}
             isLoadingUser={login.isLoading}
             stateAccountPass={stateAccountPass}
             handleChangeAccountPass={handleChangeAccountPass}

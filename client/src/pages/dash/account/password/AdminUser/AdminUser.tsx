@@ -102,9 +102,9 @@ function AdminUser() {
       </div>
 
       <div className="form__button--content">
-        <button id='button__user-admin--save' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading || login.isError || !stateUserAdmin.change.roles || stateUserAdmin.change.roles === dataSuccess?.data.find(u => u.user_id === stateUserAdmin.change.user_id)?.roles} >{login.isLoading ? <Spinner /> : "Actualizar"}</button>
-        <button id='button__user-admin--empty' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading || login.isError} >{"Limpiar"}</button>
-        <button id='button__user-admin--delete' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading || login.isError || !stateUserAdmin.change.user_id} >{login.isLoading ? <Spinner /> : "Eliminar Usuario"}</button>
+        <button id='button__user-admin--save' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading || !stateUserAdmin.change.roles || stateUserAdmin.change.roles === dataSuccess?.data.find(u => u.user_id === stateUserAdmin.change.user_id)?.roles} >{login.isLoading ? <Spinner /> : "Actualizar"}</button>
+        <button id='button__user-admin--empty' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading} >{"Limpiar"}</button>
+        <button id='button__user-admin--delete' onClick={handleClickUserAdmin} className="button_dark" disabled={login.isLoading || !stateUserAdmin.change.user_id} >{login.isLoading ? <Spinner /> : "Eliminar Usuario"}</button>
       </div>
     </div>
   );

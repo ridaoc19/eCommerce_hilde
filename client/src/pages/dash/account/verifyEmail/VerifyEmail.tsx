@@ -16,7 +16,7 @@ function VerifyEmail() {
       <button onClick={() => {
         // tools.fetch(RouteUser.Verify).options({ requestData: { tokenEmail: id || "" } })
       }}>Validar</button>
-      {login.isError && login?.errors[0].message}
+      {login.errors.length > 0 && login?.errors[0].message}
     </div>
   );
 }
