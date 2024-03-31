@@ -25,6 +25,7 @@ export interface InputProps {
     name: string;
     dataset_extra?: string;
     dataset_index?: string;
+    disabled?: boolean;
   };
 }
 
@@ -57,6 +58,7 @@ function Input({ svg, svgTwo, styleClass, errorMessage, input }: InputProps) {
             name={input.name}
             data-extra={input.dataset_extra}
             data-index={input.dataset_index}
+            disabled={input.disabled}
           />
           <span
             className={`input__svgTwo--${styleClass}`}

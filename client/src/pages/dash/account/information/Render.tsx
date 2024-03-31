@@ -9,17 +9,17 @@ function Render() {
 
 
   return (
-    <div>
+    <div className='account-information__main-render'>
       <div>
-        {Svg({ type: "user" })}
+        {Svg({ type: "user", width: 16, height: 16 })}
         <span>{user?.name} {user?.lastName}</span>
       </div>
       <div>
-        {Svg({ type: "email" })}
+        {Svg({ type: "email", width: 16, height: 16 })}
         <span>{user?.email}</span>
       </div>
       <div>
-        {Svg({ type: "phone" })}
+        {Svg({ type: "phone", width: 16, height: 16 })}
         <span>{user?.phone}</span>
       </div>
     </div>

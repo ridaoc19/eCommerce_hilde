@@ -35,7 +35,7 @@ export namespace IUser {
 }
 
 export type StateDashboard = {
-  component: 'user' | 'newDeptCatSubProdData' | '',
+  component: 'user' | 'newDeptCatSubProdData' | 'adminUser',
   account: 'information' | 'password' | '',
   permits: {
     [keyDashboard in PermitsRoles['id']]: boolean;

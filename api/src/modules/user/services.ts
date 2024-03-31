@@ -228,7 +228,7 @@ export default {
       successHandler({
         dataDB: [userUpdate], res, json: {
           field: 'accountInfo',
-          message: 'Se actualizo la información con éxito',
+          message: verifiedEmailUpdate ? `${userUpdate.name} \n ¡Tus datos personales han sido actualizados!` : `¡Tus datos personales han sido actualizados! \n Cambiaste tu correo, recibirás un enlace para verificarlo. Si no lo verificas en 10 minutos, seguirás usando tu correo actual y no podrás iniciar sesión hasta que lo hagas.`,
           status: StatusHTTP.updated_200,
           status_code: 200
         }
@@ -256,7 +256,7 @@ export default {
       successHandler({
         dataDB: [userUpdate], res, json: {
           field: 'accountPass',
-          message: 'contraseña cambiada con éxito',
+          message: `${userUpdate.name} \n ¡Contraseña cambiada exitosamente!`,
           status: StatusHTTP.updated_200,
           status_code: 200
         }
@@ -328,13 +328,10 @@ export default {
 
     try {
       const decoded = verifyToken(req.body.token);
-      const user = await userRepository.findOne({ where: { user_id: decoded._id } })
-      // const responseDB = await User.findById({ _id: decoded._id })
-      // const dataDB = responseDB!
-      // await fetchCount({ _id, name })
+      const user = await userRepository.findBy({ user_id: decoded.user_id })
 
       successHandler({
-        dataDB: [user], res, json: {
+        dataDB: user, res, json: {
           field: 'token',
           status_code: 200,
           status: StatusHTTP.success_200,

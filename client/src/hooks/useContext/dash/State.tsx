@@ -50,18 +50,22 @@ function StateContextDashboard() {
       case TypeDashboard.DASHBOARD_LOGIN:
         let payloadValue = payload as StateDashboard[TypeDashboard.DASHBOARD_LOGIN]
         const { errors, isLoading, isLogin, isSuccess, user, field } = payloadValue;
+        console.log(payloadValue)
         if ((!isLoading && !isLogin && !isSuccess && errors.length === 0)) return
         const token = localStorage.token
-        if (!isLogin && isSuccess && !isLoading && !stateDashboard.login.isSuccess && (field === 'login' || field === 'token')) { //login
+        if (isSuccess && !isLoading && (field === 'login' || field === 'token' || field === 'accountInfo')) { //login
           if (user.verified) {// usuario sin verificar
             if (user.verifiedEmail) {// usuario sin confirmar correo
+
               const updatedPermits = permitsRoles.reduce((acc, item) => { // verifica los roles que tiene el usuario
-                const hasRole = user.roles.includes(item.id);
-                return { ...acc, [item.id]: hasRole };
+                return { ...acc, [item.id]: item.roles.some(r => r.includes(user.roles)) };
               }, {}) as StateDashboard['permits'];
-              setStateDashboard({ ...stateDashboard, login: { ...payloadValue, isLogin: true }, permits: updatedPermits })
+
+              setStateDashboard({ ...stateDashboard, account: '', login: { ...payloadValue, isLogin: true }, permits: updatedPermits })
+
               if (!token) localStorage.token = user.token;
-              return navigate('/')
+              if (field === 'login') return navigate('/')
+              return
 
             } else { // el usuario no ha confirmado correo
               setStateDashboard({ ...stateDashboard, login: { ...stateDashboard.login, errors: [{ field: 'email', message: `${user.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${user.email}` }] } })
@@ -74,7 +78,7 @@ function StateContextDashboard() {
             setStateDashboard({ ...stateDashboard, login: { ...payloadValue, isLogin: false } })
             return navigate('/change');
           }
-        } if (!isLogin && isSuccess && !isLoading && !stateDashboard.login.isSuccess && (field === 'registre' || field === 'reset' || field === 'change')) { //registre 
+        } else if (isSuccess && !isLoading && (field === 'registre' || field === 'reset' || field === 'change' || field === 'accountPass')) { //registre 
           clearUser({ pathname: '/login' })
           return
         } else { // actualización de is y error

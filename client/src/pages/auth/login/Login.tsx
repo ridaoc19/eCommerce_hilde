@@ -36,7 +36,6 @@ function Login() {
 
   const handleChangeLogin: HandleChangeText = ({ target: { name, value } }) => {
     dispatchDashboard({ type: TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR, payload: { field: name } })
-    console.log(login.errors.findIndex(e => e.field === name))
     const { message, stop } = getValidationErrors({ name, value })
     if (stop) {
       return setStateLogin(prevState => ({ ...prevState, error: { ...prevState.error, [name]: message } }))
