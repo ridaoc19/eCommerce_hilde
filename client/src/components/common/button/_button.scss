@@ -15,7 +15,7 @@
   }
 
   span,
-  p {
+  div {
     pointer-events: none;
     margin        : 0;
     padding       : 0;
@@ -71,7 +71,7 @@
       margin      : 0;
       margin-right: auto;
 
-      p {
+      div {
         text-align: start;
       }
     }
@@ -86,7 +86,7 @@
       margin      : 0;
       margin-right: auto;
 
-      p {
+      div {
         text-align: start;
       }
     }
@@ -106,12 +106,12 @@
       margin      : 0;
       margin-right: auto;
 
-      p {
+      div {
         text-align: start;
       }
     }
 
-    p {
+    div {
       display        : inline-block;
       position       : relative;
       color          : var(--font-brand);

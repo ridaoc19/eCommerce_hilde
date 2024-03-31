@@ -1,21 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useContext } from "react";
 import { IAdvertising } from "../interfaces/advertising.interface";
 import { advertisingRequest, ErrorAdvertising } from "../services/advertising/advertisingApi";
 import { RequestMapAdvertising, RouteAdvertising } from "../services/advertising/advertisingRequest";
-import { useContext } from "react";
 import { CreateContext } from "./useContext";
+import { IMessagesReducer } from "./useContext/messages/reducer";
 
 
 function useMutationAdvertising() {
   const queryClient = useQueryClient();
-  const { error: { errorContextDispatch } } = useContext(CreateContext)!
+  const { messages: { messagesContextDispatch } } = useContext(CreateContext)!
 
   const { mutate: getMutate, reset, error, isPending, isSuccess, isError, status } = useMutation({
     mutationFn: ({ route, options }: { route: RouteAdvertising, options: Omit<RequestMapAdvertising[RouteAdvertising], 'route' | 'data'> }) => {
       return advertisingRequest(route).options(options)
     },
     onError(error: ErrorAdvertising) {
-      errorContextDispatch({ type: 'errors', payload: error.errors })
+      messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
       return error
     },
     onSuccess() {

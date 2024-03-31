@@ -1,50 +1,46 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CreateContext, IContextData } from '../../../hooks/useContext';
-import { ActionTypeDashboard } from '../../../hooks/useContext/dash/reducer';
-import useMutationUser from '../../../hooks/useMutationUser';
-import { HandleClick } from '../../../interfaces/global.interface';
-import { permitsRoles } from '../../../interfaces/user.interface';
-import Button from '../button/Button';
-import Svg from '../../assets/icons/Svg';
 import useMediaQuery from '../../../hooks/useMediaQuery';
+import { HandleClick } from '../../../interfaces/global.interface';
+import { TypeDashboard } from '../../../interfaces/user.interface';
+import Svg from '../../assets/icons/Svg';
+import Button from '../button/Button';
 
 function Login() {
 
 
   const navigate = useNavigate()
   const { mediaQuery } = useMediaQuery();
-  const { dashboard: { dispatch: dispatchContext } }: IContextData = useContext(CreateContext)!;
-  const { data: { getUserQueryData }, tools: { removeQuery } } = useMutationUser()
-  const { userData, isFetchingUser } = getUserQueryData()
+  const { dashboard: { dispatchDashboard, stateDashboard: { login } } }: IContextData = useContext(CreateContext);
+  // const { data: { getUserQueryData } } = useMutationUser()
+  // const { userData, } = getUserQueryData()
   const [isOpenModalLogin, setIsOpenModalLogin] = useState<boolean>(false)
 
   const handleOnClick: HandleClick = (event) => {
     event.preventDefault();
-    localStorage.removeItem("token");
-    removeQuery()
-    dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
+    dispatchDashboard({ type: TypeDashboard.DASHBOARD_LOGOUT, payload: { isLogin: false } })
   }
 
-  useEffect(() => {
-    if (userData) {
-      if (userData.verified) {
-        permitsRoles.forEach(acc => {
-          if (acc.roles.some(r => r.includes(userData.roles))) {
-            dispatchContext({ type: ActionTypeDashboard.PERMITS_ROLES, payload: { name: null, value: acc.id } })
-          }
-        });
-      }
-    }
-    // eslint-disable-next-line
-  }, [isFetchingUser])
+  // useEffect(() => {
+  //   if (userData) {
+  //     if (userData.verified) {
+  //       permitsRoles.forEach(acc => {
+  //         if (acc.roles.some(r => r.includes(userData.roles))) {
+  //           // dispatchContext({ type: ActionTypeDashboard.PERMITS_ROLES, payload: { name: null, value: acc.id } })
+  //         }
+  //       });
+  //     }
+  //   }
+  //   // eslint-disable-next-line
+  // }, [isFetchingUser])
 
   return (
     <div className='navbar__login-container'>
       <button className='navbar__login-content'
         onClick={(event) => {
           event.preventDefault()
-          userData?.email ? setIsOpenModalLogin(true) : navigate('/login')
+          login.user.email ? setIsOpenModalLogin(true) : navigate('/login')
         }}
       >
 
@@ -53,7 +49,7 @@ function Login() {
         </div>
         {mediaQuery !== 'phone' && <div className='navbar__login-text'>
           <div>
-            <span>{userData?.name ? `!Hola¡ ${userData.name}` : 'Inicia sesión'}</span>
+            <span>{login.user.name ? `!Hola¡ ${login.user.name}` : 'Inicia sesión'}</span>
           </div>
         </div>}
 
@@ -65,7 +61,7 @@ function Login() {
       }} className={`navbar__login-modal ${isOpenModalLogin ? 'isOpenModalLogin' : ''}`}>
         <div className='navbar__login-modal-container'>
           <div className='navbar__login-modal-content'>
-            {userData?.name &&
+            {login.user.name &&
               <ul>
                 <li>
                   <Button

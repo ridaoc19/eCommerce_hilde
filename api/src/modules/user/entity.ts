@@ -19,7 +19,7 @@ export default class UserEntity {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Column()

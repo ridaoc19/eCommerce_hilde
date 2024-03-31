@@ -1,22 +1,26 @@
-import { Svg, useMutationUser } from '../../../auth/login';
+import { useContext } from 'react';
+import Svg from '../../../../components/assets/icons/Svg';
+import { CreateContext } from '../../../../hooks/useContext';
 
 function Render() {
-  const { data: { getUserQueryData } } = useMutationUser();
-  const { userData } = getUserQueryData()
+  // const { data: { getUserQueryData } } = useMutationUser();
+  // const { user } = getUserQueryData()
+  const { dashboard: { stateDashboard: { login: { user } } } } = useContext(CreateContext)
+
 
   return (
-    <div>
+    <div className='account-information__main-render'>
       <div>
-        {Svg({ type: "user" })}
-        <span>{userData?.name} {userData?.lastName}</span>
+        {Svg({ type: "user", width: 16, height: 16 })}
+        <span>{user?.name} {user?.lastName}</span>
       </div>
       <div>
-        {Svg({ type: "email" })}
-        <span>{userData?.email}</span>
+        {Svg({ type: "email", width: 16, height: 16 })}
+        <span>{user?.email}</span>
       </div>
       <div>
-        {Svg({ type: "phone" })}
-        <span>{userData?.phone}</span>
+        {Svg({ type: "phone", width: 16, height: 16 })}
+        <span>{user?.phone}</span>
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { HandleClick } from '../../../pages/auth/login';
 import { RequestMapProduct, RouteProduct } from '../../../services/product/productRequest';
 import useMutationProduct from '../../../services/product/useMutationProduct';
 import Button from '../button/Button';
 import useAdminImages from '../../../hooks/useAdminImages/useAdminImages';
 import { InitialStateProductCreation } from '../../../pages/dash/Inventory/ProductCreation/useProductCreationQuery';
+import { HandleClick } from '../../../interfaces/global.interface';
 
 // function ProductForm<T extends RouteProduct>({ route, options }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'> }) {
 function ProductForm<T extends RouteProduct>({ route, options, entity }: { route: T, options: Omit<RequestMapProduct[T], 'route' | 'data'>, entity: InitialStateProductCreation['mutation']['entity'] }) {

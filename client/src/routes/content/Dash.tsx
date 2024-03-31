@@ -3,7 +3,7 @@ import Layout from '../../pages/layout/Layout';
 import Loadable from '../_tools/Loadable';
 import ProtectedRouteDash from '../_tools/ProtectedRouteDash';
 
-const Dashboard = Loadable(lazy(() => import('../../pages/dash')))
+const Dashboard = Loadable(lazy(() => import('../../pages/dash/Dashboard')))
 
 const Dash = {
   path: "/",

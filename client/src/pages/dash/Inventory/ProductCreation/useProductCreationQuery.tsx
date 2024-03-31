@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
+import Breadcrumb from "../../../../components/common/breadcrumb/Breadcrumb";
+import { CreateContext } from "../../../../hooks/useContext";
+import { IMessagesReducer } from "../../../../hooks/useContext/messages/reducer";
+import { BreadcrumbType } from "../../../../interfaces/global.interface";
+import { IProduct } from "../../../../interfaces/product.interface";
 import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from "../../../../services/navigation/navigationApi";
 import { RequestMapNavigation, RouteNavigation } from "../../../../services/navigation/navigationRequest";
-import { IProduct } from "../../../../interfaces/product.interface";
 import { RouteProduct } from "../../../../services/product/productRequest";
-import { CreateContext } from "../../../../hooks/useContext";
-import Breadcrumb from "../../../../components/common/breadcrumb/Breadcrumb";
-import { BreadcrumbType } from "../../../../interfaces/global.interface";
 
 export interface InitialStateProductCreation {
   query: {
@@ -36,7 +37,7 @@ export const initialStateProductCreation: InitialStateProductCreation = {
 }
 
 function useProductCreationQuery() {
-  const { error: { errorContextDispatch } } = useContext(CreateContext)!
+  const { messages: { messagesContextDispatch } } = useContext(CreateContext)
   const [stateProductCreation, setStateProductCreation] = useState<InitialStateProductCreation>(initialStateProductCreation)
   const { query: { type, search, entity } } = stateProductCreation
   ///////
@@ -56,7 +57,7 @@ function useProductCreationQuery() {
   }, [search])
 
   useEffect(() => {
-    error?.errors && error.errors.length > 0 && errorContextDispatch({ type: 'errors', payload: error.errors })
+    error?.errors && error.errors.length > 0 && messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
     // eslint-disable-next-line
   }, [error])
 

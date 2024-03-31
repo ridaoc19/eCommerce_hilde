@@ -11,12 +11,12 @@ router.post('/registre', postRegistre)
 router.post('/change', postPassChange)
 router.post('/reset', postReset)
 
-router.get('/accountAdmin', getAccountAdmin)
+router.get('/accountAdmin/:email', getAccountAdmin)
 router.post('/accountInfo', postAccountInfo)
 router.post('/accountPass', postAccountPass)
 
+router.put('/accountAdminPut/:user_id', putAccountAdmin)
 router.delete('/accountAdmin/:_id', deleteAccountAdmin)
-router.put('/accountAdmin', putAccountAdmin)
 
 router.post('/token', postLoginToken)
 router.post('/verify', postVerifyEmail)

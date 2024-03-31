@@ -1,56 +1,47 @@
-import { InitialStateAccountPass } from ".";
-import { Error } from "../../../../services/user/userApi";
-import { HandleChangeText, HandleClick, Input, Spinner } from "../../../auth/login";
-import Success from "./Success";
+import { useContext } from "react";
+import Button from "../../../../components/common/button/Button";
+import Input from "../../../../components/common/Input/Input";
+import Spinner from "../../../../components/common/spinner";
+import { CreateContext } from "../../../../hooks/useContext";
+import useMutationUser from "../../../../hooks/useMutationUser";
+import { HandleChangeText } from "../../../../interfaces/global.interface";
+import { InitialStateAccountPass } from "./Password";
+import { RouteUser } from "../../../../services/user/userRequest";
 
 interface FormAccountPassProps {
-  success: boolean;
   stateAccountPass: InitialStateAccountPass;
-  errorUser: Error | null;
   handleChangeAccountPass: HandleChangeText;
-  handleClickAccountPass: HandleClick;
-  isLoadingUser: boolean;
-  isErrorUser: boolean;
 }
 
 
-function FormAccountPass({ stateAccountPass, success, errorUser, isErrorUser, isLoadingUser, handleChangeAccountPass, handleClickAccountPass }: FormAccountPassProps) {
+function FormAccountPass({ stateAccountPass, handleChangeAccountPass }: FormAccountPassProps) {
+  const { dashboard: { stateDashboard: { login: { errors, isLoading } } } } = useContext(CreateContext)
+  const { tools } = useMutationUser();
+
   return (
-    <div className="dashboard__user-form--container">
-      <div className="dashboard__user-form--content">
-        {success && <Success />}
+    <div className="account-password__main-">
+      <div className="account-password__main-form">
+        {
+          (Object.keys(stateAccountPass.change).filter(key => !['user_id'].includes(key)) as (keyof Omit<InitialStateAccountPass['change'], 'email' | 'user_id'>)[]).map((item) => (
+            <Input
+              key={item}
+              svg={{ type: 'padlock' }}
+              svgTwo={{ type: 'eye' }}
+              styleClass={`login__account-pass--${item}`}
+              errorMessage={stateAccountPass.error[item] || errors?.find(e => e.field === item)?.message}
+              input={{ type: 'password', placeholder: item === 'password' ? 'nueva contraseña' : 'Confirma contraseña', value: stateAccountPass.change[item], handleOnChange: handleChangeAccountPass, name: item }}
+            />
+          ))
+        }
+      </div>
 
-        <main>
-
-          <div className="user-form__input--content">
-            {
-            (Object.keys(stateAccountPass.change).filter(key => !['_id'].includes(key)) as (keyof Omit<InitialStateAccountPass['change'], 'email' | '_id'>)[]).map((item) => (
-              <Input
-                key={item}
-                svg={{ type: 'padlock' }}
-                svgTwo={{ type: 'eye' }}
-                styleClass={`login__account-pass--${item}`}
-                errorMessage={stateAccountPass.error[item] || errorUser?.errors.find(e => e.field === item)?.message}
-                input={{ type: 'password', placeholder: item === 'password' ? 'nueva contraseña' : 'Confirma contraseña', value: stateAccountPass.change[item], handleOnChange: handleChangeAccountPass, name: item }}
-              />
-            ))
-            }
-          </div>
-
-          <div className="form__error-back--content">
-            {errorUser?.errors.some(e => e.field === 'general') &&
-              <ul>
-                {errorUser?.errors.filter(e => e.field === 'general').map((e, i) => (
-                  <span key={i}>{e.message}</span>
-                ))}
-              </ul>
-            }
-          </div>
-
-          <div className="form__button--content">
-            <button id='button__dashboard--save' onClick={handleClickAccountPass} className="button_dark" disabled={isLoadingUser || isErrorUser} >{isLoadingUser ? <Spinner /> : "Guardar nueva contraseña"}</button>
-          </div>
-        </main>
+      <div className="account-password__main-button">
+        <Button button={{
+          type: 'dark',
+          text: isLoading ? <Spinner /> : 'Guardar',
+          disabled: isLoading,
+          handleClick: () => tools.fetch(RouteUser.AccountPass).options({ requestData: stateAccountPass.change })
+        }} />
       </div>
     </div>
   );

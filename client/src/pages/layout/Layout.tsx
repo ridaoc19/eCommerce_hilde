@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 import Navbar from './navbar/Navbar';
 import Footer from './footer';
-import Search from '../../components/common/search/Search';
 import { useLocation } from 'react-router-dom';
+import SearchProduct from '../../components/common/searchProduct/SearchProduct';
 
 export namespace ILayout {
   export type LayoutProps = {
@@ -22,7 +22,7 @@ function Layout({ children }: ILayout.LayoutProps) {
             <Navbar />
           </div>
           {pathname !== "/dashboard" && <div className='layout__navbar-search'>
-            <Search />
+            <SearchProduct />
           </div>}
         </div>
       </div>
