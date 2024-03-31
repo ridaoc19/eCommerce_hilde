@@ -28,12 +28,16 @@ function useMutationUser() {
       return error;
     },
     onSuccess(data, { route }) {
-      if (route === RouteUser.AccountAdminGet || route === RouteUser.AccountAdminDelete || route === RouteUser.AccountAdminPut) {// para admin de usuarios
+      if (route === RouteUser.AccountAdminDelete || route === RouteUser.AccountAdminPut) {// para admin de usuarios
+        // if (route === RouteUser.AccountAdminGet || route === RouteUser.AccountAdminDelete || route === RouteUser.AccountAdminPut) {// para admin de usuarios
         queryClient.invalidateQueries({ queryKey: [IUser.QUERY_KEY_USER.MultipleUsers] })
-      } else {
-        queryClient.setQueryData([IUser.QUERY_KEY_USER.SingleUser], data);
       }
-      messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: data.field, status_code: data.status_code, message: data.message }] })
+      if (route !== RouteUser.AccountAdminGet) {
+        queryClient.setQueryData([IUser.QUERY_KEY_USER.SingleUser], data);
+        messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: data.field, status_code: data.status_code, message: data.message }] })
+      } else {
+        queryClient.setQueryData([IUser.QUERY_KEY_USER.MultipleUsers], data);
+      }
     },
   });
 
@@ -51,6 +55,7 @@ function useMutationUser() {
         userAll: allUserQueryData?.data || []
       }
     })
+    // eslint-disable-next-line
   }, [isPending, isError, isSuccess])
 
   const dataSection = {

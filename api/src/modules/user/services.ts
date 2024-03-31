@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ILike } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { generateHashPassword } from '../../core/auth/bcryptUtils';
 import { generateToken, generateTokenEmail, verifyToken, verifyTokenEmail } from '../../core/auth/jwtUtils';
@@ -178,9 +179,8 @@ export default {
 
   async getAccountAdmin(req: Request, res: Response) {
     const userRepository = AppDataSource.getRepository(UserEntity);
-
     try {
-      const dataUserAll = await userRepository.find()
+      const dataUserAll = await userRepository.find({ where: { email: ILike(`${req.params.email}%`) }, take: 10 });
       if (!dataUserAll) return errorHandlerRes({ req, status: StatusHTTP.notFound_404, status_code: 404, res, errors: [{ field: 'accountAdmin', message: "Fallo el envió de usuarios" }] })
       successHandler({ dataDB: dataUserAll, res, json: { field: 'accountAdminGet', status: StatusHTTP.success_200, status_code: 200, message: "Se envío todos los usuarios" } })
     } catch (error) {
@@ -271,10 +271,13 @@ export default {
     const userRepository = AppDataSource.getRepository(UserEntity);
 
     try {
-      let { user_id, roles } = req.body;
+      let { roles } = req.body;
+      const { user_id } = req.params
 
+      let previousRoles = ''
       const userUpdate = await userRepository.findOne({ where: { user_id } })
       if (!userUpdate) return
+      previousRoles = userUpdate.roles
       userUpdate.roles = roles
       await userRepository.save(userUpdate);
       // await User.findByIdAndUpdate(_id, { roles }, { new: true })
@@ -285,7 +288,7 @@ export default {
       successHandler({
         dataDB: userDB, res, json: {
           field: 'accountAdminPut',
-          message: 'Se actualizo la información del admin con éxito',
+          message: `Se actualizo los roles de ${userUpdate.name} ${userUpdate.lastName} correctamente \n paso de tener "${previousRoles}" a "${userUpdate.roles}"`,
           status: StatusHTTP.updated_200,
           status_code: 200
         }
@@ -305,14 +308,13 @@ export default {
       if (!userDelete) return
       await userRepository.softRemove(userDelete);
 
-      const userDB = await userRepository.find()
-      if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
+      if (!userDelete) throw new Error(`Se presento un inconveniente en actualizar los datos`)
       await fetchCount({})
 
       successHandler({
-        dataDB: userDB, res, json: {
+        dataDB: [], res, json: {
           field: 'accountAdminDelete',
-          message: 'Se elimino el usuario con éxito',
+          message: `Se elimino el usuario ${userDelete.name} ${userDelete.lastName} correctamente`,
           status: StatusHTTP.success_200,
           status_code: 200
         }

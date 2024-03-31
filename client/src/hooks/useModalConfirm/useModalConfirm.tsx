@@ -1,7 +1,7 @@
 import { FC, ReactNode, useState } from 'react';
 
 interface ModalProps {
-  message: string;
+  message: string | ReactNode;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -9,7 +9,7 @@ interface ModalProps {
 const ModalConfirm: FC<ModalProps> = ({ message, onConfirm, onCancel }) => (
   <div className="modal">
     <div className="modal-content">
-      <p>{message}</p>
+      <div>{message}</div>
       <button onClick={onConfirm}>Confirmar</button>
       <button onClick={onCancel}>Cancelar</button>
     </div>
@@ -18,18 +18,18 @@ const ModalConfirm: FC<ModalProps> = ({ message, onConfirm, onCancel }) => (
 
 interface ModalConfirmHook {
   isModalOpen: boolean;
-  openModal: (message: string, onConfirmAction: () => void, onCancelAction: () => void) => void;
+  openModal: (message: ModalProps['message'], onConfirmAction: () => void, onCancelAction: () => void) => void;
   closeModal: () => void;
   ModalComponent: ReactNode;
 }
 
 const useModalConfirm = (): ModalConfirmHook => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState<ModalProps['message']>('');
   const [onConfirm, setOnConfirm] = useState(() => () => {});
   const [onCancel, setOnCancel] = useState(() => () => {});
 
-  const openModal = (message: string, onConfirmAction: () => void, onCancelAction: () => void) => {
+  const openModal = (message: ModalProps['message'], onConfirmAction: () => void, onCancelAction: () => void) => {
     setModalMessage(message);
     setOnConfirm(() => () => {
       onConfirmAction();

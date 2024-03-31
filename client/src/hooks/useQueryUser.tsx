@@ -6,11 +6,11 @@ import { RequestMapUser, RouteUser } from "../services/user/userRequest";
 import { CreateContext } from "./useContext";
 import { IMessagesReducer } from "./useContext/messages/reducer";
 
-function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.AccountAdminGet>(route: T, options: Omit<RequestMapUser[T], 'route' | 'method'>, enabled: boolean = false) {
+function useQueryUser<T extends RouteUser.Token>(route: T, options: Omit<RequestMapUser[T], 'route' | 'method'>, enabled: boolean = false) {
   const queryClient = useQueryClient();
   const { messages: { messagesContextDispatch }, dashboard: { dispatchDashboard, stateDashboard: { login } } } = useContext(CreateContext)
   const { isLoading, data, error, isSuccess, isError, } = useQuery<MakeUserRequestReturn, Error>({
-    queryKey: route === RouteUser.AccountAdminGet ? [IUser.QUERY_KEY_USER.MultipleUsers] : [IUser.QUERY_KEY_USER.SingleUser],
+    queryKey: [IUser.QUERY_KEY_USER.SingleUser],
     queryFn: () => userRequest(route).options(options),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
@@ -35,6 +35,7 @@ function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.Ac
         }
       })
     }
+    // eslint-disable-next-line
   }, [isLoading, isError, isSuccess])
 
   useEffect(() => {
@@ -46,6 +47,7 @@ function useQueryUser<T extends RouteUser.Login | RouteUser.Token | RouteUser.Ac
     if (data && login.isLogin && login.field !== 'login') {
       messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: data.field, message: data.message, status_code: data.status_code }] })
     }
+    // eslint-disable-next-line
   }, [login.isLogin])
 
 

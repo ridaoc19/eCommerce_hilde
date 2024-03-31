@@ -34,6 +34,8 @@ const userSchemas: { [key: string]: Yup.Schema } = {
     .matches(/^[0-9]+$/, 'Ingrese solo números para el número telefónico'),
   token: Yup.string()
     .required('Por favor inicie sesión nuevamente'),
+  roles: Yup.string()
+    .required('Debe seleccionar uno de los roles aceptados'),
 }
 
 const advertisingSchemas: { [key: string]: Yup.Schema } = {

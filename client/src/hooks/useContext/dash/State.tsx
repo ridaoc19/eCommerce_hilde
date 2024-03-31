@@ -49,10 +49,12 @@ function StateContextDashboard() {
         return;
       case TypeDashboard.DASHBOARD_LOGIN:
         let payloadValue = payload as StateDashboard[TypeDashboard.DASHBOARD_LOGIN]
-        const { errors, isLoading, isLogin, isSuccess, user, field } = payloadValue;
-        console.log(payloadValue)
-        if ((!isLoading && !isLogin && !isSuccess && errors.length === 0)) return
         const token = localStorage.token
+        const { errors, isLoading, isLogin, isSuccess, user, field, userAll } = payloadValue;
+
+        if ((!isLoading && !isLogin && !isSuccess && errors.length === 0)) return
+        if (errors.length > 0) return setStateDashboard(prevState => ({ ...prevState, login: { ...prevState.login, errors: [...prevState.login.errors, ...errors], isLoading } }))
+
         if (isSuccess && !isLoading && (field === 'login' || field === 'token' || field === 'accountInfo')) { //login
           if (user.verified) {// usuario sin verificar
             if (user.verifiedEmail) {// usuario sin confirmar correo
@@ -81,20 +83,24 @@ function StateContextDashboard() {
         } else if (isSuccess && !isLoading && (field === 'registre' || field === 'reset' || field === 'change' || field === 'accountPass')) { //registre 
           clearUser({ pathname: '/login' })
           return
+        } else if (isSuccess && !isLoading && (field === "accountAdminGet" || field === 'accountAdminPut')) {
+          setStateDashboard(prevState => ({ ...prevState, login: { ...prevState.login, field, userAll, isLoading } }))
         } else { // actualización de is y error
           setStateDashboard(prevState => ({ ...prevState, login: { ...prevState.login, errors: [...prevState.login.errors, ...errors], isLoading } }))
         }
-        return;
 
+        return;
       case TypeDashboard.DASHBOARD_LOGOUT:
         return clearUser({ pathname: '/' })
-
       case TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR:
         let payloadError = payload as PayloadDashboard[TypeDashboard.DASHBOARD_LOGIN_DELETE_ERROR]
         const updateError = stateDashboard.login.errors.filter(e => e.field !== payloadError.field)
         if (stateDashboard.login.errors.length > 0) {
           setStateDashboard({ ...stateDashboard, login: { ...stateDashboard.login, errors: updateError } })
         }
+        return
+      case TypeDashboard.DASHBOARD_LOGIN_DELETE_USER_ALL:
+        setStateDashboard({ ...stateDashboard, login: { ...stateDashboard.login, userAll: [] } })
         return
       default:
         break;

@@ -3,7 +3,7 @@ import NotFound from '../../components/common/NotFound/NotFound';
 import { CreateContext, IContextData } from '../../hooks/useContext';
 import Account from './account/Account';
 import ProductCreation from './Inventory/ProductCreation/ProductCreation';
-import AdminUser from './account/AdminUser/AdminUser';
+import AdminUser from './AdminUser/AdminUser';
 
 function Dashboard() {
   const { dashboard: { stateDashboard: { component } } }: IContextData = useContext(CreateContext)!
