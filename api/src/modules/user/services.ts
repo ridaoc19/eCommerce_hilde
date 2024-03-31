@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ILike } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { generateHashPassword } from '../../core/auth/bcryptUtils';
 import { generateToken, generateTokenEmail, verifyToken, verifyTokenEmail } from '../../core/auth/jwtUtils';
@@ -26,6 +27,8 @@ export default {
         .getRepository(UserEntity)
         .findOne({ where: { email: req.body.email } });
 
+      if (!responseUserDB) return
+
       let token = "";
 
       if (responseUserDB && responseUserDB.verified) {
@@ -41,7 +44,7 @@ export default {
           status_code: 200,
           status: StatusHTTP.success_200,
           field: 'login',
-          message: 'Inicio de sesión exitoso'
+          message: !responseUserDB.verified ? `${responseUserDB.name} debes cambiar la contraseña por una de tú preferencia` : !responseUserDB.verifiedEmail ? `${responseUserDB.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${responseUserDB.email}` : `¡Inicio de sesión exitoso! \n\n ${responseUserDB?.name},Te damos la bienvenida de vuelta a nuestro sitio web.`
         }
       })
 
@@ -56,7 +59,7 @@ export default {
       const temporaryPassword: string = uuidv4().split("-", 1)[0];
       const password = await generateHashPassword(temporaryPassword)
 
-      const insertedUser = userRepository.create([Object.assign(req.body, { password, verified: false, roles: req.body.email ===  process.env.ADMIN_USER_EMAIL ? 'super': 'visitant' })]);
+      const insertedUser = userRepository.create([Object.assign(req.body, { password, verified: false, roles: req.body.email === process.env.ADMIN_USER_EMAIL ? 'super' : 'visitant' })]);
       await userRepository.save(insertedUser);
       if (!insertedUser) throw new Error(`se presento un inconveniente al realizar el registro`)
       const newUser = insertedUser[0]
@@ -83,7 +86,10 @@ export default {
 
       successHandler({
         dataDB: [newUser], res,
-        json: { field: 'registre', message: 'registro exitoso', status: StatusHTTP.success_200, status_code: 200 },
+        json: {
+          field: 'registre', message: `¡Registro exitoso! \n\n Hola ${newUser.name}, tu registro ha sido exitoso. Por favor, revisa tu cuenta de correo electrónico ${newUser.email} donde encontrarás una contraseña temporal que podrás utilizar para iniciar sesión. Una vez que hayas ingresado a tu cuenta, podrás cambiar la contraseña por una de tu preferencia.
+        `, status: StatusHTTP.success_200, status_code: 200
+        },
       })
 
     } catch (error: unknown) {
@@ -110,7 +116,7 @@ export default {
       successHandler({
         res, dataDB: [userDB], json: {
           field: 'change',
-          message: 'Cambio de contraseña fue exitoso',
+          message: `¡Contraseña cambiada con éxito! \n\n ${userDB.name} a partir de ahora, puedes iniciar sesión en tu cuenta con la nueva contraseña.`,
           status: StatusHTTP.updated_200,
           status_code: 200
         }
@@ -159,7 +165,7 @@ export default {
       successHandler({
         dataDB: [userUpdate], res, json: {
           field: 'reset',
-          message: 'Restablecimiento de contraseña exitoso',
+          message: `¡Restablecimiento exitoso! \n\n ${userUpdate.name}, revisa tu bandeja de entrada de correo electrónico ${userUpdate.email}. Pronto recibirás una contraseña temporal.`,
           status: StatusHTTP.success_200,
           status_code: 200
         }
@@ -173,9 +179,8 @@ export default {
 
   async getAccountAdmin(req: Request, res: Response) {
     const userRepository = AppDataSource.getRepository(UserEntity);
-
     try {
-      const dataUserAll = await userRepository.find()
+      const dataUserAll = await userRepository.find({ where: { email: ILike(`${req.params.email}%`) }, take: 10 });
       if (!dataUserAll) return errorHandlerRes({ req, status: StatusHTTP.notFound_404, status_code: 404, res, errors: [{ field: 'accountAdmin', message: "Fallo el envió de usuarios" }] })
       successHandler({ dataDB: dataUserAll, res, json: { field: 'accountAdminGet', status: StatusHTTP.success_200, status_code: 200, message: "Se envío todos los usuarios" } })
     } catch (error) {
@@ -223,7 +228,7 @@ export default {
       successHandler({
         dataDB: [userUpdate], res, json: {
           field: 'accountInfo',
-          message: 'Se actualizo la información con éxito',
+          message: verifiedEmailUpdate ? `${userUpdate.name} \n ¡Tus datos personales han sido actualizados!` : `¡Tus datos personales han sido actualizados! \n Cambiaste tu correo, recibirás un enlace para verificarlo. Si no lo verificas en 10 minutos, seguirás usando tu correo actual y no podrás iniciar sesión hasta que lo hagas.`,
           status: StatusHTTP.updated_200,
           status_code: 200
         }
@@ -251,7 +256,7 @@ export default {
       successHandler({
         dataDB: [userUpdate], res, json: {
           field: 'accountPass',
-          message: 'contraseña cambiada con éxito',
+          message: `${userUpdate.name} \n ¡Contraseña cambiada exitosamente!`,
           status: StatusHTTP.updated_200,
           status_code: 200
         }
@@ -266,10 +271,13 @@ export default {
     const userRepository = AppDataSource.getRepository(UserEntity);
 
     try {
-      let { user_id, roles } = req.body;
+      let { roles } = req.body;
+      const { user_id } = req.params
 
+      let previousRoles = ''
       const userUpdate = await userRepository.findOne({ where: { user_id } })
       if (!userUpdate) return
+      previousRoles = userUpdate.roles
       userUpdate.roles = roles
       await userRepository.save(userUpdate);
       // await User.findByIdAndUpdate(_id, { roles }, { new: true })
@@ -280,7 +288,7 @@ export default {
       successHandler({
         dataDB: userDB, res, json: {
           field: 'accountAdminPut',
-          message: 'Se actualizo la información del admin con éxito',
+          message: `Se actualizo los roles de ${userUpdate.name} ${userUpdate.lastName} correctamente \n paso de tener "${previousRoles}" a "${userUpdate.roles}"`,
           status: StatusHTTP.updated_200,
           status_code: 200
         }
@@ -300,14 +308,13 @@ export default {
       if (!userDelete) return
       await userRepository.softRemove(userDelete);
 
-      const userDB = await userRepository.find()
-      if (!userDB) throw new Error(`Se presento un inconveniente en actualizar los datos`)
+      if (!userDelete) throw new Error(`Se presento un inconveniente en actualizar los datos`)
       await fetchCount({})
 
       successHandler({
-        dataDB: userDB, res, json: {
+        dataDB: [], res, json: {
           field: 'accountAdminDelete',
-          message: 'Se elimino el usuario con éxito',
+          message: `Se elimino el usuario ${userDelete.name} ${userDelete.lastName} correctamente`,
           status: StatusHTTP.success_200,
           status_code: 200
         }
@@ -323,13 +330,10 @@ export default {
 
     try {
       const decoded = verifyToken(req.body.token);
-      const user = await userRepository.findOne({ where: { user_id: decoded._id } })
-      // const responseDB = await User.findById({ _id: decoded._id })
-      // const dataDB = responseDB!
-      // await fetchCount({ _id, name })
+      const user = await userRepository.findBy({ user_id: decoded.user_id })
 
       successHandler({
-        dataDB: [user], res, json: {
+        dataDB: user, res, json: {
           field: 'token',
           status_code: 200,
           status: StatusHTTP.success_200,

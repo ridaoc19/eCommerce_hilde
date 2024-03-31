@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { Input } from "../../../auth/login";
-import { InitialStateProductCreation } from "./useProductCreationQuery";
+import Input from "../../../../components/common/Input/Input";
 import Select from "../../../../components/common/Select/Select";
+import { InitialStateProductCreation } from "./useProductCreationQuery";
 
 interface ProductCreationSearchProps {
   stateProductCreation: InitialStateProductCreation

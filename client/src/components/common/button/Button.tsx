@@ -46,7 +46,7 @@ function Button({ button, svgRight, svgLeft, style, className = "" }: ButtonProp
           {Svg({ type: svgRight.type as SvgType, height: svgRight.height || 16, width: svgRight.width || 16, color: svgRight.color })}
         </span>}
       {!!button.text && <span className="button__text-container">
-        <p>{button.text}</p>
+        <div>{button.text}</div>
       </span>}
       {svgLeft &&
         <span>

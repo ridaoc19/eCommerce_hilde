@@ -1,8 +1,9 @@
 .other {
   &__description {
-    display   : grid;
-    gap       : 0.5rem;
-    text-align: justify;
+    display    : grid;
+    gap        : 0.5rem;
+    text-align : justify;
+    white-space: pre-line;
   }
 
   &__warranty {}

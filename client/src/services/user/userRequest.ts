@@ -10,7 +10,7 @@ export enum RouteUser {
   Reset = 'post|user/reset',
   AccountInfo = 'post|user/accountInfo',
   AccountPass = 'post|user/accountPass',
-  AccountAdminPut = 'put|user/accountAdmin',
+  AccountAdminPut = 'put|user/accountAdminPut',
   AccountAdminDelete = 'delete|user/accountAdmin',
   AccountAdminGet = 'get|user/accountAdmin',
   Verify = 'post|user/verify',
@@ -54,12 +54,14 @@ export type RequestMapUser = {
   };
   [RouteUser.AccountAdminGet]: {
     route: RouteUser.AccountAdminGet;
+    routeId: string
     method: Method.Get;
   };
   [RouteUser.AccountAdminPut]: {
     route: RouteUser.AccountAdminPut;
     method: Method.Put;
-    requestData: Pick<IUser.UserData, 'user_id' | 'roles'>;
+    routeId: string
+    requestData: Pick<IUser.UserData, 'roles'>;
   };
   [RouteUser.AccountAdminDelete]: {
     route: RouteUser.AccountAdminDelete;

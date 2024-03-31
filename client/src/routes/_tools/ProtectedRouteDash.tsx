@@ -1,24 +1,14 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { CreateContext, IContextData } from "../../hooks/useContext";
-import { ActionTypeDashboard } from "../../hooks/useContext/dash/reducer";
-import useMutationUser from "../../hooks/useMutationUser";
+import { CreateContext } from "../../hooks/useContext";
 
 function ProtectedRouteDash() {
-  const { dashboard: { dispatch: dispatchContext } }: IContextData = useContext(CreateContext)!
-  const { tools, data: { getUserQueryData } } = useMutationUser();
-  const { userData, isFetchingUser } = getUserQueryData()
+  // const { data: { getUserQueryData } } = useMutationUser();
+  // const { userData } = getUserQueryData()
+  const { dashboard: { stateDashboard: { login: {user} } } } = useContext(CreateContext)
 
-  useEffect(() => {
-    if (!userData?.verifiedEmail && !isFetchingUser) {
-      dispatchContext({ type: ActionTypeDashboard.LOGOUT, payload: { name: null, value: "" } })
-      localStorage.removeItem("token");
-      tools.removeQuery()
-    }
-    // eslint-disable-next-line
-  }, [isFetchingUser])
 
-  if (!userData?.verifiedEmail) {
+  if (!user?.verifiedEmail) {
     return <Navigate to={"/"} />
   } else {
     return <Outlet />

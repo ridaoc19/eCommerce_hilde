@@ -1,14 +1,15 @@
+import { useQuery } from '@tanstack/react-query';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import Breadcrumb from '../../components/common/breadcrumb/Breadcrumb';
 import { BreadcrumbType } from '../../interfaces/global.interface';
 import { ErrorNavigation, MakeNavigationRequestReturn, navigationRequest } from '../../services/navigation/navigationApi';
 import { RequestMapNavigation, RouteNavigation } from '../../services/navigation/navigationRequest';
-import Breadcrumb from '../../components/common/breadcrumb/Breadcrumb';
+import { CreateContext } from '../useContext';
+import { IMessagesReducer } from '../useContext/messages/reducer';
 import Filters from './Filters';
 import PaginationButton from './PaginationButton';
 import { InitialStateListProduct, ListProductHook } from './types';
-import { useQuery } from '@tanstack/react-query';
-import { CreateContext } from '../useContext';
 
 
 const initialStateListProduct: InitialStateListProduct = {
@@ -28,7 +29,7 @@ const initialStateListProduct: InitialStateListProduct = {
 const useListProduct = (): ListProductHook => {
   const params = useParams();
   let location = useLocation()
-  const { error: { errorContextDispatch } } = useContext(CreateContext)!
+  const { messages: { messagesContextDispatch } } = useContext(CreateContext)!
   // eslint-disable-next-line
   const [_, setSearchParams] = useSearchParams();
 
@@ -60,8 +61,8 @@ const useListProduct = (): ListProductHook => {
   );
 
   useEffect(() => {
-    error?.errors && errorContextDispatch({ type: 'errors', payload: error.errors })
-  // eslint-disable-next-line 
+    error?.errors && messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: error.errors.map(e => { return { ...e, status_code: error.status_code } }) })
+    // eslint-disable-next-line 
   }, [isError])
 
 

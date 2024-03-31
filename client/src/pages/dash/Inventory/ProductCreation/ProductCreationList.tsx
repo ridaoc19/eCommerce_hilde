@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
-import { RequestMapNavigation, RouteNavigation } from "../../../../services/navigation/navigationRequest";
-import { Svg } from "../../../auth/login";
-import { InitialStateProductCreation } from "./useProductCreationQuery";
-import { RouteProduct } from "../../../../services/product/productRequest";
+import Svg from "../../../../components/assets/icons/Svg";
 import Button from "../../../../components/common/button/Button";
+import { RequestMapNavigation, RouteNavigation } from "../../../../services/navigation/navigationRequest";
+import { RouteProduct } from "../../../../services/product/productRequest";
+import { InitialStateProductCreation } from "./useProductCreationQuery";
 
 interface ProductCreationListProps {
   data: RequestMapNavigation[RouteNavigation.NavigationListProductDashboard]['data'];

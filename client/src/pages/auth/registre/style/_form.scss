@@ -32,20 +32,6 @@
         gap    : 0.5rem;
       }
 
-      .form__error-back--content {
-        ul {
-          margin : 0;
-          padding: 0;
-
-          span {
-            display   : block;
-            text-align: justify;
-            color     : var(--error-6);
-            font-size : small;
-          }
-        }
-      }
-
       .form__button--content {
         display: grid;
         gap    : 1rem;
