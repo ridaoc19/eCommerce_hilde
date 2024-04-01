@@ -55,7 +55,7 @@ function StateContextDashboard() {
         if ((!isLoading && !isLogin && !isSuccess && errors.length === 0)) return
         if (errors.length > 0) return setStateDashboard(prevState => ({ ...prevState, login: { ...prevState.login, errors: [...prevState.login.errors, ...errors], isLoading } }))
 
-        if (isSuccess && !isLoading && (field === 'login' || field === 'token' || field === 'accountInfo')) { //login
+        if (isSuccess && !isLoading && (field === 'login' || field === 'token' || field === 'accountInfo' || field === 'verifyEmail')) { //login
           if (user.verified) {// usuario sin verificar
             if (user.verifiedEmail) {// usuario sin confirmar correo
 
@@ -66,14 +66,13 @@ function StateContextDashboard() {
               setStateDashboard({ ...stateDashboard, account: '', login: { ...payloadValue, isLogin: true }, permits: updatedPermits })
 
               if (!token) localStorage.token = user.token;
+              if (field === 'verifyEmail') return navigate('/dashboard')
               if (field === 'login') return navigate('/')
               return
 
             } else { // el usuario no ha confirmado correo
               setStateDashboard({ ...stateDashboard, login: { ...stateDashboard.login, errors: [{ field: 'email', message: `${user.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${user.email}` }] } })
-              setTimeout(() => {
-                clearUser({ pathname: '/' })
-              }, 10000);
+              clearUser({ pathname: '/' })
               return
             }
           } else {

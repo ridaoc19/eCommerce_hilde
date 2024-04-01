@@ -349,9 +349,9 @@ export default {
     const userRepository = AppDataSource.getRepository(UserEntity);
 
     try {
-      const decoded: { _id: string, email: string, token?: boolean } = verifyTokenEmail(req.body.tokenEmail);
+      const decoded: { user_id: string, email: string, token?: boolean } = verifyTokenEmail(req.body.tokenEmail);
 
-      const userUpdate = await userRepository.findOne({ where: { user_id: decoded._id } })
+      const userUpdate = await userRepository.findOne({ where: { user_id: decoded.user_id } })
       if (!userUpdate) return
       userUpdate.email = decoded.email;
       userUpdate.verifiedEmail = true;
@@ -361,7 +361,7 @@ export default {
       successHandler({
         dataDB: [userUpdate], res, json: {
           field: 'verifyEmail',
-          message: 'Se valido el correo electrónico con éxito',
+          message: `${userUpdate.name} se realizo la validación del correo electrónico "${userUpdate.email}"`,
           status: StatusHTTP.success_200,
           status_code: 200
         }
