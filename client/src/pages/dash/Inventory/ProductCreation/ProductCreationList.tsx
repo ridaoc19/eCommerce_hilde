@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import Svg from "../../../../components/assets/icons/Svg";
 import Button from "../../../../components/common/button/Button";
+import { isVariant } from "../../../../interfaces/product.interface";
 import { RequestMapNavigation, RouteNavigation } from "../../../../services/navigation/navigationRequest";
 import { RouteProduct } from "../../../../services/product/productRequest";
 import { InitialStateProductCreation } from "./useProductCreationQuery";
@@ -38,13 +39,22 @@ function ProductCreationList({ data, setStateProductCreation }: ProductCreationL
 
             <ul className="product-creation-list__content">
               {value.map((item, ind) => {
-                const text = Object.entries(item).filter(([k]) => k === key).flat()[1] || ''
-                const id = Object.entries(item).filter(([k]) => k === `${key}_id`).flat()[1] || ''
+                // const text = Object.entries(item).filter(([k]) => k === key).flat()[1] || ''
+                // const id = Object.entries(item).filter(([k]) => k === `${key}_id`).flat()[1] || ''
+                const text = 'product_id' in item ? item.product : 'department_id' in item ? item.department : 'category_id' in item ? item.category : 'subcategory_id' in item ? item.subcategory : item.variant_id
+                const id = 'product_id' in item ? item.product_id : 'department_id' in item ? item.department_id : 'category_id' in item ? item.category_id : 'subcategory_id' in item ? item.subcategory_id : item.variant_id
+                if (!id) return
                 return (
                   <li key={`${ind}abc`} className="product-creation-list__item">
                     <Button button={{
                       type: 'highlighter',
-                      text,
+                      // text,
+                      text: isVariant(item) ? (
+                        <div className="product-creation-list__item-button">
+                          {item.images?.slice(0, 1).map((img, i) => <img key={`${i}-${img}`} height={30} src={img} alt=""></img>)}
+                          {Object.keys(item.attributes).length > 0 && Object.entries(item.attributes).map(([name, val], i) => <div key={`${i}-${name}`}><b>{name}:</b> <i>{!!val && val.toString()}</i></div>)}
+                        </div>
+                      ) : text,
                       handleClick: () => {
                         setStateProductCreation(prevState => ({
                           ...prevState,
@@ -116,8 +126,6 @@ function ProductCreationList({ data, setStateProductCreation }: ProductCreationL
 }
 
 export default ProductCreationList;
-
-
 
 // import { Dispatch, SetStateAction } from "react";
 // import Svg from "../../../../components/assets/icons/Svg";

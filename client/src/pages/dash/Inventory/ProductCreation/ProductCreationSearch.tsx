@@ -28,6 +28,7 @@ function ProductCreationSearch({ stateProductCreation, setStateProductCreation, 
           <Input input={{
             name: 'search',
             placeholder: 'ID o nombre',
+            disabled: query.isLoading,
             value: searchProductCreation,
             handleOnChange: (event) => setSearchProductCreation(event.target.value),
           }}
@@ -38,6 +39,7 @@ function ProductCreationSearch({ stateProductCreation, setStateProductCreation, 
         <div className="product-creation-search__select">
           <Select
             options={options}
+            disabled={query.isLoading}
             value={stateProductCreation.query.entity}
             onChange={(value) => {
               setStateProductCreation(prevState => ({
@@ -50,7 +52,8 @@ function ProductCreationSearch({ stateProductCreation, setStateProductCreation, 
           <Button
             button={{
               type: 'dark',
-              text: query.isLoading ? <Spinner color="white" /> : 'Buscar',
+              disabled: query.isLoading,
+              text: query.isLoading ? <Spinner /> : 'Buscar',
               handleClick: () => setStateProductCreation(prevState => ({ ...prevState, query: { ...prevState.query, type: 'search', search: searchProductCreation } }))
             }}
           />

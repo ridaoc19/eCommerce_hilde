@@ -68,3 +68,24 @@ export namespace IProduct {
   }
 }
 
+
+export function isDepartment(item: IProduct.Variant | IProduct.Department | IProduct.Category | IProduct.Subcategory | IProduct.Product): item is IProduct.Department {
+  return (item as IProduct.Department).categories !== undefined;
+}
+
+export function isCategory(item: IProduct.Variant | IProduct.Department | IProduct.Category | IProduct.Subcategory | IProduct.Product): item is IProduct.Category {
+  return (item as IProduct.Category).subcategories !== undefined;
+}
+
+export function isSubcategory(item: IProduct.Variant | IProduct.Department | IProduct.Category | IProduct.Subcategory | IProduct.Product): item is IProduct.Subcategory {
+  return (item as IProduct.Subcategory).products !== undefined;
+}
+
+export function isProduct(item: IProduct.Variant | IProduct.Department | IProduct.Category | IProduct.Subcategory | IProduct.Product): item is IProduct.Product {
+  return (item as IProduct.Product).variants !== undefined;
+}
+
+export function isVariant(item: IProduct.Variant | IProduct.Department | IProduct.Category | IProduct.Subcategory | IProduct.Product): item is IProduct.Variant {
+  return (item as IProduct.Variant).images !== undefined;
+}
+

@@ -57,23 +57,11 @@ export type RequestMapNavigation = {
       breadcrumb: MapEntityBreadcrumb[BreadcrumbType] | null;
       listProduct: IProduct.ListProduct[] | null;
       filters: {
-        department: Array<{
-          department: string;
-          department_id: string;
-        }>
-        category: Array<{
-          category: string;
-          category_id: string;
-        }>
-        subcategory: Array<{
-          subcategory: string;
-          subcategory_id: string;
-        }>
-        product: IProduct.Product[]
-        variant: Array<{
-          variant: string;
-          variant_id: string;
-        }>
+        department: Array<IProduct.Department>
+        category: Array<IProduct.Category>
+        subcategory: Array<IProduct.Subcategory>
+        product: Array<IProduct.Product>
+        variant: Array<IProduct.Variant>
       }
       totalCount: number | null;
     }

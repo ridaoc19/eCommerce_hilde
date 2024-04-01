@@ -26,6 +26,13 @@
     // padding: 0.5rem 0;
     border-bottom: 1px solid #eee;
 
+    &-button {
+      display    : flex;
+      flex-wrap  : wrap;
+      align-items: center;
+      gap        : 0.3rem;
+    }
+
     &:nth-child(odd) {
       background-color: var(--brand-2);
       /* Color claro para las filas impares */

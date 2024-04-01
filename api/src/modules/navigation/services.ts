@@ -400,24 +400,24 @@ export default {
         queryBuilder.leftJoinAndSelect('department.categories', 'category')
           .leftJoinAndSelect('category.subcategories', 'subcategory')
           .leftJoinAndSelect('subcategory.products', 'product')
-          .leftJoinAndSelect('product.variants', 'variants')
+          .leftJoinAndSelect('product.variants', 'variant')
       } else if (entity === 'category') {
         queryBuilder.leftJoinAndSelect('category.department', 'department')
           .leftJoinAndSelect('category.subcategories', 'subcategory')
           .leftJoinAndSelect('subcategory.products', 'product')
-          .leftJoinAndSelect('product.variants', 'variants')
+          .leftJoinAndSelect('product.variants', 'variant')
       } else if (entity === 'subcategory') {
         queryBuilder.leftJoinAndSelect('subcategory.category', 'category')
           .leftJoinAndSelect('category.department', 'department')
           .leftJoinAndSelect('subcategory.products', 'product')
-          .leftJoinAndSelect('product.variants', 'variants')
+          .leftJoinAndSelect('product.variants', 'variant')
       } else if (entity === 'product') {
         queryBuilder.leftJoinAndSelect('product.subcategory', 'subcategory')
           .leftJoinAndSelect('subcategory.category', 'category')
           .leftJoinAndSelect('category.department', 'department')
-          .leftJoinAndSelect('product.variants', 'variants')
+          .leftJoinAndSelect('product.variants', 'variant')
       } else if (entity === 'variant') {
-        queryBuilder.leftJoinAndSelect('variants.product', 'product')
+        queryBuilder.leftJoinAndSelect('variant.product', 'product')
           .leftJoinAndSelect('product.subcategory', 'subcategory')
           .leftJoinAndSelect('subcategory.category', 'category')
           .leftJoinAndSelect('category.department', 'department')
@@ -456,7 +456,7 @@ export default {
       product = product.length > 0 && product[0].product_id ? product : []
 
       let variant = await queryBuilder
-        .select(['DISTINCT ON (variants.variant_id) variants.variant_id, variants.images, variants.attributes, variants.videos, variants.price, variants.listPrice, variants.stock'])
+        .select(['DISTINCT ON (variant.variant_id) variant.variant_id, variant.images, variant.attributes, variant.videos, variant.price, variant.listPrice, variant.stock'])
         .getRawMany();
 
       variant = variant.length > 0 && variant[0].variant_id ? variant : []
