@@ -2,9 +2,11 @@ import React, { useContext, useEffect } from 'react';
 import { CreateContext } from '../../../hooks/useContext';
 import { IMessagesReducer } from '../../../hooks/useContext/messages/reducer';
 import './errorMessage.scss';
+import useMediaQuery from '../../../hooks/useMediaQuery';
 
 const ErrorMessage: React.FC<IMessagesReducer.AppState> = ({ messages }) => {
   const { messages: { messagesContextDispatch } } = useContext(CreateContext)
+  const { mediaQuery } = useMediaQuery();
 
   const closeMessage = (index: number) => {
     const filterMessage = messages.filter((_e, i) => i !== index)
@@ -37,7 +39,7 @@ const ErrorMessage: React.FC<IMessagesReducer.AppState> = ({ messages }) => {
   }, []);
 
   return (
-    <div className="messages-general__container">
+    <div className={`messages-general__container ${mediaQuery}`}>
       {messages.map(({ message, status_code }, index) => (
         <div key={index} className={`messages-general__card ${getStatusColor(status_code)}`}>
           <button className="close-button" onClick={() => closeMessage(index)}>X</button>
