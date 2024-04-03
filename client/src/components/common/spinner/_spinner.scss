@@ -6,18 +6,19 @@
 }
 
 .loading-spinner-inner {
-  display: flex;
-  align-items: center;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
+  gap            : 0.5rem;
 }
 
 .loading-spinner-circle {
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 50%;
+  width           : 0.5em;
+  height          : 0.5em;
+  border-radius   : 50%;
   background-color: #db9334;
-  margin: 0 5px;
-  animation: loading-spinner 1s ease-in-out infinite;
+  margin          : 0 5px;
+  animation       : loading-spinner 1s ease-in-out infinite;
 }
 
 .loading-spinner-circle:nth-child(2) {
@@ -39,16 +40,16 @@
 @keyframes loading-spinner {
   0% {
     transform: scale(1);
-    opacity: 1;
+    opacity  : 1;
   }
 
   20% {
     transform: scale(1.5);
-    opacity: 0.5;
+    opacity  : 0.5;
   }
 
   100% {
     transform: scale(1);
-    opacity: 1;
+    opacity  : 1;
   }
 }

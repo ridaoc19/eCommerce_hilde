@@ -5,9 +5,7 @@ import ProductCreationSearch from "./ProductCreationSearch";
 import useProductCreationQuery from "./useProductCreationQuery";
 import { initialStateForm } from "./utils";
 
-
 function ProductCreation() {
-  // const { mediaQuery } = useMediaQuery();
   const { setStateProductCreation, stateProductCreation, query, Breadcrumb } = useProductCreationQuery();
   const { mutation: { entity, paramId, route } } = stateProductCreation;
 
@@ -35,21 +33,25 @@ function ProductCreation() {
 
   return (
     <div className="product-creation">
-      <div className="product-creation__search" style={{ display: 'flex', gap: '1rem' }}>
-        <ProductCreationSearch stateProductCreation={stateProductCreation} setStateProductCreation={setStateProductCreation} />
+      <div className="product-creation__search">
+        <ProductCreationSearch stateProductCreation={stateProductCreation} setStateProductCreation={setStateProductCreation} query={query} />
       </div>
 
-      {Breadcrumb}
-      <div className="product-creation__list" style={{ display: 'flex', maxHeight: '15rem', overflow: 'hidden' }}>
-        {query.data && <ProductCreationList data={query.data} setStateProductCreation={setStateProductCreation} stateProductCreation={stateProductCreation} />}
-      </div>
+      {query.data && (
+        <div>
+          {Breadcrumb}
+          <div className="product-creation__list">
+            {query.data && <ProductCreationList data={query.data} setStateProductCreation={setStateProductCreation} stateProductCreation={stateProductCreation} />}
+          </div>
 
-      <hr />
+          <hr />
 
-      <div className="product-creation__form">
-        <h3>{entity}</h3>
-        {!!entity && <ProductCreationForm route={stateProductCreation.mutation.route} options={{ ...productEdit, paramId }} entity={entity} />}
-      </div>
+          <div className="product-creation__form">
+            <h3>{entity}</h3>
+            {!!entity && <ProductCreationForm route={stateProductCreation.mutation.route} options={{ ...productEdit, paramId }} entity={entity} />}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

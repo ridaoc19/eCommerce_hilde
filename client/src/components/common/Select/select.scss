@@ -10,6 +10,7 @@
   /* Ajusta el ancho máximo según tus necesidades */
   box-sizing      : border-box;
   cursor          : pointer;
+  min-height      : 2.5rem;
 
   &:hover {
     border-color: #aaaaaa;

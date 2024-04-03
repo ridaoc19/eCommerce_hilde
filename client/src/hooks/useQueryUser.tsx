@@ -44,7 +44,7 @@ function useQueryUser<T extends RouteUser.Token>(route: T, options: Omit<Request
   }, [error])
 
   useEffect(() => {
-    if (data && login.isLogin && login.field !== 'login') {
+    if (data && login.isLogin && !(['login', 'verifyEmail'].includes(login.field))) {
       messagesContextDispatch({ type: IMessagesReducer.keyDashboard.MESSAGE_UPDATE, payload: [{ field: data.field, message: data.message, status_code: data.status_code }] })
     }
     // eslint-disable-next-line

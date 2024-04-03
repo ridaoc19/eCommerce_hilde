@@ -1,12 +1,9 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import Button from "../../../../components/common/button/Button";
 import Input from "../../../../components/common/Input/Input";
 import Select from "../../../../components/common/Select/Select";
-import { InitialStateProductCreation } from "./useProductCreationQuery";
-
-interface ProductCreationSearchProps {
-  stateProductCreation: InitialStateProductCreation
-  setStateProductCreation: Dispatch<SetStateAction<InitialStateProductCreation>>
-}
+import Spinner from "../../../../components/common/spinner";
+import { InitialStateProductCreation, UseProductCreationQueryReturn } from "./useProductCreationQuery";
 
 const options = [
   { value: 'department', label: 'Departamento' },
@@ -15,35 +12,54 @@ const options = [
   { value: 'product', label: 'Producto' },
 ];
 
-function ProductCreationSearch({ stateProductCreation, setStateProductCreation }: ProductCreationSearchProps) {
+interface ProductCreationSearchProps {
+  stateProductCreation: InitialStateProductCreation
+  setStateProductCreation: Dispatch<SetStateAction<InitialStateProductCreation>>
+  query: UseProductCreationQueryReturn['query']
+}
+
+function ProductCreationSearch({ stateProductCreation, setStateProductCreation, query }: ProductCreationSearchProps) {
+  const [searchProductCreation, setSearchProductCreation] = useState('')
+
   return (
-    <>
-      <div>
-        <Input input={{
-          name: 'search',
-          placeholder: 'id ó nombre',
-          value: stateProductCreation.query.search,
-          handleOnChange: (event) => {
-            setStateProductCreation(prevState => ({ ...prevState, query: { ...prevState.query, type: 'search', search: event.target.value } }))
-          },
-        }}
-          errorMessage=""
-          styleClass=""
-        />
+    <div className="product-creation-search">
+      <div className="product-creation-search__container">
+        <div className="product-creation-search__input">
+          <Input input={{
+            name: 'search',
+            placeholder: 'ID o nombre',
+            disabled: query.isLoading,
+            value: searchProductCreation,
+            handleOnChange: (event) => setSearchProductCreation(event.target.value),
+          }}
+            errorMessage=""
+            styleClass=""
+          />
+        </div>
+        <div className="product-creation-search__select">
+          <Select
+            options={options}
+            disabled={query.isLoading}
+            value={stateProductCreation.query.entity}
+            onChange={(value) => {
+              setStateProductCreation(prevState => ({
+                ...prevState,
+                query: { ...prevState.query, type: 'search', entity: value as InitialStateProductCreation['query']['entity'] }
+              }))
+            }} />
+        </div>
+        <div className="product-creation-search__button">
+          <Button
+            button={{
+              type: 'dark',
+              disabled: query.isLoading,
+              text: query.isLoading ? <Spinner /> : 'Buscar',
+              handleClick: () => setStateProductCreation(prevState => ({ ...prevState, query: { ...prevState.query, type: 'search', search: searchProductCreation } }))
+            }}
+          />
+        </div>
       </div>
-      <div>
-        {/* <h3>Selecciona una opción:</h3> */}
-        <Select
-          options={options}
-          value={stateProductCreation.query.entity}
-          onChange={(value) => {
-            setStateProductCreation(prevState => ({
-              ...prevState,
-              query: { ...prevState.query, type: 'search', entity: value as InitialStateProductCreation['query']['entity'] }
-            }))
-          }} />
-      </div>
-    </>
+    </div>
   );
 }
 

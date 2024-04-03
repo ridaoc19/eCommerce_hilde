@@ -1,14 +1,14 @@
 @mixin button_repeat($type) {
-  width             : 100%;
-  display           : flex;
-  justify-content   : space-between;
-  gap               : 0.3rem;
-  min-height        : 2.5rem;
-  cursor            : pointer;
-  user-select       : none;
-  border-radius     : 0.4rem;
-  outline           : none;
-  align-items       : center;
+  width          : 100%;
+  display        : flex;
+  justify-content: space-between;
+  gap            : 0.3rem;
+  min-height     : 2.5rem;
+  cursor         : pointer;
+  user-select    : none;
+  border-radius  : 0.4rem;
+  outline        : none;
+  align-items    : center;
 
   .button__text-container {
     margin: auto;

@@ -18,6 +18,10 @@
   user-select     : none;
   outline         : none;
 
+  &.phone {
+    max-width: 70%;
+  }
+
   .messages-general__card {
     padding    : 1rem;
     position   : relative;

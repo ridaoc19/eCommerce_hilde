@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useEffect, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
 import Breadcrumb from "../../../../components/common/breadcrumb/Breadcrumb";
 import { CreateContext } from "../../../../hooks/useContext";
 import { IMessagesReducer } from "../../../../hooks/useContext/messages/reducer";
@@ -36,7 +36,21 @@ export const initialStateProductCreation: InitialStateProductCreation = {
   }
 }
 
-function useProductCreationQuery() {
+export interface UseProductCreationQueryReturn {
+  query: {
+    data: RequestMapNavigation[RouteNavigation.NavigationListProductDashboard]['data'] | undefined
+    isLoading: boolean
+    isError: boolean
+    error: ErrorNavigation | null
+    isSuccess: boolean
+    isFetching: boolean
+  },
+  Breadcrumb: ReactNode,
+  setStateProductCreation: Dispatch<SetStateAction<InitialStateProductCreation>>,
+  stateProductCreation: InitialStateProductCreation
+}
+
+function useProductCreationQuery(): UseProductCreationQueryReturn {
   const { messages: { messagesContextDispatch } } = useContext(CreateContext)
   const [stateProductCreation, setStateProductCreation] = useState<InitialStateProductCreation>(initialStateProductCreation)
   const { query: { type, search, entity } } = stateProductCreation
