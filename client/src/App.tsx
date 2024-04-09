@@ -1,6 +1,3 @@
-// @ts-ignore
-import { dev } from '$app/environment';
-import { inject } from '@vercel/analytics';
 import InitialAdvertising from './pages/auth/app/InitialAdvertising';
 import InitialMessages from './pages/auth/app/InitialMessages';
 import InitialNavigation from './pages/auth/app/InitialNavigation';
@@ -9,8 +6,6 @@ import Routes from './routes';
 import './styles/app/App.scss';
 
 function App() {
-
-  inject({ mode: dev ? 'development' : 'production' });
   // const { tools } = useMutationUser();
   // const { messages: { messagesContextState }, dashboard: { stateDashboard: { login } } } = useContext(CreateContext)!
   // const token: IUser.UserData['token'] = localStorage?.token || ""
