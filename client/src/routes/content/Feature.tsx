@@ -4,20 +4,22 @@ import Layout from "../../pages/layout/Layout";
 import Loadable from "../_tools/Loadable";
 import Ensayo from "../../pages/ensayo/Ensayo";
 import NotFound from "../../components/common/NotFound/NotFound";
+import MessageHome from "../../components/common/MessageHome/MessageHome";
 
 
 function NotFoundPage() {
   return <NotFound />;
 }
 
-const Home = Loadable(lazy(() => import("../../pages/navigation/home/Home")))
+// const Home = Loadable(lazy(() => import("../../pages/navigation/home/Home")))
 const ListProducts = Loadable(lazy(() => import("../../pages/navigation/listProducts/ListProducts")))
 const ProductDetail = Loadable(lazy(() => import("../../pages/navigation/productDetail/ProductDetail")))
 
 const Feature = [
   {
     path: '/',
-    element: <Layout><Home /></Layout>
+    element: <Layout><MessageHome/></Layout>
+    // element: <Layout><Home /></Layout>
   },
   {
     path: '/list-products/:id',
