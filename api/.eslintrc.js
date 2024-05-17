@@ -1,3 +1,4 @@
+// configuracion para definir un buen codigo entre desarrolladores que trabajen en este proyecto
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
