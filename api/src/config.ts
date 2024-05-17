@@ -1,7 +1,6 @@
 import { registerAs } from '@nestjs/config';
 
-//? Para tipar variables de entorno -> de acá va a app.module.ts
-
+//? Para tipar variables de entorno -> de acá va a
 export default registerAs('config', () => {
   return {
     postgres: {
@@ -13,3 +12,9 @@ export default registerAs('config', () => {
     },
   };
 });
+
+export const environments = {
+  dev: '.env',
+  stag: '.stag.env',
+  prod: '.prod.env',
+};

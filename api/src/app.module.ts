@@ -5,8 +5,7 @@ import * as Joi from 'joi';
 import { DatabaseModule } from './database/database.module';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
-import { environments } from './environments';
-import config from './config';
+import config, { environments } from './config';
 
 //? Los módulos son clases que nos ayudan agrupar conjuntos de controladores y servicios (users, products), ademas importar otros módulos
 @Module({
