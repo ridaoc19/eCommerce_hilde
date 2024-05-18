@@ -7,6 +7,7 @@ import config from '../config';
 @Global()
 @Module({
   imports: [
+    //? configuración TypeORM y PostgreSQL
     TypeOrmModule.forRootAsync({
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
@@ -19,11 +20,12 @@ import config from '../config';
           username,
           password,
           database,
-          synchronize: false,
+          synchronize: true,
           autoLoadEntities: true,
         };
       },
     }),
   ],
+  exports: [TypeOrmModule],
 })
 export class DatabaseModule {}
