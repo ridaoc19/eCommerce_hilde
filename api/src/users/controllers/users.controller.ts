@@ -7,7 +7,6 @@ import {
   HttpStatus,
   InternalServerErrorException,
   Post,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -17,8 +16,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
 import {
   CreateUserDto,
   UserError400,
@@ -27,16 +24,13 @@ import {
   UserSuccess,
 } from '../dtos/users.dto';
 import { UsersService } from '../services/users.service';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/models/roles.model';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('Usuarios')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Roles(Role.ADMIN, Role.CUSTOMER)
+  // ! Get All
   @ApiOperation({ summary: 'Obtener todos los usuarios' })
   @Public()
   @ApiResponse({
@@ -49,6 +43,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  // ! CREAR USUARIO POST
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiHeader({
     name: 'Authorization',
@@ -82,7 +77,6 @@ export class UsersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() payload: CreateUserDto): Promise<UserSuccess> {
-    console.log(payload);
     try {
       const response = await this.usersService.create(payload);
       return {
@@ -91,7 +85,6 @@ export class UsersController {
         data: response,
       };
     } catch (error) {
-      console.log(error);
       if (error.code === '23505') {
         throw new ConflictException([
           `El correo electrónico ${payload.email} ya se encuentra registrado`,
