@@ -8,10 +8,8 @@ import { UsersModule } from './users/users.module';
 import config, { environments } from './config';
 import { AuthModule } from './auth/auth.module';
 
-
 @Module({
   imports: [
-
     ConfigModule.forRoot({
       envFilePath: environments[process.env.NODE_ENV] || '.env',
       load: [config],

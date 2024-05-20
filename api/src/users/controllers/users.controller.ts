@@ -32,17 +32,13 @@ import { Role } from 'src/auth/models/roles.model';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('Usuarios')
-
-
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-
   @Roles(Role.ADMIN, Role.CUSTOMER)
   @ApiOperation({ summary: 'Obtener todos los usuarios' })
   @Public()
-
   @ApiResponse({
     status: 200,
     description: 'Lista de usuarios recuperada con éxito',
@@ -52,7 +48,6 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
-
 
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiHeader({
@@ -105,22 +100,4 @@ export class UsersController {
       throw new InternalServerErrorException(['Error interno del servidor']);
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

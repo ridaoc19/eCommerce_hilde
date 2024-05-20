@@ -43,7 +43,6 @@ export class UsersService {
     return this.userRepo.save(newUser);
   }
 
-
   remove(user_id: number) {
     return this.userRepo.delete(user_id);
   }
