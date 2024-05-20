@@ -1,6 +1,5 @@
 import { registerAs } from '@nestjs/config';
 
-//? Para tipar variables de entorno -> de acá va a
 export default registerAs('config', () => {
   return {
     postgres: {
@@ -10,6 +9,8 @@ export default registerAs('config', () => {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
     },
+    apiKey: process.env.API_KEY,
+    jwtSecret: process.env.SECRET_KEY_JWT,
   };
 });
 

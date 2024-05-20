@@ -6,11 +6,12 @@ import { DatabaseModule } from './database/database.module';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import config, { environments } from './config';
+import { AuthModule } from './auth/auth.module';
 
-//? Los módulos son clases que nos ayudan agrupar conjuntos de controladores y servicios (users, products), ademas importar otros módulos
+
 @Module({
   imports: [
-    // ? configuración variables de entorno
+
     ConfigModule.forRoot({
       envFilePath: environments[process.env.NODE_ENV] || '.env',
       load: [config],
@@ -27,14 +28,16 @@ import config, { environments } from './config';
         SECRET_KEY_JWT_EMAIL: Joi.string().required(),
         EMAIL_RESEND: Joi.string().email().required(),
         ADMIN_USER_EMAIL: Joi.string().email().required(),
+        API_KEY: Joi.string().required(),
       }),
     }),
     UsersModule,
     ProductsModule,
     DatabaseModule,
-  ], //? Importación de otros módulos
-  controllers: [], //? Importación de controladores
-  providers: [], //? Importación de servicios
-  exports: [], //? Exporta servicios para importarlos en otros Módulos y asi utilizarlos en los servicios
+    AuthModule,
+  ],
+  controllers: [],
+  providers: [],
+  exports: [],
 })
 export class AppModule {}

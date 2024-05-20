@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiHeader,
@@ -6,14 +16,33 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateUserDto, CreateUserResponse } from '../dtos/users.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import {
+  CreateUserDto,
+  UserError400,
+  UserError409,
+  UserError500,
+  UserSuccess,
+} from '../dtos/users.dto';
 import { UsersService } from '../services/users.service';
-@ApiTags('Usuarios') // Etiqueta para el grupo de rutas
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/models/roles.model';
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@ApiTags('Usuarios')
+
+
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @ApiOperation({ summary: 'Obtener todos los usuarios' }) // Descripción de la operación
+
+  @Roles(Role.ADMIN, Role.CUSTOMER)
+  @ApiOperation({ summary: 'Obtener todos los usuarios' })
+  @Public()
+
   @ApiResponse({
     status: 200,
     description: 'Lista de usuarios recuperada con éxito',
@@ -24,43 +53,74 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @ApiOperation({ summary: 'Crear un nuevo usuario' }) // Descripción de la operación
+
+  @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiHeader({
     name: 'Authorization',
     description: 'Token de autorización',
-    required: false, // Si el header es requerido
+    required: false,
   })
   @ApiBody({
     type: CreateUserDto,
     description: 'Datos necesarios para crear un usuario',
   })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Usuario creado con éxito',
-    type: CreateUserResponse,
+    type: UserSuccess,
   })
-  @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+  @ApiResponse({
+    status: 400,
+    description: 'Datos inválidos',
+    type: UserError400,
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'El correo electrónico ya está en uso',
+    type: UserError409,
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Error interno del servidor',
+    type: UserError500,
+  })
   @Post()
-  create(@Body() payload: CreateUserDto): Promise<CreateUserResponse> {
-    return this.usersService.create(payload);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() payload: CreateUserDto): Promise<UserSuccess> {
+    console.log(payload);
+    try {
+      const response = await this.usersService.create(payload);
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: `${payload.name} su cuenta fue registrada correctamente con su correo electrónico ${payload.email}`,
+        data: response,
+      };
+    } catch (error) {
+      console.log(error);
+      if (error.code === '23505') {
+        throw new ConflictException([
+          `El correo electrónico ${payload.email} ya se encuentra registrado`,
+        ]);
+      }
+      throw new InternalServerErrorException(['Error interno del servidor']);
+    }
   }
 
-  // @Get(':user_id')
-  // get(@Param('user_id', ParseIntPipe) user_id: string) {
-  //   return this.usersService.findOne(user_id);
-  // }
 
-  // @Put(':user_id')
-  // update(
-  //   @Param('user_id', ParseIntPipe) user_id: string,
-  //   @Body() payload: UpdateUserDto,
-  // ) {
-  //   return this.usersService.update(user_id, payload);
-  // }
 
-  // @Delete(':user_id')
-  // remove(@Param('user_id', ParseIntPipe) user_id: number) {
-  //   return this.usersService.remove(+user_id);
-  // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

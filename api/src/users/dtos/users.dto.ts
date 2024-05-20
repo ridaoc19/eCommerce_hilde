@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
-  IsPhoneNumber,
   IsString,
   MaxLength,
   MinLength,
@@ -44,7 +43,6 @@ export class CreateUserDto {
   })
   readonly email: string;
 
-  @IsPhoneNumber(null, { message: 'El número de teléfono no es válido' })
   @IsNotEmpty({ message: 'El número de teléfono no puede estar vacío' })
   @ApiProperty({
     description: 'El número de teléfono del usuario',
@@ -109,4 +107,62 @@ export class CreateUserResponse {
     example: 'Calle Falsa 123, Springfield',
   })
   addresses: string;
+}
+
+export class UserSuccess {
+  @ApiProperty({
+    description: 'Código de estado HTTP',
+    example: 201,
+  })
+  statusCode: number;
+
+  @ApiProperty({
+    description: 'Mensaje de éxito',
+    example: 'Usuario creado con éxito',
+  })
+  message: string;
+
+  data: CreateUserResponse;
+}
+
+export class UserError400 {
+  @ApiProperty({
+    description: 'Código de estado HTTP',
+    example: 400,
+  })
+  statusCode: number;
+
+  @ApiProperty({
+    description: 'Mensaje de error',
+    example: 'Sucedió algo con los datos suministrados con la creación',
+  })
+  message: string[];
+}
+
+export class UserError409 {
+  @ApiProperty({
+    description: 'Código de estado HTTP',
+    example: 409,
+  })
+  statusCode: number;
+
+  @ApiProperty({
+    description: 'Mensaje de error',
+    example: 'Correo electrónico ya está registrado',
+  })
+  message: string[];
+}
+
+export class UserError500 {
+  @ApiProperty({
+    description: 'Código de estado HTTP',
+    example: 500,
+  })
+  statusCode: number;
+
+  @ApiProperty({
+    description: 'Mensajes de error',
+    example: ['Error interno del servidor'],
+  })
+  message: string[];
 }
