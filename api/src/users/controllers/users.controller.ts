@@ -2,7 +2,6 @@ import {
   Body,
   ConflictException,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
@@ -15,7 +14,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Public } from 'src/auth/decorators/public.decorator';
 import {
   CreateUserDto,
   UserError400,
@@ -24,26 +22,30 @@ import {
   UserSuccess,
 } from '../dtos/users.dto';
 import { UsersService } from '../services/users.service';
+import { AddCronJob, EmailService } from 'src/email/services/email.service';
 
 @ApiTags('Usuarios')
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private emailServices: EmailService,
+  ) {}
 
-  // ! Get All
-  @ApiOperation({ summary: 'Obtener todos los usuarios' })
-  @Public()
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de usuarios recuperada con éxito',
-  })
-  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
+  // // ! Get All
+  // @ApiOperation({ summary: 'Obtener todos los usuarios' })
+  // @Public()
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Lista de usuarios recuperada con éxito',
+  // })
+  // @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+  // @Get()
+  // findAll() {
+  //   return this.usersService.findAll();
+  // }
 
-  // ! CREAR USUARIO POST
+  // ! REGISTRE
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiHeader({
     name: 'Authorization',
@@ -79,6 +81,12 @@ export class UsersController {
   async create(@Body() payload: CreateUserDto): Promise<UserSuccess> {
     try {
       const response = await this.usersService.create(payload);
+
+      this.emailServices.addCronJob({
+        type: AddCronJob.Registre,
+        email: response.email,
+      });
+
       return {
         statusCode: HttpStatus.CREATED,
         message: `${payload.name} su cuenta fue registrada correctamente con su correo electrónico ${payload.email}`,

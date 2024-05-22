@@ -38,6 +38,7 @@ export class UsersService {
         password: '1234',
       }),
     );
+
     const hashPassword = await bcrypt.hash(newUser.password, 10);
     newUser.password = hashPassword;
     return this.userRepo.save(newUser);
