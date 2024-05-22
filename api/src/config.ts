@@ -9,6 +9,10 @@ export default registerAs('config', () => {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
     },
+    resend: {
+      key: process.env.KEY_RESEND,
+      email: process.env.EMAIL_RESEND,
+    },
     apiKey: process.env.API_KEY,
     jwtSecret: process.env.SECRET_KEY_JWT,
   };

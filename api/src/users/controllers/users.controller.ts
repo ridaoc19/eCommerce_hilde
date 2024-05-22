@@ -2,12 +2,10 @@ import {
   Body,
   ConflictException,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
   Post,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -16,9 +14,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Public } from 'src/auth/decorators/public.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
 import {
   CreateUserDto,
   UserError400,
@@ -27,33 +22,26 @@ import {
   UserSuccess,
 } from '../dtos/users.dto';
 import { UsersService } from '../services/users.service';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/models/roles.model';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('Usuarios')
-
-
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  // // ! Get All
+  // @ApiOperation({ summary: 'Obtener todos los usuarios' })
+  // @Public()
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Lista de usuarios recuperada con éxito',
+  // })
+  // @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+  // @Get()
+  // findAll() {
+  //   return this.usersService.findAll();
+  // }
 
-  @Roles(Role.ADMIN, Role.CUSTOMER)
-  @ApiOperation({ summary: 'Obtener todos los usuarios' })
-  @Public()
-
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de usuarios recuperada con éxito',
-  })
-  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-
+  // ! REGISTRE
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiHeader({
     name: 'Authorization',
@@ -87,16 +75,16 @@ export class UsersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() payload: CreateUserDto): Promise<UserSuccess> {
-    console.log(payload);
     try {
       const response = await this.usersService.create(payload);
+
       return {
         statusCode: HttpStatus.CREATED,
         message: `${payload.name} su cuenta fue registrada correctamente con su correo electrónico ${payload.email}`,
         data: response,
       };
     } catch (error) {
-      console.log(error);
+      console.log(error.code, error.message);
       if (error.code === '23505') {
         throw new ConflictException([
           `El correo electrónico ${payload.email} ya se encuentra registrado`,
@@ -105,22 +93,4 @@ export class UsersController {
       throw new InternalServerErrorException(['Error interno del servidor']);
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

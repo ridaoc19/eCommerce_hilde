@@ -16,8 +16,6 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-
-
   async validateUser(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
     const isMatch = await bcrypt.compare(password, user.password);
@@ -26,7 +24,6 @@ export class AuthService {
     }
     return null;
   }
-
 
   generateJWT(user: Users) {
     const payload: PayloadToken = { role: user.roles, sub: user.user_id };
