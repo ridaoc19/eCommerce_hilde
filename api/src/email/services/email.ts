@@ -1,37 +1,23 @@
-import { Users } from 'src/users/entities/users.entity';
-import {
-  templateRegistre,
-  TemplateRegistre,
-  TypeTemplateRegistre,
-} from './template';
+import { Resend } from 'resend';
+import { templateRegistre, TemplateRegistre } from './template';
+import 'dotenv/config';
 
-export type SendEmail = Pick<Users, 'name' | 'email' | 'password'> & {
-  tokenEmail?: string;
-  type: TypeTemplateRegistre;
-};
+const resend = new Resend(process.env.KEY_RESEND || '');
 
 export async function sendEmail(param: TemplateRegistre): Promise<boolean> {
   try {
-    // const { name, email, password } =
-    // await this.usersService.findByEmail(getEmail);
-    // const tokenEmail = '';
-    // Construir el cuerpo del correo electrónico utilizando el template
-    console.log(param, 'primero');
-    const response = templateRegistre(param);
+    const { html, subject } = templateRegistre(param);
 
-    console.log({ response });
-    // const { error } = await this.resend.emails.send({
-    //   from: this.configService.resend.email,
-    //   to: [email],
-    //   subject,
-    //   html,
-    // });
+    const { error } = await resend.emails.send({
+      from: process.env.EMAIL_RESEND || '',
+      to: [param.email],
+      subject,
+      html,
+    });
 
-    // if (error) {
-    //   console.error(error);
-    //   return false;
-    // }
-    // console.log({ subject, html });
+    if (error) {
+      throw new Error('Error en el servidor de correos');
+    }
 
     return true;
   } catch (error) {

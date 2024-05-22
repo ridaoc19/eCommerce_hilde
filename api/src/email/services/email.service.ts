@@ -16,6 +16,7 @@ export enum AddCronJob {
 export type AddCronJobMap = {
   [AddCronJob.Registre]: {
     type: AddCronJob.Registre;
+    passwordTemporality: string;
     email: string;
   };
   [AddCronJob.Reset]: {
@@ -25,6 +26,7 @@ export type AddCronJobMap = {
   };
   [AddCronJob.ValidateEmail]: {
     type: AddCronJob.ValidateEmail;
+    tokenJWT: string;
     email: string;
   };
 };
@@ -66,7 +68,11 @@ export class EmailService {
         await sendEmail({
           email: user.email,
           name: user.name,
-          password: user.password,
+          tokenJWT: data.type === AddCronJob.ValidateEmail ? data.tokenJWT : '',
+          password:
+            data.type !== AddCronJob.ValidateEmail
+              ? data.passwordTemporality
+              : '',
           type: TypeTemplateRegistre[
             `${capitalizedNewName}_${this.jobExecutionCounts[type]}`
           ],
@@ -108,7 +114,9 @@ export class EmailService {
     await sendEmail({
       email: user.email,
       name: user.name,
-      password: user.password,
+      tokenJWT: data.type === AddCronJob.ValidateEmail ? data.tokenJWT : '',
+      password:
+        data.type !== AddCronJob.ValidateEmail ? data.passwordTemporality : '',
       type: TypeTemplateRegistre[
         `${capitalizedNewName}_${this.jobExecutionCounts[type]}`
       ],

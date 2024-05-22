@@ -22,15 +22,11 @@ import {
   UserSuccess,
 } from '../dtos/users.dto';
 import { UsersService } from '../services/users.service';
-import { AddCronJob, EmailService } from 'src/email/services/email.service';
 
 @ApiTags('Usuarios')
 @Controller('users')
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-    private emailServices: EmailService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   // // ! Get All
   // @ApiOperation({ summary: 'Obtener todos los usuarios' })
@@ -82,17 +78,13 @@ export class UsersController {
     try {
       const response = await this.usersService.create(payload);
 
-      this.emailServices.addCronJob({
-        type: AddCronJob.Registre,
-        email: response.email,
-      });
-
       return {
         statusCode: HttpStatus.CREATED,
         message: `${payload.name} su cuenta fue registrada correctamente con su correo electrónico ${payload.email}`,
         data: response,
       };
     } catch (error) {
+      console.log(error.code, error.message);
       if (error.code === '23505') {
         throw new ConflictException([
           `El correo electrónico ${payload.email} ya se encuentra registrado`,

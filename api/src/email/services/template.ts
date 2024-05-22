@@ -13,7 +13,7 @@ export enum TypeTemplateRegistre {
 }
 
 export type TemplateRegistre = Pick<Users, 'name' | 'email' | 'password'> & {
-  tokenEmail?: string;
+  tokenJWT: string;
   type: TypeTemplateRegistre;
 };
 
@@ -25,7 +25,7 @@ export const templateRegistre = ({
   name,
   password,
   type,
-  tokenEmail,
+  tokenJWT,
 }: TemplateRegistre): { subject: string; html: string } => {
   switch (type) {
     case TypeTemplateRegistre.Registre_0:
@@ -725,7 +725,7 @@ export const templateRegistre = ({
                               <div class="main">
                                   <h1>Verificación de correo electrónico</h1>
                                   <p>${name}, para verificar su cuenta, haga clic en el siguiente enlace:</p>
-                                  <a href="${process.env.URL_CLIENT}/verify/${tokenEmail}">Verificar mi cuenta</a>
+                                  <a href="${process.env.URL_CLIENT}/verify/${tokenJWT}">Verificar mi cuenta</a>
                                   <p>Si no desea cambiar el correo electrónico, puede omitir este mensaje.</p>
                                   <p><em>Nota: Este enlace de verificación es válido durante 10 minutos, a partir de este tiempo se omitirá el cambio de correo electrónico.</em></p>
                                   <hr>
