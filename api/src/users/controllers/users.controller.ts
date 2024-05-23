@@ -97,13 +97,13 @@ export class UsersController {
 
   // ! CHANGE
   @Post('change')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  change(@Body() payload) {
-    const user = this.usersService.change(payload);
+  @HttpCode(HttpStatus.OK)
+  async change(@Body() payload) {
+    const user = await this.usersService.change(payload);
     if (user) {
       return {
-        statusCode: HttpStatus.NO_CONTENT,
-        message: `${payload.name} el cambio de contraseña fue exitoso`,
+        statusCode: HttpStatus.OK,
+        message: `¡Contraseña cambiada con éxito! \n\n ${user.name} a partir de ahora, puedes iniciar sesión en tu cuenta con la nueva contraseña.`,
       };
     } else {
       throw new BadRequestException(

@@ -6,9 +6,9 @@ import { CreateUserDto } from '../dtos/users.dto';
 import { Users } from '../entities/users.entity';
 
 import * as bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
-import { AddCronJob, EmailService } from 'src/email/services/email.service';
 import { generateHashPassword } from 'src/common/utils/auth/bcryptUtils';
+import { AddCronJob, EmailService } from 'src/email/services/email.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersService {
@@ -66,7 +66,7 @@ export class UsersService {
     user.password = hashPassword;
     user.verified = true;
     const newUser = await this.userRepo.save(user);
-    return !!newUser;
+    return newUser;
   }
 
   // ! RESET
