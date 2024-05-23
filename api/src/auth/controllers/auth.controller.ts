@@ -9,7 +9,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { AddCronJob, EmailService } from 'src/email/services/email.service';
 import { Users } from 'src/users/entities/users.entity';
 import {
   LoginError400,
@@ -21,10 +20,7 @@ import { AuthService } from '../service/auth.service';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private emailService: EmailService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   // ! LOGIN
   @ApiOperation({ summary: 'Inicio de sesión con email y password' })
@@ -55,11 +51,6 @@ export class AuthController {
     try {
       const user = req.user as Users;
       const response = this.authService.generateJWT(user);
-      await this.emailService.addCronJob({
-        type: AddCronJob.Reset,
-        email: response.user.email,
-        passwordTemporality: '1234',
-      });
       return response;
     } catch (error) {
       console.error('Error en el login:', error);

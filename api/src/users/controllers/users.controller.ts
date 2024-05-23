@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -93,4 +94,49 @@ export class UsersController {
       throw new InternalServerErrorException(['Error interno del servidor']);
     }
   }
+
+  // ! CHANGE
+  @Post('change')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  change(@Body() payload) {
+    const user = this.usersService.change(payload);
+    if (user) {
+      return {
+        statusCode: HttpStatus.NO_CONTENT,
+        message: `${payload.name} el cambio de contraseña fue exitoso`,
+      };
+    } else {
+      throw new BadRequestException(
+        'Se presento un error al actualizar la contraseña, por favor inténtelo de nuevo o contactar con la tienda',
+      );
+    }
+  }
+
+  // ! RESET
+  @Post('reset')
+  @HttpCode(HttpStatus.OK)
+  async reset(@Body() payload) {
+    const user = await this.usersService.reset(payload);
+
+    if (user) {
+      return {
+        statusCode: HttpStatus.OK,
+        message: `¡Restablecimiento exitoso! \n\n ${user.name}, revisa tu bandeja de entrada de correo electrónico ${user.email}. Pronto recibirás una contraseña temporal.`,
+      };
+    } else {
+      throw new BadRequestException(
+        'Se presento un error al actualizar la contraseña, por favor inténtelo de nuevo o contactar con la tienda',
+      );
+    }
+  }
 }
+
+// try {
+//   const user = req.user as Users;
+//   const response = this.authService.generateJWT(user);
+
+//   return response;
+// } catch (error) {
+//   console.error('Error en el login:', error);
+//   throw new InternalServerErrorException(error.message);
+// }
