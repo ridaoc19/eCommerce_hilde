@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -8,6 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { CreateUserResponse } from 'src/users/dtos/users.dto';
+import { LoginSwagger } from '../openApi/login.swagger';
 
 export class LoginDto {
   @IsString({
@@ -15,79 +15,24 @@ export class LoginDto {
   })
   @IsNotEmpty({ message: 'El correo electrónico no puede estar vacío' })
   @IsEmail({}, { message: 'El correo electrónico no tiene un formato válido' })
-  @ApiProperty({
-    description: 'El correo electrónico del usuario',
-    example: 'juan.perez@example.com',
-  })
+  @LoginSwagger.apiPropertyEmail()
   readonly email: string;
 
   @IsString({ message: 'La contraseña debe ser una cadena de caracteres' })
   @IsNotEmpty({ message: 'La contraseña no puede estar vacío' })
   @MinLength(2, { message: 'La contraseña debe tener mínimo 2 caracteres' })
   @MaxLength(20, { message: 'La contraseña debe tener máximo 20 caracteres' })
-  @ApiProperty({
-    description: 'La contraseña',
-    minLength: 2,
-    maxLength: 20,
-    example: 'Password1234',
-  })
+  @LoginSwagger.apiPropertyPassword()
   readonly password: string;
 }
 
-export class LoginSuccess {
-  @ApiProperty({
-    description: 'Código de estado HTTP',
-    example: HttpStatus.OK,
-  })
-  statusCode: number;
+export class LoginReturn {
+  @LoginSwagger.apiPropertySuccess_statusCode()
+  statusCode: HttpStatus.OK;
 
-  @ApiProperty({
-    description: 'Mensaje de éxito',
-    example: 'Inicio de sesión exitoso',
-  })
+  @LoginSwagger.apiPropertySuccess_message()
   message: string;
 
+  @LoginSwagger.apiPropertySuccess_data()
   data: CreateUserResponse;
-}
-
-export class LoginError400 {
-  @ApiProperty({
-    description: 'Código de estado HTTP',
-    example: 400,
-  })
-  statusCode: number;
-
-  @ApiProperty({
-    description: 'Mensaje de error',
-    example: 'Datos erróneos',
-  })
-  message: string[];
-}
-
-export class LoginError409 {
-  @ApiProperty({
-    description: 'Código de estado HTTP',
-    example: 409,
-  })
-  statusCode: number;
-
-  @ApiProperty({
-    description: 'Mensaje de error',
-    example: 'Contraseña errónea',
-  })
-  message: string[];
-}
-
-export class LoginError500 {
-  @ApiProperty({
-    description: 'Código de estado HTTP',
-    example: 500,
-  })
-  statusCode: number;
-
-  @ApiProperty({
-    description: 'Mensajes de error',
-    example: ['Error interno del servidor'],
-  })
-  message: string[];
 }

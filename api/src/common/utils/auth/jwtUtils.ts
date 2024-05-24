@@ -8,16 +8,19 @@ export interface PayloadToken {
 
 const secretKey = process.env.SECRET_KEY_JWT!;
 
-export function generateTokenJWT(
-  payload: Users,
-): Users & { access_token: string } {
+type GenerateTokenJWT = (data: {
+  user: Users;
+  expiresIn: string;
+}) => Users & { access_token: string };
+
+export const generateTokenJWT: GenerateTokenJWT = ({ user, expiresIn }) => {
   const assignToken: PayloadToken = {
-    user_id: payload.user_id,
-    email: payload.email,
+    user_id: user.user_id,
+    email: user.email,
   };
-  const access_token = jwt.sign(assignToken, secretKey, { expiresIn: '1s' });
-  return Object.assign(payload, { access_token });
-}
+  const access_token = jwt.sign(assignToken, secretKey, { expiresIn });
+  return Object.assign(user, { access_token });
+};
 
 export function verifyTokenJWT(token: string): any {
   try {
