@@ -1,69 +1,65 @@
 import {
+  Body,
   Controller,
+  Get,
+  HttpCode,
   HttpStatus,
-  InternalServerErrorException,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { AddCronJob, EmailService } from 'src/email/services/email.service';
+import { generateTokenJWT, PayloadToken } from 'src/common/utils/auth/jwtUtils';
 import { Users } from 'src/users/entities/users.entity';
-import {
-  LoginError400,
-  LoginError409,
-  LoginError500,
-  LoginSuccess,
-} from '../dtos/auth.dto';
-import { AuthService } from '../service/auth.service';
+import { UsersService } from 'src/users/services/users.service';
+import { LoginDto, LoginResponse, TokenResponse } from '../dtos/auth.dto';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { LoginAuthGuard } from '../guards/login-auth.guard';
+import { LoginSwagger } from '../openApi/login.swagger';
+import { TokenSwagger } from '../openApi/token.swagger';
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private emailService: EmailService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   // ! LOGIN
-  @ApiOperation({ summary: 'Inicio de sesión con email y password' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Inicio de sesión exitoso',
-    type: LoginSuccess,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Datos inválidos',
-    type: LoginError400,
-  })
-  @ApiResponse({
-    status: HttpStatus.CONFLICT,
-    description: 'Contraseña errónea',
-    type: LoginError409,
-  })
-  @ApiResponse({
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: 'Error interno del servidor',
-    type: LoginError500,
-  })
-  @UseGuards(AuthGuard('local'))
-  // @SendEmail(TypeEmail.CREATE_USER)
+  @LoginSwagger.login()
+  @UseGuards(LoginAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(@Req() req: Request) {
-    try {
-      const user = req.user as Users;
-      const response = this.authService.generateJWT(user);
-      await this.emailService.addCronJob({
-        type: AddCronJob.Reset,
-        email: response.user.email,
-        passwordTemporality: '1234',
-      });
-      return response;
-    } catch (error) {
-      console.error('Error en el login:', error);
-      throw new InternalServerErrorException(error.message);
-    }
+  async login(
+    @Req() req: Request,
+    @Body() payload: LoginDto,
+  ): Promise<LoginResponse> {
+    false && payload;
+    const user = generateTokenJWT({
+      user: req.user as Users,
+      expiresIn: '1d',
+    });
+    return {
+      statusCode: HttpStatus.OK,
+      message: !user.verified
+        ? `${user.name} debes cambiar la contraseña por una de tú preferencia`
+        : !user.verifiedEmail
+          ? `${user.name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${user.email}`
+          : `¡Inicio de sesión exitoso! \n\n ${user?.name},Te damos la bienvenida de vuelta a nuestro sitio web.`,
+      data: user,
+    };
+  }
+
+  // ! TOKEN
+  @TokenSwagger.token()
+  @UseGuards(JwtAuthGuard)
+  @Get('token')
+  async token(@Req() req: Request): Promise<TokenResponse> {
+    const token = req.user as PayloadToken;
+    const user = await this.usersService.findOne(token.user_id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: `¡Bienvenido de vuelta, ${user.name}! Te has conectado exitosamente utilizando un token de sesión.`,
+      data: user,
+    };
   }
 }

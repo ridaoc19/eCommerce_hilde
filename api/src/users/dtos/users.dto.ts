@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { UserRole } from '../entities/users.entity';
 
 export class CreateUserDto {
   @IsString({ message: 'El nombre debe ser una cadena de caracteres' })
@@ -97,10 +98,10 @@ export class CreateUserResponse {
 
   @ApiProperty({
     description: 'Rol del usuario en el sistema',
-    example: 'visitant',
+    example: UserRole.Visitant,
     enum: ['super', 'admin', 'edit', 'visitant'],
   })
-  roles: 'super' | 'admin' | 'edit' | 'visitant';
+  roles: UserRole;
 
   @ApiProperty({
     description: 'Direcciones asociadas al usuario',
