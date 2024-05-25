@@ -15,10 +15,14 @@ export class LoginStrategy extends PassportStrategy(Strategy, 'login') {
   }
 
   async validate(email: string, password: string): Promise<Users> {
-    const user = await this.authService.validateUser(email, password);
-    if (!user) {
-      throw new UnauthorizedException('no autenticado');
+    try {
+      const user = await this.authService.validateUser(email, password);
+      if (!user) {
+        throw new UnauthorizedException('no autenticado');
+      }
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException(['Fallo inicio de sesión formato email']);
     }
-    return user;
   }
 }

@@ -26,11 +26,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err, user, info) {
     if (err || !user) {
       if (info && info.name === 'TokenExpiredError') {
-        throw new UnauthorizedException('El token ha expirado');
+        throw new UnauthorizedException(['El token ha expirado']);
       } else if (info && info.name === 'JsonWebTokenError') {
-        throw new UnauthorizedException('El token no es válido');
+        throw new UnauthorizedException(['El token no es válido']);
       }
-      throw err || new UnauthorizedException('Autenticación fallida');
+      throw err || new UnauthorizedException(['Autenticación fallida']);
     }
 
     return user;
