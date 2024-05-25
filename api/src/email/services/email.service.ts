@@ -45,82 +45,85 @@ export class EmailService {
     const capitalizedNewName = capitalizeFirstLetter(type);
     this.jobExecutionCounts[type] = 0;
 
-    //TODO
-    const job = new CronJob('*/1 * * * *', async () => {
-      try {
-        this.jobExecutionCounts[type]++;
-        const countName = this.jobExecutionCounts[type];
-        const totalTypeTemplate = Object.values(TypeTemplateRegistre).filter(
-          (e) => e.includes(type),
-        ).length;
+    try {
+      //TODO TAREA
+      const job = new CronJob('*/2 * * * *', async () => {
+        try {
+          this.jobExecutionCounts[type]++;
+          const countName = this.jobExecutionCounts[type];
+          const totalTypeTemplate = Object.values(TypeTemplateRegistre).filter(
+            (e) => e.includes(type),
+          ).length;
 
-        const user = await this.userRepo.findOne({ where: { email } });
-        if (
-          (type === AddCronJob.Registre && user.verified) ||
-          (type === AddCronJob.ValidateEmail && user.verifiedEmail) ||
-          (type === AddCronJob.Reset && user.verified)
-        ) {
-          delete this.jobExecutionCounts[type];
-          this.schedulerRegistry.deleteCronJob(type);
-          return;
-        }
+          const user = await this.userRepo.findOne({ where: { email } });
 
-        await sendEmail({
-          email: user.email,
-          name: user.name,
-          tokenJWT: data.type === AddCronJob.ValidateEmail ? data.tokenJWT : '',
-          password:
-            data.type !== AddCronJob.ValidateEmail
-              ? data.passwordTemporality
-              : '',
-          type: TypeTemplateRegistre[
-            `${capitalizedNewName}_${this.jobExecutionCounts[type]}`
-          ],
-        });
-
-        // * si no realizan validaciones cancela y si es reset elimina
-        if (countName === totalTypeTemplate - 1) {
-          if (type === 'registre') {
-            await this.userRepo.remove(user);
+          if (
+            (type === AddCronJob.Registre && user.verified) ||
+            (type === AddCronJob.ValidateEmail && user.verifiedEmail) ||
+            (type === AddCronJob.Reset && user.verified)
+          ) {
+            delete this.jobExecutionCounts[type];
+            this.schedulerRegistry.deleteCronJob(type);
+            return;
           }
+
+          // ? EMAIL
+          await sendEmail({
+            email: user.email,
+            name: user.name,
+            tokenJWT:
+              data.type === AddCronJob.ValidateEmail ? data.tokenJWT : '',
+            password:
+              data.type !== AddCronJob.ValidateEmail
+                ? data.passwordTemporality
+                : '',
+            type: TypeTemplateRegistre[
+              `${capitalizedNewName}_${this.jobExecutionCounts[type]}`
+            ],
+          });
+
+          // * si no realizan validaciones cancela y si es reset elimina
+          if (countName === totalTypeTemplate - 1) {
+            if (type === 'registre') {
+              await this.userRepo.remove(user);
+            }
+            delete this.jobExecutionCounts[type];
+            this.schedulerRegistry.deleteCronJob(type);
+            return;
+          }
+        } catch (error) {
           delete this.jobExecutionCounts[type];
           this.schedulerRegistry.deleteCronJob(type);
-          return;
+          throw new NotFoundException(error.message);
         }
-      } catch (error) {
-        console.error(`Error en el trabajo cron para ${type}:`, error);
-        delete this.jobExecutionCounts[type];
-        this.schedulerRegistry.deleteCronJob(type);
-      }
-    });
+      });
 
-    //TODO
-    this.schedulerRegistry.addCronJob(type, job);
-    job.start();
+      //TODO TERMINA TAREA
 
-    const user = await this.userRepo.findOne({ where: { email } });
-    if (!user) {
+      // TODO AGREGA LA TAREA
+      this.schedulerRegistry.addCronJob(type, job);
+      job.start();
+
+      const user = await this.userRepo.findOne({ where: { email } });
+
+      // ? EMAIL
+      await sendEmail({
+        email: user.email,
+        name: user.name,
+        tokenJWT: data.type === AddCronJob.ValidateEmail ? data.tokenJWT : '',
+        password:
+          data.type !== AddCronJob.ValidateEmail
+            ? data.passwordTemporality
+            : '',
+        type: TypeTemplateRegistre[
+          `${capitalizedNewName}_${this.jobExecutionCounts[type]}`
+        ],
+      });
+    } catch (error) {
       delete this.jobExecutionCounts[type];
       this.schedulerRegistry.deleteCronJob(type);
-      throw new NotFoundException(
-        `El usuario ${email} no se encontró en nuestro sistema`,
-      );
+      throw new NotFoundException(error.message);
     }
-
-    console.log(
-      TypeTemplateRegistre[`${type}_${this.jobExecutionCounts[type]}`],
-    );
-
-    await sendEmail({
-      email: user.email,
-      name: user.name,
-      tokenJWT: data.type === AddCronJob.ValidateEmail ? data.tokenJWT : '',
-      password:
-        data.type !== AddCronJob.ValidateEmail ? data.passwordTemporality : '',
-      type: TypeTemplateRegistre[
-        `${capitalizedNewName}_${this.jobExecutionCounts[type]}`
-      ],
-    });
   }
 }
 

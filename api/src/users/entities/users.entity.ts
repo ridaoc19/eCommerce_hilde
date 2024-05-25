@@ -19,6 +19,13 @@ import {
 } from 'class-validator';
 import { Exclude } from 'class-transformer';
 
+export enum UserRole {
+  Super = 'super',
+  Admin = 'admin',
+  Edit = 'edit',
+  Visitant = 'visitant',
+}
+
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn('uuid')
@@ -82,15 +89,15 @@ export class Users {
 
   @Column({
     type: 'enum',
-    enum: ['super', 'admin', 'edit', 'visitant'],
-    default: 'visitant',
+    enum: UserRole,
+    default: UserRole.Visitant,
     comment: 'Rol del usuario en el sistema',
   })
-  @IsEnum(['super', 'admin', 'edit', 'visitant'], {
+  @IsEnum(UserRole, {
     message:
       'El rol debe ser uno de los siguientes: super, admin, edit, visitant',
   })
-  roles: 'super' | 'admin' | 'edit' | 'visitant';
+  roles: UserRole;
 
   @Column({
     type: 'text',

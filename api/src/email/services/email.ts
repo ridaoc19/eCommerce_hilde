@@ -8,16 +8,19 @@ export async function sendEmail(param: TemplateRegistre): Promise<boolean> {
   try {
     const { html, subject } = templateRegistre(param);
 
-    const { error } = await resend.emails.send({
-      from: process.env.EMAIL_RESEND || '',
-      to: [param.email],
-      subject,
-      html,
-    });
+    false && console.log(resend);
+    console.log({ param, html, subject });
 
-    if (error) {
-      throw new Error('Error en el servidor de correos');
-    }
+    // const { error } = await resend.emails.send({
+    //   from: process.env.EMAIL_RESEND || '',
+    //   to: [param.email],
+    //   subject,
+    //   html,
+    // });
+
+    // if (error) {
+    //   throw new Error('Error en el servidor de correos');
+    // }
 
     return true;
   } catch (error) {
