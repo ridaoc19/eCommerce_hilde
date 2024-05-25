@@ -1,135 +1,114 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
-import { LoginReturn } from '../dtos/auth.dto';
 import { CreateUserResponse } from 'src/users/dtos/users.dto';
+import { structureDataUser } from 'src/users/dtos/users.swagger';
+import { LoginResponse, LoginUnauthorized } from '../dtos/auth.dto';
+
+export enum LoginType {
+  Success = 'success',
+  Unauthorized = 'unauthorized',
+}
+
+export type LoginTypeMap = {
+  [LoginType.Success]: {
+    type: LoginType.Success;
+    element: 'statusCode' | 'message' | 'data';
+  };
+  [LoginType.Unauthorized]: {
+    type: LoginType.Unauthorized;
+    element: 'statusCode' | 'error' | 'message';
+  };
+};
 
 export class LoginSwagger {
-  static apiPropertySuccess_statusCode() {
-    return ApiProperty({
-      description: 'Código de estado HTTP',
-      example: HttpStatus.OK,
-    });
+  static LoginDto(type: 'email' | 'password') {
+    switch (type) {
+      case 'email':
+        return ApiProperty({
+          description: 'El correo electrónico del usuario',
+          example: 'juan.perez@example.com',
+        });
+
+      case 'password':
+        return ApiProperty({
+          description: 'La contraseña',
+          minLength: 2,
+          maxLength: 20,
+          example: 'Password1234',
+        });
+      default:
+        throw new Error(`Unsupported type: ${type}`);
+    }
   }
 
-  static apiPropertySuccess_message() {
-    return ApiProperty({
-      description: 'Mensaje de éxito',
-      example: 'Inicio de sesión exitoso',
-    });
-  }
-
-  static apiPropertySuccess_data() {
-    return ApiProperty({ type: CreateUserResponse });
-  }
-
-  static apiPropertyEmail() {
-    return ApiProperty({
-      description: 'El correo electrónico del usuario',
-      example: 'juan.perez@example.com',
-    });
-  }
-
-  static apiPropertyPassword() {
-    return ApiProperty({
-      description: 'La contraseña',
-      minLength: 2,
-      maxLength: 20,
-      example: 'Password1234',
-    });
-  }
-
-  static apiOperation() {
-    return ApiOperation({ summary: 'Inicio de sesión con email y password' });
-  }
-
-  static apiResponse() {
+  static login() {
     return applyDecorators(
+      ApiOperation({ summary: 'Inicio de sesión con email y password' }),
       ApiResponse({
         status: HttpStatus.OK,
         description: 'Inicio de sesión exitoso',
-        type: LoginReturn,
+        type: LoginResponse,
       }),
-      // ApiResponse({
-      //   status: HttpStatus.BAD_REQUEST,
-      //   description: 'Datos inválidos',
-      //   type: LoginError400,
-      // }),
-      // ApiResponse({
-      //   status: HttpStatus.CONFLICT,
-      //   description: 'Contraseña errónea',
-      //   type: LoginError409,
-      // }),
-      // ApiResponse({
-      //   status: HttpStatus.INTERNAL_SERVER_ERROR,
-      //   description: 'Error interno del servidor',
-      //   type: LoginError500,
-      // }),
+      ApiResponse({
+        status: HttpStatus.UNAUTHORIZED,
+        description: 'Errores en autenticación con Token',
+        type: LoginUnauthorized,
+      }),
     );
   }
-}
 
-// ! ////////////////////////////////////////////////////////////////7
-class BankAccount {
-  // Propiedad privada que almacena el balance de la cuenta
-  private balance: number;
+  static Response<T extends LoginType>(
+    type: T,
+    element: LoginTypeMap[T]['element'],
+  ): PropertyDecorator {
+    switch (type) {
+      case LoginType.Success:
+        switch (element) {
+          case 'statusCode':
+            return ApiProperty({
+              description: 'Código de estado HTTP',
+              example: HttpStatus.OK,
+            });
 
-  // Propiedad pública que almacena el nombre del titular de la cuenta
-  public ownerName: string;
+          case 'message':
+            return ApiProperty({
+              description: 'Mensaje de éxito',
+              example: `${structureDataUser({}).name} debes cambiar la contraseña por una de tú preferencia || ${structureDataUser({}).name} verifica el buzón de correo, y valida el correo electrónico, si no desea cambiarlo, en 10 minutos seguirá registrado con el correo ${structureDataUser({}).email} || ¡Inicio de sesión exitoso! \n\n ${structureDataUser({}).name},Te damos la bienvenida de vuelta a nuestro sitio web.`,
+            });
 
-  // Propiedad estática que cuenta el número de cuentas creadas
-  private static accountCounter: number = 0;
+          case 'data':
+            return ApiProperty({ type: CreateUserResponse });
 
-  // Constructor que inicializa el nombre del titular y el balance inicial
-  constructor(ownerName: string, initialBalance: number = 0) {
-    this.ownerName = ownerName;
-    this.balance = initialBalance;
-    // Incrementa el contador de cuentas cada vez que se crea una nueva cuenta
-    BankAccount.accountCounter++;
-  }
-
-  // Método público para depositar dinero en la cuenta
-  public deposit(amount: number): void {
-    if (amount > 0) {
-      this.balance += amount;
-      console.log(`Depositado: $${amount}. Nuevo balance: $${this.balance}`);
-    } else {
-      console.log('El monto a depositar debe ser positivo');
+          default:
+            throw new Error(`Unsupported type: ${type}`);
+        }
+      case LoginType.Unauthorized:
+        switch (element) {
+          case 'statusCode':
+            return ApiProperty({
+              description: 'Código de estado',
+              example: HttpStatus.UNAUTHORIZED,
+            });
+          case 'error':
+            return ApiProperty({
+              description: 'Mensaje de error',
+              example: 'Unauthorized',
+            });
+          case 'message':
+            return ApiProperty({
+              description: 'Mensajes del error',
+              example: [
+                'Correo electrónico o contraseña incorrectos',
+                'Fallo inicio de sesión',
+              ],
+            });
+          default:
+            throw new Error(
+              `Unsupported element for type 'Unauthorized': ${element}`,
+            );
+        }
+      default:
+        throw new Error(`Unsupported type: ${type}`);
     }
   }
-
-  // Método público para retirar dinero de la cuenta
-  public withdraw(amount: number): void {
-    if (amount > 0 && amount <= this.balance) {
-      this.balance -= amount;
-      console.log(`Retirado: $${amount}. Nuevo balance: $${this.balance}`);
-    } else {
-      console.log('Monto inválido o fondos insuficientes');
-    }
-  }
-
-  // Método público para consultar el balance actual
-  public getBalance(): number {
-    return this.balance;
-  }
-
-  // Método estático para obtener el número de cuentas creadas
-  public static getAccountCount(): number {
-    return BankAccount.accountCounter;
-  }
 }
-
-// Crear nuevas cuentas
-const account1 = new BankAccount('Alice', 100);
-const account2 = new BankAccount('Bob');
-
-// Realizar operaciones con las cuentas
-account1.deposit(50); // Depositado: $50. Nuevo balance: $150
-account1.withdraw(30); // Retirado: $30. Nuevo balance: $120
-console.log(account1.getBalance()); // 120
-
-account2.deposit(200); // Depositado: $200. Nuevo balance: $200
-account2.withdraw(300); // Monto inválido o fondos insuficientes
-console.log(account2.getBalance()); // 200
-
-// Obtener el número total de cuentas creadas
-console.log(BankAccount.getAccountCount()); // 2

@@ -13,52 +13,26 @@ import { Request } from 'express';
 import { generateTokenJWT, PayloadToken } from 'src/common/utils/auth/jwtUtils';
 import { Users } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/services/users.service';
-import { LoginDto, LoginReturn } from '../dtos/auth.dto';
+import { LoginDto, LoginResponse, TokenResponse } from '../dtos/auth.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { LoginAuthGuard } from '../guards/login-auth.guard';
 import { LoginSwagger } from '../openApi/login.swagger';
-import { AuthService } from '../service/auth.service';
+import { TokenSwagger } from '../openApi/token.swagger';
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    // private loginSwagger: LoginSwagger,
-    private authService: AuthService,
-    private usersService: UsersService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   // ! LOGIN
-  // @ApiOperation({ summary: 'Inicio de sesión con email y password' })
-  // @ApiResponse({
-  //   status: HttpStatus.OK,
-  //   description: 'Inicio de sesión exitoso',
-  //   type: LoginSuccess,
-  // })
-  // @ApiResponse({
-  //   status: 400,
-  //   description: 'Datos inválidos',
-  //   type: LoginError400,
-  // })
-  // @ApiResponse({
-  //   status: HttpStatus.CONFLICT,
-  //   description: 'Contraseña errónea',
-  //   type: LoginError409,
-  // })
-  // @ApiResponse({
-  //   status: HttpStatus.INTERNAL_SERVER_ERROR,
-  //   description: 'Error interno del servidor',
-  //   type: LoginError500,
-  // })
-  @LoginSwagger.apiOperation()
-  @LoginSwagger.apiResponse()
-  // @UseGuards(AuthGuard('login'))
+  @LoginSwagger.login()
   @UseGuards(LoginAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(
     @Req() req: Request,
     @Body() payload: LoginDto,
-  ): Promise<LoginReturn> {
+  ): Promise<LoginResponse> {
     false && payload;
     const user = generateTokenJWT({
       user: req.user as Users,
@@ -75,10 +49,17 @@ export class AuthController {
     };
   }
 
+  // ! TOKEN
+  @TokenSwagger.token()
   @UseGuards(JwtAuthGuard)
   @Get('token')
-  async token(@Req() req: Request) {
+  async token(@Req() req: Request): Promise<TokenResponse> {
     const token = req.user as PayloadToken;
-    return await this.usersService.findOne(token.user_id);
+    const user = await this.usersService.findOne(token.user_id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: `¡Bienvenido de vuelta, ${user.name}! Te has conectado exitosamente utilizando un token de sesión.`,
+      data: user,
+    };
   }
 }
