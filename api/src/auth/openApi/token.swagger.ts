@@ -1,10 +1,5 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import {
-  ApiHeader,
-  ApiOperation,
-  ApiProperty,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { structureDataUser } from 'src/users/dtos/users.swagger';
 import { TokenResponse, TokenUnauthorized } from '../dtos/auth.dto';
 
@@ -27,12 +22,8 @@ export type TokenTypeMap = {
 export class TokenSwagger {
   static token() {
     return applyDecorators(
-      ApiOperation({ summary: 'Inicio de sesión con email y password' }),
-      ApiHeader({
-        name: 'Authorization',
-        description: 'Token de autorización',
-        required: true,
-      }),
+      ApiOperation({ summary: 'Inicio de sesión con Token' }),
+
       ApiResponse({
         status: HttpStatus.OK,
         description: 'Inicio de sesión exitoso con Token',
