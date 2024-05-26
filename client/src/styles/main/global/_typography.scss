@@ -1,0 +1,90 @@
+$base-font-size: 16px; 
+
+body {
+  margin : 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing : antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size              : $base-font-size;
+
+  font-size: 14px;
+  color    : #333;
+
+}
+
+@media only screen and (min-width: 600px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  body {
+    font-size: 17px;
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+  font-size: 1rem; 
+
+  @media (min-width: 768px) {
+    font-size: 0.8rem; 
+  }
+
+  @media (max-width: 1200px) {
+    font-size: 0.9rem; 
+  }
+}
+
+.body-scroll-locked {
+  overflow: hidden;
+}
+
+a {
+  color          : var(--font-brand);
+  text-decoration: none;
+}
+
+.link {
+  display        : inline-block;
+  position       : relative;
+  color          : var(--information-6) !important;
+  text-decoration: none;
+
+  &:after {
+    content   : "";
+    display   : block;
+    margin    : auto;
+    height    : 2px;
+    width     : 0px;
+    transition: all .5s;
+  }
+
+  &:hover:after {
+    width     : 100%;
+    background: var(--information-6) !important;
+  }
+}
+
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin : 0;
+  padding: 0;
+}
