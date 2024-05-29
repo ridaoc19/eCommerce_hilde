@@ -30,7 +30,7 @@
 
     &:hover {
       background-color: var(--brand-7);
-      transform: scale(1.01);
+      transform       : scale(1.01);
     }
 
     &:active {
@@ -43,17 +43,18 @@
       background-color: var(--neutral-1);
       color           : var(--neutral-4);
       cursor          : not-allowed;
+      border          : 1px solid var(--neutral-5);
     }
   }
 
   @else if $type==button_light {
     background-color: var(--brand-2);
     color           : var(--brand-6);
-    border          : 1px solid var(--font-accent);
+    border          : 1px solid var(--neutral-4);
 
     &:hover {
       background-color: var(--brand-5);
-      transform: scale(1.01);
+      transform       : scale(1.01);
     }
 
     &:active {
@@ -101,7 +102,7 @@
 
     &:hover {
       background-color: var(--neutral-2);
-      transform: scale(1.01);
+      transform       : scale(1.01);
     }
   }
 
@@ -149,7 +150,7 @@
 
     &:hover {
       background-color: var(--information-7);
-      transform: scale(1.01);
+      transform       : scale(1.01);
     }
 
     &:active {
@@ -172,7 +173,7 @@
 
     &:hover {
       background-color: var(--success-7);
-      transform: scale(1.01);
+      transform       : scale(1.01);
     }
 
     &:active {
@@ -195,7 +196,7 @@
 
     &:hover {
       background-color: var(--warning-7);
-      transform: scale(1.01);
+      transform       : scale(1.01);
     }
 
     &:active {
@@ -218,7 +219,7 @@
 
     &:hover {
       background-color: var(--error-7);
-      transform: scale(1.01);
+      transform       : scale(1.01);
     }
 
     &:active {

@@ -3,6 +3,7 @@ import Svg from '../../../assets/icons/Svg';
 import { HandleClick } from '../../../interfaces/global.interface';
 import { SvgType } from '../../../assets/icons/svgType';
 import { ButtonType } from './button.type';
+import _color from '../../../styles/main/global/_color';
 
 export interface ButtonProps {
   svgRight?: SvgType
@@ -17,6 +18,7 @@ export interface ButtonProps {
   className?: string;
 }
 
+/** Este botón esta creado para que sea global y puede ser utilizado en cualquier lugar de la pagina */
 const Button: React.FC<ButtonProps> = (params: ButtonProps) => {
   const { id, type, handleClick, text, value, disabled, className, other_attributes, svgLeft, svgRight } = params;
   return (
@@ -34,7 +36,7 @@ const Button: React.FC<ButtonProps> = (params: ButtonProps) => {
             type: svgLeft,
             height: 16,
             width: 16,
-            color: 'red',
+            color: [ButtonType.Error, ButtonType.Success, ButtonType.Warning, ButtonType.Information].includes(type) ? _color.font.font_light : undefined,
           })}
         </span>
       )}
@@ -49,7 +51,7 @@ const Button: React.FC<ButtonProps> = (params: ButtonProps) => {
             type: svgRight,
             height: 16,
             width: 16,
-            color: 'red',
+            color: [ButtonType.Error, ButtonType.Success, ButtonType.Warning, ButtonType.Information].includes(type) ? _color.font.font_light : undefined,
           })}
         </span>
       )}

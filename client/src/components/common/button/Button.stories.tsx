@@ -1,12 +1,34 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import Button from "./Button";
+
+import { fn } from '@storybook/test';
 import { SvgType } from "../../../assets/icons/svgType";
+import Button from "./Button";
 import { ButtonType } from "./button.type";
+// import { ArgTypes, Canvas, Controls, Description, Source, Story, Subtitle, Title, Primary as PrimaryDocBlock } from '@storybook/blocks';
 
 const meta: Meta<typeof Button> = {
   title: "components/common/Buttons",
   component: Button,
   tags: ["autodocs"],
+  parameters: {
+    componentSubtitle: "Botón Global"
+  },
+  // parameters: {
+  //   docs: {
+  //     page: () => (
+  //       <>
+  //         <Title />
+  //         <Description />
+  //         <Subtitle >El subtitulo</Subtitle>
+  //         <Story />
+  //         <Source />
+  //         <Canvas />
+  //         <ArgTypes />
+  //         <PrimaryDocBlock />
+  //         <Controls />
+  //       </>)
+  //   }
+  // },
   argTypes: {
     id: {
       description: "ID único del botón en el DOM.",
@@ -26,6 +48,7 @@ const meta: Meta<typeof Button> = {
     },
     handleClick: {
       description: "Función que se ejecuta cuando se hace clic en el botón.",
+      control: {}
     },
     type: {
       description: "Estilo visual del botón.",
@@ -63,10 +86,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    text: "hola",
-    id: "",
+    id: "button__login",
+    text: "Iniciar Sesión",
     type: ButtonType.Dark,
-    handleClick: () => {},
+    handleClick: fn(),
     svgRight: SvgType.Desktop,
     svgLeft: SvgType.ArrowBottom,
   },
