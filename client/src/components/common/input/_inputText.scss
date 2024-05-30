@@ -1,0 +1,32 @@
+.input-text__container {
+  display: flex;
+  width: 100%;
+
+  > span {
+    display: flex;
+    flex: auto; 
+    gap: 0.3rem;
+    border-radius: 0.7rem;
+    height: 1.8rem;
+    padding: 4px 11px;
+    background-color: #ffffff;
+    border: 1px solid var(--brand-6);
+
+    > input {
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      outline: none;
+      margin: 0;
+      width: 100%; 
+
+      &:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 30px white inset !important;
+      }
+
+      ::placeholder {
+        color: none;
+      }
+    }
+  }
+}

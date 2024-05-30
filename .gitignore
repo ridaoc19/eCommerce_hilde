@@ -2,3 +2,5 @@
 /upload.json
 /apiOld
 /clientOld
+.vscode/*
+!.vscode/extensions.json

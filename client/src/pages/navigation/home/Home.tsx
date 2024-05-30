@@ -1,28 +1,9 @@
-import Button from "../../../components/common/button/Button"
+import Input from "../../../components/common/input/Input"
 
 function Home() {
   return (
     <div>
-      <Button buttonConfig={{
-        variant: 'dark',
-        handleClick: () => { },
-        text: 'hola'
-      }} />
-      <Button buttonConfig={{
-        variant: 'highlighter',
-        handleClick: () => { },
-        text: 'hola'
-      }} />
-      <Button buttonConfig={{
-        variant: 'light',
-        handleClick: () => { },
-        text: 'hola'
-      }} />
-      <Button buttonConfig={{
-        variant: 'link',
-        handleClick: () => { },
-        text: 'hola'
-      }} />
+      <Input />
     </div>
   )
 }
