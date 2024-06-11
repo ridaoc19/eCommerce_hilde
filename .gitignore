@@ -1,3 +1,6 @@
 /vhost.conf
 /upload.json
 /apiOld
+/clientOld
+.vscode/*
+!.vscode/extensions.json

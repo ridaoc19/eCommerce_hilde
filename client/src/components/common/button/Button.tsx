@@ -1,65 +1,89 @@
-import { ReactNode } from "react";
-import { HandleClick } from "../../../interfaces/global.interface";
-import Svg, { SvgType } from "../../assets/icons/Svg";
+import React, { ButtonHTMLAttributes, ReactNode } from 'react';
+
+import { HandleClick } from '../../../interfaces/globa';
+import Svg from '../icons/Svg';
+import { SvgType } from '../icons/svgType';
+import { ButtonType } from './button.type';
+import _color from '../../../styles/main/global/_color';
 
 export interface ButtonProps {
-  svgRight?: {
-    type: SvgType;
-    height?: number;
-    width?: number;
-    color?: string;
-  };
+	id: string;
+	type: ButtonType;
+	text: string | ReactNode;
+	handleClick: HandleClick;
 
-  svgLeft?: {
-    type: SvgType;
-    height?: number;
-    width?: number;
-    color?: string;
-  };
-
-  style?: React.CSSProperties;
-  className?: string;
-  button: {
-    type: "dark" | "light" | "link" | "highlighter" | "none";
-    text: string | ReactNode;
-    disabled?: boolean;
-    id?: string;
-    value?: string | number;
-    handleClick: HandleClick;
-    dataset_button_extra?: string;
-    dataset_button_index?: string;
-  };
+	svgRight?: SvgType;
+	svgLeft?: SvgType;
+	other_attributes?: ButtonHTMLAttributes<HTMLButtonElement>;
+	disabled?: boolean;
+	value?: string | number;
+	className?: string;
 }
 
-function Button({ button, svgRight, svgLeft, style, className = "" }: ButtonProps) {
-  return (
-    <button
-      style={style}
-      id={button.id}
-      className={`button button_${button.type} ${className}`}
-      onClick={button.handleClick}
-      value={button.value}
-      disabled={button.disabled}
-    >
-      {svgRight &&
-        <span className={`button__svg-right`}>
-          {Svg({ type: svgRight.type as SvgType, height: svgRight.height || 16, width: svgRight.width || 16, color: svgRight.color })}
-        </span>}
-      {!!button.text && <span className="button__text-container">
-        <div>{button.text}</div>
-      </span>}
-      {svgLeft &&
-        <span>
-          {Svg({
-            type: svgLeft.type,
-            height: svgLeft.height || 16,
-            width: svgLeft.width || 16,
-            color: svgLeft.color
-          })}
-        </span>
-      }
-    </button>
-  );
-}
+const Button: React.FC<ButtonProps> = (params: ButtonProps) => {
+	const {
+		id,
+		type,
+		handleClick,
+		text,
+		value,
+		disabled,
+		className,
+		other_attributes,
+		svgLeft,
+		svgRight,
+	} = params;
+	return (
+		<button
+			id={id}
+			className={`button button_${type} ${className}`}
+			onClick={handleClick}
+			value={value}
+			disabled={disabled}
+			aria-label={`Click para ${id}`}
+			{...other_attributes}
+		>
+			{!!svgLeft && (
+				<span className='button__svg-left'>
+					{Svg({
+						type: svgLeft,
+						height: 16,
+						width: 16,
+						color: [
+							ButtonType.Error,
+							ButtonType.Success,
+							ButtonType.Warning,
+							ButtonType.Information,
+						].includes(type)
+							? _color.font.font_light
+							: undefined,
+					})}
+				</span>
+			)}
+			{!!text && (
+				<span className='button__text-container'>
+					<div>{text}</div>
+				</span>
+			)}
+			{!!svgRight && (
+				<span className='button__svg-right'>
+					{Svg({
+						type: svgRight,
+						height: 16,
+						width: 16,
+						color: [
+							ButtonType.Error,
+							ButtonType.Success,
+							ButtonType.Warning,
+							ButtonType.Information,
+						].includes(type)
+							? _color.font.font_light
+							: undefined,
+					})}
+				</span>
+			)}
+		</button>
+	);
+};
 
 export default Button;

@@ -24,6 +24,15 @@ async function bootstrap() {
     .setTitle('Tienda en Linea Hilde')
     .setDescription('Documentación tienda en linea Hilde')
     .setVersion('2.0')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+      name: 'Authorization',
+      description: 'Enter your Bearer token',
+    })
+    .addSecurityRequirements('bearer')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

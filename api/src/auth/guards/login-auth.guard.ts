@@ -12,19 +12,32 @@ export class LoginAuthGuard extends AuthGuard('login') {
   }
 
   canActivate(context: ExecutionContext) {
-    return super.canActivate(context);
+    try {
+      return super.canActivate(context);
+    } catch (error) {
+      throw new UnauthorizedException(['Fallo inicio de sesión formato email']);
+    }
   }
 
   handleRequest(err, user, info) {
-    if (err || !user || info) {
+    try {
+      if (err || !user || info) {
+        if (err.response.error === 'Unauthorized') {
+          throw new UnauthorizedException([
+            'Correo electrónico o contraseña incorrectos',
+          ]);
+        }
+        throw new UnauthorizedException(['Fallo inicio de sesión']);
+      }
+
+      return user;
+    } catch (err) {
       if (err.response.error === 'Unauthorized') {
         throw new UnauthorizedException([
           'Correo electrónico o contraseña incorrectos',
         ]);
       }
-      throw new UnauthorizedException('Fallo inicio de sesión');
+      throw new UnauthorizedException(['Fallo inicio de sesión']);
     }
-
-    return user;
   }
 }

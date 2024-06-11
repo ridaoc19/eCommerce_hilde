@@ -47,7 +47,7 @@ export class UsersController {
   @ApiHeader({
     name: 'Authorization',
     description: 'Token de autorización',
-    required: false,
+    required: true,
   })
   @ApiBody({
     type: CreateUserDto,
